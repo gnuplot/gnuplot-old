@@ -1,3 +1,112 @@
+2000-06-22  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/graph3d.c, src/util3d.c, src/hidden3d.c: implemented
+	hiddenlining for contour lines on surface and baseplane.
+
+2000-06-18  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/graph3d.c, src/util3d.c, src/hidden3d.c: implemented
+	hiddenlining for tic labels, axes and grid lines, again.
+
+2000-06-07  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/post.trm: Dick Crawford's enhanced postscript overprinting
+	feature patch.
+	(ENHPS_recurse): additional argument 'overprint'.
+
+	* src/set.c (set_allzeroaxis): fix typo FIRST_X_AXIS vs.
+	FIRST_Y_AXIS.
+
+	* src/util3d.h: move prototypes for functions clip_point(),
+	draw_clip_line(), clip_put_text(), clip_put_text_just(),
+	clip_line() to gadgets.h; add prototype for newly global
+	map3d_xyz().
+
+
+	* src/util3d.c (clip_point): move from here to gadgets.c
+	(draw_clip_line): dito.
+	(clip_put_text): dito.
+	(clip_put_text_just): dito.
+	(clip_line): dito.
+	(map3d_xyz): move here from hidden3d.c, and make global.
+
+	* src/hidden3d.h: remove prototype for draw_line_hidden.
+
+	* src/hidden3d.c: move static function map3d_xyz out here, into
+	util3d.c.
+	(draw_line_hidden): function commented out, as it is now unused.
+
+	* src/graphics.c: #include "gadgets.h", instead of "graph3d.h" and
+	"util3d.h";
+	(do_plot): replace DRAW_ZEROAXIS macro by function
+	axis_draw_2d_zeroaxis() implemented in axis.[ch].
+	
+	* src/graph3d.h: move declaration of global suppressMove, and
+	prototypes of clip_move(), clip_vector() to gadgets.h
+
+	* src/graph3d.c: #include "gadgets.h" instead of "graphics.h";
+	move global suppressMove out of here; move clip_move() and
+	clip_vector() out of here
+	(draw_bottom_grid): calculate back_y together with zaxis_{x,y},
+	instead of doing it separately in another if block.
+	(): deactivated the whole code for drawing the base plane: it will
+	have to be redone from scratch.
+
+	* src/gadgets.h: #include "syscfg.h" added; move declararation of
+	global suppressMove here; move prototypes for draw_clip_line(),
+	clip_line(), clip_point(), clip_put_text(), clip_put_text_just(),
+	clip_move(), clip_vector() here
+
+	* src/gadgets.c: moved global variable 'suppressMove' to this
+	source file.
+	(clip_point, draw_clip_line, clip_put_text, clip_put_text_just,
+	clip_line, clip_move, clip_vector): moved to this source file
+
+	* src/datafile.c: (df_gets): added a prompt for interactive input
+	of inline data.
+
+	* src/axis.c (axis_draw_2d_zeroaxis): new function, centralizes 
+	code previously found in graphics.c
+
+	* src/axis.h: prototype for axis_draw_2d_zeroaxis added.
+
+2000-05-23  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* src/mouse.c: #include "datafile.h" added.
+	(do_event): set variable replot_disabled according to status of
+	plotted_data_from_stdin.
+	(apply_zoom): use new function do_string_replot() to avoid sending
+	"replot" commands from the mouse if that would trigger reread of
+	inline data.
+	(builtin_autoscale): dito.
+	(builtin_toggle_border): dito.
+	(builtin_replot): dito.
+	(builtin_toggle_log): dito.
+	(builtin_nearest_log): dito.
+	(builtin_toggle_ratio): dito.
+	(remove_label): dito.
+	(put_label): dito.
+
+	* src/command.h: external declaration for replot_disabled.
+	* src/command.h: prototype for do_string_replot.
+
+	* src/command.c: new global variable replot_disabled
+	(do_string_replot): new function: if replot_disabled is true,
+	don't execute the 'replot' part of a mouse action.
+	(plot_command): initialize plotted_data_from_stdin to FALSE
+	(splot_command): dito
+	(replot_command): update replot_disabled
+
+	* src/datafile.h: declare global plotted_data_from_stdin.
+
+	* src/datafile.c: new global variable plotted_data_from_stdin.
+	tracks if any of the datafiles plotted is "inline data".
+	(df_open): set plotted_data_from_stdin to TRUE, if necessary.
+
+	* src/command.c: #include "datafile.h" for new variable
+	plotted_data_from_stdin.
+
+	
 2000-05-02  Lars Hecking  <lhecking@nmrc.ucc.ie>
 
 	* INSTALL: In "Platform notes" section, add hint for using

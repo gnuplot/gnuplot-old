@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: termdoc.c,v 1.11 1999/10/01 14:15:48 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: termdoc.c,v 1.11.4.1 2000/06/22 12:56:43 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - termdoc.c */
@@ -63,14 +63,12 @@ static char *RCSid() { return RCSid("$Id: termdoc.c,v 1.11 1999/10/01 14:15:48 l
  * working properly
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include "syscfg.h"
 
 #define DOCS_TERMDOC_MAIN
 
-#include "ansichek.h"
 #include "stdfn.h"
+#include "gp_types.h"
 #include "doc2x.h"
 
 /* because we hide details of including terminal drivers,
