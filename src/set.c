@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.28 1999/11/15 22:00:13 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.29 1999/11/24 13:32:26 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -55,8 +55,6 @@ static char *RCSid() { return RCSid("$Id: set.c,v 1.28 1999/11/15 22:00:13 lheck
 #include "util.h"
 
 #define BACKWARDS_COMPATIBLE
-
-#define SIGNIF (0.01)		/* less than one hundredth of a tic mark */
 
 /*
  * global variables to hold status of 'set' options
