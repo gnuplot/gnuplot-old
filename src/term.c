@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.50 2003/02/10 04:28:11 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.51 2003/02/18 16:38:11 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1524,7 +1524,7 @@ int caller;
 	break;
     case 3:
 	/* New terminal in use--put stdout back to original. */
-	/* closepl(); *//* This is called by the term. */
+	/* closepl(); */ /* This is called by the term. */
 	fflush(stdout);
 	*(stdout) = save_stdout;	/* Copy FILE structure */
 	unixplot = 0;

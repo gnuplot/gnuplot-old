@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2rtf.c,v 1.11 2002/12/16 14:16:52 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2rtf.c,v 1.12 2003/02/18 16:38:08 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - doc2rtf.c */
@@ -117,7 +117,7 @@ convert(FILE *a, FILE *b)
 
     /* close final page and generate trailer */
     fprintf(b, "}{\\plain \\page}\n");
-    /* fprintf(b,"}\n"); *//* HBB: HACK ALERT: only without this, hc31 works */
+    /* fprintf(b,"}\n"); */ /* HBB: HACK ALERT: only without this, hc31 works */
     list_free();
 }
 

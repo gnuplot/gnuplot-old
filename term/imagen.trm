@@ -1,5 +1,5 @@
 /*
- * $Id: imagen.trm,v 1.13 1999/10/29 18:39:40 lhecking Exp $
+ * $Id: imagen.trm,v 1.14 2003/02/18 16:38:12 broeker Exp $
  */
 
 /* GNUPLOT - imagen.trm */
@@ -246,8 +246,7 @@ TERM_PUBLIC void
 IMAGEN_init()
 {
     register struct termentry *t = term;
-
-/* char font[10];   *//* font name */
+    /* char font[10];   */  /* font name */
 
     IMAGEN_posx = IMAGEN_posy = 0;
 

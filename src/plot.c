@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.62 2003/01/24 08:26:52 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.63 2003/02/18 16:38:10 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -593,7 +593,7 @@ char **argv;
 
 		while (!com_line());
 
-/* interactive = FALSE; *//* should this be here? */
+/* interactive = FALSE; */ /* should this be here? */
 
 	    } else
 		load_file(loadpath_fopen(*argv, "r"), *argv, FALSE);
