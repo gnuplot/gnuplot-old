@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: internal.c,v 1.6 1998/11/03 12:52:32 lhecking Exp $";
+static char *RCSid = "$Id: internal.c,v 1.7 1998/12/07 22:10:32 lhecking Exp $";
 #endif
 
 /* GNUPLOT - internal.c */
@@ -94,7 +94,9 @@ void reset_stack()
 void check_stack()
 {				/* make sure stack's empty */
     if (s_p != -1)
-	fprintf(stderr, "\nwarning:  internal error--stack not empty!\n");
+	fprintf(stderr, "\n\
+warning:  internal error--stack not empty!\n\
+          (function called with too many parameters?)\n");
 }
 
 #define BAD_DEFAULT default: int_error("interal error : type neither INT or CMPLX", NO_CARET); return;
@@ -103,7 +105,7 @@ struct value *pop(x)
 struct value *x;
 {
     if (s_p < 0)
-	int_error("stack underflow", NO_CARET);
+	int_error("stack underflow (function call with missing parameters?)", NO_CARET);
     *x = stack[s_p--];
     return (x);
 }
