@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: command.c,v 1.6 1998/06/23 14:21:50 lhecking Exp $";
+static char    *RCSid = "$Id: command.c,v 1.7 1998/09/18 19:50:26 lhecking Exp $";
 #endif
 
 /* GNUPLOT - command.c */
@@ -110,18 +110,6 @@ extern char HelpFile[80] ;      /* patch for do_help  - DJL */
 #ifndef STDOUT
 # define STDOUT 1
 #endif
-
-#ifndef HELPFILE
-# if defined( MSDOS ) || defined( OS2 ) || defined(DOS386)
-#  define HELPFILE "gnuplot.gih"
-# else
-#  if defined(AMIGA_SC_6_1) || defined(AMIGA_AC_5)
-#   define HELPFILE "S:gnuplot.gih"
-#  else
-#   define HELPFILE "docs/gnuplot.gih"	/* changed by makefile */
-#  endif /* AMIGA_SC_6_1 || AMIGA_AC_5 */
-# endif /* MSDOS || OS2 || DOS386 */
-#endif				/* HELPFILE */
 
 #ifdef _Windows
 # include <windows.h>
