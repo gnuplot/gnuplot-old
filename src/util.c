@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.22.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.22.2.4 2000/10/18 16:30:02 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -714,8 +714,8 @@ char *s;
     register char *p = s;
 
     while (*p++) {
-	if (isupper(*p))
-	    *p = tolower(*p);
+	if (isupper((unsigned char)*p))
+	    *p = tolower((unsigned char)*p);
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: graph3d.h,v 1.6.2.4 2000/07/26 18:52:58 broeker Exp $
+ * $Id: graph3d.h,v 1.6.2.5 2000/10/18 16:30:01 broeker Exp $
  */
 
 /* GNUPLOT - graph3d.h */
@@ -83,6 +83,7 @@ typedef struct surface_points {
     enum PLOT_TYPE plot_type;
     enum PLOT_STYLE plot_style;
     char *title;
+    int title_no_enhanced;	/* don't typeset title in enhanced mode */
     struct lp_style_type lp_properties;
     int has_grid_topology;
     

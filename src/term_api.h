@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.3.2.2 2000/07/26 18:52:59 broeker Exp $
+ * $Id: term_api.h,v 1.3.2.3 2000/10/18 16:30:02 broeker Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -168,6 +168,10 @@ extern TBOOLEAN term_initialised;
 extern int mouseGnupmdrv;
 extern FILE *PM_pipe;
 #endif 
+
+/* flag: don't use enhanced output methods --- for output of
+ * filenames, which usually looks bad using subscripts */
+extern TBOOLEAN ignore_enhanced_text;
 
 
 /* Prototypes of functions exported by term.c */

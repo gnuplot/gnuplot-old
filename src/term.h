@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.6 2000/05/02 19:02:10 lhecking Exp $
+ * $Id: term.h,v 1.6.2.1 2000/10/18 16:30:02 broeker Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -377,6 +377,11 @@
 
 /* latex/tex with picture in postscript */
 #include "pslatex.trm"
+
+#ifdef USE_EPSLATEX_DRIVER
+/* new epslatex driver */
+#include "epslatex.trm"
+#endif
 
 /* EEPIC-extended LaTeX driver, for EEPIC users */
 #include "eepic.trm"

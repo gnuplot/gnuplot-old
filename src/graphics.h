@@ -1,5 +1,5 @@
 /*
- * $Id: graphics.h,v 1.14.2.2 2000/06/22 12:57:38 broeker Exp $
+ * $Id: graphics.h,v 1.14.2.3 2000/10/18 16:30:01 broeker Exp $
  */
 
 /* GNUPLOT - graphics.h */
@@ -52,6 +52,7 @@ typedef struct curve_points {
     enum PLOT_STYLE plot_style;
     enum PLOT_SMOOTH plot_smooth;
     char *title;
+    int title_no_enhanced;	/* don't typeset title in enhanced mode */
     struct lp_style_type lp_properties;
     int p_max;			/* how many points are allocated */
     int p_count;		/* count of points in points */
@@ -90,13 +91,12 @@ void get_offsets __PROTO((struct text_label* this_label,
 	struct termentry* t, int* htic, int* vtic));
 extern void do_plot __PROTO((struct curve_points *, int));
 extern int label_width __PROTO((const char *, int *));
-/* is this valid use of __P ? */
 void map_position __PROTO((struct position * pos, unsigned int *x,
 				  unsigned int *y, const char *what));
 #if defined(sun386) || defined(AMIGA_SC_6_1)
 extern double CheckLog __PROTO((TBOOLEAN, double, double));
 #endif
 
+void apply_head_properties __PROTO((struct position* headsize));
+
 #endif /* GNUPLOT_GRAPHICS_H */
-
-

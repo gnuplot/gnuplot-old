@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.5 2000/10/18 14:26:34 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.6 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -555,11 +555,14 @@ set_arrow()
     struct arrow_def *this_arrow = NULL;
     struct arrow_def *new_arrow = NULL;
     struct arrow_def *prev_arrow = NULL;
-    struct position spos, epos;
+    struct position spos, epos, headsize;
     struct lp_style_type loc_lp;
     int tag;
-    TBOOLEAN set_start, set_end, head = 1, set_line = 0, set_layer = 0;
+    TBOOLEAN set_start, set_end, head = 1;
+    TBOOLEAN set_line = 0, set_headsize = 0, set_layer = 0;
+    TBOOLEAN relative = 0;
     int layer = 0;
+    headsize.x = 0; /* length being zero means the default head size */
 
     c_token++;
 
@@ -570,6 +573,7 @@ set_arrow()
     if (!END_OF_COMMAND
 	&& !equals(c_token, "from")
 	&& !equals(c_token, "to")
+	&& !equals(c_token, "rto")
 	) {
 	/* must be a tag expression! */
 	tag = (int) real(const_express(&a));
@@ -604,6 +608,14 @@ set_arrow()
 	/* get coordinates */
 	get_position(&epos);
 	set_end = TRUE;
+    } else if (!END_OF_COMMAND && equals(c_token, "rto")) {
+	c_token++;
+	if (END_OF_COMMAND)
+	    int_error(c_token, "end coordinates expected");
+	/* get coordinates */
+	get_position(&epos);
+	set_end = TRUE;
+	relative = 1;
     } else {
 	epos.x = epos.y = epos.z = 0;
 	epos.scalex = epos.scaley = epos.scalez = first_axes;
@@ -629,6 +641,19 @@ set_arrow()
     if (!END_OF_COMMAND && equals(c_token, "head")) {
 	c_token++;
 	head = 1;
+    }
+    if (!END_OF_COMMAND && equals(c_token, "heads")) {
+	c_token++;
+	head = 2;
+    }
+    if (!END_OF_COMMAND && equals(c_token, "size")) {
+	headsize.scalex = headsize.scaley = headsize.scalez = first_axes;
+	  /* only scalex used; scaley is angle of the head in [deg] */
+	c_token++;
+	if (END_OF_COMMAND)
+	    int_error(c_token, "head size expected");
+	get_position(&headsize);
+	set_headsize = TRUE;
     }
     set_layer = FALSE;
     if (!END_OF_COMMAND && equals(c_token, "back")) {
@@ -665,10 +690,14 @@ set_arrow()
 	}
 	if (set_end) {
 	    this_arrow->end = epos;
+	    this_arrow->relative = relative;
 	}
 	this_arrow->head = head;
 	if (set_layer) {
 	    this_arrow->layer = layer;
+	}
+	if (set_headsize) {
+	    this_arrow->headsize = headsize;
 	}
 	if (set_line) {
 	    this_arrow->lp_properties = loc_lp;
@@ -685,7 +714,9 @@ set_arrow()
 	new_arrow->start = spos;
 	new_arrow->end = epos;
 	new_arrow->head = head;
+	new_arrow->headsize = headsize;
 	new_arrow->layer = layer;
+	new_arrow->relative = relative;
 	new_arrow->lp_properties = loc_lp;
     }
 }
@@ -1405,11 +1436,13 @@ set_label()
     enum JUSTIFY just = LEFT;
     int rotate = 0;
     int tag;
-    TBOOLEAN set_text, set_position, set_just = FALSE, set_rot = FALSE,
-     set_font;
+    TBOOLEAN set_text, set_position, set_just = FALSE, set_rot = FALSE;
+    TBOOLEAN set_font, set_offset = FALSE;
     TBOOLEAN set_layer = FALSE;
     int layer = 0;
     int pointstyle = -2; /* untouched (this is /not/ -1) */
+    float hoff = 1.0;
+    float voff = 1.0;
 
     c_token++;
     /* get tag */
@@ -1561,6 +1594,23 @@ set_label()
 	c_token++;
     }
 
+    if(!END_OF_COMMAND && almost_equals(c_token, "of$fset")) {
+	c_token++;
+	if (END_OF_COMMAND)
+	    int_error(c_token, "Expected horizontal offset");
+	hoff = real(const_express(&a));
+
+	/* c_token++; */
+	if (!equals(c_token, ","))
+	    int_error(c_token, "Expected comma");
+
+	c_token++;
+	if (END_OF_COMMAND)
+	    int_error(c_token, "Expected vertical offset");
+	voff = real(const_express(&a));
+	set_offset = TRUE;
+    }
+
     if (!END_OF_COMMAND)
 	int_error(c_token, "extraenous or out-of-order arguments in set label");
 
@@ -1589,6 +1639,10 @@ set_label()
 	    this_label->font = font;
 	if (pointstyle != -2)
 	    this_label->pointstyle = pointstyle;
+	if (set_offset) {
+	    this_label->hoffset = hoff;
+	    this_label->voffset = voff;
+	}
     } else {
 	/* adding the label */
 	new_label = (struct text_label *)
@@ -1609,9 +1663,8 @@ set_label()
 	    new_label->pointstyle = -1; /* unset */
 	else
 	    new_label->pointstyle = pointstyle;
-	/* TODO make this configurable (joze) */
-	new_label->hoffset = 1.0;
-	new_label->voffset = 1.0;
+	new_label->hoffset = hoff;
+	new_label->voffset = voff;
     }
 }				/* Entry font added by DJL */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.6 2000/09/21 15:56:25 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.7 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -139,6 +139,10 @@ static int widest_tic;
 static void widest2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
 static void ytick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
 static void xtick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
+
+static void get_arrow __PROTO((struct arrow_def* arrow, unsigned int* sx, unsigned int* sy, unsigned int* ex, unsigned int* ey));
+static void map_position_double __PROTO((struct position* pos, double* x, double* y, const char* what));
+static void map_position_r __PROTO((struct position* pos, double* x, double* y, const char* what));
 
 static int find_maxl_keys __PROTO((struct curve_points *plots, int count, int *kcnt));
 
@@ -918,6 +922,99 @@ get_offsets(struct text_label *this_label, struct termentry *t, int *htic, int *
     }
 }
 
+int
+nearest_label_tag(int xref, int yref, struct termentry *t,
+		  void (*map_func) (struct position * pos, unsigned int *x, unsigned int *y, const char *what))
+{
+    double min = -1;
+    int min_tag = -1;
+    double diff_squared;
+    unsigned int x, y;
+    struct text_label *this_label;
+    int xd;
+    int yd;
+
+    for (this_label = first_label; this_label != NULL; this_label = this_label->next) {
+	map_func(&this_label->place, &x, &y, "label");
+	xd = (int) x - (int) xref;
+	yd = (int) y - (int) yref;
+	diff_squared = xd * xd + yd * yd;
+	if (-1 == min || min > diff_squared) {
+	    /* now we check if we're within a certain
+	     * threshold around the label */
+	    double tic_diff_squared;
+	    int htic, vtic;
+	    get_offsets(this_label, t, &htic, &vtic);
+	    tic_diff_squared = htic * htic + vtic * vtic;
+	    if (diff_squared < tic_diff_squared) {
+		min = diff_squared;
+		min_tag = this_label->tag;
+	    }
+	}
+    }
+
+    return min_tag;
+}
+
+static void
+get_arrow(arrow, sx, sy, ex, ey)
+struct arrow_def* arrow;
+unsigned int* sx;
+unsigned int* sy;
+unsigned int* ex;
+unsigned int* ey;
+{
+    if (arrow->relative) {
+	if (arrow->start.scalex == arrow->end.scalex &&
+	    arrow->start.scaley == arrow->end.scaley) {
+	    /* coordinate systems are equal. The advantage of
+	     * handling this special case is that it works also
+	     * for logscale (which might not work otherwise, if
+	     * the relative arrows point downwards for example) */
+	    struct position delta_pos;
+	    delta_pos = arrow->start;
+	    delta_pos.x += arrow->end.x;
+	    delta_pos.y += arrow->end.y;
+	    map_position(&arrow->start, sx, sy, "arrow");
+	    map_position(&delta_pos, ex, ey, "arrow");
+	} else {
+	    /* different coordinate systems:
+	     * add the values in the drivers
+	     * coordinate system */
+	    double sx_d, sy_d, ex_d, ey_d;
+	    map_position_double(&arrow->start, &sx_d, &sy_d, "arrow");
+	    map_position_r(&arrow->end, &ex_d, &ey_d, "arrow");
+	    *sx = (unsigned int)sx_d;
+	    *sy = (unsigned int)sy_d;
+	    *ex = (unsigned int)(ex_d + sx_d);
+	    *ey = (unsigned int)(ey_d + sy_d);
+	}
+    } else {
+	map_position(&arrow->start, sx, sy, "arrow");
+	map_position(&arrow->end, ex, ey, "arrow");
+    }
+}
+
+void
+apply_head_properties(struct position* headsize)
+{
+    extern double curr_arrow_headangle;
+    extern int curr_arrow_headlength;
+    curr_arrow_headlength = 0;
+    if (headsize->x > 0) { /* set head length+angle for term->arrow */
+	int itmp, x1, x2;
+	double savex = headsize->x;
+	curr_arrow_headangle = headsize->y;
+	headsize->y = 1.0; /* any value, just avoid log y */
+	map_position(headsize, &x2, &itmp, "arrow");
+	headsize->x = 0; /* measure length from zero */
+	map_position(headsize, &x1, &itmp, "arrow");
+	curr_arrow_headlength = x2 - x1;
+	headsize->y = curr_arrow_headangle; /* restore the angle */
+	headsize->x = savex; /* restore the length */
+    }
+}
+
 void
 do_plot(plots, pcount)
 struct curve_points *plots;
@@ -1197,10 +1294,10 @@ int pcount;			/* count of plots in linked list */
 
 	if (this_arrow->layer)
 	    continue;
-	map_position(&this_arrow->start, &sx, &sy, "arrow");
-	map_position(&this_arrow->end, &ex, &ey, "arrow");
+	get_arrow(this_arrow, &sx, &sy, &ex, &ey);
 
 	term_apply_lp_properties(&(this_arrow->lp_properties));
+	apply_head_properties(&(this_arrow->headsize));
 	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
     }
 
@@ -1269,6 +1366,8 @@ int pcount;			/* count of plots in linked list */
 	if (this_plot->title && !*this_plot->title) {
 	    localkey = 0;
 	} else {
+	    ignore_enhanced_text = this_plot->title_no_enhanced == 1;
+		/* don't write filename or function enhanced */
 	    if (localkey != 0 && this_plot->title) {
 		key_count++;
 		if (key_just == JLEFT) {
@@ -1306,6 +1405,7 @@ int pcount;			/* count of plots in linked list */
 		    (*t->vector) (xl + key_sample_right, yl - ERRORBARTIC);
 		}
 	    }
+	ignore_enhanced_text = 0;
 	}
 
 	/* and now the curves, plus any special key requirements */
@@ -1481,10 +1581,10 @@ int pcount;			/* count of plots in linked list */
 
 	if (this_arrow->layer == 0)
 	    continue;
-	map_position(&this_arrow->start, &sx, &sy, "arrow");
-	map_position(&this_arrow->end, &ex, &ey, "arrow");
+	get_arrow(this_arrow, &sx, &sy, &ex, &ey);
 
 	term_apply_lp_properties(&(this_arrow->lp_properties));
+	apply_head_properties(&(this_arrow->headsize));
 	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
     }
 
@@ -3258,11 +3358,26 @@ int *lines;
 }
 
 
-/*{{{  map_position */
+/*{{{  map_position, wrapper, which maps double to int */
 void
 map_position(pos, x, y, what)
 struct position *pos;
 unsigned int *x, *y;
+const char *what;
+{
+    double xx, yy;
+    map_position_double(pos, &xx, &yy, what);
+    *x = xx;
+    *y = yy;
+}
+
+/*}}} */
+
+/*{{{  map_position_double */
+static void
+map_position_double(pos, x, y, what)
+struct position *pos;
+double *x, *y;
 const char *what;
 {
     switch (pos->scalex) {
@@ -3270,19 +3385,19 @@ const char *what;
 	{
 	    double xx = axis_log_value_checked(FIRST_X_AXIS, pos->x, what);
 	    *x = xleft + (xx - axis_array[FIRST_X_AXIS].min)
-		* axis_array[FIRST_X_AXIS].term_scale + 0.5;
+		* axis_array[FIRST_X_AXIS].term_scale;
 	    break;
 	}
     case second_axes:
 	{
 	    double xx = axis_log_value_checked(SECOND_X_AXIS, pos->x, what);
 	    *x = xleft + (xx - axis_array[SECOND_X_AXIS].min)
-		* axis_array[SECOND_X_AXIS].term_scale + 0.5;
+		* axis_array[SECOND_X_AXIS].term_scale;
 	    break;
 	}
     case graph:
 	{
-	    *x = xleft + pos->x * (xright - xleft) + 0.5;
+	    *x = xleft + pos->x * (xright - xleft);
 	    break;
 	}
     case screen:
@@ -3290,7 +3405,7 @@ const char *what;
 	    register struct termentry *t = term;
 	    /* HBB 20000914: Off-by-one bug. Max. allowable result is
 	     * t->xmax - 1, not t->xmax ! */
-	    *x = pos->x * (t->xmax - 1) + 0.5;
+	    *x = pos->x * (t->xmax - 1);
 	    break;
 	}
     }
@@ -3299,19 +3414,83 @@ const char *what;
 	{
 	    double yy = axis_log_value_checked(FIRST_Y_AXIS, pos->y, what);
 	    *y = ybot + (yy - axis_array[FIRST_Y_AXIS].min)
-		* axis_array[FIRST_Y_AXIS].term_scale + 0.5;
-	    return;
+		* axis_array[FIRST_Y_AXIS].term_scale;
 	}
     case second_axes:
 	{
 	    double yy = axis_log_value_checked(SECOND_Y_AXIS, pos->y, what);
 	    *y = ybot + (yy - axis_array[SECOND_Y_AXIS].min)
-		* axis_array[SECOND_Y_AXIS].term_scale + 0.5;
+		* axis_array[SECOND_Y_AXIS].term_scale;
+	    break;
+	}
+    case graph:
+	{
+	    *y = ybot + pos->y * (ytop - ybot);
+	    break;
+	}
+    case screen:
+	{
+	    register struct termentry *t = term;
+	    /* HBB 20000914: Off-by-one bug. Max. allowable result is
+	     * t->ymax - 1, not t->ymax ! */
+	    *y = pos->y * (t->ymax -1);
+	    break;
+	}
+    }
+    *x += 0.5;
+    *y += 0.5;
+}
+
+/*}}} */
+
+/*{{{  map_position_r */
+static void
+map_position_r(pos, x, y, what)
+struct position *pos;
+double *x, *y;
+const char *what;
+{
+    switch (pos->scalex) {
+    case first_axes:
+	{
+	    double xx = axis_log_value_checked(FIRST_X_AXIS, pos->x, what);
+	    *x = xx * axis_array[FIRST_X_AXIS].term_scale;
+	    break;
+	}
+    case second_axes:
+	{
+	    double xx = axis_log_value_checked(SECOND_X_AXIS, pos->x, what);
+	    *x = xx * axis_array[SECOND_X_AXIS].term_scale;
+	    break;
+	}
+    case graph:
+	{
+	    *x = pos->x * (xright - xleft);
+	    break;
+	}
+    case screen:
+	{
+	    register struct termentry *t = term;
+	    *x = pos->x * (t->xmax - 1);
+	    break;
+	}
+    }
+    switch (pos->scaley) {
+    case first_axes:
+	{
+	    double yy = axis_log_value_checked(FIRST_Y_AXIS, pos->y, what);
+	    *y = yy * axis_array[FIRST_Y_AXIS].term_scale;
+	    return;
+	}
+    case second_axes:
+	{
+	    double yy = axis_log_value_checked(SECOND_Y_AXIS, pos->y, what);
+	    *y = yy * axis_array[SECOND_Y_AXIS].term_scale;
 	    return;
 	}
     case graph:
 	{
-	    *y = ybot + pos->y * (ytop - ybot) + 0.5;
+	    *y = pos->y * (ytop - ybot);
 	    return;
 	}
     case screen:
@@ -3319,10 +3498,15 @@ const char *what;
 	    register struct termentry *t = term;
 	    /* HBB 20000914: Off-by-one bug. Max. allowable result is
 	     * t->ymax - 1, not t->ymax ! */
-	    *y = pos->y * (t->ymax -1) + 0.5;
+	    *y = pos->y * (t->ymax -1);
 	    return;
 	}
     }
 }
-
 /*}}} */
+
+
+
+
+
+

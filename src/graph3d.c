@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.7 2000/09/21 15:56:25 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.8 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -128,6 +128,9 @@ static void key_sample_line __PROTO((int xl, int yl));
 static void key_sample_point __PROTO((int xl, int yl, int pointtype));
 static void key_text __PROTO((int xl, int yl, char *text));
 
+static void get_arrow3d(struct arrow_def* arrow, unsigned int* sx, unsigned int* sy, unsigned int* ex, unsigned int* ey);
+static int map3d_getposition __PROTO((struct position* pos, const char* what, double* xpos, double* ypos, double* zpos));
+static void map3d_position_r __PROTO((struct position* pos1, struct position* pos2, unsigned int* x, unsigned int* y, const char* what));
 
 /*
  * The Amiga SAS/C 6.2 compiler moans about macro envocations causing
@@ -379,6 +382,37 @@ int count;
     yscaler = ((ytop - ybot) * 4L) / 7L;
 }
 
+static void
+get_arrow3d(arrow, sx, sy, ex, ey)
+struct arrow_def* arrow;
+unsigned int* sx;
+unsigned int* sy;
+unsigned int* ex;
+unsigned int* ey;
+{
+    map3d_position(&(arrow->start), sx, sy, "arrow");
+    if (arrow->relative) {
+	if (arrow->start.scalex == arrow->end.scalex &&
+	    arrow->start.scaley == arrow->end.scaley &&
+	    arrow->start.scalez == arrow->end.scalez) {
+	    /* coordinate systems are equal. The advantage of
+	     * handling this special case is that it works also
+	     * for logscale (which might not work otherwise, if
+	     * the relative arrows point downwards for example) */
+	    struct position delta_pos;
+	    delta_pos = arrow->start;
+	    delta_pos.x += arrow->end.x;
+	    delta_pos.y += arrow->end.y;
+	    delta_pos.z += arrow->end.z;
+	    map_position(&delta_pos, ex, ey, "arrow");
+	} else {
+	    map3d_position_r(&(arrow->start), &(arrow->end), ex, ey, "arrow");
+	}
+    } else {
+	map3d_position(&(arrow->end), ex, ey, "arrow");
+    }
+}
+
 /* we precalculate features of the key, to save lots of nested
  * ifs in code - x,y = user supplied or computed position of key
  * taken to be inner edge of a line sample
@@ -579,9 +613,9 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 
 	if (this_arrow->layer)
 	    continue;
-	map3d_position(&this_arrow->start, &sx, &sy, "arrow");
-	map3d_position(&this_arrow->end, &ex, &ey, "arrow");
+	get_arrow3d(this_arrow, &sx, &sy, &ex, &ey);
 	term_apply_lp_properties(&(this_arrow->lp_properties));
+	apply_head_properties(&(this_arrow->headsize));
 	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
     }
 
@@ -730,12 +764,14 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 		TBOOLEAN lkey = (key != 0 && this_plot->title && this_plot->title[0]);
 		term_apply_lp_properties(&(this_plot->lp_properties));
 
-		if (lkey) {
-		    key_text(xl, yl, this_plot->title);
-		}
-		switch (this_plot->plot_style) {
-		case BOXES:	/* can't do boxes in 3d yet so use impulses */
-		case IMPULSES:{
+	    if (lkey) {
+		ignore_enhanced_text = this_plot->title_no_enhanced == 1;
+		key_text(xl, yl, this_plot->title);
+		ignore_enhanced_text = 0;
+	    }
+	    switch (this_plot->plot_style) {
+	    case BOXES:	/* can't do boxes in 3d yet so use impulses */
+	    case IMPULSES:{
 		    if (lkey) {
 			key_sample_line(xl, yl);
 		    }
@@ -983,9 +1019,9 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 
 	if (this_arrow->layer == 0)
 	    continue;
-	map3d_position(&this_arrow->start, &sx, &sy, "arrow");
-	map3d_position(&this_arrow->end, &ex, &ey, "arrow");
+	get_arrow3d(this_arrow, &sx, &sy, &ex, &ey);
 	term_apply_lp_properties(&(this_arrow->lp_properties));
+	apply_head_properties(&(this_arrow->headsize));
 	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
     }
 
@@ -1945,6 +1981,57 @@ struct lp_style_type grid;
     }
 }
 
+static int
+map3d_getposition(pos, what, xpos, ypos, zpos)
+  struct position *pos;
+const char *what;
+double* xpos;
+double* ypos;
+double* zpos;
+{
+    int screens = 0;		/* need either 0 or 3 screen co-ordinates */
+
+    switch (pos->scalex) {
+    case first_axes:
+    case second_axes:
+	*xpos = axis_log_value_checked(FIRST_X_AXIS, *xpos, what);
+	break;
+    case graph:
+	*xpos = axis_array[FIRST_X_AXIS].min +
+	    *xpos * (axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min);
+	break;
+    case screen:
+	++screens;
+    }
+
+    switch (pos->scaley) {
+    case first_axes:
+    case second_axes:
+	*ypos = axis_log_value_checked(FIRST_Y_AXIS, *ypos, what);
+	break;
+    case graph:
+	*ypos = axis_array[FIRST_Y_AXIS].min +
+	    *ypos * (axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min);
+	break;
+    case screen:
+	++screens;
+    }
+
+    switch (pos->scalez) {
+    case first_axes:
+    case second_axes:
+	*zpos = axis_log_value_checked(FIRST_Z_AXIS, *zpos, what);
+	break;
+    case graph:
+	*zpos = axis_array[FIRST_Z_AXIS].min +
+	    *zpos * (axis_array[FIRST_Z_AXIS].max - axis_array[FIRST_Z_AXIS].min);
+	break;
+    case screen:
+	++screens;
+    }
+
+    return screens;
+}
 
 void
 map3d_position(pos, x, y, what)
@@ -1955,46 +2042,8 @@ const char *what;
     double xpos = pos->x;
     double ypos = pos->y;
     double zpos = pos->z;
-    int screens = 0;		/* need either 0 or 3 screen co-ordinates */
-
-    switch (pos->scalex) {
-    case first_axes:
-    case second_axes:
-	xpos = axis_log_value_checked(FIRST_X_AXIS, xpos, what);
-	break;
-    case graph:
-	xpos = axis_array[FIRST_X_AXIS].min +
-	    xpos * (axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min);
-	break;
-    case screen:
-	++screens;
-    }
-
-    switch (pos->scaley) {
-    case first_axes:
-    case second_axes:
-	ypos = axis_log_value_checked(FIRST_Y_AXIS, ypos, what);
-	break;
-    case graph:
-	ypos = axis_array[FIRST_Y_AXIS].min +
-	    ypos * (axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min);
-	break;
-    case screen:
-	++screens;
-    }
-
-    switch (pos->scalez) {
-    case first_axes:
-    case second_axes:
-	zpos = axis_log_value_checked(FIRST_Z_AXIS, zpos, what);
-	break;
-    case graph:
-	zpos = axis_array[FIRST_Z_AXIS].min +
-	    zpos * (axis_array[FIRST_Z_AXIS].max - axis_array[FIRST_Z_AXIS].min);
-	break;
-    case screen:
-	++screens;
-    }
+    /* need either 0 or 3 screen co-ordinates */
+    int screens = map3d_getposition(pos, what, &xpos, &ypos, &zpos);
 
     if (screens == 0) {
 	map3d_xy(xpos, ypos, zpos, x, y);
@@ -2014,6 +2063,41 @@ const char *what;
     return;
 }
 
+static void
+map3d_position_r(pos_s, pos_e, x, y, what)
+struct position *pos_s;
+struct position *pos_e;
+unsigned int *x, *y;
+const char *what;
+{
+    double xpos_s = pos_s->x;
+    double ypos_s = pos_s->y;
+    double zpos_s = pos_s->z;
+    int screens1 = map3d_getposition(pos_s, what, &xpos_s, &ypos_s, &zpos_s);
+
+    double xpos_e = pos_e->x;
+    double ypos_e = pos_e->y;
+    double zpos_e = pos_e->z;
+    int screens2 = map3d_getposition(pos_e, what, &xpos_e, &ypos_e, &zpos_e);
+
+    if (screens1 == 0 && screens2 == 0) {
+	map3d_xy(xpos_s + xpos_e, ypos_s + ypos_e, zpos_s + zpos_e, x, y);
+	return;
+    }
+    if (screens1 != 3 || screens2 != 3) {
+	graph_error("Cannot mix screen co-ordinates with other types");
+    } {
+	register struct termentry *t = term;
+	*x = pos_s->x + pos_e->x * (t->xmax -1) + 0.5;
+	*y = pos_s->y + pos_e->y * (t->ymax -1) + 0.5;
+    }
+    /* TODO:
+     *   would it make any sense in 3d to mix screen
+     *   with non-screen coordinates ? (joze)
+     */
+
+    return;
+}
 
 /*
  * these code blocks were moved to functions, to make the code simpler

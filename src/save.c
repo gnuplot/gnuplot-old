@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.4 2000/07/26 18:52:58 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.5 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -71,7 +71,8 @@ FILE *fp;
 	show_version(fp);	/* I _love_ information written */
 	save_functions__sub(fp);	/* at the top and the end of an */
 	fputs("#    EOF\n", fp);	/* human readable ASCII file.   */
-	(void) fclose(fp);	/*                        (JFi) */
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -85,7 +86,8 @@ FILE *fp;
 	show_version(fp);
 	save_variables__sub(fp);
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -99,7 +101,8 @@ FILE *fp;
 	show_version(fp);
 	save_set_all(fp);
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -121,7 +124,8 @@ FILE *fp;
 	    putc('\n', fp);
 	}
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -189,7 +193,8 @@ FILE *fp;
 	    fputs("# set output\n", fp);
 		
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -359,8 +364,10 @@ set y2data%s\n",
 	    fprintf(fp, " font \"%s\"", this_label->font);
 	if (-1 == this_label->pointstyle)
 	    fprintf(fp, " nopointstyle");
-	else
-	    fprintf(fp, " pointstyle %d", this_label->pointstyle);
+	else {
+	    fprintf(fp, " pointstyle %d offset %f,%f",
+		this_label->pointstyle, this_label->hoffset, this_label->voffset);
+	}
 	/* Entry font added by DJL */
 	fputc('\n', fp);
     }
@@ -369,7 +376,7 @@ set y2data%s\n",
 	 this_arrow = this_arrow->next) {
 	fprintf(fp, "set arrow %d from ", this_arrow->tag);
 	save_position(fp, &this_arrow->start);
-	fputs(" to ", fp);
+	fputs(this_arrow->relative ? " rto " : " to ", fp);
 	save_position(fp, &this_arrow->end);
 	fprintf(fp, " %s linetype %d linewidth %.3f\n",
 		this_arrow->head ? "" : " nohead",

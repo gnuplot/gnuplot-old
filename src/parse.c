@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.10.4.1 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.10.4.2 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -34,8 +34,20 @@ static char *RCSid() { return RCSid("$Id: parse.c,v 1.10.4.1 2000/06/22 12:57:39
  * to the extent permitted by applicable law.
 ]*/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <signal.h>
 #include <setjmp.h>
+
+#ifdef HAVE_SIGSETJMP
+# define SETJMP(env, save_signals) sigsetjmp(env, save_signals)
+# define LONGJMP(env, retval) siglongjmp(env, retval)
+#else
+# define SETJMP(env, save_signals) setjmp(env)
+# define LONGJMP(env, retval) longjmp(env, retval)
+#endif
 
 #include "parse.h"
 
@@ -102,7 +114,7 @@ int an_int;
     (void) signal(SIGFPE, (sigfunc) fpe);
 #endif
     undefined = TRUE;
-    longjmp(fpe_env, TRUE);
+    LONGJMP(fpe_env, TRUE);
 }
 
 
@@ -150,7 +162,7 @@ struct value *val_ptr;
     reset_stack();
 
 #ifndef DOSX286
-    if (setjmp(fpe_env))
+    if (SETJMP(fpe_env, 1))
 	return;			/* just bail out */
     (void) signal(SIGFPE, (sigfunc) fpe);
 #endif

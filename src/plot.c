@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.32.2.2 2000/07/26 18:52:58 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.32.2.3 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -34,8 +34,20 @@ static char *RCSid() { return RCSid("$Id: plot.c,v 1.32.2.2 2000/07/26 18:52:58 
  * to the extent permitted by applicable law.
 ]*/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <signal.h>
 #include <setjmp.h>
+
+#ifdef HAVE_SIGSETJMP
+# define SETJMP(env, save_signals) sigsetjmp(env, save_signals)
+# define LONGJMP(env, retval) siglongjmp(env, retval)
+#else
+# define SETJMP(env, save_signals) setjmp(env)
+# define LONGJMP(env, retval) longjmp(env, retval)
+#endif
 
 #include "plot.h"
 
@@ -200,7 +212,7 @@ int anint;
 #else
     term_reset();
     (void) putc('\n', stderr);
-    longjmp(command_line_env, TRUE);	/* return to prompt */
+    LONGJMP(command_line_env, TRUE);	/* return to prompt */
 #endif
 }
 
@@ -257,7 +269,7 @@ take_privilege()
 void
 bail_to_command_line()
 {
-    longjmp(command_line_env, TRUE);
+    LONGJMP(command_line_env, TRUE);
 }
 
 #if defined(_Windows) || defined(_Macintosh)
@@ -456,7 +468,7 @@ char **argv;
 	done(status[1]);
 #endif /* VMS */
 
-    if (!setjmp(command_line_env)) {
+    if (!SETJMP(command_line_env, 1)) {
 	/* first time */
 	interrupt_setup();
 	/* should move this stuff another initialisation routine,
@@ -873,7 +885,7 @@ RexxInterface(PRXSTRING rxCmd, PUSHORT pusErr, PRXSTRING rxRc)
     int cmdlen;
 
     memcpy(keepenv, command_line_env, sizeof(jmp_buf));
-    if (!setjmp(command_line_env)) {
+    if (!SETJMP(command_line_env, 1)) {
 	/* Set variable input_line.
 	   Watch out for line length of NOT_ZERO_TERMINATED strings ! */
 	cmdlen = rxCmd->strlength + 1;

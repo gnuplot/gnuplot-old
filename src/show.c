@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.4 2000/07/26 18:52:59 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.5 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1292,8 +1292,10 @@ int tag;			/* 0 means show all */
 		fprintf(stderr, " font \"%s\"", this_label->font);
 	    if (this_label->pointstyle < 0)
 		fprintf(stderr, "nopointstyle");
-	    else
-		fprintf(stderr, "pointstyle %d", this_label->pointstyle);
+	    else {
+		fprintf(stderr, "pointstyle %d offset %f,%f",
+		    this_label->pointstyle, this_label->hoffset, this_label->voffset);
+	    }
 	    /* Entry font added by DJL */
 	    fputc('\n', stderr);
 	}
@@ -1318,11 +1320,19 @@ int tag;			/* 0 means show all */
 		    this_arrow->tag,
 		    this_arrow->lp_properties.l_type + 1,
 		    this_arrow->lp_properties.l_width,
-		    this_arrow->head ? "" : " (nohead)",
+		    this_arrow->head ? (this_arrow->head==2 ? " both heads " : "") : " (nohead)",
 		    this_arrow->layer ? "front" : "back");
 	    show_position(&this_arrow->start);
-	    fputs(" to ", stderr);
+	    fputs(this_arrow->relative ? " rto " : " to ", stderr);
 	    show_position(&this_arrow->end);
+	    if (this_arrow->headsize.x > 0) {
+		static char *msg[] =
+		{"(first x axis) ", "(second x axis) ", "(graph units) ", "(screen units) "};
+		fprintf(stderr,"\n\t  arrow head: length %s%g, angle %g deg", 
+		   this_arrow->headsize.scalex == first_axes ? "" : msg[this_arrow->headsize.scalex],
+		   this_arrow->headsize.x,
+		   this_arrow->headsize.y);
+	    }
 	    putc('\n', stderr);
 	}
     }

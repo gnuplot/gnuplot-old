@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.5 2000/09/22 14:21:11 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.6 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -932,6 +932,7 @@ eval_plots()
 	    }
 
 	    if (almost_equals(c_token, "t$itle")) {
+		this_plot->title_no_enhanced = 0; /* can be enhanced */
 		if (parametric) {
 		    if (xparam)
 			int_error(c_token, "\"title\" allowed only after parametric function fully specified");
@@ -950,6 +951,7 @@ eval_plots()
 		    xtitle[0] = '\0';
 		c_token++;
 	    } else {
+		this_plot->title_no_enhanced = 1; /* filename or function cannot be enhanced */
 		m_capture(&(this_plot->title), start_token, end_token);
 		if (xparam)
 		    xtitle = this_plot->title;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.39.2.2 2000/07/26 18:52:58 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.39.2.3 2000/10/18 16:30:01 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -107,9 +107,8 @@ int thread_rl_RetCode = -1; /* return code from readline in a thread */
 # endif /* USE_MOUSE */
 #endif /* OS2 */
 
-#ifdef USE_MOUSE
-# include "ipc.h"
-#endif
+/* always include ipc.h as it contains the prototype for readline_ipc */
+#include "ipc.h"
 
 #ifndef _Windows
 # include "help.h"

@@ -90,7 +90,9 @@ typedef struct arrow_def {
     t_position start;
     t_position end;
     TBOOLEAN head;		/* arrow has a head or not */
+    struct position headsize;	/* x = length, y = angle [deg] */
     int layer;			/* 0 = back, 1 = front */
+    TBOOLEAN relative;		/* second coordinate is relative to first */
     struct lp_style_type lp_properties;
 } arrow_def;
 

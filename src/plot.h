@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.32.2.4 2000/07/26 18:52:58 broeker Exp $
+ * $Id: plot.h,v 1.32.2.5 2000/10/18 16:30:01 broeker Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -53,6 +53,7 @@ extern const char *user_shell;
 extern const char *user_gnuplotpath;
 #endif
 
+
 #ifdef GNUPLOT_HISTORY
 extern long int gnuplot_history_size;
 #endif
@@ -75,4 +76,5 @@ void take_privilege __PROTO((void));
 #ifdef OS2
 int ExecuteMacro __PROTO((char *, int));
 #endif
+
 #endif /* GNUPLOT_PLOT_H */
