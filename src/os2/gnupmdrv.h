@@ -1,6 +1,6 @@
 /* gnushell header file */
 /*
-** static char RCSid[]="$Id: gnupmdrv.h,v 1.1 1999/03/26 22:15:49 lhecking Exp $" ;
+** static char RCSid[]="$Id: gnupmdrv.h,v 1.2 1999/04/04 17:29:52 lhecking Exp $" ;
 */
 
 /* PM driver for GNUPLOT */
@@ -97,6 +97,10 @@
 #define INIPRPR      "Printer"  
 #define INIOPTS      "DefOpts"      
 #define INICHAR      "Fontdata"      
+#define INIKEEPRATIO "KeepRatio"	//PM      
+#define INIUSEMOUSE  "UseMouse"		//PM      
+#define INIMOUSECOORD "MouseCoord"	//PM      
+
 
 /*==== global data  ==========================================================*/
 
