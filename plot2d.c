@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: plot2d.c,v 1.1.1.3 1998/04/22 13:38:06 lhecking Exp $";
+static char    *RCSid = "$Id: plot2d.c,v 1.1.1.4 1998/06/23 12:38:21 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -215,7 +215,7 @@ do { if (log_array[AXIS]) { if (VALUE<0.0) {TYPE=UNDEFINED; UNDEF_ACTION; break;
 /* check axis range is not too small -
  * extend if you can (autoscale), else report error
  */
-#ifdef ANSI_C
+#ifdef HAVE_CPP_STRINGIFY
 # define STRINGIFY(x) #x 
 # define RANGE_MSG(x) #x " range is less than threshold : see `set zero`"
 # define LOG_MSG(x) #x " range must be greater than 0 for log scale!"

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.1.1.3 1998/04/22 13:38:12 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.1.1.4 1998/06/23 12:38:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -156,6 +156,10 @@ again:
 					expression[current] = quote;
 					expression[current+1] = '\0';
 					break;
+                                } else if (expression[current]=='\\'
+                                           && expression[current+1]) {
+                                        current++;
+                                        token[t_num].length+=2;
 				} else
 					token[t_num].length++;
 			}

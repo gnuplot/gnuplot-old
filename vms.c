@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: vms.c,v 1.1.1.3 1998/04/22 13:38:32 lhecking Exp $";
+static char    *RCSid = "$Id: vms.c,v 1.1.1.4 1998/06/23 12:38:41 lhecking Exp $";
 #endif
 
 /* GNUPLOT - vms.c */
@@ -39,8 +39,6 @@ static char    *RCSid = "$Id: vms.c,v 1.1.1.3 1998/04/22 13:38:32 lhecking Exp $
  */
 
 #include "stdfn.h"
-
-#include <stdfn.h>
 
 static int something_in_this_file;
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2ms.c,v 1.1.1.2 1998/04/22 13:39:06 lhecking Exp $";
+static char *RCSid = "$Id: doc2ms.c,v 1.1.1.3 1998/06/23 12:39:06 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2ms.c */
@@ -150,7 +150,9 @@ void process_line(line, b)
 		  } else {
 			 (void) fputs("\n.EQ\ndelim $$\n.EN\n",b);
 			 (void) fputs(".KS\n.TS\ncenter box tab (@) ;\n", b);
-			 (void) fputs("c c l .\n", b);
+			 /* moved to gnuplot.doc by RCC
+                         (void) fputs("c c l .\n", b);
+                         */
 			 intable = TRUE;
 		  }
 		  /* ignore rest of line */

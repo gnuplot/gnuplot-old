@@ -1,5 +1,5 @@
 /*
- * $Id: atarivdi.trm,v 1.1.1.3 1998/04/22 13:39:32 lhecking Exp $
+ * $Id: atarivdi.trm,v 1.1.1.4 1998/06/23 12:39:27 lhecking Exp $
  *
  */
 
@@ -106,7 +106,7 @@ static int VDI_linetypes[VDI_LINETYPES_MAX] = {
         0xffff, 0x5555, 0x3333, 0x7777,
         0x3f3f, 0x0f0f, 0x5f5f, 0xe4e4, 0x55f5};
 static int VDI_lt;
-static int vdi_vdi_handle=-1;
+static int vdi_vdi_handle= -1;
 static int VDI_maxycoord;
 static int VDI_rotation;
 static int VDI_numcolors;
@@ -252,7 +252,7 @@ TERM_PUBLIC void VDI_reset( )
 {
     int i;
 
-    if( vdi_vdi_handle!=-1 ) {
+    if( vdi_vdi_handle!= -1 ) {
         for( i=0 ; i<VDI_numpalette ; i++ ) {
             vs_color(vdi_vdi_handle, i, VDI_savecolors[i] );
         }
@@ -261,7 +261,7 @@ TERM_PUBLIC void VDI_reset( )
 	v_show_c(vdi_vdi_handle, 0);
 #endif
         v_clsvwk( vdi_vdi_handle );
-        vdi_vdi_handle=-1;
+        vdi_vdi_handle= -1;
     }
 }
 

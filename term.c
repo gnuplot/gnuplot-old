@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.1.1.3 1998/04/22 13:38:23 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.1.1.4 1998/06/23 12:38:33 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -299,7 +299,7 @@ void term_init()
 			 * end up with an invalid pointer. I think I would
 			 * prefer to defer opening output file until first plot.
 			 */
-			char *temp = gp_alloc(strlen(outstr+1), "temp file string");
+			char *temp = gp_alloc(strlen(outstr)+1, "temp file string");
 			if (temp) {
 				FPRINTF(("term_init : reopening \"%s\" as %s\n",
 				   outstr, term->flags & TERM_BINARY ? "binary" : "text"));

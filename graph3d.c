@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graph3d.c,v 1.1.1.3 1998/04/22 13:37:15 lhecking Exp $";
+static char *RCSid = "$Id: graph3d.c,v 1.1.1.4 1998/06/23 12:37:55 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1257,11 +1257,13 @@ static void plot3d_dots(plot)
 	struct coordinate GPHUGE *points = icrvs->points;
 
 	for (i = 0; i < icrvs->p_count; i++) {
+          if (points[i].type == INRANGE) {
 	    unsigned int x,y;
 	    map3d_xy(points[i].x, points[i].y, points[i].z, &x, &y);
 
     	    if (!clip_point(x,y))
 		(*t->point)(x,y, -1);
+	  }
     	}
 
 	icrvs = icrvs->next;

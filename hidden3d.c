@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.1.1.3 1998/04/22 13:37:20 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.1.1.4 1998/06/23 12:38:00 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -216,7 +216,7 @@ extern int hidden_line_type_above, hidden_line_type_below;
 extern double trans_mat[4][4];
 
 
-#ifdef ANSI_C
+#ifdef HAVE_CPP_STRINGIFY
 /* ANSI preprocessor concatenation */
 # define CONCAT(x,y) x##y
 # define CONCAT3(x,y,z) x##y##z

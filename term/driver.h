@@ -1,6 +1,6 @@
-/* $Id: driver.h,v 1.1.1.3 1998/04/22 13:39:40 lhecking Exp $ */
+/* $Id: driver.h,v 1.1.1.4 1998/06/23 12:39:31 lhecking Exp $ */
 
-/* GNUPLOT - driver.h  $Id: driver.h,v 1.1.1.3 1998/04/22 13:39:40 lhecking Exp $ */
+/* GNUPLOT - driver.h  $Id: driver.h,v 1.1.1.4 1998/06/23 12:39:31 lhecking Exp $ */
 
 /*[
  * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
@@ -34,9 +34,7 @@
 
 
 #ifndef TERM_DRIVER_H
-
 #define TERM_DRIVER_H
-#define GOT_TERM_DRIVER /* I started using this name for some reason */
 
 #include "plot.h"
 #include "bitmap.h"
