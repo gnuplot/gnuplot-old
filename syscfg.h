@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.11 1999/01/28 14:29:47 lhecking Exp $
+ * $Id: syscfg.h,v 1.12 1999/01/29 18:18:54 lhecking Exp $
  *
  */
 
@@ -191,7 +191,7 @@
 #endif /* MSDOS */
 
 /* Note: may not catch all IBM AIX compilers or SCO compilers */
-#if defined(__unix__)|| defined(unix) || defined(_AIX) || defined(SCO)
+#if defined(unix)|| defined(__unix) || defined(_AIX) || defined(SCO)
 # ifndef unix
 #  define unix
 # endif
