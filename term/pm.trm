@@ -1,5 +1,5 @@
 /*
- * $Id: pm.trm,v 1.7 1998/09/22 15:01:24 lhecking Exp $
+ * $Id: pm.trm,v 1.8 1998/10/01 10:48:55 lhecking Exp $
  */
 
 /* GNUPLOT - pm.trm */
@@ -364,7 +364,6 @@ TERM_PUBLIC void PM_text()
 
 TERM_PUBLIC void PM_graphics() 
     { 
-    int cbR, rc, iC[2] ;
     putc( SET_GRAPHICS, PM_pipe); 
     fflush( PM_pipe ) ; 
     PM_mode = SET_GRAPHICS ;
