@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.39 2004/05/21 00:07:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.40 2004/06/30 20:01:56 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -408,9 +408,11 @@ mant_exp(log10_base, x, scientific, m, p, format)
 
 	switch (power % 3) {
 	case 2:
-	    mantissa *= 100; break;
+	    mantissa *= 100;
+	    break;
 	case 1:
-	    mantissa *= 10; break;
+	    mantissa *= 10;
+	    break;
 	case 0:
 	    break;
 	default:
