@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: specfun.c,v 1.23 2003/10/21 19:25:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: specfun.c,v 1.24 2003/11/18 19:57:39 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - specfun.c */
@@ -58,7 +58,7 @@ static char *RCSid() { return RCSid("$Id: specfun.c,v 1.23 2003/10/21 19:25:21 s
 #endif
 
 /* AS239 value, e^-88 = 2^-127 */
-#define MINEXP  -88.0
+#define MINEXP  (-88.0)
 
 #ifdef FLT_MAX
 # define OFLOW   FLT_MAX		/* 1.0E+37 */
