@@ -1,5 +1,5 @@
 #
-# $Id: makefile.os2,v 1.17 1999/03/12 21:45:12 lhecking Exp $
+# $Id: makefile.os2,v 1.18 1999/03/23 12:28:32 lhecking Exp $
 #
 # GNUPLOT Makefile for use on OS/2 3.x and above (might also work for OS/2 2.x)
 # using emx 0.9 (and above) and GNUMake
@@ -333,7 +333,7 @@ clean:
 	IF EXIST *.$(O2)                 DEL *.$(O2)
 	cd $(OS2DIR) & IF EXIST *.$(O2)  DEL *.$(O2)
 	IF EXIST $(OS2DIR)\gnupmdrv.res  DEL $(OS2DIR)\gnupmdrv.res
-	IF EXIST demo\bf_test.exe        DEL demo\bf_test.exe
+	IF EXIST $(DEMODIR)\bf_test.exe  DEL $(DEMODIR)\bf_test.exe
 	IF EXIST doc2*.exe               DEL doc2*.exe
 	IF EXIST $(DOCDIR)\gnuplot.ipf   DEL $(DOCDIR)\gnuplot.ipf
 	IF EXIST core                    DEL core
@@ -353,4 +353,4 @@ veryclean: clean
 	IF EXIST gnuplot.ms              DEL gnuplot.ms
 	IF EXIST gnuplot.rtf             DEL gnuplot.rtf
 	IF EXIST gnuplot.ps              DEL gnuplot.ps
-	cd demo & IF EXIST binary?       DEL binary?
+	cd $(DEMODIR) & IF EXIST binary? DEL binary?
