@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.50 2000/12/12 12:27:08 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.50.2.1 2000/12/21 19:32:29 joze Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1210,6 +1210,9 @@ enum PLOT_STYLE style;
 	break;
     case CANDLESTICKS:
 	fputs("candlesticsks\n", stderr);
+	break;
+    case PM3D_SURFACE:
+	fputs("pm3d\n", stderr);
 	break;
     }
 }
