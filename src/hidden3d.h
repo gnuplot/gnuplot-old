@@ -1,6 +1,5 @@
 /*
- * $Id: hidden3d.h,v 1.2 1999/11/08 19:24:15 lhecking Exp $
- *
+ * $Id: hidden3d.h,v 1.3 2000/05/02 18:01:03 lhecking Exp $
  */
 
 /* GNUPLOT - hidden3d.h */

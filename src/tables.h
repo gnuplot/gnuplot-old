@@ -1,4 +1,6 @@
-/* $Id: tables.h,v 1.13 2000/02/11 19:14:34 lhecking Exp $ */
+/*
+ * $Id: tables.h,v 1.14 2000/05/02 18:01:03 lhecking Exp $
+ */
 
 /* GNUPLOT - tables.h */
 

@@ -1,4 +1,6 @@
-/* $Id: national.h,v 1.2 1999/06/09 12:07:19 lhecking Exp $ */
+/*
+ * $Id: national.h,v 1.3 2000/05/02 18:01:03 lhecking Exp $
+ */
 
 /* GNUPLOT - national.h */
 

@@ -1,4 +1,6 @@
-/* $Id: binary.h,v 1.4 1999/11/08 19:24:14 lhecking Exp $ */
+/*
+ * $Id: binary.h,v 1.5 2000/05/02 18:01:03 lhecking Exp $
+ */
 
 /* GNUPLOT - binary.h */
 

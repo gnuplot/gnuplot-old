@@ -1,3 +1,7 @@
+/*
+ * $Id: mouse.h,v 1.3 2000/05/02 18:01:03 lhecking Exp $
+ */
+
 /* GNUPLOT - mouse.h */
 
 /*[
