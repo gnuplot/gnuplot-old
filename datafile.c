@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: datafile.c,v 1.4 1998/07/08 20:47:36 lhecking Exp $";
+static char    *RCSid = "$Id: datafile.c,v 1.5 1998/08/24 16:41:18 lhecking Exp $";
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -333,7 +333,7 @@ char *s;
 			    df_no_use_specs > 1 && (use_spec[1].column == dfncp1 ||
 			    df_no_use_specs > 2 && (use_spec[2].column == dfncp1 ||
 			    df_no_use_specs > 3 && (use_spec[3].column == dfncp1 ||
-			    df_no_use_specs > 5 && (use_spec[5].column == dfncp1 ||
+			    df_no_use_specs > 4 && (use_spec[4].column == dfncp1 ||
 			    df_no_use_specs > 5))))) ||
 			    df_no_use_specs == 0) {
 			
