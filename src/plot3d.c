@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.24 2001/02/15 17:02:56 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.25 2001/03/19 14:52:23 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1497,6 +1497,11 @@ eval_3dplots()
     setup_tics(FIRST_X_AXIS, 20);
     setup_tics(FIRST_Y_AXIS, 20);
     setup_tics(FIRST_Z_AXIS, 20);
+
+#ifdef PM3D
+    /* Note: the above setup for COLOR_AXIS is made in graph3d.c:do_3dplot().
+     */
+#endif
 
     AXIS_WRITEBACK(FIRST_X_AXIS);
 
