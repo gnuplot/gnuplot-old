@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: dialogs.c,v 1.6 2004/07/01 17:10:09 broeker Exp $" ;
+static char RCSid[]="$Id: dialogs.c,v 1.7 2005/01/04 13:01:34 mikulik Exp $" ;
 #endif
 
 /****************************************************************************
@@ -407,10 +407,9 @@ void WinSetDlgItemFloatF( HWND hwnd, USHORT usID, int nDec, float flValue )
 /*
 */
     {
-    char achBuffer [ 34 ], *szCvt ; // default string field size ...
-    int  iDec ;
-    int  iSign ;
+    char achBuffer [ 34 ]; // default string field size ...
     char fmt[32] ;
+
     sprintf( fmt, "%%12.%df", nDec ) ;
     sprintf( achBuffer, fmt, flValue ) ;
     WinSetDlgItemText( hwnd, usID, achBuffer ) ;
@@ -422,6 +421,7 @@ void WinSetDlgItemFloat( HWND hwnd, USHORT usID, float flValue )
     {
     char achBuffer [ 34 ] ; // default string field size ...
     char fmt[10] ;
+
     sprintf( fmt, "%%12.%df", 4 ) ;
     sprintf( achBuffer, fmt, flValue ) ;
     WinSetDlgItemText( hwnd, usID, achBuffer ) ;
@@ -433,7 +433,6 @@ void WinQueryDlgItemFloat( HWND hwnd, USHORT usID, float *pflValue )
 */
     {
     char achBuffer [ 34 ] ; // default string field size ...
-    ULONG ulTemp ;
 
     WinQueryDlgItemText( hwnd, usID, 34, achBuffer ) ;
     *pflValue = (float) atof( achBuffer ) ;
