@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: datafile.c,v 1.12 1999/02/17 17:54:42 lhecking Exp $";
+static char *RCSid = "$Id: datafile.c,v 1.13 1999/02/25 15:44:03 lhecking Exp $";
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -689,6 +689,32 @@ int max_using;
 
     /*}}} */
 
+/*{{{ tilde-expand filename */
+    /* This should be a function
+     * TODO: rewrite as a function and
+     * do it at a lower level,
+     * eliminate duplicate code elsewhere,
+     * see if we can use GNU readline for this
+     * if we compile with readline. */
+    if (filename[0] == '~' && filename[1] == DIRSEP1) {
+	char *tmp_home = getenv(HOME);
+	if (tmp_home) {
+	    /* Do we have enough space for the expansion? */
+	    if (strlen(filename) + strlen(tmp_home) < sizeof(filename)) {
+		memmove (filename + strlen(tmp_home) - 1, filename, strlen(filename));
+		strncpy (filename, tmp_home, strlen(tmp_home));
+	    }
+	    else {
+		/* Urgh - find better solution */
+		fprintf(stderr,"(%s:%d) Not enough space to expand $HOME\n",__FILE__,__LINE__);
+	    }
+	}
+	else {
+	    /* HOME env var not set - cannot expand */
+	    fprintf(stderr,"(%s:%d) $HOME not set - cannot expand tilde\n",__FILE__,__LINE__);
+	}
+    }
+    /*}}} */
 
 /*{{{  open file */
 #if defined(PIPES)
