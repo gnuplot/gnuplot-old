@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.83 2004/07/30 16:09:56 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.84 2004/08/14 03:12:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -914,6 +914,8 @@ save_tics(FILE *fp, AXIS_INDEX axis)
 		if (t->label)
 		    fprintf(fp, "\"%s\" ", conv_text(t->label));
 		SAVE_NUM_OR_TIME(fp, (double) t->position, axis);
+		if (t->level)
+		    fprintf(fp, " %d", t->level);
 		if (t->next) {
 		    fputs(", ", fp);
 		}

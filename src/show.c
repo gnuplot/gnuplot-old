@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.134 2004/08/02 18:36:42 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.135 2004/08/14 03:12:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2915,6 +2915,8 @@ show_ticdef(AXIS_INDEX axis)
 		if (t->label)
 		    fprintf(stderr, "\"%s\" ", conv_text(t->label));
 		SHOW_NUM_OR_TIME(t->position, axis);
+		if (t->level)
+		    fprintf(stderr," %d",t->level);
 		if (t->next)
 		    fputs(", ", stderr);
 	    }
