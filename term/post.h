@@ -1,11 +1,11 @@
 /*
- * $Id: post.h,v 1.3 1999/11/04 12:30:01 lhecking Exp $
+ * $Id: post.h,v 1.4 2004/04/13 17:24:36 broeker Exp $
  */
 
 /* GNUPLOT - post.h */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

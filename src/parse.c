@@ -1,11 +1,11 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.21 2003/11/22 04:49:51 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.22 2004/04/13 17:23:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

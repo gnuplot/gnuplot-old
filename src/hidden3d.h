@@ -1,11 +1,11 @@
 /*
- * $Id: hidden3d.h,v 1.6 2000/11/02 17:52:16 broeker Exp $
+ * $Id: hidden3d.h,v 1.7 2004/04/13 17:23:58 broeker Exp $
  */
 
 /* GNUPLOT - hidden3d.h */
 
 /*[
- * Copyright 1999   Thomas Williams, Colin Kelley
+ * Copyright 1999, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

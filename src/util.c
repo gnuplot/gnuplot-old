@@ -1,11 +1,11 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.37 2002/10/11 16:26:49 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.38 2004/04/13 17:24:02 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

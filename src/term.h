@@ -1,11 +1,11 @@
 /*
- * $Id: term.h,v 1.23 2004/03/29 10:30:18 persquare Exp $
+ * $Id: term.h,v 1.24 2004/04/13 17:24:02 broeker Exp $
  */
 
 /* GNUPLOT - term.h */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

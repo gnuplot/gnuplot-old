@@ -1,11 +1,11 @@
 /*
- * $Id: stdfn.h,v 1.25 2004/01/07 14:45:22 lhecking Exp $
+ * $Id: stdfn.h,v 1.26 2004/04/13 17:24:01 broeker Exp $
  */
 
 /* GNUPLOT - stdfn.h */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

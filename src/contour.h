@@ -1,11 +1,11 @@
 /*
- * $Id: contour.h,v 1.6 2000/11/02 19:11:07 lhecking Exp $
+ * $Id: contour.h,v 1.7 2004/04/13 17:23:52 broeker Exp $
  */
 
 /* GNUPLOT - contour.h */
 
 /*[
- * Copyright 1999   Thomas Williams, Colin Kelley
+ * Copyright 1999, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

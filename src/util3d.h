@@ -1,11 +1,11 @@
 /*
- * $Id: util3d.h,v 1.7 2003/12/19 01:31:04 broeker Exp $
+ * $Id: util3d.h,v 1.8 2004/04/13 17:24:03 broeker Exp $
  */
 
 /* GNUPLOT - util3d.h */
 
 /*[
- * Copyright 1986 - 1993, 1998, 1999   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 1999, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

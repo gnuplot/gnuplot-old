@@ -1,10 +1,10 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wprinter.c,v 1.2 2002/03/10 18:54:52 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wprinter.c,v 1.3 2004/04/13 17:24:14 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - win/wprinter.c */
 /*[
- * Copyright 1992, 1993, 1998   Maurice Castro, Russell Lang
+ * Copyright 1992, 1993, 1998, 2004   Maurice Castro, Russell Lang
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,
@@ -38,13 +38,6 @@ static char *RCSid() { return RCSid("$Id: wprinter.c,v 1.2 2002/03/10 18:54:52 m
  * 
  *   Maurice Castro
  *   Russell Lang
- * 
- * Send your comments or suggestions to 
- *  info-gnuplot@dartmouth.edu.
- * This is a mailing list; to join it send a note to 
- *  majordomo@dartmouth.edu.  
- * Send bug reports to
- *  bug-gnuplot@dartmouth.edu.
  */
 
 /* Dump a file to the printer */

@@ -1,11 +1,11 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: internal.c,v 1.17 2003/07/22 17:22:47 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: internal.c,v 1.18 2004/04/13 17:23:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - internal.c */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

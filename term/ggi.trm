@@ -1,11 +1,11 @@
 /*
- * $Id: ggi.trm,v 1.17 2004/01/07 19:11:30 lhecking Exp $
+ * $Id: ggi.trm,v 1.18 2004/04/13 17:24:32 broeker Exp $
  */
 
 /* GNUPLOT - ggi.trm */
 
 /*[
- * Copyright 2000
+ * Copyright 2000, 2004
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

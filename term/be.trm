@@ -1,10 +1,10 @@
 /*
- * $Id: be.trm,v 1.12 2003/02/18 16:38:12 broeker Exp $
+ * $Id: be.trm,v 1.13 2004/04/13 17:24:15 broeker Exp $
  *
  */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

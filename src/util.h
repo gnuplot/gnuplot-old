@@ -1,11 +1,11 @@
 /*
- * $Id: util.h,v 1.14 2002/09/02 21:03:27 mikulik Exp $
+ * $Id: util.h,v 1.15 2004/04/13 17:24:02 broeker Exp $
  */
 
 /* GNUPLOT - util.h */
 
 /*[
- * Copyright 1986 - 1993, 1998, 1999   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

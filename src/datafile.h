@@ -1,11 +1,11 @@
 /*
- * $Id: datafile.h,v 1.10 2003/04/29 07:04:29 mikulik Exp $
+ * $Id: datafile.h,v 1.11 2004/04/13 17:23:53 broeker Exp $
  */
 
 /* GNUPLOT - datafile.h */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

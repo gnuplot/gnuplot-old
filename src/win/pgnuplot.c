@@ -1,6 +1,7 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pgnuplot.c,v 1.10 2004/02/12 09:08:40 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: pgnuplot.c,v 1.11 2004/04/13 17:24:06 broeker Exp $"); }
 #endif
+
 /*
  * pgnuplot.c -- pipe stdin to wgnuplot
  * 

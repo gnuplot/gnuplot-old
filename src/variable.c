@@ -1,11 +1,11 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: variable.c,v 1.19 2003/11/25 12:55:07 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: variable.c,v 1.20 2004/04/13 17:24:03 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - variable.c */
 
 /*[
- * Copyright 1999   Lars Hecking
+ * Copyright 1999, 2004   Lars Hecking
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

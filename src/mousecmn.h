@@ -1,11 +1,11 @@
 /*
- * $Id: mousecmn.h,v 1.7 2003/06/20 04:54:36 sfeam Exp $
+ * $Id: mousecmn.h,v 1.8 2004/04/13 17:23:58 broeker Exp $
  */
 
 /* GNUPLOT - mousecnm.h */
 
 /*[
- * Copyright 1999
+ * Copyright 1999, 2004
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted

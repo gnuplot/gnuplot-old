@@ -1,11 +1,11 @@
 /*
- * $Id: misc.h,v 1.15 2003/06/30 18:51:14 sfeam Exp $
+ * $Id: misc.h,v 1.16 2004/04/13 17:23:58 broeker Exp $
  */
 
 /* GNUPLOT - misc.h */
 
 /*[
- * Copyright 1999   Thomas Williams, Colin Kelley
+ * Copyright 1999, 2004   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,

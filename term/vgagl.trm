@@ -1,12 +1,12 @@
 /*
- * $Id: vgagl.trm,v 1.9 2004/02/23 13:27:13 broeker Exp $
+ * $Id: vgagl.trm,v 1.10 2004/04/13 17:24:39 broeker Exp $
  */
 
 #if defined(USE_MOUSE) && defined(PM3D)
 /* GNUPLOT - vgagl.trm */
 
 /*[
- * Copyright 1993, 1998
+ * Copyright 1993, 1998, 2004
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,
