@@ -1,5 +1,5 @@
 /*
- * $Id: internal.h,v 1.8 2004/04/13 17:23:58 broeker Exp $
+ * $Id: internal.h,v 1.9 2004/10/26 04:30:51 sfeam Exp $
  */
 
 /* GNUPLOT - internal.h */
@@ -77,5 +77,13 @@ void f_div __PROTO((union argument *x));
 void f_mod __PROTO((union argument *x));
 void f_power __PROTO((union argument *x));
 void f_factorial __PROTO((union argument *x));
+
+#ifdef GP_STRING_VARS
+void f_concatenate __PROTO((union argument *x));
+void f_eqs __PROTO((union argument *x));
+void f_nes __PROTO((union argument *x));
+void f_sprintf __PROTO((union argument *x));
+void f_gprintf __PROTO((union argument *x));
+#endif
 
 #endif /* GNUPLOT_INTERNAL_H */
