@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.4 2001/01/03 20:42:58 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.5 2001/01/05 00:56:03 joze Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -55,7 +55,8 @@ pm3d_struct pm3d = {
 
 
 /* global variables */
-double used_pm3d_zmin, used_pm3d_zmax;
+double used_pm3d_zmin, used_pm3d_zmax; /* used in color.c */
+double pm3d_gray_zmin, pm3d_gray_zmax; /* -*- dito -*- */
 
 /****************************************************************/
 /* Now the routines which are really those exactly for pm3d.c
@@ -71,61 +72,70 @@ set_pm3d_zminmax(struct surface_points* plots, int pcount)
 #ifdef PM3D_COLUMN
     struct surface_points *this_plot = NULL;
     int surface;
-    int minmax_is_set = 0;
+    int color_from_column = 0;
+#endif
+
+
+    /* PRESET GRAY and Z LIMITS */
+
+    pm3d_gray_zmin = used_pm3d_zmin = axis_array[FIRST_Z_AXIS].min;
+    pm3d_gray_zmax = used_pm3d_zmax = axis_array[FIRST_Z_AXIS].max;
+
+
+    /* EVENTUALLY SET THE GRAY LIMITS FROM DIFFERNT COLUMN */
+
     /* loop over all plots and get the maximum and minimum
      * color value (if colors are specified via columns.
-     * Has only to be done, if at least one of the limits
-     * is autoscaled. */
-    if (!pm3d.pm3d_zmin || !pm3d.pm3d_zmax) {
-	for (this_plot = plots, surface = 0; surface < pcount;
-	    this_plot = this_plot->next_sp, surface++) {
-	    if (this_plot->pm3d_color_from_column) {
-		if (!minmax_is_set) {
-		    minmax_is_set = 1;
-		    used_pm3d_zmin = this_plot->color_min;
-		    used_pm3d_zmax = this_plot->color_max;
-		} else {
-		    if (this_plot->color_min < used_pm3d_zmin)
-			used_pm3d_zmin = this_plot->color_min;
-		    if (this_plot->color_max > used_pm3d_zmax)
-			used_pm3d_zmax = this_plot->color_max;
-		}
+     * Has always to be done to check if at least one plot
+     * is 'color_from_column'. */
+#ifdef PM3D_COLUMN
+    for (this_plot = plots, surface = 0; surface < pcount;
+	this_plot = this_plot->next_sp, surface++) {
+	if (this_plot->pm3d_color_from_column) {
+	    if (!color_from_column) {
+		color_from_column = 1;
+		if (!pm3d.pm3d_zmin)
+		    pm3d_gray_zmin = this_plot->color_min;
+		if (!pm3d.pm3d_zmax)
+		    pm3d_gray_zmax = this_plot->color_max;
+	    } else {
+		if (!pm3d.pm3d_zmin && this_plot->color_min < pm3d_gray_zmin)
+		    pm3d_gray_zmin = this_plot->color_min;
+		if (!pm3d.pm3d_zmax && this_plot->color_max > pm3d_gray_zmax)
+		    pm3d_gray_zmax = this_plot->color_max;
 	    }
 	}
     }
-    /* eventually overwrite the limits which were just set
-     * with the user supplied 'pm3d zrange [zmin:zmax] */
-    if (pm3d.pm3d_zmin)
-	used_pm3d_zmin = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmin, "pm3d z-min");
-    if (pm3d.pm3d_zmax)
-	used_pm3d_zmax = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmax, "pm3d z-max");
-    if (!minmax_is_set) {
 #endif
-	if (!pm3d.pm3d_zmin)
-	    used_pm3d_zmin = axis_array[FIRST_Z_AXIS].min;
-	else {
-	    /* FIXME 20001031 from merge: this will call graph_error() on
-	     * negative z, instead of just returning 0! */
-	    used_pm3d_zmin = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmin, "pm3d z-min");
+
+    if (pm3d.pm3d_zmin) {
+	/* FIXME 20001031 from merge: this will call graph_error() on
+	 * negative z, instead of just returning 0! */
+	pm3d_gray_zmin = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmin, "pm3d z-min");
+	if (!color_from_column) {
+	    used_pm3d_zmin = pm3d_gray_zmin;
 	}
-	if (!pm3d.pm3d_zmax)
-	    used_pm3d_zmax = axis_array[FIRST_Z_AXIS].max;
-	else {
-	    /* FIXME 20001031: see above */
-	    used_pm3d_zmax = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmax, "pm3d z-max");
-	}
-#ifdef PM3D_COLUMN
     }
-#endif
+
+    if (pm3d.pm3d_zmax) {
+	/* FIXME 20001031: see above */
+	pm3d_gray_zmax = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmax, "pm3d z-max");
+	if (!color_from_column) {
+	    used_pm3d_zmax = pm3d_gray_zmax;
+	}
+    }
+
     if (used_pm3d_zmin == used_pm3d_zmax) {
 	fprintf(stderr, "pm3d: colouring requires not equal zmin and zmax\n");
 	return 0;
     }
+
     if (used_pm3d_zmin > used_pm3d_zmax) {	/* exchange min and max values */
-	double tmp = used_pm3d_zmax;
-	used_pm3d_zmax = used_pm3d_zmin;
+	double tmp = pm3d_gray_zmax;
+	pm3d_gray_zmax = used_pm3d_zmin;
 	used_pm3d_zmin = tmp;
     }
+
     return 1;
 }
 
@@ -136,11 +146,11 @@ set_pm3d_zminmax(struct surface_points* plots, int pcount)
 double
 z2gray(double z)
 {
-    if (z <= used_pm3d_zmin)
+    if (z <= pm3d_gray_zmin)
 	return 0;
-    if (z >= used_pm3d_zmax)
+    if (z >= pm3d_gray_zmax)
 	return 1;
-    z = (z - used_pm3d_zmin) / (used_pm3d_zmax - used_pm3d_zmin);
+    z = (z - pm3d_gray_zmin) / (pm3d_gray_zmax - pm3d_gray_zmin);
     return z;
 }
 
@@ -474,7 +484,7 @@ pm3d_plot(struct surface_points *this_plot, char at_which_z)
 
 contours_where: equals either CONTOUR_SRF or CONTOUR_BASE
 
-Note: z2gray() uses used_pm3d_zmin, used_pm3d_zmax
+Note: z2gray() uses pm3d_gray_zmin, pm3d_gray_zmax
 Check that if accessing this routine otherwise then via `set pm3d at`
 code block in graph3d.c
  */

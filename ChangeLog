@@ -1,3 +1,9 @@
+2001-01-04  Johannes Zellner  <johannes@zellner.org>
+
+	* src/pm3d.c, src/pm3d.h, src/color.c:  corrected
+	a bug for drawing the pm3d colorbox correctly if
+	using 'set pm3d zrange'.
+
 2001-01-03  Johannes Zellner  <johannes@zellner.org>
 
 	* src/pm3d.c:  repaired 'pm3d zrange' for the column patch

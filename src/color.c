@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.12 2000/12/06 12:38:54 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.12.2.1 2001/01/05 00:56:03 joze Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -432,6 +432,12 @@ draw_color_smooth_box()
 	double dz = (used_pm3d_zmax - used_pm3d_zmin);
 	map3d_xy(X_AXIS.max + dx * 0.05, Y_AXIS.max, base_z + dz * 0.35, &x_from, &y_from);
 	map3d_xy(X_AXIS.max + dx * 0.20, Y_AXIS.max, ceiling_z - dz * 0.0, &x_to, &y_to);
+#if 0
+	fprintf(stderr, "floats = %f, %f, %f\n", X_AXIS.max + dx * 0.05, Y_AXIS.max, base_z + dz * 0.35);
+	fprintf(stderr, "floats = %f, %f, %f\n", X_AXIS.max + dx * 0.20, Y_AXIS.max, ceiling_z - dz * 0.0);
+	fprintf(stderr, "(draw_color_smooth_box) x_from, y_from = %d, %d\n", x_from, y_from);
+	fprintf(stderr, "(draw_color_smooth_box) x_to  , y_to   = %d, %d\n", x_to, y_to);
+#endif
 	if (y_from == y_to || x_from == x_to) {	/* map, i.e. plot with "set view 0,0 or 180,0" */
 	    dz = Y_AXIS.max - Y_AXIS.min;
 	    map3d_xy(X_AXIS.max + dx * 0.04, Y_AXIS.min + dz * 0.25, base_z, &x_from, &y_from);
@@ -483,7 +489,7 @@ draw_color_smooth_box()
        colour box, respectively
      */
 
-    tmp = AXIS_DE_LOG_VALUE(FIRST_Z_AXIS, used_pm3d_zmin);
+    tmp = AXIS_DE_LOG_VALUE(FIRST_Z_AXIS, pm3d_gray_zmin);
 #if 0
     sprintf(s, "%g", tmp);
 #else /* format the label using `set format z` */
@@ -508,7 +514,7 @@ draw_color_smooth_box()
 	}
     }
 
-    tmp = AXIS_DE_LOG_VALUE(FIRST_Z_AXIS, used_pm3d_zmax);
+    tmp = AXIS_DE_LOG_VALUE(FIRST_Z_AXIS, pm3d_gray_zmax);
 #if 0
     sprintf(s, "%g", tmp);
 #else

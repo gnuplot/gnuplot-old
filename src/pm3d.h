@@ -1,5 +1,5 @@
 /*
- * $Id: pm3d.h,v 1.6.2.2 2000/12/21 16:06:24 joze Exp $
+ * $Id: pm3d.h,v 1.6.2.3 2001/01/05 00:56:03 joze Exp $
  */
 
 /* GNUPLOT - pm3d.h */
@@ -102,6 +102,7 @@ extern pm3d_struct pm3d;
 The following two are used in z2gray(), and for labeling draw_color_smooth_box()
 */
 extern double used_pm3d_zmin, used_pm3d_zmax;
+extern double pm3d_gray_zmin, pm3d_gray_zmax;
 
 /****
   Declaration of routines
