@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.25 2002/01/17 21:07:58 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.26 2002/01/22 15:52:25 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -792,6 +792,7 @@ reset_key(void)
     key_swidth = 4;
     key_vert_factor = 1;
     key_width_fix = 0;
+    key_height_fix = 0;
 }
 
 /* process 'unset key' command */
