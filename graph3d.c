@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graph3d.c,v 1.14 1999/02/04 20:19:16 lhecking Exp $";
+static char *RCSid = "$Id: graph3d.c,v 1.15 1999/02/25 15:33:17 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -443,7 +443,7 @@ int count;
     /* HBB 980308: sigh... another 16bit glitch: on term's with more than
      * 8000 pixels in either direction, these calculations produce garbage
      * results if done in (16bit) ints */
-    xscaler = (xright - xleft) * 4 / 7;		/* HBB: Magic number alert! */
+    xscaler = ((xright - xleft) * 4L) / 7L;              /* HBB: Magic number alert! */
     yscaler = ((ytop - ybot) * 4L) / 7L;
 
 }
