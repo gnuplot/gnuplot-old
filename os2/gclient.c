@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.5 1998/09/22 15:00:19 lhecking Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.6 1998/12/06 21:55:32 lhecking Exp $" ;
 #endif
 
 /****************************************************************************
@@ -177,7 +177,7 @@ static int lSubOffset = 0 ;
 static int lBaseSupOffset = 0 ;
 static int lBaseSubOffset = 0 ;
 static int lCharWidth = 217 ;
-static int lCharHeight = 558 ; 
+static int lCharHeight = 465 ; 
 
 
 /*==== f u n c t i o n s =====================================================*/
@@ -779,7 +779,7 @@ BOOL QueryIni( HAB hab )
         }
     else {
         lCharWidth = 217 ;
-        lCharHeight = 558 ;
+        lCharHeight = 465 ;
         }
     PrfCloseProfile( hini ) ;
 
