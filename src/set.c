@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.129 2004/04/13 17:24:00 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.130 2004/05/04 02:43:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1922,7 +1922,7 @@ set_datafile_commentschars()
     c_token++;
     free(df_commentschars);
     if (END_OF_COMMAND) {
-	df_commentschars = strdup(DEFAULT_COMMENTS_CHARS);
+	df_commentschars = gp_strdup(DEFAULT_COMMENTS_CHARS);
 	return;
     }
     if (!isstring(c_token))
