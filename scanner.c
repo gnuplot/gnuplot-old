@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.10.2.3 2002/03/11 16:10:09 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.10.2.4 2003/06/23 10:45:18 broeker Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -104,8 +104,8 @@ static int t_num;		/* number of token I'm working on */
  */
 int
 scanner(expressionp, expressionlenp)
-char **expressionp;
-int *expressionlenp;
+    char **expressionp;
+    int *expressionlenp;
 {
     register int current;	/* index of current char in expression[] */
     char *expression = *expressionp;
@@ -142,7 +142,8 @@ int *expressionlenp;
 #ifdef __PUREC__
 	    {
 		char l[80];
-		if ((sscanf(&expression[++current], "%lf,%lf%[ }]s",
+
+		if ((sscanf(&expression[++current], "%lf,%lf%79[ }]s",
 			    &token[t_num].l_val.v.cmplx_val.real,
 			    &token[t_num].l_val.v.cmplx_val.imag,
 			    &l) != 3) || (!strchr(l, RBRACE)))

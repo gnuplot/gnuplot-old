@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.16.2.5 2000/10/19 20:39:24 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.16.2.6 2003/06/23 10:45:18 broeker Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -1250,8 +1250,8 @@ static XrmOptionDescRec options[] = {
 
 void
 preset(argc, argv)
-int argc;
-char *argv[];
+    int argc;
+    char *argv[];
 {
     int Argc = argc;
     char **Argv = argv;
@@ -1340,7 +1340,14 @@ gnuplot: X11 aborted.\n", ldisplay);
     {
 	char *appdefdir = "XFree86/lib/X11/app-defaults";
 	char *xroot = getenv("X11ROOT");
-	sprintf(buffer, "%s/%s/%s", xroot, appdefdir, "Gnuplot");
+
+	if ((strlen(appdefdir)+ 1 + strlen(xroot) + sizeof("/Gnuplot"))
+	    < sizeof(buffer))
+	    sprintf(buffer, "%s/%s%s", xroot, appdefdir, "/Gnuplot");
+	else {
+	    fputs("Buffer too small in function preset()\n", stderr);
+	    EXIT(1);
+	}
     }
 # else /* !OS/2 */
     strcpy(buffer, AppDefDir);
@@ -1359,8 +1366,12 @@ gnuplot: X11 aborted.\n", ldisplay);
 #ifdef VMS
 	strcpy(buffer, "DECW$USER_DEFAULTS:DECW$XDEFAULTS.DAT");
 #else
-	strcpy(buffer, home);
-	strcat(buffer, "/.Xdefaults");
+	if ((strlen(home) + sizeof("/.Xdefaults")) < sizeof(buffer)) {
+	    sprintf(buffer, "%s%s", home, "/.Xdefaults");
+        } else {
+	    fputs("Buffer too small in function preset()\n", stderr);
+	    EXIT(1);
+	}
 #endif
 	dbDef = XrmGetFileDatabase(buffer);
     }
@@ -1380,9 +1391,14 @@ gnuplot: X11 aborted.\n", ldisplay);
 	}
 	if ((p = strchr(host, '.')) != NULL)
 	    *p = '\0';
-	strcpy(buffer, home);
-	strcat(buffer, "/.Xdefaults-");
-	strcat(buffer, host);
+	
+	if ((strlen(home) + sizeof("/.Xdefaults") + strlen(host))
+	    < sizeof(buffer)) {
+	    sprintf(buffer, "%s%s%s", home, "/.Xdefaults-", host);
+        } else {
+	    fputs("Buffer too small in function preset()\n", stderr);
+	    EXIT(1);
+	}
 	dbEnv = XrmGetFileDatabase(buffer);
     }
     XrmMergeDatabases(dbEnv, &db);
@@ -1410,18 +1426,27 @@ gnuplot: X11 aborted.\n", ldisplay);
 
 char *
 pr_GetR(xrdb, resource)
-XrmDatabase xrdb;
-char *resource;
+    XrmDatabase xrdb;
+    char *resource;
 {
     char name[128], class[128], *rc;
 
-    strcpy(name, Name);
-    strcat(name, resource);
-    strcpy(class, Class);
-    strcat(class, resource);
+    if ((strlen(Name) + strlen(resource) + 1) < sizeof(name)) {
+	sprintf(name, "%s%s", Name, resource);
+    } else {
+	fputs("Buffer too small in function pr_GetR()\n", stderr);
+	EXIT(1);
+    }
+    if ((strlen(Class) + strlen(resource) + 1) < sizeof(class)) {
+	sprintf(class, "%s%s", Class, resource);
+    } else {
+	fputs("Buffer too small in function pr_GetR()\n", stderr);
+	EXIT(1);
+    }
+
     rc = XrmGetResource(xrdb, name, class, type, &value)
-    ? (char *) value.addr
-    : (char *) 0;
+	? (char *) value.addr
+	: (char *) 0;
     return (rc);
 }
 

@@ -1,3 +1,20 @@
+2003-06-23  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* gplt_x11.c (pr_GetR): Buffer overrun fixes.
+	(preset): Buffer overrun fixes.
+
+	* scanner.c (scanner): Dito.
+
+	* term/linux.trm (LINUX_setup): Buffer overrun fix.
+
+	* fit.c (fit_interrupt): Buffer overrun fix.
+
+	* docs/doc2ipf.c (process_line): Format vulnerability fixed.
+
+	* docs/doc2html.c (process_line): Buffer overrun and format
+ 	vulnerability fixes.
+	
+
 2003-02-21  Slaven Rezic <slaven@rezic.de>
 	
 	* term/tkcanvas.trm (TK_graphics): Give perltk subroutine a name.

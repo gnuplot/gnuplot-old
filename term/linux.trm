@@ -1,5 +1,5 @@
 /*
- * $Id: linux.trm,v 1.8.2.3 2002/10/25 11:34:06 lhecking Exp $
+ * $Id: linux.trm,v 1.8.2.4 2003/06/23 10:45:18 broeker Exp $
  *
  */
 
@@ -127,20 +127,19 @@ LINUX_setup(void)
 	fgets(line, 256, pipe);
 	pclose(pipe);
 	line[strlen(line) - 1] = '\0';
-	if (
-	    strcmp(line, "/dev/console") == 0 ||
-	    
-	    ( ( strncmp(line, "/dev/tty", 8) == 0 || strncmp(line, "/dev/vc/", 8) == 0 )
-	     && isdigit((unsigned char) line[8]))
-	     
-	     ) {
+	if (strcmp(line, "/dev/console") == 0 
+	    || ((strncmp(line, "/dev/tty", 8) == 0
+		 || strncmp(line, "/dev/vc/", 8) == 0)
+		&& isdigit((unsigned char) line[8]))) {
 	    LINUX_graphics_allowed = TRUE;
 	} else {
 	    /* check for socket name as set for example by `screen' */
 	    char* sty = getenv("STY");
+
 	    if (sty) {
 		int n1, n2;
-		if (3 == sscanf(sty, "%d.tty%d.%s", &n1, &n2, line)) {
+
+		if (3 == sscanf(sty, "%d.tty%d.%c", &n1, &n2, line)) {
 		    /* we could check here, if host is the
 		     * same as gethostname() returns. */
 		    LINUX_graphics_allowed = TRUE;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.23.2.6 2002/11/04 14:50:04 broeker Exp $";
+static char *RCSid = "$Id: fit.c,v 1.23.2.7 2003/06/23 10:45:18 broeker Exp $";
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -599,14 +599,17 @@ static TBOOLEAN fit_interrupt()
 		struct value v;
 		char *tmp;
 
-		tmp = (fit_script != 0 && *fit_script) ? fit_script : DEFAULT_CMD;
+		tmp = (fit_script != 0 && *fit_script)
+		       ? fit_script : DEFAULT_CMD;
 		fprintf(STANDARD, "executing: %s", tmp);
 		/* set parameters visible to gnuplot */
 		for (i = 0; i < num_params; i++) {
 		    (void) Gcomplex(&v, a[i], 0.0);
 		    setvar(par_name[i], v);
 		}
-		sprintf(input_line, tmp);
+		strncpy(input_line, tmp, sizeof(input_line));
+		input_line[sizeof(input_line) - 1] = '\0';
+		
 		(void) do_line();
 	    }
 	}
@@ -1381,11 +1384,18 @@ void do_fit()
 
     tmp = getenv(GNUFITLOG);	/* open logfile */
     if (tmp != NULL) {
-	char *tmp2 = &tmp[strlen(tmp) - 1];
-	if (*tmp2 == '/' || *tmp2 == '\\')
-	    sprintf(logfile, "%s%s", tmp, logfile);
-	else
-	    strcpy(logfile, tmp);
+	size_t tmplen = strlen(tmp);
+	char tmp2 = tmp[tmplen - 1];
+
+	/* HBB 20030522: avoid need for strncpy, but still work
+	 * safely */
+	if ((tmp2 == '/' || tmp2 == '\\')
+	    && (tmplen + strlen(logfile) + 1) < sizeof(logfile)) {
+	    /* Make way for the path to prepend before "fit.log": */
+	    memmove(logfile + tmplen, logfile, strlen(logfile) + 1);
+	} else
+	    logfile[tmplen] = '\0';
+	memcpy(logfile, tmp, strlen(tmp));
     }
     if (!log_f && /* div */ !(log_f = fopen(logfile, "a")))
 	Eex2("could not open log-file %s", logfile);
