@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.8 1999/03/11 13:01:30 lhecking Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.9 1999/03/17 17:48:34 lhecking Exp $" ;
 #endif
 
 /****************************************************************************
@@ -444,9 +444,10 @@ MRESULT WmClientCmdProc(HWND hWnd, ULONG message, MPARAM mp1, MPARAM mp2)
             {
 	    /* should be bigger or dynamic */
             char path[256] ;
+	    char *p;
             strcpy( path, "start view " ) ;
-            if( user_homedir != NULL ) {
-                strcat( path, user_homedir ) ;
+	    if( (p=getenv("GNUPLOT")) != NULL ) {
+		strcat( path, p ) ;
                 strcat( path, "/" ) ;
                 }    
             strcat( path, "gnuplot" ) ;

@@ -1,6 +1,6 @@
 /* gnushell header file */
 /*
-** static char RCSid[]="$Id: gnupmdrv.h,v 1.2 1999/03/11 13:01:40 lhecking Exp $" ;
+** static char RCSid[]="$Id: gnupmdrv.h,v 1.3 1999/03/17 17:48:46 lhecking Exp $" ;
 */
 
 /* PM driver for GNUPLOT */
@@ -156,7 +156,4 @@ void WinSetDlgItemFloat( HWND, USHORT, float ) ;
 void WinSetDlgItemFloatF( HWND, USHORT, int, float ) ;
 void WinQueryDlgItemFloat( HWND, USHORT, float* ) ;
 
-/* extern declarations */
-/* plot.c */
-extern const char *user_homedir;
 
