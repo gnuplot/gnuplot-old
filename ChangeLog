@@ -1,3 +1,16 @@
+2000-07-18  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/hidden3d.c: implemented TEST_QUADTREE code, finally.
+	Use a spatially oriented explicit datastructure (an xy
+	grid of cells, with a polygon list in each), instead of
+	the previous single large list plus a quick-out test.
+
+2000-07-15  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/graph3d.c, src/hidden3d.c: allow non-grid datasets
+	to exist even in hidden3d plot. The new hidden3d routine
+	can cope with that case, too (after some fiddling).
+	
 2000-06-22  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/graph3d.c, src/util3d.c, src/hidden3d.c: implemented

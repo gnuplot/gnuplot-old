@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.20.2.2 2000/06/22 12:57:38 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.20.2.3 2000/07/20 13:12:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -225,8 +225,31 @@ static dynarray vertices, edges, polygons;
 #define plist ((p_polygon) polygons.v)
 #define elist ((p_edge) edges.v)
 
-static long pfirst;							/* first polygon in zsorted chain*/
-static long efirst;							/* first edges in zsorted chain */
+static long pfirst;		/* first polygon in zsorted chain*/
+static long efirst;		/* first edges in zsorted chain */
+
+#if TEST_QUADTREE
+/* HBB 20000716: spatially oriented hierarchical data structure to
+ * store polygons in. For now, it's a simple xy grid of z-sorted
+ * lists. A single polygon can appear in several lists, if it spans
+ * cell borders */
+typedef struct qtreelist {
+    long p;			/* the polygon */
+    long next;			/* next element in this chain */
+} qtreelist;
+typedef qtreelist GPHUGE *p_qtreelist;
+
+/* the number of cells in x and y direction: */
+#ifndef QUADTREE_GRANULARITY
+#define QUADTREE_GRANULARITY 10
+#endif
+/* indices of the heads of all the cells' chains: */
+static long quadtree[QUADTREE_GRANULARITY][QUADTREE_GRANULARITY];
+
+/* the dynarray to actually store all that stuff in: */
+static dynarray qtree;
+#define qlist ((p_qtreelist) qtree.v)
+#endif /* TEST_QUADTREE*/
 
 /* Prototypes for internal functions of this module. */
 static long int store_vertex __PROTO((struct coordinate GPHUGE *point, 
@@ -398,6 +421,9 @@ init_hidden_line_removal()
 	init_dynarray(&vertices, sizeof(vertex), 100, 100);
 	init_dynarray(&edges, sizeof(edge), 100, 100);
 	init_dynarray(&polygons, sizeof(polygon), 100, 100);
+#if TEST_QUADTREE
+	init_dynarray(&qtree, sizeof(qtreelist), 100, 100);
+#endif
 
 }
 
@@ -408,6 +434,9 @@ reset_hidden_line_removal()
     vertices.end = 0;
     edges.end = 0;
     polygons.end = 0;
+#if TEST_QUADTREE
+    qtree.end = 0;
+#endif
 }
 
 
@@ -419,6 +448,9 @@ term_hidden_line_removal()
     free_dynarray(&polygons);
     free_dynarray(&edges);
     free_dynarray(&vertices);
+#if TEST_QUADTREE
+    free_dynarray(&qtree);
+#endif
 }
 
 
@@ -445,21 +477,6 @@ do {						\
     for (i = 1; i< POLY_NVERT; i++, v++)	\
 	if (vlist[*v].var > max)		\
 	    max = vlist[*v].var;		\
-} while (0)
-
-/* get the amount of curves in a plot */
-#define GETNCRV(NCRV)						\
-do {								\
-    if(this_plot->plot_type == FUNC3D)				\
-	for(icrvs = this_plot->iso_crvs,NCRV = 0;		\
-	    icrvs;icrvs = icrvs->next,NCRV++)			\
-	    ;							\
-    else if(this_plot->plot_type == DATA3D)			\
-	NCRV = this_plot->num_iso_read;				\
-    else {							\
-	graph_error("Plot type is neither function nor data");	\
-	return;							\
-    }								\
 } while (0)
 
 /* Do we see the top or bottom of the polygon, or is it 'on edge'? */
@@ -730,9 +747,10 @@ store_polygon(vnum1, direction, crvlen)
 
 #if TEST_GRIDBOX
 # define UINT_BITS (CHAR_BIT * sizeof(unsigned int))
-# define COORD_TO_BITMASK(x,shift)															\
+# define COORD_TO_BITMASK(x,shift)					\
   (~0U << (unsigned int) (((x) + 1.0) / 2.0 * UINT_BITS + (shift)))
-# define CALC_BITRANGE(range_min, range_max) \
+
+# define CALC_BITRANGE(range_min, range_max)				 \
   ((~COORD_TO_BITMASK((range_max), 1)) & COORD_TO_BITMASK(range_min, 0))
 	
 	p->xbits = CALC_BITRANGE(p->xmin, p->xmax);
@@ -855,16 +873,20 @@ color_edges(new_edge, old_edge, new_poly, old_poly, above, below)
  * polygons. E.g., it has to find the correct color for each edge,
  * based on the orientation of the two polygons sharing it, WRT both
  * the observer and each other. */
+/* NEW FEATURE HBB 20000715: allow non-grid datasets too, by storing
+ * only vertices and 'direct' edges, but no polygons or 'cross' edges
+ * */
 static void 
 build_networks(plots, pcount)
-		 struct surface_points *plots;
-		 int pcount;
+    struct surface_points *plots;
+    int pcount;
 {
     long int i;
     struct surface_points *this_plot;
     int surface;		/* count the surfaces (i.e. sub-plots) */
     long int crv, ncrvs;	/* count isolines */
-    long int max_crvlen;	/* maximal length of an isoline, for all plots */
+    long int nverts;		/* count vertices */
+    long int max_crvlen;	/* maximal length of isoline in any plot */
     long int nv, ne, np;	/* local poly/edge/vertex counts */
     long int *north_polygons;	/* stores polygons of isoline above */
     long int *these_polygons;	/* same, being built for use by next turn */
@@ -884,11 +906,35 @@ build_networks(plots, pcount)
 	 this_plot = this_plot->next_sp, surface++) {
 	long int crvlen = this_plot->iso_crvs->p_count;
 
-	if (crvlen > max_crvlen) /* register maximal isocurve length */
+	/* register maximal isocurve length. Only necessary for
+	 * grid-topology plots that will create polygons, so I can do
+	 * it here, already. */
+	if (crvlen > max_crvlen) 
 	    max_crvlen = crvlen;
 
-	/* count 'curves' (i.e. isolines) in this plot */
-	GETNCRV(ncrvs);
+	/* count 'curves' (i.e. isolines) and vertices in this plot */
+	nverts = 0;
+	if(this_plot->plot_type == FUNC3D) {
+	    ncrvs = 0;
+	    for(icrvs = this_plot->iso_crvs;
+		icrvs; icrvs = icrvs->next) {
+		ncrvs++;
+	    }
+	    nverts += ncrvs * crvlen;
+	} else if(this_plot->plot_type == DATA3D) {
+	    ncrvs = this_plot->num_iso_read;
+	    if (this_plot->has_grid_topology)
+		nverts += ncrvs * crvlen;
+	    else {
+		/* have to check each isoline separately: */
+		for(icrvs = this_plot->iso_crvs;
+		    icrvs; icrvs = icrvs->next)
+		    nverts += icrvs->p_count;
+	    }
+	} else {
+	    graph_error("Plot type is neither function nor data");
+	    return;
+	}
 
 	/* To avoid possibly suprising error messages, several 2d-only
 	 * plot styles are mapped to others, that are genuinely
@@ -899,20 +945,23 @@ build_networks(plots, pcount)
 	case FSTEPS:
 	case HISTEPS:
 	case LINES:
-	    nv += ncrvs * crvlen;
-	    ne += 3 * ncrvs * crvlen - 2 * ncrvs - 2 * crvlen + 1;
-	    np += 2 * (ncrvs - 1) * (crvlen - 1);
+	    nv += nverts;
+	    ne += nverts - ncrvs;
+	    if (this_plot->has_grid_topology) {
+		ne += 2 * nverts - ncrvs - 2 * crvlen + 1;
+		np += 2 * (ncrvs - 1) * (crvlen - 1);
+	    }
 	    break;
 	case BOXES:		
 	case IMPULSES:
-	    nv += 2 * ncrvs * crvlen;
-	    ne += ncrvs * crvlen;
+	    nv += 2 * nverts;
+	    ne += nverts;
 	    break;
 	case POINTSTYLE:
 	default:
 	    /* treat all remaining ones like 'points' */
-	    nv += ncrvs * crvlen;
-	    ne += ncrvs * crvlen; /* a 'phantom edge' per isolated point */
+	    nv += nverts;
+	    ne += nverts; /* a 'phantom edge' per isolated point */
 	    break;
 	} /* switch */
     } /* for (plots) */
@@ -957,7 +1006,61 @@ build_networks(plots, pcount)
 	    pointtype = this_plot->lp_properties.p_type;
 	}
 
-	GETNCRV(ncrvs);
+	/* HBB 20000715: new initialization code block for non-grid
+	 * structured datasets. Sufficiently different from the rest
+	 * to warrant separate code, I think. */
+	if (! this_plot->has_grid_topology) {
+	    for (crv = 0, icrvs = this_plot->iso_crvs;
+		 icrvs;
+		 crv++, icrvs = icrvs->next) {
+		struct coordinate GPHUGE *points = icrvs->points;
+		long int previousvertex = -1;
+
+		for (i = 0; i < icrvs->p_count; i++) {
+		    long int thisvertex, basevertex;
+		    long int edge;
+		    
+		    thisvertex = store_vertex(points+i, pointtype);
+		
+		    if (thisvertex < 0 || previousvertex < 0) {
+			previousvertex = thisvertex;
+			continue;
+		    }
+
+		    switch (this_plot->plot_style) {
+		    case LINESPOINTS:
+		    case STEPS:		
+		    case FSTEPS:
+		    case HISTEPS:
+		    case LINES:
+			store_edge(thisvertex, edir_west, 0, lp, above);
+			break;
+		    case BOXES:		
+		    case IMPULSES:
+			/* set second vertex to the low end of zrange */
+			{
+			    coordval remember_z = points[i].z;
+			    
+			    points[i].z = min_array[FIRST_Z_AXIS];
+			    basevertex = store_vertex(points + i, pointtype);
+			    points[i].z = remember_z;
+			}
+			if (basevertex > 0)
+			    store_edge(thisvertex, edir_impulse, 0, lp, above);
+			break;
+			
+		    case POINTSTYLE:
+		    default:	/* treat all the others like 'points' */
+			store_edge(thisvertex, edir_point, crvlen, lp, above);
+			break;
+		    } /* switch(plot_style) */
+
+		    previousvertex = thisvertex;
+		} /* for(vertex) */
+	    } /* for(crv) */
+		    
+	    continue;		/* done with this plot! */
+	} 
 
 	/* initialize stored indices of north-of-this-isoline polygons and
 	 * edges properly */
@@ -969,7 +1072,7 @@ build_networks(plots, pcount)
 	}
 			
 	for (crv = 0, icrvs = this_plot->iso_crvs;
-	     crv < ncrvs && icrvs;
+	     icrvs;
 	     crv++, icrvs = icrvs->next) {
 	    struct coordinate GPHUGE *points = icrvs->points;
 
@@ -1224,17 +1327,52 @@ sort_polys_by_z()
 
 	/* traverse plist in the order given by sortarray, and set the
 	 * 'next' pointers */
-	this = plist + sortarray[0];
 #if TEST_QUADTREE
 	/* 19991205: CODEME!!! */
-#else
-	for (i = 1; i < polygons.end; i++) {
-		this->next = sortarray[i];
+	/* HBB 20000716: beginning to code... loops backwards, to ease
+	 * construction of linked lists from the head: */
+	{
+	    unsigned int grid_x, grid_y;
+	    unsigned int grid_x_low, grid_x_high, grid_y_low, grid_y_high;
+
+	    for (grid_x = 0; grid_x < QUADTREE_GRANULARITY; grid_x++)
+		for (grid_y = 0; grid_y < QUADTREE_GRANULARITY; grid_y++)
+		    quadtree[grid_x][grid_y] = -1;
+	    
+	    for (i=polygons.end - 1; i >= 0; i--) {
 		this = plist + sortarray[i];
+		
+#define COORD_TO_TREECELL(x)						\
+		((unsigned int)((((x)+1.0)/2.0)*QUADTREE_GRANULARITY))
+		
+		grid_x_low = COORD_TO_TREECELL(this->xmin);
+		grid_x_high = COORD_TO_TREECELL(this->xmax);
+		grid_y_low = COORD_TO_TREECELL(this->ymin);
+		grid_y_high = COORD_TO_TREECELL(this->ymax);
+
+
+		for (grid_x = grid_x_low; grid_x <= grid_x_high; grid_x++) {
+		    for (grid_y = grid_y_low; grid_y <= grid_y_high; grid_y++) {
+			p_qtreelist newhead = nextfrom_dynarray(&qtree);
+			
+			newhead->next = quadtree[grid_x][grid_y];
+			newhead->p = sortarray[i];
+			
+			quadtree[grid_x][grid_y] = newhead - qlist;
+		    }
+		}
+	    }
+	}
+	    
+#else /* TEST_QUADTREE */
+	this = plist + sortarray[0];
+	for (i = 1; i < polygons.end; i++) {
+	    this->next = sortarray[i];
+	    this = plist + sortarray[i];
 	}
 	this->next = -1L;
 	/* 'pfirst' is the index of the leading element of plist */
-#endif
+#endif /* TEST_QUADTREE */
 	pfirst = sortarray[0];
 	
 	free(sortarray);
@@ -1401,6 +1539,12 @@ in_front(edgenum, firstpoly)
 # define SET_XEXTENT /* nothing */
 # define SET_YEXTENT /* nothing */
 #endif
+#if TEST_QUADTREE
+    unsigned int grid_x, grid_y;
+    unsigned int grid_x_low, grid_x_high;
+    unsigned int grid_y_low, grid_y_high;
+    long listhead;
+#endif
 
     /* zmin of the edge, as it started out. This is needed separately to
      * allow modifying '*firstpoly', without moving it too far to the
@@ -1444,15 +1588,27 @@ in_front(edgenum, firstpoly)
 
 #if TEST_QUADTREE
     /* HBB 19991205 CODEME!!! */
-    while (0) 
-#else
+    /* HBB 20000716: starting to code... */
+    grid_x_low = COORD_TO_TREECELL(xmin);
+    grid_x_high = COORD_TO_TREECELL(xmax);
+    grid_y_low = COORD_TO_TREECELL(ymin);
+    grid_y_high = COORD_TO_TREECELL(ymax);
+    
+    for (grid_x = grid_x_low; grid_x <= grid_x_high; grid_x ++)
+	for (grid_y = grid_y_low; grid_y <= grid_y_high; grid_y ++) 
+	    for (listhead = quadtree[grid_x][grid_y],
+		     polynum = qlist[listhead].p, p = plist + polynum;
+		 listhead >= 0;
+		 listhead = qlist[listhead].next,
+		     polynum = qlist[listhead].p, p = plist + polynum)
+#else /* TEST_QUADTREE */
     /* loop over all the polygons in the sorted list, starting at the
      * currently first (i.e. furthest, from the viewer) polgon. */
     for (polynum = *firstpoly, p = plist + polynum;
 	 polynum >=0;
 	 polynum = p->next, p = plist + polynum
 	)
-#endif
+#endif /* TEST_QUADTREE */
 	{
 	    /* shortcut variables for the three vertices of 'p':*/
 	    p_vertex w1, w2, w3;
