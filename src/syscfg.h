@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.23 2002/03/07 17:58:11 broeker Exp $
+ * $Id: syscfg.h,v 1.24 2002/03/09 17:48:39 lhecking Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -90,11 +90,12 @@
 # ifdef MTOS
 #  define DIRSEP2 '/'
 # endif
-/* I hope this is correct ... */
-# ifdef __PUREC__
-#  define sscanf purec_sscanf
-# endif
 #endif /* Atari */
+/* FIXME: may need to be ifdef'd for ATARI/MTOS */
+#ifdef __PUREC__
+# define sscanf purec_sscanf
+# define GP_MATHERR purec_matherr
+#endif
 
 #ifdef DOS386
 # define OS       "DOS 386"
