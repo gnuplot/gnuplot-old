@@ -1,5 +1,5 @@
 /*
- * $Id: term_pc.h,v 1.1 1999/03/30 17:45:53 lhecking Exp $
+ * $Id: term_pc.h,v 1.2 1999/05/31 18:40:32 lhecking Exp $
  *
  */
 
@@ -49,7 +49,7 @@
  * Stefan Bodewig Dec. 1995
  */
 
-/* This versio of term.h is pre-crippled to easily support 16bit
+/* This version of term.h is pre-crippled to easily support 16bit
  * PC (DOS/Win) compilers that can't cope with many terminals */
 
 /* Define SHORT_TERMLIST to select a few terminals. It is easier
