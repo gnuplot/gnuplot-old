@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot3d.c,v 1.16.2.3 2000/05/07 16:46:56 lhecking Exp $";
+static char *RCSid = "$Id: plot3d.c,v 1.16.2.4 2002/01/31 21:18:22 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1576,7 +1576,7 @@ int *plot_num;
 		tlen = (xp->title ? strlen(xp->title) : 0) +
 		    (yp->title ? strlen(yp->title) : 0) +
 		    (zp->title ? strlen(zp->title) : 0) + 5;
-		new_title = gp_alloc((unsigned long) tlen, "string");
+		new_title = gp_alloc(tlen, "string");
 		new_title[0] = 0;
 		if (xp->title && xp->title[0] != '\0') {
 		    strcat(new_title, xp->title);
