@@ -10,7 +10,7 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-dnl $Id: aclocal.m4,v 1.4 1998/06/23 13:36:51 lhecking Exp $
+dnl $Id: aclocal.m4,v 1.5 1998/07/01 20:38:10 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -19,9 +19,7 @@ dnl $Id: aclocal.m4,v 1.4 1998/06/23 13:36:51 lhecking Exp $
 # which I think are supplied as part of GNU automake.
 # aclocal also extracts these macros and adds them
 # to aclocal.m4
-# I don't require anyone to install automake, because
-# we don't really need it at the moment. Thus, all
-# required AM_ macros are in acinclude.m4. - Lars Hecking
+
 
 
 # serial 1
