@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: winmain.c,v 1.3.4.1 2000/07/26 18:52:59 broeker Exp $";
+static char *RCSid = "$Id: winmain.c,v 1.3.4.2 2000/10/20 15:37:09 broeker Exp $";
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -404,6 +404,19 @@ va_list args;
 		count = vfprintf(file, fmt, args);
 	va_end(args);
 	return count;
+}
+
+int MyVFPrintF(FILE *file, char *fmt, va_list args)
+{
+	int count;
+
+	if (isterm(file)) {
+        	char buf[MAXPRINTF];
+                count = vsprintf(buf,fmt,args);
+                TextPutS(&textwin, buf);
+        } else
+        	count = vfprintf(file, fmt, args);
+        return count;
 }
 
 int MyPrintF(char *fmt, ...)
