@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.21 1998/12/09 15:25:20 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.22 1998/12/15 20:23:20 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -216,7 +216,8 @@ static TBOOLEAN
 	(void) putc('\n', stderr);
 	show_mapping();
 	c_token++;
-    } else if (almost_equals(c_token, "co$ntour")) {
+    } else if (almost_equals(c_token, "co$ntour") ||
+	       almost_equals(c_token, "cntrp$aram")) {
 	(void) putc('\n', stderr);
 	show_contour();
 	c_token++;
