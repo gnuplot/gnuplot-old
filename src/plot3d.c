@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.28 2001/08/22 14:15:34 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.29 2001/10/05 16:58:55 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -471,6 +471,7 @@ grid_nongrid_data(this_plot)
 			points->type = UNDEFINED;
 			z = opoints->z;
 			w = 1.0;
+			break;	/* out of inner loop */
 		    } else {
 			dist = 1.0 / dist;
 			z += opoints->z * dist;
