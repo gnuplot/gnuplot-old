@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: specfun.c,v 1.8.2.4 2002/01/31 19:23:21 lhecking Exp $";
+static char *RCSid = "$Id: specfun.c,v 1.8.2.5 2002/02/04 11:49:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - specfun.c */
@@ -120,7 +120,7 @@ static double lngamma __PROTO((double z));
 static double lngamma(z)
 double z;
 {
-    fprintf(stderr, "Sorry, your libc does not contain lgammma()...\n");
+    fprintf(stderr, "lngamma() removed due to license issues\n");
     return 0;
 }
 
