@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgnuplib.c,v 1.2 2001/02/01 17:56:05 broeker Exp $";
+static char *RCSid = "$Id: wgnuplib.c,v 1.3 2001/09/19 14:47:02 mikulik Exp $";
 #endif
 
 /* GNUPLOT - win/wgnuplib.c */
@@ -104,6 +104,16 @@ LocalAllocPtr(UINT flags, UINT size)
 {
 HLOCAL hlocal;
 	hlocal = LocalAlloc(flags, size+1);
+	return (char *)LocalLock(hlocal);
+}
+
+void NEAR *
+LocalReAllocPtr(void NEAR * ptr, UINT flags, UINT size)
+{
+HLOCAL hlocal;
+	hlocal = LocalHandle(ptr);
+	LocalUnlock(hlocal);
+	hlocal = LocalReAlloc(hlocal, size+1, flags);
 	return (char *)LocalLock(hlocal);
 }
 
