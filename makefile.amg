@@ -1,6 +1,6 @@
-# Makefile for SAS/C 6.1 on the Amiga
+# Makefile for SAS/C 6.1 or better on the Amiga
 #
-# $Id: makefile.amg,v 1.5 1998/09/25 15:22:40 lhecking Exp $
+# $Id: makefile.amg,v 1.6 1998/10/01 10:57:03 lhecking Exp $
 #
 #
 
