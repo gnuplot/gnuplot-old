@@ -1,5 +1,5 @@
 /*
- * $Id: hp500c.trm,v 1.5 1998/10/03 20:11:50 lhecking Exp $
+ * $Id: hp500c.trm,v 1.6 1998/11/20 12:10:40 lhecking Exp $
  *
  */
 
@@ -515,6 +515,7 @@ TERM_TABLE_END(hp500c_driver)
 #ifdef TERM_HELP
 START_HELP(hp500c)
 "1 hp500c",
+"?commands set terminal hp500c",
 "?set terminal hp500c",
 "?set term hp500c",
 "?terminal hp500c",

@@ -1,5 +1,5 @@
 /*
- * $Id: sun.trm,v 1.4 1998/10/01 10:48:23 lhecking Exp $
+ * $Id: sun.trm,v 1.5 1998/11/20 12:11:17 lhecking Exp $
  *
  */
 
@@ -348,6 +348,7 @@ TERM_TABLE_END(sun_driver)
 #ifdef TERM_HELP
 START_HELP(sun)
 "1 sun",
+"?commands set terminal sun",
 "?set terminal sun",
 "?set term sun",
 "?terminal sun",

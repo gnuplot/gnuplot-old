@@ -1,5 +1,5 @@
 /*
- * $Id: texdraw.trm,v 1.6 1998/10/03 20:12:23 lhecking Exp $
+ * $Id: texdraw.trm,v 1.7 1998/11/20 12:11:23 lhecking Exp $
  */
 
 /* GNUPLOT - texdraw.trm */
@@ -355,6 +355,7 @@ TERM_TABLE_END(texdraw_driver)
 #ifdef TERM_HELP
 START_HELP(texdraw)
 "1 texdraw",
+"?commands set terminal texdraw",
 "?set terminal texdraw",
 "?set term texdraw",
 "?terminal texdraw",

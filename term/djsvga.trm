@@ -1,5 +1,5 @@
 /*
- * $Id: djsvga.trm,v 1.6 1998/11/06 22:05:19 lhecking Exp $
+ * $Id: djsvga.trm,v 1.7 1998/11/20 12:10:17 lhecking Exp $
  */
 
 /* GNUPLOT - djsvga.trm */
@@ -430,6 +430,7 @@ TERM_TABLE_END(djsvga_driver)
 #ifdef TERM_HELP
 START_HELP(svga)
 "1 svga",
+"?commands set terminal svga",
 "?set terminal svga",
 "?set term svga",
 "?terminal svga",

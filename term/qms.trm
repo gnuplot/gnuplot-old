@@ -1,5 +1,5 @@
 /*
- * $Id: qms.trm,v 1.4 1998/10/03 20:12:17 lhecking Exp $
+ * $Id: qms.trm,v 1.5 1998/11/20 12:11:12 lhecking Exp $
  *
  */
 
@@ -216,6 +216,7 @@ TERM_TABLE_END(qms_driver)
 #ifdef TERM_HELP
 START_HELP(qms)
 "1 qms",
+"?commands set terminal qms",
 "?set terminal qms",
 "?set term qms",
 "?terminal qms",

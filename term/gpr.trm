@@ -1,5 +1,5 @@
 /*
- * $Id: gpr.trm,v 1.4 1998/10/03 20:11:45 lhecking Exp $
+ * $Id: gpr.trm,v 1.5 1998/11/20 12:10:36 lhecking Exp $
  *
  */
 
@@ -450,6 +450,7 @@ TERM_TABLE_END(gpr_driver)
 #ifdef TERM_HELP
 START_HELP(gpr)
 "1 gpr",
+"?commands set terminal gpr",
 "?set terminal gpr",
 "?set term gpr",
 "?terminal gpr",

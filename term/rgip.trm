@@ -1,5 +1,5 @@
 /*
- * $Id: rgip.trm,v 1.5 1998/10/19 13:19:59 lhecking Exp $
+ * $Id: rgip.trm,v 1.6 1998/11/20 12:11:15 lhecking Exp $
  */
 
 /* GNUPLOT - rgip.trm Uniplex graphics metafile */
@@ -589,11 +589,13 @@ TERM_TABLE_END(uniplex_driver)
 #ifdef TERM_HELP
 START_HELP(rgip)
 "1 rgip",
+"?commands set terminal rgip",
 "?set terminal rgip",
 "?set term rgip",
 "?terminal rgip",
 "?term rgip",
 "?rgip",
+"?commands set terminal uniplex",
 "?set terminal uniplex",
 "?set term uniplex",
 "?terminal uniplex",

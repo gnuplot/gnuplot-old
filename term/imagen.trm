@@ -1,5 +1,5 @@
 /*
- * $Id: imagen.trm,v 1.4 1998/10/03 20:11:56 lhecking Exp $
+ * $Id: imagen.trm,v 1.5 1998/11/20 12:10:46 lhecking Exp $
  */
 
 /* GNUPLOT - imagen.trm */
@@ -873,6 +873,7 @@ TERM_TABLE_END(imagen_driver)
 #ifdef TERM_HELP
 START_HELP(imagen)
 "1 imagen",
+"?commands set terminal imagen",
 "?set terminal imagen",
 "?set term imagen",
 "?terminal imagen",

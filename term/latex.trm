@@ -1,5 +1,5 @@
 /*
- * $Id: latex.trm,v 1.5 1998/10/09 14:21:42 lhecking Exp $
+ * $Id: latex.trm,v 1.6 1998/11/20 12:10:49 lhecking Exp $
  *
  */
 
@@ -807,11 +807,13 @@ TERM_TABLE_END(emtex_driver)
 #ifdef TERM_HELP
 START_HELP(latex)
 "1 latex",
+"?commands set terminal emtex",
 "?set terminal emtex",
 "?set term emtex",
 "?terminal emtex",
 "?term emtex",
 "?latex",
+"?commands set terminal latex",
 "?set terminal latex",
 "?set term latex",
 "?terminal latex",

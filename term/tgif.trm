@@ -1,7 +1,7 @@
 /*{{{}}}*/
 /***************************************************************************/
 /*                                                                         */
-/* $Id: tgif.trm,v 1.6 1998/10/28 21:01:35 lhecking Exp $                     */
+/* $Id: tgif.trm,v 1.7 1998/11/20 12:11:24 lhecking Exp $                     */
 /*                                                                         */
 /***************************************************************************/
 /* GNUPLOT - tgif.trm                                                      */
@@ -377,7 +377,7 @@ if(multiplot) {
 fprintf(gpoutfile,"%%TGIF 2.15-p7\n");
 fprintf(gpoutfile,"state(%d,30,%u,0,0,%u,16,1,9,1,1,0,0,0,0,1,0,'%s',0,%u,0,0,1,10,0,0,1,1,0,16,0,0,1,1,1).\n",
 	TgifPortrait ? 0 : 1,uActResolution,uActZoom,sActFont,uActFontSize);
-fprintf(gpoutfile,"%%\n%% @(#)$Header: /home/mojca/cron/mojca/github/cvs/gnuplot2/gnuplot/term/tgif.trm,v 1.6 1998/10/28 21:01:35 lhecking Exp $\n%% %%W%%\n%%\n");
+fprintf(gpoutfile,"%%\n%% @(#)$Header: /home/mojca/cron/mojca/github/cvs/gnuplot2/gnuplot/term/tgif.trm,v 1.7 1998/11/20 12:11:24 lhecking Exp $\n%% %%W%%\n%%\n");
 fprintf(gpoutfile,"page(1,\"\").\n");
 eTgifState = NEWPOLY;
 iTgifPolyCount = 0;
@@ -1366,6 +1366,7 @@ TERM_TABLE_END(tgif_driver)
 #ifdef TERM_HELP
 START_HELP(tgif)
 "1 tgif",
+"?commands set terminal tgif",
 "?set terminal tgif",
 "?set term tgif",
 "?terminal tgif",

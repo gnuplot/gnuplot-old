@@ -1,5 +1,5 @@
 /*
- * $Id: hppj.trm,v 1.5 1998/10/03 20:11:55 lhecking Exp $
+ * $Id: hppj.trm,v 1.6 1998/11/20 12:10:44 lhecking Exp $
  *
  */
 
@@ -262,6 +262,7 @@ TERM_TABLE_END(hppj_driver)
 #ifdef TERM_HELP
 START_HELP(hppj)
 "1 hppj",
+"?commands set terminal hppj",
 "?set terminal hppj",
 "?set term hppj",
 "?terminal hppj",

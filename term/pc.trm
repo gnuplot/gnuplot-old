@@ -1,5 +1,5 @@
 /*
- * $Id: pc.trm,v 1.10 1998/10/28 21:02:07 lhecking Exp $
+ * $Id: pc.trm,v 1.11 1998/11/20 12:11:01 lhecking Exp $
  *
  */
 
@@ -470,6 +470,7 @@ TERM_TABLE_END(pc_driver)
 #ifdef TERM_HELP
 START_HELP(dospc)
 "1 dospc",
+"?commands set terminal dospc",
 "?set terminal dospc",
 "?set term dospc",
 "?terminal dospc",

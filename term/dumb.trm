@@ -1,5 +1,5 @@
 /*
- * $Id: dumb.trm,v 1.4 1998/10/03 20:11:30 lhecking Exp $
+ * $Id: dumb.trm,v 1.5 1998/11/20 12:10:18 lhecking Exp $
  *
  */
 
@@ -365,6 +365,7 @@ TERM_TABLE_END(dumb_driver)
 #ifdef TERM_HELP
 START_HELP(dumb)
 "1 dumb",
+"?commands set terminal dumb",
 "?set terminal dumb",
 "?set term dumb",
 "?terminal dumb",

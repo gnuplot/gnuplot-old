@@ -1,5 +1,5 @@
 /*
- * $Id: unixplot.trm,v 1.5 1998/10/03 20:12:31 lhecking Exp $
+ * $Id: unixplot.trm,v 1.6 1998/11/20 12:11:31 lhecking Exp $
  *
  */
 
@@ -168,6 +168,7 @@ TERM_TABLE_END(unixplot_driver)
 #ifdef TERM_HELP
 START_HELP(unixplot)
 "1 unixplot",
+"?comands set terminal unixplot",
 "?set terminal unixplot",
 "?set term unixplot",
 "?terminal unixplot",

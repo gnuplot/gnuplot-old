@@ -1,5 +1,5 @@
 /*
- * $Id: iris4d.trm,v 1.4 1998/10/03 20:11:58 lhecking Exp $
+ * $Id: iris4d.trm,v 1.5 1998/11/20 12:10:47 lhecking Exp $
  *
  */
 
@@ -296,6 +296,7 @@ TERM_TABLE_END(iris4d_driver)
 #ifdef TERM_HELP
 START_HELP(iris4d)
 "1 iris4d",
+"?commands set terminal iris4d",
 "?set terminal iris4d",
 "?set term iris4d",
 "?terminal iris4d",

@@ -1,5 +1,5 @@
 /*
- * $Id: debug.trm,v 1.4 1998/10/03 20:11:27 lhecking Exp $
+ * $Id: debug.trm,v 1.5 1998/11/20 12:10:15 lhecking Exp $
  *
  */
 
@@ -295,6 +295,7 @@ TERM_TABLE_END(debug_driver)
 #ifdef TERM_HELP
 START_HELP(debug)
 "1 debug",
+"?commands set terminal debug",
 "?set terminal debug",
 "?set term debug",
 "?terminal debug",

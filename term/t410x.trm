@@ -1,5 +1,5 @@
 /*
- * $Id: t410x.trm,v 1.4 1998/10/03 20:12:20 lhecking Exp $
+ * $Id: t410x.trm,v 1.5 1998/11/20 12:11:18 lhecking Exp $
  *
  */
 
@@ -303,6 +303,7 @@ TERM_TABLE_END(tek410x_driver)
 #ifdef TERM_HELP
 START_HELP(tek410x)
 "1 tek410x",
+"?commands set terminal tek410x",
 "?set terminal tek410x",
 "?set term tek410x",
 "?terminal tek410x",

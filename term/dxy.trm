@@ -1,5 +1,5 @@
 /*
- * $Id: dxy.trm,v 1.4 1998/10/03 20:11:32 lhecking Exp $
+ * $Id: dxy.trm,v 1.5 1998/11/20 12:10:20 lhecking Exp $
  *
  */
 
@@ -191,6 +191,7 @@ TERM_TABLE_END(dxy_driver)
 #ifdef TERM_HELP
 START_HELP(dxy800a)
 "1 dxy800a",
+"?commands set terminal dxy800a",
 "?set terminal dxy800a",
 "?set term dxy800a",
 "?terminal dxy800a",

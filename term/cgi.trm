@@ -1,5 +1,5 @@
 /*
- * $Id: cgi.trm,v 1.5 1998/10/03 20:11:23 lhecking Exp $
+ * $Id: cgi.trm,v 1.6 1998/11/20 12:10:10 lhecking Exp $
  *
  */
 
@@ -295,11 +295,13 @@ TERM_TABLE_END(hcgi_driver)
 #ifdef TERM_HELP
 START_HELP(cgi)
 "1 cgi",
+"?commands set terminal cgi",
 "?set terminal cgi",
 "?set term cgi",
 "?terminal cgi",
 "?term cgi",
 "?cgi",
+"?commands set terminal hcgi",
 "?set terminal hcgi",
 "?set term hcgi",
 "?terminal hcgi",

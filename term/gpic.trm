@@ -1,5 +1,5 @@
 /*
- * $Id: gpic.trm,v 1.4 1998/10/03 20:11:43 lhecking Exp $
+ * $Id: gpic.trm,v 1.5 1998/11/20 12:10:34 lhecking Exp $
  */
 
 /* GNUPLOT - gpic.trm -*-C-*- */
@@ -278,6 +278,7 @@ TERM_TABLE_END(gpic_driver)
 #ifdef TERM_HELP
 START_HELP(gpic)
 "1 gpic",
+"?commands set terminal gpic",
 "?set terminal gpic",
 "?set term gpic",
 "?terminal gpic",

@@ -1,5 +1,5 @@
 /*
- * $Id: tpic.trm,v 1.5 1998/10/09 14:21:55 lhecking Exp $
+ * $Id: tpic.trm,v 1.6 1998/11/20 12:11:27 lhecking Exp $
  */
 
 /* GNUPLOT - tpic.trm */
@@ -906,6 +906,7 @@ TERM_TABLE_END(tpic_driver)
 #ifdef TERM_HELP
 START_HELP(tpic)
 "1 tpic",
+"?commands set terminal tpic",
 "?set terminal tpic",
 "?set term tpic",
 "?terminal tpic",

@@ -1,5 +1,5 @@
 /*
- * $Id: gif.trm,v 1.8 1998/11/03 12:44:31 lhecking Exp $
+ * $Id: gif.trm,v 1.9 1998/11/20 12:10:30 lhecking Exp $
  */
 
 /* GNUPLOT -- gif.trm */
@@ -544,6 +544,7 @@ TERM_TABLE_END(gif_driver)
 #ifdef TERM_HELP
 START_HELP(gif)
 "1 gif",
+"?commands set terminal gif",
 "?set terminal gif",
 "?set term gif",
 "?terminal gif",

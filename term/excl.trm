@@ -1,5 +1,5 @@
 /*
- * $Id: excl.trm,v 1.5 1998/10/03 20:11:37 lhecking Exp $
+ * $Id: excl.trm,v 1.6 1998/11/20 12:10:26 lhecking Exp $
  *
  */
 
@@ -24,7 +24,7 @@
  * 
  * send your comments or suggestions to (info-gnuplot@dartmouth.edu).
  *
- ***     $Id: excl.trm,v 1.5 1998/10/03 20:11:37 lhecking Exp $
+ ***     $Id: excl.trm,v 1.6 1998/11/20 12:10:26 lhecking Exp $
      
   NAME
      quic
@@ -249,6 +249,7 @@ TERM_TABLE_END(excl_driver)
 #ifdef TERM_HELP
 START_HELP(excl)
 "1 excl",
+"?commands set terminal excl",
 "?set terminal excl",
 "?set term excl",
 "?terminal excl",

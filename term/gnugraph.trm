@@ -1,5 +1,5 @@
 /*
- * $Id: gnugraph.trm,v 1.6 1998/11/03 12:44:12 lhecking Exp $
+ * $Id: gnugraph.trm,v 1.7 1998/11/20 12:10:32 lhecking Exp $
  */
 
 /* GNUPLOT -- gnugraph.trm */
@@ -311,6 +311,7 @@ TERM_TABLE_END(unixplot_driver)
 #ifdef TERM_HELP
 START_HELP(unixplot)
 "1 unixplot",
+"?commands set terminal unixplot",
 "?set terminal unixplot",
 "?set term unixplot",
 "?terminal unixplot",

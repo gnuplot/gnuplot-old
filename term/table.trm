@@ -1,5 +1,5 @@
 /*
- * $Id: table.trm,v 1.4 1998/09/22 15:01:41 lhecking Exp $
+ * $Id: table.trm,v 1.5 1998/11/20 12:11:20 lhecking Exp $
  *
  */
 
@@ -45,6 +45,7 @@
 #ifdef TERM_HELP
 START_HELP(table)
 "1 table",
+"?commands set terminal table",
 "?set terminal table",
 "?set term table",
 "?terminal table",

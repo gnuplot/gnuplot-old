@@ -1,5 +1,5 @@
 /*
- * $Id: dxf.trm,v 1.4 1998/10/03 20:11:31 lhecking Exp $
+ * $Id: dxf.trm,v 1.5 1998/11/20 12:10:19 lhecking Exp $
  *
  */
 
@@ -353,6 +353,7 @@ TERM_TABLE_END(dxf_driver)
 #ifdef TERM_HELP
 START_HELP(dxf)
 "1 dxf",
+"?commands set terminal dxf",
 "?set terminal dxf",
 "?set term dxf",
 "?terminal dxf",

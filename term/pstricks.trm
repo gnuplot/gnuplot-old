@@ -1,6 +1,6 @@
 /* Hey Emacs this is -*- C -*-
  * 
- * $Id: pstricks.trm,v 1.7 1998/10/28 21:02:17 lhecking Exp $
+ * $Id: pstricks.trm,v 1.8 1998/11/20 12:11:09 lhecking Exp $
  */
 
 /* GNUPLOT - pstricks.trm */
@@ -568,6 +568,7 @@ TERM_TABLE_END(pstricks_driver)
 #ifdef TERM_HELP
 START_HELP(pstricks)
 "1 pstricks",
+"?commands set terminal pstricks",
 "?set terminal pstricks",
 "?set term pstricks",
 "?terminal pstricks",

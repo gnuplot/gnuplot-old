@@ -1,5 +1,5 @@
 /*
- * $Id: pm.trm,v 1.8 1998/10/01 10:48:55 lhecking Exp $
+ * $Id: pm.trm,v 1.9 1998/11/20 12:11:03 lhecking Exp $
  */
 
 /* GNUPLOT - pm.trm */
@@ -551,6 +551,7 @@ TERM_TABLE_END(PM_driver)
 #ifdef TERM_HELP
 START_HELP(pm)
 "1 pm",
+"?commands set terminal pm",
 "?set terminal pm",
 "?set term pm",
 "?terminal pm",

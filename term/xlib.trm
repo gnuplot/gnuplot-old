@@ -1,5 +1,5 @@
 /*
- * $Id: xlib.trm,v 1.5 1998/10/03 20:12:35 lhecking Exp $
+ * $Id: xlib.trm,v 1.6 1998/11/20 12:11:38 lhecking Exp $
  */
 
 /* GNUPLOT - xlib.trm */
@@ -142,6 +142,7 @@ TERM_TABLE_END(xlib_driver)
 #ifdef TERM_HELP
 START_HELP(xlib)
 "1 xlib",
+"?commands set terminal xlib",
 "?set terminal xlib",
 "?set term xlib",
 "?terminal xlib",

@@ -1,5 +1,5 @@
 /*
- * $Id: atarivdi.trm,v 1.6 1998/10/03 20:11:22 lhecking Exp $
+ * $Id: atarivdi.trm,v 1.7 1998/11/20 12:10:08 lhecking Exp $
  *
  */
 
@@ -433,6 +433,7 @@ TERM_TABLE_END(vdi_driver)
 #ifdef TERM_HELP
 START_HELP(vdi)
 "1 atari ST (via VDI)",
+"?commands set terminal vdi",
 "?set terminal vdi",
 "?set term vdi",
 "?terminal vdi",
