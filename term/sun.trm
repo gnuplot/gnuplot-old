@@ -1,5 +1,5 @@
 /*
- * $Id: sun.trm,v 1.3 1998/04/22 18:58:04 lhecking Exp $
+ * $Id: sun.trm,v 1.4 1998/10/01 10:48:23 lhecking Exp $
  *
  */
 
@@ -319,7 +319,9 @@ static Notify_value local_notice_destroy(frame, status)
    if (status != DESTROY_CHECKING)
    {
       SUN_reset();
-      term_init = FALSE;
+      /* extern TBOOLEAN term_init is gone; is it sufficient just */
+      /* to comment it out? -lh */
+      /* term_init = FALSE; */
    }
    return(NOTIFY_DONE);
 }
