@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: util.c,v 1.10 1998/12/09 15:26:04 lhecking Exp $";
+static char *RCSid = "$Id: util.c,v 1.11 1999/02/17 17:56:41 lhecking Exp $";
 #endif
 
 /* GNUPLOT - util.c */
@@ -410,13 +410,13 @@ struct value *val;
 {
     switch (val->type) {
     case INTGR:
-	return ((val->v.int_val >= 0) ? 0.0 : Pi);
+	return ((val->v.int_val >= 0) ? 0.0 : M_PI);
     case CMPLX:
 	if (val->v.cmplx_val.imag == 0.0) {
 	    if (val->v.cmplx_val.real >= 0.0)
 		return (0.0);
 	    else
-		return (Pi);
+		return (M_PI);
 	}
 	return (atan2(val->v.cmplx_val.imag,
 		      val->v.cmplx_val.real));
