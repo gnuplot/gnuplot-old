@@ -1,5 +1,5 @@
 /*
- * $Id: latex.trm,v 1.10 1999/02/14 18:15:16 lhecking Exp $
+ * $Id: latex.trm,v 1.11 1999/02/17 17:59:43 lhecking Exp $
  *
  */
 
@@ -852,6 +852,11 @@ START_HELP(latex)
 " to continue it with: a position specification (up to two out of t,b,l,r),",
 " ']{', the text itself, and finally, '}'. The text itself may be anything",
 " LaTeX can typeset as an LR-box. \\rule{}{}'s may help for best positioning.",
+"",
+" Points are drawn with the LaTex commands \\Diamond and \\Box.  These",
+" commands do no longer belong to the LaTeX2e core, but are included in the",
+" latexsym-package in the base distribution, and are hence part of all LaTeX",
+" implementations. Please do not forget to use this package.",
 "",
 " Examples:",
 " About label positioning:",
