@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.33 2002/03/26 20:31:04 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.34 2002/04/27 08:07:35 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -578,12 +578,6 @@ pm3d_draw_one(struct surface_points *plot)
     /* for pm3dCompress.awk */
     if (postscript_gpoutfile)
 	fprintf(postscript_gpoutfile, "%%pm3d_map_end\n");
-
-    /* release the palette we have made use of (some terminals may need this)
-       ...no, remove this, also remove it from plot.h !!!!
-     */
-    if (term->previous_palette)
-	term->previous_palette();
 }
 
 
