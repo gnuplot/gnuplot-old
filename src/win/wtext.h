@@ -1,5 +1,5 @@
 /*
- * $Id: wtext.h,v 1.6 2001/02/12 15:43:22 broeker Exp $
+ * $Id: wtext.h,v 1.7 2001/02/15 18:13:23 broeker Exp $
  */
 
 /* GNUPLOT - win/wtext.h */
@@ -35,6 +35,7 @@
 ]*/
 
 #include <stdio.h>
+#include <stdarg.h>
 
 /* redefine functions that can talk to tty devices, to use 
  * implementation in winmain.c/wgnuplot.dll */
