@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.5 1998/06/23 13:37:09 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.6 1998/07/15 15:28:47 lhecking Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -49,6 +49,10 @@ int close(int);
 #include <descrip.h>
 #define MAILBOX "PLOT$MAILBOX"
 #define pclose(f) fclose(f)
+#ifdef __DECC
+#include <lib$routines.h>    /* avoid some IMPLICITFNC warnings */
+#include <starlet.h>
+#endif  /* __DECC */
 #endif /* VMS */
 
 
