@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.28 1999/03/10 21:26:24 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.29 1999/03/12 21:43:34 lhecking Exp $";
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -919,7 +919,7 @@ struct value data;
 
     while (udv_ptr) {
 	last = udv_ptr;
-	if (STREQ(varname, udv_ptr->udv_name))
+	if (!strcmp(varname, udv_ptr->udv_name))
 	    break;
 	udv_ptr = udv_ptr->next_udv;
     }
@@ -945,7 +945,7 @@ char *varname;
     register struct udvt_entry *udv_ptr = first_udv;
 
     while (udv_ptr) {
-	if (STREQ(varname, udv_ptr->udv_name))
+	if (!strcmp(varname, udv_ptr->udv_name))
 	    return udv_ptr->udv_value.type == INTGR
 		? udv_ptr->udv_value.v.int_val	/* valid */
 		: 0;		/* wrong type */
@@ -965,7 +965,7 @@ char *varname;
     register struct udvt_entry *udv_ptr = first_udv;
 
     for (; udv_ptr; udv_ptr = udv_ptr->next_udv)
-	if (STREQ(varname, udv_ptr->udv_name))
+	if (strcmp(varname, udv_ptr->udv_name) == 0)
 	    return real(&(udv_ptr->udv_value));
 
     /* get here => not found */
@@ -984,7 +984,7 @@ double value;
     register struct udvt_entry *udv_ptr = first_udv;
 
     for (; udv_ptr; udv_ptr = udv_ptr->next_udv)
-	if (STREQ(varname, udv_ptr->udv_name)) {
+	if (strcmp(varname, udv_ptr->udv_name) == 0) {
 	    if (udv_ptr->udv_undef) {
 		udv_ptr->udv_undef = 0;
 		(void) Gcomplex(&udv_ptr->udv_value, value, 0.0);

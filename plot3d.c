@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot3d.c,v 1.18 1999/03/10 21:25:00 lhecking Exp $";
+static char *RCSid = "$Id: plot3d.c,v 1.19 1999/03/12 21:46:42 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -214,7 +214,7 @@ void plot3drequest()
 
     is_3d_plot = TRUE;
 
-    if (parametric && STREQ(dummy_var[0], "t")) {
+    if (parametric && strcmp(dummy_var[0], "t") == 0) {
 	strcpy(dummy_var[0], "u");
 	strcpy(dummy_var[1], "v");
     }
@@ -1635,7 +1635,7 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 	}
     }				/* draw_contour */
     /* perform the plot */
-    if (STREQ(term->name, "table"))
+    if (strcmp(term->name, "table") == 0)
 	print_3dtable(plot_num);
     else {
 	START_LEAK_CHECK();	/* assert no memory leaks here ! */

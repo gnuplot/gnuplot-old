@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: datafile.c,v 1.14 1999/03/10 21:26:59 lhecking Exp $";
+static char *RCSid = "$Id: datafile.c,v 1.15 1999/03/12 21:43:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -1415,7 +1415,7 @@ char *s;
 {
     if (missing_val != NULL) {
 	int len = strlen(missing_val);
-	if (STREQN(s, missing_val, len) &&
+	if (strncmp(s, missing_val, len) == 0 &&
 	    (isspace((int)s[len]) || !s[len])) {
 	    return (1);;	/* store undefined point in plot */
 	}

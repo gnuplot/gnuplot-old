@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: vms.c,v 1.7 1999/03/04 20:48:50 lhecking Exp $";
+static char    *RCSid = "$Id: vms.c,v 1.8 1999/03/12 21:47:36 lhecking Exp $";
 #endif
 
 /* GNUPLOT - vms.c */
@@ -150,7 +150,7 @@ popen(char *cmd, char *mode)
     cmddsc.dsc$w_length=strlen(cmd);
     cmddsc.dsc$a_pointer=cmd;
 
-    if (STREQ(mode,"r")) {
+    if (strcmp(mode,"r")==0) {
       _cksts(lib$spawn(&cmddsc, &nl_desc, &namdsc, &flags,
                      0  /* name */, &info->pid, &info->completion,
                      0, popen_completion_ast,0,0,0,0));

@@ -1,4 +1,4 @@
-/* $Id: amiga.c,v 1.2 1999/03/04 20:44:22 lhecking Exp $ */
+/* $Id: amiga.c,v 1.3 1999/03/12 21:43:05 lhecking Exp $ */
 
 /* GNUPLOT - amiga.c */
 
@@ -171,9 +171,9 @@ const char *mode;
   PipeToUse = &OpenPipes[PipeNumToUse];
 
   /* Check if the specified mode is valid. */
-  if (STREQ(mode, "r"))
+  if (strcmp (mode, "r") == 0)
     ChildPipeMode = MODE_NEWFILE;
-  else if (STREQ(mode, "w"))
+  else if (strcmp (mode, "w") == 0)
     ChildPipeMode = MODE_OLDFILE;
   else {
     errno = EINVAL;

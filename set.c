@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.24 1999/03/04 20:45:01 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.25 1999/03/12 21:46:56 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -2014,7 +2014,7 @@ char *tic_side;
 	/* if tics are off, reset to default (border) */
 	if (*TICS == NO_TICS) {
 	    *TICS = TICS_ON_BORDER;
-	    if (STREQ(tic_side, "x") || STREQ(tic_side, "y")) {
+	    if (!strcmp(tic_side, "x") || !strcmp(tic_side, "y")) {
 		*TICS |= TICS_MIRROR;
 	    }
 	}
