@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.28 2002/02/13 17:59:36 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.29 2002/02/13 22:58:18 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -924,6 +924,9 @@ unset_logscale()
 	    reset_logscale(FIRST_Y_AXIS);
 	if (chr_in_str(c_token, 'z')) 
 	    reset_logscale(FIRST_Z_AXIS);
+	if (chr_in_str(c_token, 'c') && chr_in_str(c_token, 'b'))
+	    /* FIXME should be strstr(token,"cb") */
+	    reset_logscale(COLOR_AXIS);
 	++c_token;
     }
 }
