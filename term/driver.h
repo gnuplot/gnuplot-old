@@ -1,6 +1,6 @@
-/* $Id: driver.h,v 1.3 1998/04/22 18:57:27 lhecking Exp $ */
+/* $Id: driver.h,v 1.4 1998/06/23 13:48:02 lhecking Exp $ */
 
-/* GNUPLOT - driver.h  $Id: driver.h,v 1.3 1998/04/22 18:57:27 lhecking Exp $ */
+/* GNUPLOT - driver.h  $Id: driver.h,v 1.4 1998/06/23 13:48:02 lhecking Exp $ */
 
 /*[
  * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
