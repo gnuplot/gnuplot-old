@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.104 2003/03/26 19:42:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.105 2003/04/29 07:04:30 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2624,6 +2624,7 @@ show_datafile()
 	fprintf(stderr, "\tdatafile fields separated by \"%c\"\n", df_separator);
     else
 	fprintf(stderr, "\tdatafile fields separated by whitespace\n");
+    fprintf(stderr, "\tComments chars are \"%s\"\n", df_commentschars);
 }
 
 #ifdef USE_MOUSE
