@@ -1,4 +1,4 @@
-/* $Id: fit.h,v 1.5 1998/06/23 14:21:52 lhecking Exp $ */
+/* $Id: fit.h,v 1.6 1998/06/30 16:42:22 lhecking Exp $ */
 
 /*
  *	Header file: public functions in fit.c
@@ -32,7 +32,7 @@
 #define EXT extern
 #endif
 
-#include "type.h"
+/*#include "type.h"*/  /*HBB 961110: unused now! */
 #include "plot.h"
 
 #include "ansichek.h"
@@ -45,7 +45,7 @@ EXT char    fitbuf[256];
 
 /******* public functions ******/
 
-EXT char    *get_next_word __PROTO((char **s, char *subst));
+EXT char    *get_next_word __PROTO((char **s, char *subst)); 
 
 EXT void    init_fit __PROTO((void));
 EXT void    setvar __PROTO((char *varname, struct value data));
