@@ -1,4 +1,4 @@
-/* $Id: alloc.h,v 1.1.1.2 1998/04/15 19:21:58 lhecking Exp $ */
+/* $Id: alloc.h,v 1.1.1.2.2.1 2001/06/25 16:06:34 broeker Exp $ */
 
 /* GNUPLOT - alloc.h */
 
@@ -36,7 +36,7 @@
  * and redefines free if necessary.
  */
 
-char *gp_alloc __PROTO((unsigned long size, char *message));
+generic *gp_alloc __PROTO((unsigned long size, char *message));
 generic *gp_realloc __PROTO((generic *p, unsigned long size, char *message));
 
 /* dont define CHECK_HEAP_USE on a FARALLOC machine ! */
