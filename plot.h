@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.18 1998/12/07 22:09:52 lhecking Exp $
+ * $Id: plot.h,v 1.19 1998/12/22 19:42:28 lhecking Exp $
  *
  */
 
@@ -92,6 +92,9 @@ typedef int TBOOLEAN;
 /* minimum size of points[] in surface_points */
 #define MIN_SRF_POINTS 1000
 
+
+/* Minimum number of chars to represent an integer */
+#define INT_STR_LEN (3*sizeof(int))
 
 /* note that MAX_LINE_LEN, MAX_TOKENS and MAX_AT_LEN do no longer limit the
    size of the input. The values describe the steps in which the sizes are
