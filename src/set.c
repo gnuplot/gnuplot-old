@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35 2000/05/02 20:56:27 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.36 2000/05/23 15:28:12 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -503,9 +503,9 @@ reset_command()
     data_style = POINTSTYLE;
     func_style = LINES;
     bar_size = 1.0;
-    set_lp_properties(&work_grid, 0, GRID_OFF, 0, 0.5, 1.0);
-    set_lp_properties(&grid_lp, 0, -1, 0, 0.5, 1.0);
-    set_lp_properties(&mgrid_lp, 0, -1, 0, 0.5, 1.0);
+    set_lp_properties(&work_grid, 0, GRID_OFF, 0, 1.0, 1.0);
+    set_lp_properties(&grid_lp, 0, -1, 0, 1.0, 1.0);
+    set_lp_properties(&mgrid_lp, 0, -1, 0, 1.0, 1.0);
     polar_grid_angle = 0;
     key = -1;
     is_log_x = FALSE;
