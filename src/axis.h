@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.23 2002/09/02 18:15:30 sfeam Exp $
+ * $Id: axis.h,v 1.24 2002/09/11 15:31:44 broeker Exp $
  *
  */
 
@@ -654,8 +654,5 @@ int set_pm3d_zminmax __PROTO((void));
 #define NEED_PALETTE(plot) FALSE
 
 #endif /* PM3D */
-
-/* exported by set.c but used for axis tic marks */
-void add_tic_user __PROTO((AXIS_INDEX, char * label, double position));
 
 #endif /* GNUPLOT_AXIS_H */
