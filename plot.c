@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.24 1999/02/17 17:55:14 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.25 1999/02/22 15:21:49 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -86,7 +86,7 @@ extern int rl_complete_with_tilde_expansion;
 # ifdef GNUPLOT_HISTORY
 #  include <readline/tilde.h>
 #  ifndef GNUPLOT_HISTORY_FILE
-#   define GNUPLOT_HISTORY_FILE "~/gnuplot.history"
+#   define GNUPLOT_HISTORY_FILE "~/.gnuplot.history"
 #  endif
 #  ifndef HISTORY_SIZE
 /* Some more or less arbitrary value :) */
