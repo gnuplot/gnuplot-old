@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.26 2000/11/01 18:57:33 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.27 2001/04/03 16:14:46 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -500,7 +500,7 @@ int allow_ls, allow_point, def_line, def_point;
 	    } else {
 		lp->use_palette = 0;
 #endif
-		lp->l_type = (int) real(const_express(&t))-1;
+		lp->l_type = (int) real(const_express(&t)) - 1;
 #ifdef PM3D
 	    }
 #endif
