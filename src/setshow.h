@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.21 1999/11/15 21:59:44 lhecking Exp $
+ * $Id: setshow.h,v 1.22 1999/11/24 13:23:23 lhecking Exp $
  *
  */
 
@@ -51,7 +51,10 @@
 #endif
 
 /* default format for tic mark labels */
-#define DEF_FORMAT "%g"
+#define DEF_FORMAT "% g"
+
+/* less than one hundredth of a tic mark */
+#define SIGNIF (0.01)
 
 typedef struct {
     char text[MAX_LINE_LEN+1];
