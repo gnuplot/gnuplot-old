@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.21 2003/11/17 22:48:52 sfeam Exp $
+ * $Id: term.h,v 1.22 2004/02/23 13:59:37 broeker Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -105,7 +105,7 @@
 
 /****************************************************************************/
 /* MS-DOS and Windows */
-#if defined(MSDOS) || defined(_Windows)
+#if defined(MSDOS) || defined(_Windows) || defined(DOS386)
 
 /* MSDOS with emx-gcc compiler */
 # if defined(MSDOS) && defined(__EMX__)
