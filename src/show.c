@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.7 1999/05/20 18:42:04 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.8 1999/05/27 20:59:57 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -671,6 +671,17 @@ enum PLOT_STYLE style;
     case DOTS:
 	fputs("dots\n", stderr);
 	break;
+
+    case YERRORLINES:
+	fputs("yerrorlines\n", stderr);
+	break;
+    case XERRORLINES:
+	fputs("xerrorlines\n", stderr);
+	break;
+    case XYERRORLINES:
+	fputs("xyerrorlines\n", stderr);
+	break;
+
     case YERRORBARS:
 	fputs("yerrorbars\n", stderr);
 	break;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.7 1999/05/20 18:42:03 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.8 1999/05/27 20:59:56 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -750,6 +750,15 @@ set data style ",
     case DOTS:
 	fputs("dots\n", fp);
 	break;
+    case YERRORLINES:
+	fputs("yerrorlines\n", fp);
+	break;
+    case XERRORLINES:
+	fputs("xerrorlines\n", fp);
+	break;
+    case XYERRORLINES:
+	fputs("xyerrorlines\n", fp);
+	break;
     case YERRORBARS:
 	fputs("yerrorbars\n", fp);
 	break;
@@ -803,6 +812,15 @@ set data style ",
 	break;
     case DOTS:
 	fputs("dots\n", fp);
+	break;
+    case YERRORLINES:
+	fputs("yerrorlines\n", fp);
+	break;
+    case XERRORLINES:
+	fputs("xerrorlines\n", fp);
+	break;
+    case XYERRORLINES:
+	fputs("xyerrorlines\n", fp);
 	break;
     case YERRORBARS:
 	fputs("yerrorbars\n", fp);

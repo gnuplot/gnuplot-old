@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.1 1999/03/26 21:48:07 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.2 1999/05/27 20:59:56 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -944,6 +944,9 @@ int pcount;
 	    npoly += 2 * (ncrv - 1) * (this_plot->iso_crvs->p_count - 1);
 	    break;
 	case DOTS:
+	case XERRORLINES:	/* handle as POINTSTYLE */
+	case YERRORLINES:
+	case XYERRORLINES:
 	case XERRORBARS:	/* handle as POINTSTYLE */
 	case YERRORBARS:
 	case XYERRORBARS:
@@ -976,6 +979,9 @@ int pcount;
 	case LINESPOINTS:
 	case BOXERROR:		/* handle as POINTSTYLE */
 	case BOXXYERROR:
+	case XERRORLINES:
+	case YERRORLINES:
+	case XYERRORLINES:
 	case XERRORBARS:
 	case YERRORBARS:
 	case XYERRORBARS:
@@ -1241,6 +1247,9 @@ int pcount;
 		    break;
 		case BOXERROR:	/* handle as POINTSTYLE */
 		case BOXXYERROR:
+		case XERRORLINES:	/* handle as POINTSTYLE */
+		case YERRORLINES:
+		case XYERRORLINES:
 		case XERRORBARS:	/* handle as POINTSTYLE */
 		case YERRORBARS:
 		case XYERRORBARS:

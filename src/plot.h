@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.3 1999/05/13 18:52:38 lhecking Exp $
+ * $Id: plot.h,v 1.4 1999/05/27 20:59:56 lhecking Exp $
  *
  */
 
@@ -437,7 +437,11 @@ enum PLOT_STYLE {
 	HISTEPS    =13*8 + 1,
 	VECTOR     =14*8 + 1,
 	CANDLESTICKS=15*8 + 4,
-	FINANCEBARS=16*8 + 1
+	FINANCEBARS=16*8 + 1,
+
+	XERRORLINES  = 17*8 + 7,
+	YERRORLINES  = 18*8 + 7,
+	XYERRORLINES = 19*8 + 7
 };
 
 enum PLOT_SMOOTH { 

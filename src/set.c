@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.7 1999/05/20 18:42:04 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.8 1999/05/27 20:59:57 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -2844,6 +2844,16 @@ enum PLOT_STYLE /* not static; used by command.c */ get_style()
 	ps = LINESPOINTS;
     else if (almost_equals(c_token, "d$ots"))
 	ps = DOTS;
+
+    else if (almost_equals(c_token, "yerrorl$ines"))
+	ps = YERRORLINES;
+    else if (almost_equals(c_token, "errorl$ines"))
+	ps = YERRORLINES;
+    else if (almost_equals(c_token, "xerrorl$ines"))
+	ps = XERRORLINES;
+    else if (almost_equals(c_token, "xyerrorl$ines"))
+	ps = XYERRORLINES;
+
     else if (almost_equals(c_token, "ye$rrorbars"))
 	ps = YERRORBARS;
     else if (almost_equals(c_token, "e$rrorbars"))

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graph3d.c,v 1.2 1999/05/20 18:36:11 lhecking Exp $";
+static char *RCSid = "$Id: graph3d.c,v 1.3 1999/05/27 20:59:55 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -821,6 +821,9 @@ int pcount;			/* count of plots in linked list */
 			plot3d_lines(this_plot);
 		    break;
 		}
+	    case YERRORLINES:	/* ignored; treat like points */
+	    case XERRORLINES:	/* ignored; treat like points */
+	    case XYERRORLINES:/* ignored; treat like points */
 	    case YERRORBARS:	/* ignored; treat like points */
 	    case XERRORBARS:	/* ignored; treat like points */
 	    case XYERRORBARS:	/* ignored; treat like points */
@@ -906,6 +909,9 @@ int pcount;			/* count of plots in linked list */
 		case HISTEPS:
 		    key_sample_line(xl, yl);
 		    break;
+		case YERRORLINES:	/* ignored; treat like points */
+		case XERRORLINES:	/* ignored; treat like points */
+		case XYERRORLINES:/* ignored; treat like points */
 		case YERRORBARS:	/* ignored; treat like points */
 		case XERRORBARS:	/* ignored; treat like points */
 		case XYERRORBARS:	/* ignored; treat like points */
@@ -949,6 +955,9 @@ int pcount;			/* count of plots in linked list */
 			case HISTEPS:
 			    key_sample_line(xl, yl);
 			    break;
+			case YERRORLINES:	/* ignored; treat like points */
+			case XERRORLINES:	/* ignored; treat like points */
+			case XYERRORLINES:/* ignored; treat like points */
 			case YERRORBARS:	/* ignored; treat like points */
 			case XERRORBARS:	/* ignored; treat like points */
 			case XYERRORBARS:	/* ignored; treat like points */
@@ -981,6 +990,9 @@ int pcount;			/* count of plots in linked list */
 		case HISTEPS:
 		    cntr3d_lines(cntrs);
 		    break;
+		case YERRORLINES:	/* ignored; treat like points */
+		case XERRORLINES:	/* ignored; treat like points */
+		case XYERRORLINES:/* ignored; treat like points */
 		case YERRORBARS:	/* ignored; treat like points */
 		case XERRORBARS:	/* ignored; treat like points */
 		case XYERRORBARS:	/* ignored; treat like points */
