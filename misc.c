@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.7 1998/10/12 20:14:51 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.8 1998/10/16 16:10:32 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -643,6 +643,26 @@ FILE *fp;
 	fprintf(fp, "set clabel '%s'\n", contour_format);
     else
 	fprintf(fp, "set noclabel\n");
+
+    fprintf(fp, "set mapping ");
+    switch(mapping3d) {
+    case MAP3D_SPHERICAL:
+	fprintf(fp, "spherical\n");
+	break;
+    case MAP3D_CYLINDRICAL:
+	fprintf(fp, "cylindrical\n");
+	break;
+    case MAP3D_CARTESIAN:
+    default:
+	fprintf(fp, "cartesian\n");
+	break;
+    }
+
+    if (missing_val != NULL)
+	fprintf(fp, "set missing %s\n", missing_val);
+
+    if (multiplot = TRUE)
+	fprintf(fp, "set multiplot\n);
 
     save_hidden3doptions(fp);
     fprintf(fp, "set cntrparam order %d\n", contour_order);
