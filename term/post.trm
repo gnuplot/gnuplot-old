@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.62 2002/07/04 15:58:04 mikulik Exp $
+ * $Id: post.trm,v 1.63 2002/07/04 16:37:00 mikulik Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -1993,7 +1993,7 @@ TERM_PUBLIC int PS_make_palette (t_sm_palette *palette)
 #define G sm_palette.formulaG
 #define B sm_palette.formulaB
 if (palette == NULL)
-  /* postscript can do continous number of colours */
+  /* postscript can do continuous number of colours */
   return 0;
 /* write header for smooth colours */
 
