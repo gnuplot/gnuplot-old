@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.73 2002/10/20 21:19:50 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.74 2002/10/21 10:24:18 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -518,12 +518,12 @@ place_arrows3d(layer)
 	 this_arrow = this_arrow->next) {
 	unsigned int sx, sy, ex, ey;
 
-	if (this_arrow->layer != layer)
+	if (this_arrow->arrow_properties.layer != layer)
 	    continue;
 	get_arrow3d(this_arrow, &sx, &sy, &ex, &ey);
-	term_apply_lp_properties(&(this_arrow->lp_properties));
-	apply_head_properties(&(this_arrow->headsize), this_arrow->filled);
-	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
+	term_apply_lp_properties(&(this_arrow->arrow_properties.lp_properties));
+	apply_head_properties(&(this_arrow->arrow_properties));
+	(*t->arrow) (sx, sy, ex, ey, this_arrow->arrow_properties.head);
     }
 }
 
