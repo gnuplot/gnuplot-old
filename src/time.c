@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: time.c,v 1.2 1999/06/06 18:21:08 lhecking Exp $";
+static char *RCSid() { return RCSid("$Id: time.c,v 1.3 1999/06/09 12:13:32 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - time.c */

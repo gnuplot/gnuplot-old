@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: contour.c,v 1.1 1999/03/26 21:47:35 lhecking Exp $";
+static char *RCSid() { return RCSid("$Id: contour.c,v 1.2 1999/06/09 12:13:28 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - contour.c */

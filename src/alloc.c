@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: alloc.c,v 1.3 1999/06/06 18:28:36 lhecking Exp $";
+static char *RCSid() { return RCSid("$Id: alloc.c,v 1.4 1999/06/09 12:13:27 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - alloc.c */
