@@ -1,5 +1,5 @@
 /*
- * $Id: gd.trm,v 1.35 2004/02/02 06:19:55 sfeam Exp $
+ * $Id: gd.trm,v 1.36 2004/03/11 15:30:19 mikulik Exp $
  * based on gif.trm,v 1.26.2.1 2000/05/01 00:17:20 joze
  */
 
@@ -812,7 +812,7 @@ TERM_PUBLIC int PNG_make_palette (t_sm_palette *palette)
 	if (i == 0) {
 	    i = (sm_palette.colors <= 0) ? -1 : sm_palette.colors;
 	        /* (no more colorus) : (previous palette (obviously multiplot mode)) */
-#if 1
+#if 0
 	    if (i > 0) fprintf(stderr,"reusing it again\n");
 #endif
 	}
