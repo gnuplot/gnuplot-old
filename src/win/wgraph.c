@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgraph.c,v 1.13 2001/02/10 16:25:11 mikulik Exp $";
+static char *RCSid = "$Id: wgraph.c,v 1.14 2001/02/10 17:12:53 mikulik Exp $";
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -1764,7 +1764,9 @@ WM_MOUSEMOVE: set default pointer, i.e.:
 			}
 #ifdef USE_MOUSE
 			/* Remap virtual keys to gnuplot's codes. */
-			switch (wParam) { 
+/* I WONDER IF PRESSING F1 OR OTHER KEY: COMES REALLY HERE?????? @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ */
+			if (HIWORD(wParam))
+			    switch (wParam) { 
 				case VK_BACK:
 					wParam = GP_BackSpace; break;
 				case VK_TAB:
