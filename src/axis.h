@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.18 2002/04/05 17:15:51 broeker Exp $
+ * $Id: axis.h,v 1.19 2002/07/02 17:35:19 mikulik Exp $
  *
  */
 
@@ -624,6 +624,7 @@ void set_writeback_max __PROTO((AXIS_INDEX));
 
 #define NEED_PALETTE(plot) \
    (PM3DSURFACE == (plot)->plot_style \
+    || PM3D_IMPLICIT == pm3d.implicit \
     || 1 == (plot)->lp_properties.use_palette)
 int set_pm3d_zminmax __PROTO((void));
 
