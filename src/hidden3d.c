@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.46 2004/09/30 03:21:03 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.47 2004/11/08 15:41:33 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -1097,7 +1097,7 @@ build_networks(struct surface_points *plots, int pcount)
 			    points[i].z = remember_z;
 			}
 			if (basevertex > 0)
-			    store_edge(thisvertex, edir_impulse, 0, lp, above);
+			    store_edge(basevertex, edir_impulse, 0, lp, above);
 			break;
 
 		    case POINTSTYLE:
@@ -1282,7 +1282,7 @@ build_networks(struct surface_points *plots, int pcount)
 			points[i].z = remember_z;
 		    }
 		    if (basevertex > 0)
-			store_edge(thisvertex, edir_impulse, crvlen, lp, above);
+			store_edge(basevertex, edir_impulse, 0, lp, above);
 		    break;
 
 		case POINTSTYLE:
