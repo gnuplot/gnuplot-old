@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.19 1998/11/17 20:53:07 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.20 1998/11/19 10:41:36 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -2403,7 +2403,7 @@ static void set_arrow()
     TBOOLEAN set_start, set_end, head = 1, set_axes = 0, set_line = 0;
 
     /* Init struct lp_style_type loc_lp */
-    reset_lp_properties (&arg);
+    reset_lp_properties (&loc_lp);
 
     /* get tag */
     if (!END_OF_COMMAND
@@ -2598,7 +2598,7 @@ static void set_linestyle()
     int tag;
 
     /* Init struct lp_style_type loc_lp */
-    reset_lp_properties (&arg);
+    reset_lp_properties (&loc_lp);
 
     /* get tag */
     if (!END_OF_COMMAND) {
