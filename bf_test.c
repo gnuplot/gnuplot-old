@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: bf_test.c,v 1.8 1998/11/30 21:50:42 lhecking Exp $";
+static char *RCSid = "$Id: bf_test.c,v 1.9 1998/12/02 18:38:13 lhecking Exp $";
 #endif
 
 
@@ -27,6 +27,7 @@ static char *RCSid = "$Id: bf_test.c,v 1.8 1998/11/30 21:50:42 lhecking Exp $";
 #include "alloc.h"
 
 void int_error __PROTO((char *error_text, int dummy));
+void FreeHelp __PROTO((void));
 float function __PROTO((int p, double x, double y));
 
 
