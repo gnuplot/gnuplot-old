@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.10 1998/09/21 21:03:18 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.11 1998/10/19 13:15:59 lhecking Exp $";
 #endif
 
 /*
@@ -58,7 +58,6 @@ static char *RCSid = "$Id: fit.c,v 1.10 1998/09/21 21:03:18 lhecking Exp $";
 #include <signal.h>
 
 #include "plot.h"
-#include "type.h"               /* own types */
 #include "matrix.h"
 #include "fit.h"
 #include "setshow.h"   /* for load_range */
