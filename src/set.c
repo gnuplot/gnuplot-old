@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.136 2004/07/05 03:49:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.132.2.1 2005/02/10 19:46:52 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -147,6 +147,8 @@ static void set_allzeroaxis __PROTO((void));
 static void set_xyzlabel __PROTO((label_struct * label));
 static void load_tics __PROTO((AXIS_INDEX axis));
 static void load_tic_user __PROTO((AXIS_INDEX axis));
+static void add_tic_user __PROTO((AXIS_INDEX, char * label, double position,
+				  int level));
 static void load_tic_series __PROTO((AXIS_INDEX axis));
 static void load_offsets __PROTO((double *a, double *b, double *c, double *d));
 static void parse_colorspec __PROTO((struct t_colorspec *tc, int option));
@@ -158,6 +160,8 @@ static int assign_arrowstyle_tag __PROTO((void));
 static int looks_like_numeric __PROTO((char *));
 static int set_tic_prop __PROTO((AXIS_INDEX));
 static char *fill_numbers_into_string __PROTO((char *pattern));
+static struct text_label * new_text_label __PROTO((int tag));
+static void parse_label_options __PROTO((struct text_label *this_label));
 
 #ifdef PM3D
 static void check_palette_grayscale __PROTO((void));
@@ -165,11 +169,6 @@ static int set_palette_defined __PROTO((void));
 static void set_palette_file __PROTO((void));
 static void set_palette_function __PROTO((void));
 #endif
-#ifdef EAM_HISTOGRAMS
-static void parse_histogramstyle __PROTO((histogram_style *hs, 
-		t_histogram_type def_type, int def_gap));
-#endif
-  
 
 /* Backwards compatibility ... */
 static void set_nolinestyle __PROTO((void));
@@ -217,10 +216,6 @@ set_command()
 
 	    if (temp_style & PLOT_STYLE_HAS_ERRORBAR)
 		int_error(c_token, "style not usable for function plots, left unchanged");
-#ifdef EAM_HISTOGRAMS
-	    else if (temp_style == HISTOGRAMS)
-		int_error(c_token, "style not usable for function plots, left unchanged");
-#endif
 	    else
 		func_style = temp_style;
 	}
@@ -1475,7 +1470,7 @@ set_key()
 
 #ifdef BACKWARDS_COMPATIBLE
     if (END_OF_COMMAND) {
-	reset_key();
+    	reset_key();
 	key->title[0] = '\0';
 	if (interactive)
 	    int_warn(c_token, "deprecated syntax, use \"set key default\"");
@@ -1537,12 +1532,6 @@ set_key()
 	    case S_KEY_NOREVERSE:
 		key->reverse = FALSE;
 		break;
-	    case S_KEY_INVERT:
-		key->invert = TRUE;
-		break;
-	    case S_KEY_NOINVERT:
-		key->invert = FALSE;
-		break;
 	    case S_KEY_ENHANCED:
 		key->enhanced = TRUE;
 		break;
@@ -1588,15 +1577,10 @@ set_key()
 		c_token--; /* it is incremented after loop */
 		break;
 	    case S_KEY_AUTOTITLES:
-		if (almost_equals(++c_token, "col$umnheader"))
-		    key->auto_titles = COLUMNHEAD_KEYTITLES;
-		else {
-		    key->auto_titles = FILENAME_KEYTITLES;
-		    c_token--;
-		}
+		key->auto_titles = TRUE;
 		break;
 	    case S_KEY_NOAUTOTITLES:
-		key->auto_titles = NOAUTO_KEYTITLES;
+		key->auto_titles = FALSE;
 		break;
 	    case S_KEY_TITLE:
 		if (isstring(c_token+1)) {
@@ -2355,7 +2339,7 @@ set_palette_defined()
 	++num;
 
 	if ( num >= actual_size ) {
-	    /* get more space for the gradient */
+ 	    /* get more space for the gradient */
 	    actual_size += 10;
 	    sm_palette.gradient = (gradient_struct*)
 	      gp_realloc( sm_palette.gradient,
@@ -2364,11 +2348,11 @@ set_palette_defined()
 	}
 	sm_palette.gradient[num].pos = p;
 	sm_palette.gradient[num].col.r = r;
-	sm_palette.gradient[num].col.g = g;
+ 	sm_palette.gradient[num].col.g = g;
 	sm_palette.gradient[num].col.b = b;
 	if (equals(c_token,")") ) break;
 	if ( !equals(c_token,",") )
-	    int_error( c_token, "Expected comma." );
+ 	    int_error( c_token, "Expected comma." );
 	++c_token;
 
 }
@@ -3058,14 +3042,7 @@ set_style()
 	{
 	    enum PLOT_STYLE temp_style = get_style();
 
-	    if (temp_style & PLOT_STYLE_HAS_ERRORBAR
-#ifdef EAM_DATASTRINGS
-	       || (temp_style == LABELPOINTS)
-#endif
-#ifdef EAM_HISTOGRAMS
-		|| (temp_style == HISTOGRAMS)
-#endif
-	        )
+	    if (temp_style & PLOT_STYLE_HAS_ERRORBAR)
 		int_error(c_token, "style not usable for function plots, left unchanged");
 	    else
 		func_style = temp_style;
@@ -3091,11 +3068,6 @@ set_style()
     case SHOW_STYLE_ARROW:
 	set_arrowstyle();
 	break;
-#ifdef EAM_HISTOGRAMS
-    case SHOW_STYLE_HISTOGRAM:
-	parse_histogramstyle(&histogram_opts,HT_CLUSTERED,histogram_opts.gap);
-	break;
-#endif
     default:
 	int_error(c_token,
 		  "expecting 'data', 'function', 'line', 'fill' or 'arrow'" );
@@ -3720,7 +3692,7 @@ set_xyzlabel(label_struct *label)
 	    continue;
 	}
 
-	int_error(c_token,"unexpected or unrecognized option");
+    	int_error(c_token,"unexpected or unrecognized option");
     }
 }
 
@@ -3974,6 +3946,30 @@ load_tic_user(AXIS_INDEX axis)
     c_token++;
 }
 
+/*
+ * Add a single tic mark, with label, to the list for this axis.
+ */
+/* HBB 20020911: added 'static' */
+static void
+add_tic_user(AXIS_INDEX axis, char *label, double position, int level)
+{
+    struct ticmark *tic;		/* new ticmark */
+
+    /* Make a new ticmark */
+    tic = gp_alloc(sizeof(struct ticmark), "add_tic_user: ticmark");
+    if (label) {
+	tic->label = gp_alloc(strlen(label) + 1, "tic label");
+	(void) strcpy(tic->label, label);
+    } else
+	tic->label = NULL;
+    tic->position = position;
+    tic->level = level;
+
+    /* Insert this tic at head of tic list for this axis */
+    tic->next = axis_array[axis].ticdef.def.user;
+    axis_array[axis].ticdef.def.user = tic;
+}
+
 void
 free_marklist(struct ticmark *list)
 {
@@ -4187,6 +4183,7 @@ fill_numbers_into_string(char *pattern)
 }
 
 /*
+ * EAM - July 2002
  * Parse the sub-options of text color specification
  *   { def$ault | lt <linetype> | pal$ette { cb <val> | frac$tion <val> | z }
  * The ordering of alternatives shown in the line above is kept in the symbol definitions
@@ -4254,9 +4251,10 @@ parse_colorspec(struct t_colorspec *tc, int options)
 
 /*
  * new_text_label() allocates and initializes a text_label structure.
- * This routine is also used by the plot and splot with labels commands.
+ * This routine will eventually be exported so it can be shared by the
+ * plot and splot with labels commands.
  */
-struct text_label *
+static struct text_label *
 new_text_label(int tag)
 {
     struct text_label *new;
@@ -4288,7 +4286,7 @@ new_text_label(int tag)
  * This is called from set_label, and will eventually be called from
  * plot2d and plot3d to handle options for 'plot with labels'
  */
-void
+static void
 parse_label_options( struct text_label *this_label )
 {
     struct value a;
@@ -4433,13 +4431,8 @@ parse_label_options( struct text_label *this_label )
 
 	/* Coming here means that none of the previous 'if's struck
 	 * its "continue" statement, i.e.  whatever is in the command
-	 * line is forbidden by the 'set label' command syntax.
-	 * On the other hand, 'plot with labels' may have additional stuff coming up.
-	 */
-	if (this_label->tag == -1)
-	    break;
-	else
-	    int_error(c_token, "extraneous or contradicting arguments in label options");
+	 * line is forbidden by the command syntax. */
+	int_error(c_token, "extraneous or contradicting arguments in label options");
 
     } /* while(!END_OF_COMMAND) */
 
@@ -4476,55 +4469,3 @@ parse_label_options( struct text_label *this_label )
 	this_label->textcolor.value = this_label->place.z;
 }
 
-
-#ifdef EAM_HISTOGRAMS
-/* <histogramstyle> = {clustered {gap <n>} | rowstacked | columnstacked} */
-/*                    {title <title_options>}                            */
-void
-parse_histogramstyle( histogram_style *hs, 
-		t_histogram_type def_type,
-		int def_gap)
-{
-    struct value a;
-    label_struct title_specs;
-
-    /* Set defaults */
-    hs->type  = def_type;
-    hs->gap   = def_gap;
-
-    if (END_OF_COMMAND)
-	return;
-    if (!equals(c_token,"hs") && !almost_equals(c_token,"hist$ogram"))
-	return;
-    c_token++;
-
-    while (!END_OF_COMMAND) {
-	if (almost_equals(c_token, "clust$ered")) {
-	    hs->type = HT_CLUSTERED;
-	    c_token++;
-	} else if (almost_equals(c_token, "rows$tacked")) {
-	    hs->type = HT_STACKED_IN_LAYERS;
-	    c_token++;
-	} else if (almost_equals(c_token, "columns$tacked")) {
-	    hs->type = HT_STACKED_IN_TOWERS;
-	    c_token++;
-	} else if (equals(c_token, "gap")) {
-	    if (isanumber(++c_token))
-		hs->gap = (int)real(const_express(&a));
-	    else
-		int_error(c_token,"expected gap value");
-	} else if (almost_equals(c_token, "ti$tle")) {
-	    title_specs.xoffset = hs->title.hoffset;
-	    title_specs.yoffset = hs->title.voffset;
-	    set_xyzlabel(&title_specs);
-	    memcpy(&hs->title.textcolor,&title_specs.textcolor,sizeof(t_colorspec));
-	    hs->title.hoffset = title_specs.xoffset;
-	    hs->title.voffset = title_specs.yoffset;
-	    /* EAM FIXME - could allocate space and copy parsed font instead */
-	    hs->title.font = &(axis_array[FIRST_X_AXIS].label.font[0]);
-	} else
-	    /* We hit something unexpected */
-	    break;
-    }
-}
-#endif /* EAM_HISTOGRAMS */
