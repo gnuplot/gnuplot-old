@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wpause.c,v 1.2 2001/01/16 20:20:17 broeker Exp $";
+static char *RCSid() { return RCSid("$Id: wpause.c,v 1.3 2002/03/10 18:54:52 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - win/wpause.c */
