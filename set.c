@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.2 1998/04/15 19:49:52 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.3 1998/04/16 19:29:15 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -40,8 +40,8 @@ static char *RCSid = "$Id: set.c,v 1.2 1998/04/15 19:49:52 lhecking Exp $";
  * Added user-specified bases for log scaling.
  */
 
-#include <math.h>
 #include "plot.h"
+#include "stdfn.h"
 #include "setshow.h"
 #include "national.h"
 
