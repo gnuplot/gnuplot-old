@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.29 2002/02/13 22:58:18 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.30 2002/02/14 14:28:20 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -987,7 +987,7 @@ static void
 unset_mouse()
 {
     mouse_setting.on = 0;
-#if defined(USE_MOUSE) && defined(OS2)
+#ifdef OS2
     update_menu_items_PM_terminal();
 #endif
     UpdateStatusline(); /* wipe status line */
