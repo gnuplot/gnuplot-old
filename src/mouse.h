@@ -1,5 +1,5 @@
 /*
- * $Id: mouse.h,v 1.11 2002/02/25 03:10:41 broeker Exp $
+ * $Id: mouse.h,v 1.12 2003/10/10 13:16:45 mikulik Exp $
  */
 
 /* GNUPLOT - mouse.h */
@@ -75,7 +75,6 @@ extern mouse_setting_t mouse_setting;
 /* enum of GP_ -keycodes has moved to mousecmn.h so that it can be 
  * accessed by standalone terminals too */
 
-enum { MODE_QUERY, MODE_PLOT, MODE_SPLOT };
 
 /* FIXME HBB 20010207: Codestyle violation, again. */
 #ifdef _MOUSE_C
