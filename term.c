@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.22 1999/03/04 20:49:26 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.23 1999/03/10 21:21:54 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -205,7 +205,7 @@ static void term_close_output()
 void term_set_output(dest)
 char *dest;
 {
-    FILE *f;
+    FILE *f = NULL;
 
     FPRINTF((stderr, "term_set_output\n"));
     assert(dest == NULL || dest != outstr);
