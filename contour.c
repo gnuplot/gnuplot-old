@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: contour.c,v 1.7 1998/10/19 19:39:57 lhecking Exp $";
+static char *RCSid = "$Id: contour.c,v 1.8 1998/11/19 10:38:35 lhecking Exp $";
 #endif
 
 /* GNUPLOT - contour.c */
@@ -285,7 +285,7 @@ double x, y;
 /*
  * Done with current contour - create gnuplot data structure for it.
  */
-static void end_crnt_cntr(void)
+static void end_crnt_cntr()
 {
     int i;
     struct gnuplot_contours *cntr = (struct gnuplot_contours *)
