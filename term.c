@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.16 1998/11/26 19:00:33 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.17 1998/12/02 18:36:36 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -114,6 +114,7 @@ static double term_pointsize;
 
 static void term_suspend __PROTO((void));
 static void term_close_output __PROTO((void));
+static void null_linewidth __PROTO((double));
 
 void do_point __PROTO((unsigned int x, unsigned int y, int number));
 void do_pointsize __PROTO((double size));
