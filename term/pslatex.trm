@@ -1,5 +1,5 @@
 /*
- * $Id: pslatex.trm,v 1.27.2.1 2000/05/25 07:37:00 mikulik Exp $
+ * $Id: pslatex.trm,v 1.27.2.2 2000/05/25 08:09:19 mikulik Exp $
  */
 
 /* GNUPLOT - pslatex.trm */
@@ -106,7 +106,7 @@ static TBOOLEAN PSLATEX_useAuxFile = FALSE;
 /* name of auxiliary file */
 static char *PSLATEX_auxname;
 /* FILE * to auxiliary file */
-static FILE *PSLATEX_auxfile;
+FILE *PSLATEX_auxfile;
 
 static TBOOLEAN PSLATEX_output = TRUE;	/* do we write LaTeX? */
 
@@ -592,9 +592,15 @@ double ps;
 
 TERM_PUBLIC int PSLATEX_make_palette (t_sm_palette *palette)
 {
-    if (PSLATEX_auxfile)
-	return 0;
-    return PS_make_palette(palette);
+    if (PSLATEX_auxfile) {
+	FILE *tmp = gpoutfile;
+	int res;
+	gpoutfile = PSLATEX_auxfile;
+	res = PS_make_palette(palette);
+	gpoutfile = tmp;
+	return res;
+    } else
+	return PS_make_palette(palette);
 }
 
 TERM_PUBLIC void PSLATEX_set_color (double gray)
@@ -621,14 +627,12 @@ TERM_PUBLIC void PSLATEX_filled_polygon ( int points, gpiPoint *corners )
 
 TERM_PUBLIC void PSLATEX_previous_palette ( void )
 {
-#if 0
     if (PSLATEX_auxfile) {
 	FILE *tmp = gpoutfile;
 	gpoutfile = PSLATEX_auxfile;
 	PS_previous_palette();
 	gpoutfile = tmp;
     } else
-#endif
 	PS_previous_palette();
 }
 

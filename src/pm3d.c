@@ -428,8 +428,10 @@ void pm3d_draw_all(struct surface_points* plots, int pcount)
 
     /* for pm3dCompress.awk */
     if (!strcmp(term->name,"postscript") || 
-	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex"))
-	fprintf(gpoutfile,"%%pm3d_map_begin\n");
+	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex")) {
+	extern FILE *PSLATEX_auxfile;
+	fprintf(PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile,"%%pm3d_map_begin\n");
+    }
 
     for ( ; pm3d.where[i]; i++ ) {
 	this_plot = plots;
@@ -450,9 +452,12 @@ void pm3d_draw_all(struct surface_points* plots, int pcount)
 		filled_color_contour_plot(this_plot, CONTOUR_BASE);
 	}
 
+    /* for pm3dCompress.awk */
     if (!strcmp(term->name,"postscript") ||
-	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex"))
-	fprintf(gpoutfile,"%%pm3d_map_end\n"); /* for pm3dCompress.awk */
+	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex")) {
+	extern FILE *PSLATEX_auxfile;
+	fprintf(PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile,"%%pm3d_map_end\n");
+    }
 
     /* draw colour box */
     draw_color_smooth_box();

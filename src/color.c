@@ -309,30 +309,32 @@ void draw_inside_color_smooth_box_postscript
 ( int x_from, int y_from, int x_to, int y_to )
 {
     extern FILE *gpoutfile;
+    extern FILE *PSLATEX_auxfile;
+    FILE *out = PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile;
     int scale_x = (x_to-x_from), scale_y = (y_to-y_from);
-    fprintf(gpoutfile,"stroke gsave /imax 1024 def\t%% draw gray scale smooth box\n");
+    fprintf(out,"stroke gsave /imax 1024 def\t%% draw gray scale smooth box\n");
     /* nb. of discrete steps (counted in the loop) */
-    fprintf(gpoutfile,"%i %i translate %i %i scale 0 setlinewidth\n",
+    fprintf(out,"%i %i translate %i %i scale 0 setlinewidth\n",
 	x_from, y_from, scale_x, scale_y);
     /* define left bottom corner and scale of the box so that all coordinates
        of the box are from [0,0] up to [1,1]. Further, this normalization
        makes it possible to pass y from [0,1] as parameter to setgray */
-    fprintf(gpoutfile,"/ystep 1 imax div def /y0 0 def /ii 0 def\n");
+    fprintf(out,"/ystep 1 imax div def /y0 0 def /ii 0 def\n");
     /* local variables; y-step, current y position and counter ii;  */
     if (sm_palette.positive == SMPAL_NEGATIVE) /* inverted gray for negative figure */
-	fprintf(gpoutfile,"{ 1 y0 sub g ");
-    else fprintf(gpoutfile,"{ y0 g ");
+	fprintf(out,"{ 1 y0 sub g ");
+    else fprintf(out,"{ y0 g ");
     if (color_box.rotation == 'v')
-	fprintf(gpoutfile,"0 y0 N 1 0 V 0 ystep V -1 0 f\n");
+	fprintf(out,"0 y0 N 1 0 V 0 ystep V -1 0 f\n");
     else
-	fprintf(gpoutfile,"y0 0 N 0 1 V ystep 0 V 0 -1 f\n");
-    fprintf(gpoutfile,"/y0 y0 ystep add def /ii ii 1 add def\n");
-    fprintf(gpoutfile,"ii imax gt {exit} if } loop\n");
+	fprintf(out,"y0 0 N 0 1 V ystep 0 V 0 -1 f\n");
+    fprintf(out,"/y0 y0 ystep add def /ii ii 1 add def\n");
+    fprintf(out,"ii imax gt {exit} if } loop\n");
     /* now black boundary around the box */
-    fprintf(gpoutfile,"0 setgray gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
-    fprintf(gpoutfile,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
+    fprintf(out,"0 setgray gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
+    fprintf(out,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
     /* that strange  2 mul  is there because grid is twice thicker, see /BL */
-    fprintf(gpoutfile,"grestore 0 setgray\n");
+    fprintf(out,"grestore 0 setgray\n");
 } /* end of optimized PS output */
 
 
