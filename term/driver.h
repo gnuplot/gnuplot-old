@@ -1,6 +1,6 @@
-/* $Id: driver.h,v 1.6 1998/10/13 20:33:27 lhecking Exp $ */
+/* $Id: driver.h,v 1.7 1998/11/03 12:45:41 lhecking Exp $ */
 
-/* GNUPLOT - driver.h  $Id: driver.h,v 1.6 1998/10/13 20:33:27 lhecking Exp $ */
+/* GNUPLOT - driver.h  $Id: driver.h,v 1.7 1998/11/03 12:45:41 lhecking Exp $ */
 
 /*[
  * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
@@ -35,10 +35,6 @@
 
 #ifndef TERM_DRIVER_H
 #define TERM_DRIVER_H
-
-#include "plot.h"
-#include "bitmap.h"
-#include "setshow.h"
 
 #if 0
 /* Dangerous; putc may already be defined as fputc */
