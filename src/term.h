@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.26 2004/08/02 18:36:43 sfeam Exp $
+ * $Id: term.h,v 1.27 2004/12/31 23:02:46 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -424,6 +424,10 @@
 
 #ifdef USE_GGI_DRIVER
 # include "ggi.trm"
+#endif
+
+#ifdef GP_ENH_EST
+#include "estimate.trm"
 #endif
 
 #endif /* !SHORT_TERMLIST */
