@@ -43,6 +43,7 @@
 
 /* defined in graph3d.c */
 void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned int *yt));
+void map3d_position __PROTO((struct position* pos, unsigned int *xt, unsigned int *yt, const char* what));
 
 /* COLOUR MODES - GLOBAL VARIABLES */
 
@@ -60,10 +61,14 @@ t_sm_palette sm_palette = {
 /* SMOOTH COLOUR BOX - GLOBAL VARIABLE */
 
 color_box_struct color_box = {
-    SMCOLOR_BOX_DEFAULT,	/* draw at default_pos */
-    'v'	/* vertical change (gradient) of colours */
-};
+    SMCOLOR_BOX_DEFAULT, /* draw at default_pos */
+    'v', /* vertical change (gradient) of colours */
+    1, /* border is on by default */
+    -1, /* use default border */
 
+    0, 0, /* origin */
+    1, 1  /* size */
+};
 
 
 /********************************************************************
@@ -173,11 +178,12 @@ void set_color ( double gray )
 }
 
 
+#if 0
 /*
    Makes mapping from real 3D coordinates to 2D terminal coordinates,
    then draws filled polygon
  */
-void filled_polygon ( int points, gpdPoint *corners )
+static void filled_polygon ( int points, gpdPoint *corners )
 {
     int i;
     gpiPoint *icorners;
@@ -193,6 +199,7 @@ void filled_polygon ( int points, gpdPoint *corners )
     term->filled_polygon( points, icorners );
     free( icorners );
 }
+#endif
 
 
 /* The routine above for 4 points explicitly.
@@ -305,8 +312,8 @@ void filled_polygon_3dcoords_zfixed ( int points, struct coordinate GPHUGE *coor
    This routine is for postscript files --- actually, it writes a small
    PS routine
  */
-void draw_inside_color_smooth_box_postscript
-( int x_from, int y_from, int x_to, int y_to )
+static void draw_inside_color_smooth_box_postscript
+( int x_from, int y_from, int x_to, int y_to, int border, int border_lt_tag )
 {
     extern FILE *gpoutfile;
     extern FILE *PSLATEX_auxfile;
@@ -331,8 +338,18 @@ void draw_inside_color_smooth_box_postscript
     fprintf(out,"/y0 y0 ystep add def /ii ii 1 add def\n");
     fprintf(out,"ii imax gt {exit} if } loop\n");
     /* now black boundary around the box */
-    fprintf(out,"0 setgray gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
-    fprintf(out,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
+    if (border) {
+	if (border_lt_tag >= 0) {
+	    /* user specified line type */
+	    struct lp_style_type lp;
+	    lp_use_properties(&lp, border_lt_tag, 1);
+	    term_apply_lp_properties(&lp);
+	} else {
+	    fprintf(out,"0 setgray ");
+	}
+	fprintf(out,"gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
+	fprintf(out,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
+    }
     /* that strange  2 mul  is there because grid is twice thicker, see /BL */
     fprintf(out,"grestore 0 setgray\n");
 } /* end of optimized PS output */
@@ -344,8 +361,8 @@ void draw_inside_color_smooth_box_postscript
    This routine is for non-postscript files, as it does explicitly the loop
    over all thin rectangles
  */
-void draw_inside_color_smooth_box_bitmap
-( int x_from, int y_from, int x_to, int y_to )
+static void draw_inside_color_smooth_box_bitmap
+( int x_from, int y_from, int x_to, int y_to, int border, int border_lt_tag )
 {
     int steps = 128; /* I think that nobody can distinguish more colours from the palette */
     int i, xy, xy2, xy_from, xy_to;
@@ -388,18 +405,41 @@ void draw_inside_color_smooth_box_bitmap
 	term->filled_polygon( 4, corners );
     }
 
-    /* now make boundary around the colour box */
-    { /* black solid colour should be chosen, so it's border linetype */
-	extern struct lp_style_type border_lp;
-	term_apply_lp_properties(&border_lp);
+    if (border) {
+	/* now make boundary around the colour box */
+	if (border_lt_tag >= 0) {
+	    /* user specified line type */
+	    struct lp_style_type lp;
+	    lp_use_properties(&lp, border_lt_tag, 1);
+	    term_apply_lp_properties(&lp);
+	} else {
+	    /* black solid colour should be chosen, so it's border linetype */
+	    extern struct lp_style_type border_lp;
+	    term_apply_lp_properties(&border_lp);
+	}
+	(term->move) (x_from,y_from);
+	(term->vector) (x_to,y_from);
+	(term->vector) (x_to,y_to);
+	(term->vector) (x_from,y_to);
+	(term->vector) (x_from,y_from);
     }
-    (term->move) (x_from,y_from);
-    (term->vector) (x_to,y_from);
-    (term->vector) (x_to,y_to);
-    (term->vector) (x_from,y_to);
-    (term->vector) (x_from,y_from);
 }
 
+static float
+color_box_text_displacement(const char* str, int just)
+{
+    if (JUST_TOP) {
+	if (just && strchr(str, '^') != NULL) /* adjust it = sth like JUST_TOP */
+	    return 1.15; /* the string contains upper index, so shift the string down */
+	else
+	    return 0.6;
+    } else {
+	if (strchr(str, '_') != NULL) /* adjust it = sth like JUST_BOT */
+	    return 1.0; /* the string contains lower index, so shift the string up */
+	else
+	    return 0.75; 
+    }
+}
 
 /*
    Finally the main colour smooth box drawing routine
@@ -425,12 +465,12 @@ void draw_color_smooth_box ()
        }
      */
     if (color_box.where == SMCOLOR_BOX_USER) {
-	fprintf(stderr,"color box can be NO or DEFAULT. Programmer wanted!\n");
-	return;
-	/* LATER (when it works for COORDVAL)
-	   x_from = color_box.xlow; x_to = color_box.xhigh  or xlow+xsize;
-	   y_from = color_box.ylow; y_to = color_box.yhigh  OR yhigh+ysize;
-	 */
+	x_from = color_box.xorigin * (term->xmax) + 0.5;
+	y_from = color_box.yorigin * (term->ymax) + 0.5;
+	x_to   = color_box.xsize   * (term->xmax) + 0.5;
+	y_to   = color_box.ysize   * (term->ymax) + 0.5;
+	x_to += x_from;
+	y_to += y_from;
     }
     else { /* color_box.where == SMCOLOR_BOX_DEFAULT */
 	double dx = ( max_array[FIRST_X_AXIS] - min_array[FIRST_X_AXIS] );
@@ -455,39 +495,56 @@ void draw_color_smooth_box ()
      */
     if (!strcmp(term->name,"postscript") ||
 	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex"))
-	draw_inside_color_smooth_box_postscript( x_from, y_from, x_to, y_to );
+	draw_inside_color_smooth_box_postscript( x_from, y_from, x_to, y_to, color_box.border , color_box.border_lt_tag);
     else
-	draw_inside_color_smooth_box_bitmap ( x_from, y_from, x_to, y_to );
+	draw_inside_color_smooth_box_bitmap ( x_from, y_from, x_to, y_to, color_box.border, color_box.border_lt_tag );
 
     /* and finally place text of min z and max z below and above wrt
        colour box, respectively
      */
-    if (term->justify_text) term->justify_text(LEFT);
 
-    tmp = 0.75; /* rel. distance between bottom label and the bottom edge of
-		   the box (in term->v_char units) */
 #if 0
     sprintf(s,"%g",used_pm3d_zmin);
 #else /* format the label using `set format z` */
     gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], used_pm3d_zmin);
-    if (strchr(s,'^') != NULL) /* adjust it = sth like JUSTIFY_TOP */
-	tmp = 1.15; /* the string contains upper index, so shift the string down */
 #endif
-    (term->put_text) (x_from,y_from - term->v_char * tmp,s);
+    if (color_box.rotation == 'v') {
+	if (term->justify_text) term->justify_text(LEFT);
+	tmp = color_box_text_displacement(s, JUST_TOP);
+	(term->put_text) (x_from, y_from - term->v_char * tmp, s);
+    } else {
+	if (term->justify_text) term->justify_text(CENTRE);
+	if (y_to > term->ymax / 2) {
+	    /* color box is somewhere at the top, draw the text below */
+	    tmp = color_box_text_displacement(s, JUST_TOP);
+	    (term->put_text) (x_from, y_from - term->v_char * tmp, s);
+	} else {
+	    /* color box is somewhere at the bottom, draw the text above */
+	    tmp = color_box_text_displacement(s, JUST_BOT);
+	    (term->put_text) (x_from, y_to + term->v_char * tmp, s);
+	}
+    }
 
-    tmp = 0.6; /* rel. distance between lower label and the lower edge of the box */
 #if 0
     sprintf(s,"%g",used_pm3d_zmax);
 #else
     gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], used_pm3d_zmax);
-    if (strchr(s,'_') != NULL) /* adjust it = sth like JUSTIFY_BOTTOM */
-	tmp = 1.0; /* the string contains lower index, so shift the string up */
 #endif
-    if (color_box.rotation == 'v')
-	(term->put_text) (x_from,y_to + term->v_char * tmp,s);
-    else {
-	if (term->justify_text) term->justify_text(RIGHT);
-	(term->put_text) (x_to,y_to + term->v_char * tmp,s);
+    if (color_box.rotation == 'v') {
+	/* text was eventually already left-justified above */
+	tmp = color_box_text_displacement(s, JUST_BOT);
+	(term->put_text) (x_from,y_to + term->v_char * tmp, s);
+    } else {
+	if (term->justify_text) term->justify_text(CENTRE);
+	if (y_to > term->ymax / 2) {
+	    tmp = color_box_text_displacement(s, JUST_TOP);
+	    /* color box is somewhere at the top, draw the text below */
+	    (term->put_text) (x_to, y_from - term->v_char * tmp, s);
+	} else {
+	    tmp = color_box_text_displacement(s, JUST_BOT);
+	    /* color box is somewhere at the top, draw the text below */
+	    (term->put_text) (x_to, y_to + term->v_char * tmp, s);
+	}
     }
 
 }

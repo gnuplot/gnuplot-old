@@ -23,7 +23,7 @@
 #define PM3D_H
 
 
-#define PM3D_VERSION "gp38b-pm3d"
+#define PM3D_VERSION "gp38c-pm3d"
 
 #ifdef EXTENDED_COLOR_SPECS
 #ifdef _COLOR_C

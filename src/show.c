@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.36.2.2 2000/05/03 21:26:12 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.36.2.3 2000/06/09 07:47:58 joze Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1656,14 +1656,27 @@ static void show_palette()
 	if (sm_palette.use_maxcolors) fprintf(stderr,"MAX %i",sm_palette.use_maxcolors);
 	else fprintf(stderr,"ALL remaining");
 	fprintf(stderr," color positions for discrete palette terminals\n");
-	fprintf(stderr,"\tcolor box is ");
-	if (color_box.where == SMCOLOR_BOX_NO )
-	    fprintf(stderr,"NOT drawn\n");
-	else {
-	    fprintf(stderr,"drawn at %s position\n",
-		color_box.where == SMCOLOR_BOX_DEFAULT ? "DEFAULT" : "USER");
+	if (color_box.border) {
+	    fprintf(stderr,"\tcolor box with border, ");
+	    if (color_box.border_lt_tag >= 0)
+		fprintf(stderr,"line type %d is ", color_box.border_lt_tag);
+	    else
+		fprintf(stderr,"DEFAULT line type is ");
+	} else {
+	    fprintf(stderr,"\tcolor box without border is ");
 	}
-	fprintf(stderr,"\tuser position and size is not yet implemented (you are welcome!)\n");
+	if (color_box.where == SMCOLOR_BOX_NO ) {
+	    fprintf(stderr,"NOT drawn\n");
+	} else if (color_box.where == SMCOLOR_BOX_DEFAULT ) {
+	    fprintf(stderr,"drawn at DEFAULT position\n");
+	} else if (color_box.where == SMCOLOR_BOX_USER ) {
+	    fprintf(stderr,"drawn at USER position:\n");
+	    fprintf(stderr,"\t\torigin: %f, %f\n", color_box.xorigin, color_box.yorigin);
+	    fprintf(stderr,"\t\tsize  : %f, %f\n", color_box.xsize  , color_box.ysize  );
+	} else {
+	    /* should *never* happen */
+	    fprintf(stderr, "%s:%d please report this bug to <johannes@zellner.org>\n", __FILE__, __LINE__);
+	}
 	fprintf(stderr,"\tcolor gradient is %s in the color box\n",
 	    color_box.rotation == 'v' ? "VERTICAL" : "HORIZONTAL");
 	return;

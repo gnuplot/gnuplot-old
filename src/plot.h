@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29.2.3 2000/06/04 12:53:20 joze Exp $
+ * $Id: plot.h,v 1.29.2.4 2000/06/09 07:47:58 joze Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -596,6 +596,16 @@ struct surface_points {
 	struct iso_curve *iso_crvs;
 };
 
+/* we might specify a co-ordinate in first/second/graph/screen coords */
+/* allow x,y and z to be in separate co-ordinates ! */
+enum position_type { first_axes, second_axes, graph, screen };
+
+struct position {
+	enum position_type scalex,scaley,scalez;
+	double x,y,z;
+};
+
+
 #ifdef PM3D
 /* color.h is included here, since it requires the definition of `coordinate' */
 #include "color.h"
@@ -692,15 +702,6 @@ struct TERMENTRY {
 # define termentry TERMENTRY
 #endif
 
-
-/* we might specify a co-ordinate in first/second/graph/screen coords */
-/* allow x,y and z to be in separate co-ordinates ! */
-enum position_type { first_axes, second_axes, graph, screen };
-
-struct position {
-	enum position_type scalex,scaley,scalez;
-	double x,y,z;
-};
 
 struct text_label {
 	struct text_label *next;	/* pointer to next label in linked list */

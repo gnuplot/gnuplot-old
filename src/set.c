@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.3 2000/06/04 12:53:20 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.4 2000/06/09 07:47:58 joze Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2700,6 +2700,8 @@ set_palette()
 
 	color_box.where = SMCOLOR_BOX_DEFAULT;
 	color_box.rotation = 'v';
+	color_box.border = 1;
+	color_box.border_lt_tag = -1; /* use default border */
     }
     else { /* go through all options of 'set palette' */
 	for ( ; !END_OF_COMMAND && !equals(c_token,";"); c_token++ ) {
@@ -2784,8 +2786,63 @@ set_palette()
 		color_box.where = SMCOLOR_BOX_DEFAULT;
 		continue;
 	    }
-	    if (almost_equals(c_token, "cbuser")) {
+	    if (almost_equals(c_token, "cbu$ser")) {
 		color_box.where = SMCOLOR_BOX_USER;
+		continue;
+	    }
+	    if (almost_equals(c_token, "bo$rder")) {
+
+		color_box.border = 1;
+		c_token++;
+
+		if (!END_OF_COMMAND) {
+		    /* expecting a border line type */
+		    struct value a;
+		    color_box.border_lt_tag = real(const_express(&a));
+		    if (color_box.border_lt_tag <= 0) {
+			color_box.border_lt_tag = 0;
+			int_error(c_token, "tag must be strictly positive (see `help set style line')");
+		    }
+		    --c_token; /* why ? (joze) */
+		}
+		continue;
+	    }
+	    if (almost_equals(c_token, "bd$efault")) {
+		color_box.border_lt_tag = -1; /* use default border */
+		continue;
+	    }
+	    if (almost_equals(c_token, "nob$order")) {
+		color_box.border = 0;
+		continue;
+	    }
+	    if (almost_equals(c_token, "o$rigin")) {
+		c_token++;
+		if (END_OF_COMMAND) {
+		    int_error(c_token, "expecting screen value [0 - 1]");
+		} else {
+		    struct value a;
+		    color_box.xorigin = real(const_express(&a));
+		    if (!equals(c_token,","))
+			int_error(c_token, "',' expected");
+		    c_token++;
+		    color_box.yorigin = real(const_express(&a));
+		    c_token--;
+		} 
+		continue;
+	    }
+	    if (almost_equals(c_token, "s$ize")) {
+		c_token++;
+		if (END_OF_COMMAND) {
+		    int_error(c_token, "expecting screen value [0 - 1]");
+		} else {
+		    struct value a;
+		    color_box.xsize = real(const_express(&a));
+		    if (!equals(c_token,","))
+			int_error(c_token, "',' expected");
+		    c_token++;
+		    color_box.ysize = real(const_express(&a));
+		    c_token--;
+		} 
 		continue;
 	    }
 	    int_error(c_token,"invalid palette option");
@@ -4387,7 +4444,7 @@ int axis;
 double val;
 {
     TBOOLEAN islog;
-    double logbase;
+    double logbase = 0;
 
     /* check whether value is in logscale */
     switch( axis ) {

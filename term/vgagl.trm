@@ -1,5 +1,5 @@
 /*
- * $Id: vgagl.trm,v 1.1.2.2 2000/05/04 14:41:39 joze Exp $
+ * $Id: vgagl.trm,v 1.1.2.3 2000/06/09 07:47:58 joze Exp $
  */
 
 #if defined(USE_MOUSE) && defined(PM3D)
@@ -135,6 +135,7 @@ static const int VGAGL_8bit_colors = 240;
 static const int pm3d_color_offset = 16; /* 0xff - VGAGL_8bit_colors + 1 */
 
 static int VGAGL_pm3d_colors;
+static int VGAGL_pm3d_colors_; /* VGAGL_pm3d_colors - 1 */
 static t_sm_palette VGAGL_save_pal = {
     -1, -1, -1, -1, -1, -1, -1, -1,
     (rgb_color*) 0, -1, -1
@@ -677,6 +678,7 @@ VGAGL_get_mode(void)
     VGAGL_truecolor = no;
 #endif
     VGAGL_pm3d_colors = VGAGL_8bit_colors;
+    VGAGL_pm3d_colors_ = VGAGL_pm3d_colors - 1;
 
     if (modeinfo->colors != 256) {
 	int_error(NO_CARET, "Error: need a 256 color mode but got %d colors\n",
@@ -686,6 +688,7 @@ VGAGL_get_mode(void)
     } else if (modeinfo->colors > 256) {
 	VGAGL_truecolor = yes;
 	VGAGL_pm3d_colors = VGAGL_tri_colors;
+	VGAGL_pm3d_colors_ = VGAGL_pm3d_colors - 1;
 #endif
     }
     return 1; /* success */
@@ -1433,11 +1436,11 @@ VGAGL_filled_polygon(int points, gpiPoint *corners)
 	switch (VGAGL_truecolor) {
 	    case yes:
 		/* TODO: this does not work */
-		color = VGAGL_line_cmap[(int)(gray * VGAGL_pm3d_colors)];
+		color = VGAGL_line_cmap[(int)(gray * VGAGL_pm3d_colors_)];
 		break;
 	    default:
 #endif
-		color = pm3d_color_offset + (int)(gray * VGAGL_pm3d_colors);
+		color = pm3d_color_offset + (int)(gray * VGAGL_pm3d_colors_);
 #ifdef VGAGL_ENABLE_TRUECOLOR
 	}
 #endif
@@ -1453,14 +1456,14 @@ VGAGL_filled_polygon(int points, gpiPoint *corners)
 	    case yes:
 		for (i = 0; i < 4; i++) {
 		    y[i] = Y(corners[i].y);
-		    color[i] = (int)(corners[i].spec.gray * VGAGL_pm3d_colors);
+		    color[i] = (int)(corners[i].spec.gray * VGAGL_pm3d_colors_);
 		}
 		break;
 	    default:
 #endif
 		for (i = 0; i < 4; i++) {
 		    y[i] = Y(corners[i].y);
-		    color[i] = pm3d_color_offset + (int)(corners[i].spec.gray * VGAGL_pm3d_colors);
+		    color[i] = pm3d_color_offset + (int)(corners[i].spec.gray * VGAGL_pm3d_colors_);
 		}
 #ifdef VGAGL_ENABLE_TRUECOLOR
 	}

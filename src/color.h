@@ -186,8 +186,16 @@ PROPOSALS (WHO WANTS TO MAKE THIS?):
 	set color_smooth_box from 0.34,0.45,12.4 to 1.0,2.0,45
   */
 #endif
-  char rotation;
-    /* 'v' or 'h' vertical or horizontal box */
+  char rotation; /* 'v' or 'h' vertical or horizontal box */
+
+  char border; /* if non-null, a border will be drawn around the box (default) */
+  int border_lt_tag;
+
+  float xorigin;
+  float yorigin;
+  float xsize;
+  float ysize;
+
 } color_box_struct;
 
 
@@ -212,11 +220,13 @@ int make_palette();
 */
 void set_color ( double gray );
 
+#if 0
 /*
    Makes mapping from real 3D coordinates to 2D terminal coordinates,
    then draws filled polygon
 */
-void filled_polygon ( int points, gpdPoint *corners );
+static void filled_polygon ( int points, gpdPoint *corners );
+#endif
 
 /*
    The routine above for 4 points explicitly

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.2 2000/05/03 21:26:11 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.3 2000/06/09 07:47:58 joze Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -1958,9 +1958,8 @@ void
 PaletteSetColor(plot_struct* plot, double gray)
 {
     if (plot->cmap->allocated) {
-	int index = gray * plot->cmap->allocated;
+	int index = gray * (plot->cmap->allocated - 1);
 	XSetForeground(dpy, gc_pm3d, plot->cmap->pixels[index]);
-	/* fprintf(stderr, "(PaletteSetColor) color = %f\n", gray); */
     }
 }
 #endif /* PM3D */
