@@ -1,3 +1,9 @@
+2003-02-21  Slaven Rezic <slaven@rezic.de>
+	
+	* term/tkcanvas.trm (TK_graphics): Give perltk subroutine a name.
+	(TK_text): Drop semicolon after perltk subroutine definition.
+	(HELP): Document new way of calling the generated subroutine.
+
 2003-02-14  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* docs/gnuplot.doc (fit): Mention that 'thru' doesn't apply to
