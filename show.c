@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.23 1998/12/16 19:49:18 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.24 1999/01/29 18:18:16 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -1590,10 +1590,15 @@ void show_version_long()
 	    "-READLINE  "
 #endif
 	    ,gnu_rdline =
-#ifdef GNU_READLINE
-	    "+GNU_READLINE  "
+#ifdef HAVE_LIBREADLINE
+	    "+LIBREADLINE  "
+# ifdef GNUPLOT_HISTORY
+            "+HISTORY  "
 #else
-	    "-GNU_READLINE  "
+            "-HISTORY  "
+# endif
+#else
+	    "-LIBREADLINE  "
 #endif
 	    ,libgd =
 #ifdef HAVE_LIBGD
