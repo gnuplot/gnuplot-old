@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.53 2002/02/21 12:27:37 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.54 2002/02/25 03:10:41 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -63,9 +63,6 @@ static char *RCSid() { return RCSid("$Id: plot.c,v 1.53 2002/02/21 12:27:37 lhec
 #endif /* OS2 */
 
 #ifdef USE_MOUSE
-# ifdef PIPE_IPC
-#  include "ipc.h"   /* for isatty_state */
-# endif
 # include "mouse.h" /* for mouse_setting */
 # include "gpexecute.h"
 #endif

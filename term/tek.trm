@@ -1,5 +1,5 @@
 /*
- * $Id: tek.trm,v 1.12 2001/12/19 09:14:55 mikulik Exp $
+ * $Id: tek.trm,v 1.13 2002/02/25 03:10:42 broeker Exp $
  *
  */
 
@@ -174,8 +174,9 @@ TEK40text()
 
 TERM_PUBLIC void
 TEK40linetype(linetype)
-int linetype;
+    int linetype;
 {
+    (void) linetype;
 }
 
 TERM_PUBLIC void

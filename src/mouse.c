@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.29 2002/02/15 15:40:58 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.30 2002/02/25 03:10:41 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -70,6 +70,13 @@ static char *RCSid() { return RCSid("$Id: mouse.c,v 1.29 2002/02/15 15:40:58 mik
 
 /********************** variables ***********************************************************/
 
+mouse_setting_t mouse_setting = {
+    1, 300 /* ms */, 1, 0, 0, 0, 0, "% #g", "pointtype 1"
+};
+
+/* the status of the shift, ctrl and alt keys
+*/
+static int modifier_mask = 0;
 
 /* Structure for the ruler: on/off, position,...
  */
