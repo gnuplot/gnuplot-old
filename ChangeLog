@@ -1,4 +1,4 @@
-2004-05-24  Ethan Merritt  <merritt@u.washington.edu>
+2004-05-26  Ethan Merritt  <merritt@u.washington.edu>
 
 	* src/gplt_x11.c (PaletteSetColor): Fix off-by-one error in indexing
 	color ramp of gray values.
