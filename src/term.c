@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.35 2001/02/09 15:13:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.36 2001/03/07 08:40:05 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -327,7 +327,7 @@ char *dest;
 		os_error(c_token, "cannot create pipe; output not changed");
 	    else
 		output_pipe_open = TRUE;
-	} else
+	} else {
 #endif /* PIPES */
 
 #ifdef _Windows
@@ -366,6 +366,10 @@ char *dest;
 	    if (f == (FILE *) NULL)
 		os_error(c_token, "cannot open file; output not changed");
 	}
+#if defined(PIPES)
+	}
+#endif
+	
 	term_close_output();
 	gpoutfile = f;
 	outstr = dest;
