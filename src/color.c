@@ -92,7 +92,7 @@ make_palette(void)
 #endif
 
     if (!term->make_palette) {
-	fprintf(stderr,"Error: your terminal does not support continous colors!\n");
+	fprintf(stderr,"Error: your terminal does not support continous colors!\nSee pm3d/README for more details.\n");
 	return 1;
     }
 
@@ -451,7 +451,8 @@ void draw_color_smooth_box ()
     /* optimized version of the smooth colour box in postscript. Advantage:
        only few lines of code is written into the output file.
      */
-    if (!strcmp(term->name,"postscript") || !strcmp(term->name,"pstex"))
+    if (!strcmp(term->name,"postscript") ||
+	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex"))
 	draw_inside_color_smooth_box_postscript( x_from, y_from, x_to, y_to );
     else
 	draw_inside_color_smooth_box_bitmap ( x_from, y_from, x_to, y_to );
