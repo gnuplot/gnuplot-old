@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.31 2002/03/18 18:19:10 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.32 2002/03/21 15:11:57 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -237,7 +237,7 @@ pm3d_plot(this_plot, at_which_z)
 {
     int j, i, i1, ii, ii1, from, curve, scan, up_to, up_to_minus, invert = 0;
     int go_over_pts, max_pts;
-    int are_ftriangles, ftriangles_low_pt, ftriangles_high_pt;
+    int are_ftriangles, ftriangles_low_pt = -999, ftriangles_high_pt = -999;
     struct iso_curve *scanA, *scanB;
     struct coordinate GPHUGE *pointsA, *pointsB;
     struct iso_curve **scan_array;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: help.c,v 1.13 2001/07/20 14:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: help.c,v 1.14 2002/03/21 15:11:57 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - help.c */
@@ -209,7 +209,7 @@ static int
 LoadHelp(path)
 char *path;
 {
-    LINKEY *key;		/* this key */
+    LINKEY *key = 0;		/* this key */
     long pos = 0;		/* ftell location within help file */
     char buf[BUFSIZ];		/* line from help file */
     LINEBUF *head;		/* head of text list  */
