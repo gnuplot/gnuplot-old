@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: getcolor.c,v 1.10 2001/09/18 21:40:29 amai Exp $"); }
+static char *RCSid() { return RCSid("$Id: getcolor.c,v 1.11 2001/09/18 23:08:26 amai Exp $"); }
 #endif
 
 /* GNUPLOT - getcolor.c */
@@ -15,13 +15,11 @@ static char *RCSid() { return RCSid("$Id: getcolor.c,v 1.10 2001/09/18 21:40:29 
 
 #ifdef PM3D
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
+#include "stdfn.h"
 
 #include "color.h"
 #include "getcolor.h"
-#include "stdfn.h"
+
 
 double
 GetColorValueFromFormula(int formula, double x)
