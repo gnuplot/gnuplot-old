@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.4 2000/07/26 18:52:58 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.5 2000/09/22 14:21:11 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -210,10 +210,11 @@ plotrequest()
     PARSE_NAMED_RANGE(t_axis, dummy_token);
     if (parametric || polar)	/* set optional x ranges */
 	PARSE_RANGE(FIRST_X_AXIS);
-    else {
-	/* order of t doesn't matter, but x does */
-	CHECK_REVERSE(FIRST_X_AXIS);
-    }
+
+    /* possible reversal of x range *does* matter, even in parametric
+     * or polar mode */
+    CHECK_REVERSE(FIRST_X_AXIS);
+
     PARSE_RANGE(FIRST_Y_AXIS);
     CHECK_REVERSE(FIRST_Y_AXIS);
     PARSE_RANGE(SECOND_X_AXIS);
