@@ -1,5 +1,5 @@
 #
-# $Id: makefile.amg,v 1.1 1999/03/26 21:32:09 lhecking Exp $
+# $Id: makefile.amg,v 1.2 1999/03/28 16:11:03 lhecking Exp $
 #
 # GNUPLOT Makefile for SAS/C 6.1 or better on the Amiga
 #
@@ -79,9 +79,9 @@ HELPDEST = S:
 #
 
 # Where related files reside
-DOCDIR  = docs
-DEMODIR = demo
-TERMDIR = term
+DOCDIR  = /docs
+DEMODIR = /demo
+TERMDIR = /term
 
 # Merge compiler flags
 CFLAGS = $(COPTS) $(CPU) $(MATH) $(OFLAGS) $(DEFS) $(DEBUG) DATA=f
