@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.33 2004/12/20 16:52:12 mikulik Exp $";
+static char RCSid[]="$Id: gclient.c,v 1.34 2005/01/04 12:56:58 mikulik Exp $";
 #endif
 
 /****************************************************************************
@@ -1143,7 +1143,7 @@ WmClientCmdProc(HWND hWnd, ULONG message, MPARAM mp1, MPARAM mp2)
 	    strcat(cmd, gnuplot_path);
 	    strcat(cmd, "\\");
 	}
-	strcpy(cmd, cmd_prefix);
+	strcat(cmd, helpfile);
 	system(cmd);
 	free(cmd);
 	break;
