@@ -1,12 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.65 1999/06/06 18:30:17 lhecking Exp $
+dnl $Id: configure.in,v 1.66 1999/06/09 12:15:59 lhecking Exp $
 dnl
 AC_INIT(src/graphics.c)
 AM_CONFIG_HEADER(config.h:config.hin)
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.65 $)
+AC_REVISION($Revision: 1.66 $)
 
 VERSION="`cat $srcdir/VERSION`.`cat $srcdir/PATCHLEVEL`"
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -269,7 +269,7 @@ if test "$with_readline" != no; then
 
     if test "$with_readline" = gnu; then
       AC_CHECK_LIB(readline, readline,dnl
-       LIBS="$LIBS -lreadline $gp_tcap",, ${gp_tcap})
+       TERMLIBS="$TERMLIBS -lreadline $gp_tcap",, ${gp_tcap})
     else
       gp_SEARCH_LIBDIRS(readline,readline,[${gp_tcap}])
       if test "$ac_cv_lib_readline_readline" = yes; then
