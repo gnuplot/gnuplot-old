@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.3 1998/04/22 18:56:14 lhecking Exp $
+dnl $Id: acinclude.m4,v 1.4 1998/08/24 16:37:56 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -110,28 +110,6 @@ if test $gcc_cv_c_have_stringify = yes; then
   AC_DEFINE(HAVE_CPP_STRINGIFY)
 fi
 ])
-
-## ----------------------------------- ##
-## From the automake 1.2c distribution ##
-## ----------------------------------- ##
-
-# serial 1
-
-dnl AM_MISSING_PROG(NAME, PROGRAM, DIRECTORY)
-dnl The program must properly implement --version.
-AC_DEFUN(AM_MISSING_PROG,
-[AC_MSG_CHECKING(for working $2)
-# Run test in a subshell; some versions of sh will print an error if
-# an executable is not found, even if stderr is redirected.
-# Redirect stdin to placate older versions of autoconf.  Sigh.
-if ($2 --version) < /dev/null > /dev/null 2>&1; then
-   $1=$2
-   AC_MSG_RESULT(found)
-else
-   $1="$3/missing $2"
-   AC_MSG_RESULT(missing)
-fi
-AC_SUBST($1)])
 
 ## ------------------------------- ##
 ## Check for MS-DOS/djgpp.         ##
