@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.1 1999/03/26 21:47:47 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.2 1999/05/13 18:53:40 lhecking Exp $";
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -1525,7 +1525,7 @@ void do_fit()
 	TBOOLEAN fixed;
 	double tmp_par;
 	char c, *s;
-	char sstr[MAX_LINE_LEN];
+	char sstr[MAX_LINE_LEN+1];
 	FILE *f;
 
 	quote_str(sstr, c_token++, MAX_LINE_LEN);

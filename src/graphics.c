@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.3 1999/05/12 13:47:52 lhecking Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.4 1999/05/13 18:53:41 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -4008,7 +4008,7 @@ char *dest, *format;
 size_t count;
 double log_base, x;		/* we print one number in a number of different formats */
 {
-    char temp[MAX_LINE_LEN];
+    char temp[MAX_LINE_LEN + 1];
     char *t;
 
     for (;;) {
