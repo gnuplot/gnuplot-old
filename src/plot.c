@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.31.2.2 2000/05/16 11:26:41 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.31.2.3 2000/06/04 12:53:20 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -144,6 +144,11 @@ const char *user_shell = NULL;
 #if defined(ATARI) || defined(MTOS)
 const char *user_gnuplotpath = NULL;
 #endif
+
+/* flags to disable `replot` when some data are sent through stdin; used by
+   mouse/hotkey capable terminals */
+int plotted_data_from_stdin = 0;
+int replot_disabled = 0;
 
 #ifdef X11
 extern int X11_args __PROTO((int, char **));

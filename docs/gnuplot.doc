@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.40.2.4 2000/05/25 07:35:09 mikulik Exp $
+C RCS $Id: gnuplot.doc,v 1.40.2.5 2000/06/04 12:53:19 joze Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -5235,7 +5235,15 @@ C ... and restart the table:
  The main power of the pm3d algorithm (see also my program pm3d) is that
  it can draw maps or surfaces from large data sets without preprocessing even 
  when the data are non-gridded and the scans do not have same number of 
- points---thus it produces no artefacts. 
+ points---thus it produces no artefacts.  Currently supported terminals are:
+
+     OS/2 Presentation Manager
+     X11
+     Linux VGA
+     PostScript
+     pslatex, pstex
+     GIF
+     Xfig
 
  The pm3d algorithm fills the region between two neighbouring points in one 
  scan with another two points in the next scan by a gray (or colour) according 

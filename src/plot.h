@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29.2.2 2000/05/03 21:26:11 joze Exp $
+ * $Id: plot.h,v 1.29.2.3 2000/06/04 12:53:20 joze Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -779,6 +779,11 @@ extern const char *user_shell;
 #if defined(ATARI) || defined(MTOS)
 extern const char *user_gnuplotpath;
 #endif
+
+/* flags to disable `replot` when some data are sent through stdin; used by
+   mouse/hotkey capable terminals */
+extern int plotted_data_from_stdin;
+extern int replot_disabled;
 
 #ifdef GNUPLOT_HISTORY
 extern long int gnuplot_history_size;
