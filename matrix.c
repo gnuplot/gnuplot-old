@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: matrix.c,v 1.11 1998/10/19 13:16:08 lhecking Exp $";
+static char *RCSid = "$Id: matrix.c,v 1.12 1998/11/19 10:40:31 lhecking Exp $";
 #endif
 
 /*
@@ -41,7 +41,7 @@ static char *RCSid = "$Id: matrix.c,v 1.11 1998/10/19 13:16:08 lhecking Exp $";
     internal prototypes
 *****************************************************************/
 
-static GP_INLINE int fsign(double x);
+static GP_INLINE int fsign __PROTO((double x));
 
 /*****************************************************************
     first straightforward vector and matrix allocation functions
