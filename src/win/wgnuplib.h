@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.2.2.1 2000/10/20 15:12:33 broeker Exp $
+ * $Id: wgnuplib.h,v 1.2.2.2 2000/10/22 13:50:51 joze Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -294,7 +294,6 @@ struct GWOPBLK {			/* kept in local memory */
 #define W_justify 34
 #define W_text_angle 35
 #define W_pointsize 36
-/* HBB 20001020: new with version 1.3 of the driver: */
 #define W_line_width 37
 #define W_pm3d_setcolor 38
 #define W_pm3d_filled_polygon 39

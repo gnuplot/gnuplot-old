@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.4 2000/06/23 13:28:24 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.5 2000/10/22 13:50:51 joze Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -2992,7 +2992,7 @@ gnuplot: X11 aborted.\n", ldisplay);
 	strcpy(buffer, "DECW$USER_DEFAULTS:DECW$XDEFAULTS.DAT");
 #else
 	strcpy(buffer, home);
-	strcat(buffer, ".Xdefaults");
+	strcat(buffer, "/.Xdefaults");
 #endif
 	dbDef = XrmGetFileDatabase(buffer);
     }
