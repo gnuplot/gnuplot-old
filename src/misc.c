@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.5 1999/05/14 19:41:23 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.6 1999/05/19 11:03:35 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -920,7 +920,6 @@ set ticscale %g %g\n",
 	    lmargin, bmargin, rmargin, tmargin);
 
     fprintf(fp, "set locale \"%s\"\n", cur_locale);
-    fprintf(fp, "set loadpath \"%s\"\n", access_loadpath(NULL));
 
 }
 
