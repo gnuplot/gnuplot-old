@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.62 2000/12/19 14:26:40 broeker Exp $
+C RCS $Id: gnuplot.doc,v 1.62.2.1 2000/12/20 18:33:34 joze Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -5334,7 +5334,9 @@ C ... and restart the table:
 
  The pm3d algorithm fills the region between two neighbouring points in one 
  scan with another two points in the next scan by a gray (or colour) according 
- to the average of the z data in these four points.  From this follows, that 
+ to the average of the z data in these four points.  If two or four columns
+ are given for splots, the color is not calculated from the z value but from
+ from the second or fourth column respectively. From this follows, that 
  the neighbouring scans should not cross and the number of points in the
  neighbouring scans should not differ too much (you see---scans can have 
  different number of points).  No other requirements (e.g.  the data must be
@@ -5432,6 +5434,15 @@ C ... and restart the table:
        unset hidden3d
        unset surf
        splot x*x+y*y
+
+ If a the surface should be colored from a value different than the z-value,
+ you must give two or four coordinates to the splot command. In this case the
+ last value -- the supplementary dimension -- is used for mapping the color.
+ Example:
+
+       splot 'lola.dat' u 1:2:3:4
+
+ this will color the surface with values from the fourth data column.
 
  If the option `transparent` is on, borders, tics and labels are drawn always
  above (that is after) the surface. This option is on by default to be
@@ -7198,9 +7209,11 @@ C  The `lines` style connects adjacent points with straight line segments.
  each point is an (x,y,z) triple.  If only a single value is provided, it
  will be used for z, the datablock number will be used for y, and the index
  of the data point in the datablock will be used for x.  If two values are
- provided, `gnuplot` gives you an error message.  Three values are interpreted
- as an (x,y,z) triple.  Additional values are generally used as errors, which
- can be used by `fit`.
+ provided, the second value is used for specifying the smooth color for
+ pm3d surfaces or the 'linetype palette'.  Three values are interpreted
+ as an (x,y,z) triple. If four values are given, the last value is again
+ interpreted as color specifier.
+ Additional values are generally used as errors, which can be used by `fit`.
 
  Single blank records separate datablocks in a `splot` datafile; `splot`
  treats datablocks as the equivalent of function y-isolines.  No line will

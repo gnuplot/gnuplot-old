@@ -112,6 +112,8 @@ joze's list:
   rotation under effect just after a simple click on the graph window. 
   Maybe it could go to the same  'if (is_3d_plot and ... !pm3d map) '
   condition?
+- Mit, 20 Dez 2000 18:57:51 +0100: don't used ylow but introduce a new
+  color variable which is /always/ used by pm3d.
 
 Petr Mikulik (info-gnuplot-beta Thu, 02 Mar 2000)
 it would be very convenient to set the values/formulae for columns in 

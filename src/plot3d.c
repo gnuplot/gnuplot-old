@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23 2000/11/01 18:57:33 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.1 2000/12/20 18:33:35 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -35,6 +35,7 @@ static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23 2000/11/01 18:57:33 br
 ]*/
 
 #include "plot3d.h"
+#include "pm3d.h"
 #include "gp_types.h"
 
 #include "alloc.h"
@@ -635,13 +636,20 @@ struct surface_points *this_plot;
     int xdatum = 0;
     int ydatum = 0;
     int i, j;
+#ifdef PM3D_COLUMN
+    double v[4];
+#else
     double v[3];
+#endif
     int pt_in_iso_crv = 0;
     struct iso_curve *this_iso;
 
     if (mapping3d == MAP3D_CARTESIAN) {
+#ifndef PM3D_COLUMN
+	/* do this check only, if we have PM3D / PM3D_COLUMN not compiled in */
 	if (df_no_use_specs == 2)
 	    int_error(this_plot->token, "Need 1 or 3 columns for cartesian data");
+#endif
     } else {
 	if (df_no_use_specs == 1)
 	    int_error(this_plot->token, "Need 2 or 3 columns for polar data");
@@ -649,6 +657,9 @@ struct surface_points *this_plot;
 
     this_plot->num_iso_read = 0;
     this_plot->has_grid_topology = TRUE;
+#ifdef PM3D_COLUMN
+    this_plot->pm3d_color_from_column = 0;
+#endif
 
     /* we ought to keep old memory - most likely case
      * is a replot, so it will probably exactly fit into
@@ -673,8 +684,20 @@ struct surface_points *this_plot;
 	struct iso_curve *local_this_iso = iso_alloc(samples_1);
 	struct coordinate GPHUGE *cp;
 	double x, y, z;
+#ifdef PM3D_COLUMN
+	double color;
+	double color_min = HUGE;
+	double color_max = -HUGE;
+	int pm3d_color_from_column = 0;
+#endif
 
-	while ((j = df_readline(v, 3)) != DF_EOF) {
+	while ((j = df_readline(v,
+#ifdef PM3D_COLUMN
+		    4
+#else
+		    3
+#endif
+		    )) != DF_EOF) {
 	    if (j == DF_SECOND_BLANK)
 		break;		/* two blank lines */
 	    if (j == DF_FIRST_BLANK) {
@@ -721,11 +744,25 @@ struct surface_points *this_plot;
 	    switch (mapping3d) {
 	    case MAP3D_CARTESIAN:
 		switch (j) {
+#ifdef PM3D_COLUMN
+		case 2:
+		    /* TODO: could also specify the column number */
+		    pm3d_color_from_column = 1;
+		    color = v[1];
+		    /* FALLTHRU */
+#endif
 		case 1:
 		    x = xdatum;
 		    y = ydatum;
 		    z = v[0];
 		    break;
+#ifdef PM3D_COLUMN
+		case 4:
+		    /* TODO: could also specify the column number */
+		    pm3d_color_from_column = 1;
+		    color = v[3];
+		    /* FALLTHRU */
+#endif
 		case 3:
 		    x = v[0];
 		    y = v[1];
@@ -733,6 +770,7 @@ struct surface_points *this_plot;
 		    break;
 		default:
 		    {
+			/* TODO: pm3d color? (joze) 18 Dez 2000 */
 			int_error(this_plot->token,
 				  "Need 1 or 3 columns - line %d",
 				  df_line_number);
@@ -741,6 +779,7 @@ struct surface_points *this_plot;
 		}
 		break;
 	    case MAP3D_SPHERICAL:
+		/* TODO: pm3d color? (joze) 18 Dez 2000 */
 		if (j < 2)
 		    int_error(this_plot->token, "Need 2 or 3 columns");
 		if (j < 3)
@@ -754,6 +793,7 @@ struct surface_points *this_plot;
 		z = v[2] * sin(v[1]);
 		break;
 	    case MAP3D_CYLINDRICAL:
+		/* TODO: pm3d color? (joze) 18 Dez 2000 */
 		if (j < 2)
 		    int_error(this_plot->token, "Need 2 or 3 columns");
 		if (j < 3)
@@ -780,6 +820,15 @@ struct surface_points *this_plot;
 	    STORE_WITH_LOG_AND_UPDATE_RANGE(cp->x, x, cp->type, x_axis, NOOP, goto come_here_if_undefined);
 	    STORE_WITH_LOG_AND_UPDATE_RANGE(cp->y, y, cp->type, y_axis, NOOP, goto come_here_if_undefined);
 	    STORE_WITH_LOG_AND_UPDATE_RANGE(cp->z, z, cp->type, z_axis, NOOP, goto come_here_if_undefined);
+#ifdef PM3D_COLUMN
+	    if (0 != pm3d_color_from_column) {
+		cp->ylow = color;
+		if (color < color_min)
+		    color_min = color;
+		if (color > color_max)
+		    color_max = color;
+	    }
+#endif
 
 	    /* some may complain, but I regard this as the correct use
 	     * of goto
@@ -787,6 +836,14 @@ struct surface_points *this_plot;
 	  come_here_if_undefined:
 	    ++xdatum;
 	}			/* end of whileloop - end of surface */
+
+#ifdef PM3D_COLUMN
+	if (0 != pm3d_color_from_column) {
+	    this_plot->pm3d_color_from_column = pm3d_color_from_column;
+	    this_plot->color_min = color_min;
+	    this_plot->color_max = color_max;
+	}
+#endif
 
 	if (xdatum > 0) {
 	    this_plot->num_iso_read++;	/* Update last iso. */
@@ -1075,7 +1132,11 @@ eval_3dplots()
 		this_plot->plot_type = DATA3D;
 		this_plot->plot_style = data_style;
 
+#ifdef PM3D_COLUMN
+		specs = df_open(4);
+#else
 		specs = df_open(3);
+#endif
 		/* parses all datafile-specific modifiers */
 		/* we will load the data after parsing title,with,... */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14 2000/12/05 11:29:44 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.1 2000/12/20 18:33:35 joze Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -49,6 +49,7 @@ pm3d_struct pm3d = {
     0.0, 100.0,			/* pm3d's zmin, zmax */
     0,				/* no pm3d hidden3d is drawn */
     0,				/* solid (off by default, that means `transparent') */
+    0,				/* use_column */
 };
 
 
@@ -65,21 +66,47 @@ double used_pm3d_zmin, used_pm3d_zmax;
    Return 0 on wrong range, otherwise 1
  */
 int
-set_pm3d_zminmax()
+set_pm3d_zminmax(struct surface_points* plots, int pcount)
 {
-    if (!pm3d.pm3d_zmin)
-	used_pm3d_zmin = axis_array[FIRST_Z_AXIS].min;
-    else {
-	/* FIXME 20001031 from merge: this will call graph_error() on
-	 * negative z, instead of just returning 0! */
-	used_pm3d_zmin = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmin, "pm3d z-min");
+#ifdef PM3D_COLUMN
+    struct surface_points *this_plot = NULL;
+    int surface;
+    int minmax_is_set = 0;
+    /* loop over all plots and get the maximum and minimum
+     * color value (if colors are specified via columns */
+    for (this_plot = plots, surface = 0; surface < pcount;
+	this_plot = this_plot->next_sp, surface++) {
+	if (this_plot->pm3d_color_from_column) {
+	    if (!minmax_is_set) {
+		minmax_is_set = 1;
+		used_pm3d_zmin = this_plot->color_min;
+		used_pm3d_zmax = this_plot->color_max;
+	    } else {
+		if (this_plot->color_min < used_pm3d_zmin)
+		    used_pm3d_zmin = this_plot->color_min;
+		if (this_plot->color_max > used_pm3d_zmax)
+		    used_pm3d_zmax = this_plot->color_max;
+	    }
+	}
     }
-    if (!pm3d.pm3d_zmax)
-	used_pm3d_zmax = axis_array[FIRST_Z_AXIS].max;
-    else {
-	/* FIXME 20001031: see above */
-	used_pm3d_zmax = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmax, "pm3d z-max");
+    if (!minmax_is_set) {
+#endif
+	if (!pm3d.pm3d_zmin)
+	    used_pm3d_zmin = axis_array[FIRST_Z_AXIS].min;
+	else {
+	    /* FIXME 20001031 from merge: this will call graph_error() on
+	     * negative z, instead of just returning 0! */
+	    used_pm3d_zmin = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmin, "pm3d z-min");
+	}
+	if (!pm3d.pm3d_zmax)
+	    used_pm3d_zmax = axis_array[FIRST_Z_AXIS].max;
+	else {
+	    /* FIXME 20001031: see above */
+	    used_pm3d_zmax = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmax, "pm3d z-max");
+	}
+#ifdef PM3D_COLUMN
     }
+#endif
     if (used_pm3d_zmin == used_pm3d_zmax) {
 	fprintf(stderr, "pm3d: colouring requires not equal zmin and zmax\n");
 	return 0;
@@ -242,6 +269,11 @@ pm3d_plot(struct surface_points *this_plot, char at_which_z)
     gpiPoint icorners[4];
 #endif
 
+#ifdef PM3D_COLUMN
+    /* just a shortcut */
+    int color_from_column = this_plot->pm3d_color_from_column;
+#endif
+
     if (this_plot == NULL)
 	return;
 
@@ -350,6 +382,12 @@ pm3d_plot(struct surface_points *this_plot, char at_which_z)
 #endif
 		/* get the gray as the average of the corner z positions (note: log already in)
 		   I always wonder what is faster: d*0.25 or d/4? Someone knows? -- 0.25 (joze) */
+#ifdef PM3D_COLUMN
+		if (color_from_column)
+		    /* ylow is set in plot3d.c:get_3ddata() */
+		    avgZ = (pointsA[i].ylow + pointsA[i + 1].ylow + pointsB[ii].ylow + pointsB[ii + 1].ylow) * 0.25;
+		else
+#endif
 		avgZ = (pointsA[i].z + pointsA[i + 1].z + pointsB[ii].z + pointsB[ii + 1].z) * 0.25;
 		/* transform z value to gray, i.e. to interval [0,1] */
 		gray = z2gray(avgZ);
@@ -385,11 +423,22 @@ pm3d_plot(struct surface_points *this_plot, char at_which_z)
 	    }
 #ifdef EXTENDED_COLOR_SPECS
 	    if (supply_extended_color_specs) {
-		/* the target wants z and gray value */
-		icorners[0].z = pointsA[i].z;
-		icorners[1].z = pointsB[ii].z;
-		icorners[2].z = pointsB[ii + 1].z;
-		icorners[3].z = pointsA[i + 1].z;
+#ifdef PM3D_COLUMN
+		if (color_from_column) {
+		    icorners[0].z = pointsA[i].ylow;
+		    icorners[1].z = pointsB[ii].ylow;
+		    icorners[2].z = pointsB[ii + 1].ylow;
+		    icorners[3].z = pointsA[i + 1].ylow;
+		} else {
+#endif
+		    /* the target wants z and gray value */
+		    icorners[0].z = pointsA[i].z;
+		    icorners[1].z = pointsB[ii].z;
+		    icorners[2].z = pointsB[ii + 1].z;
+		    icorners[3].z = pointsA[i + 1].z;
+#ifdef PM3D_COLUMN
+		}
+#endif
 		for (i = 0; i < 4; i++) {
 		    icorners[i].spec.gray = z2gray(icorners[i].z);
 		}
@@ -428,6 +477,11 @@ int contours_where;
     double gray;
     struct gnuplot_contours *cntr;
 
+#ifdef PM3D_COLUMN
+    /* just a shortcut */
+    int color_from_column = this_plot->pm3d_color_from_column;
+#endif
+
     if (this_plot == NULL || this_plot->contours == NULL)
 	return;
     if (contours_where != CONTOUR_SRF && contours_where != CONTOUR_BASE)
@@ -448,6 +502,11 @@ int contours_where;
 	    /* What is the colour? */
 	    /* get the z-coordinate */
 	    /* transform contour z-coordinate value to gray, i.e. to interval [0,1] */
+#ifdef PM3D_COLUMN
+	    if (color_from_column)
+		gray = z2gray(cntr->coords[0].ylow);
+	    else
+#endif
 	    gray = z2gray(cntr->coords[0].z);
 	    set_color(gray);
 	}

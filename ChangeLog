@@ -1,3 +1,17 @@
+2000-12-16  Johannes Zellner  <johannes@zellner.org>
+
+	* src/gp_types.h, src/graph3d.c, src/graph3d.h, src/hidden3d.c,
+	src/plot3d.c, src/pm3d.c, src/pm3d.h, configure.in, docs/gnuplot.doc,
+	TODO:
+	pm3d column feature: when specifying 2 or 4 columns for splot, the
+	last column is used to specify the palette color for either pm3d
+	or 'linetype palette'.
+
+	As I'm not sure if this breaks any existing stuff, and as it is 
+	a quick hack, I decided finally to create a new branch. This branch
+	will be kept up to date, I'll try to synch it with the MAIN trunk
+	frequently until it is merged back to MAIN.
+
 2000-12-20  Petr Mikulik  <mikulik@physics.muni.cz>
 
 	* src/term.c: fixed one missing 'postscript_gpoutfile = 0;' after
@@ -50,7 +64,7 @@
 
 	* src/gplt_x11.c: OS2_PIPE minor fixes.
 
-2000-12-12  Johannes Zellner  <johannes@zellner.org>
+2000-12-16  Johannes Zellner  <johannes@zellner.org>
 
 	* src/gplt_x11.c: minor changes for -noevents
 

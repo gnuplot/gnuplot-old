@@ -1,5 +1,5 @@
 /*
- * $Id: pm3d.h,v 1.6 2000/11/23 08:35:39 mikulik Exp $
+ * $Id: pm3d.h,v 1.6.2.1 2000/12/20 18:33:35 joze Exp $
  */
 
 /* GNUPLOT - pm3d.h */
@@ -88,6 +88,10 @@ typedef struct {
 			   this linestyle (which must naturally present). */
   int solid;            /* if this is != 0, border tics and labels might be
 			   hidden by the surface */
+#ifdef PM3D_COLUMN
+  int use_column;	/* use color value from column 2 or 4
+			   ('using 1:2' or 'using 1:2:3:4') */
+#endif
 } pm3d_struct;
 
 
@@ -103,7 +107,7 @@ extern double used_pm3d_zmin, used_pm3d_zmax;
   Declaration of routines
 ****/
 
-int set_pm3d_zminmax __PROTO((void));
+int set_pm3d_zminmax __PROTO((struct surface_points* plots, int pcount));
 void pm3d_plot __PROTO((struct surface_points * plot, char at_which_z));
 void filled_color_contour_plot __PROTO((struct surface_points *plot, int contours_where));
 void pm3d_reset __PROTO((void));

@@ -336,6 +336,13 @@
 /*  Define if you want to have Petr Mikulik's fancy pm3d.  */
 #undef PM3D
 
+/*  Define, if pm3d coloring from a different column should be enabled.  */
+#undef PM3D_COLUMN
+
 /*  Define if you want to use the experimental ggi driver.  */
 #undef USE_GGI_DRIVER
+
+/*  Define if ggi/wmh.h is there. 
+		     */
+#undef HAVE_GGI_WMH_H
 
