@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.13 2000/05/02 20:56:27 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.14 2000/06/09 15:36:00 joze Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -84,7 +84,8 @@ FILE *fp;
 	show_version(fp);	/* I _love_ information written */
 	save_functions__sub(fp);	/* at the top and the end of an */
 	fputs("#    EOF\n", fp);	/* human readable ASCII file.   */
-	(void) fclose(fp);	/*                        (JFi) */
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -98,7 +99,8 @@ FILE *fp;
 	show_version(fp);
 	save_variables__sub(fp);
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -112,7 +114,8 @@ FILE *fp;
 	show_version(fp);
 	save_set_all(fp);
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -134,7 +137,8 @@ FILE *fp;
 	    putc('\n', fp);
 	}
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
@@ -202,7 +206,8 @@ FILE *fp;
 	    fputs("# set output\n", fp);
 		
 	fputs("#    EOF\n", fp);
-	(void) fclose(fp);
+	if (stdout != fp)
+	    (void) fclose(fp);	/*                        (JFi) */
     } else
 	os_error(c_token, "Cannot open save file");
 }
