@@ -1,4 +1,6 @@
 #
+# $Header: /home/mojca/cron/mojca/github/cvs/gnuplot2/gnuplot/lisp/Attic/Makefile.in,v 1.15 2002/12/07 18:40:16 lhecking Exp $
+
 # Makefile.in for gnuplot-mode
 #
 # Based on original Makefile
@@ -27,7 +29,6 @@ EMACS = @EMACS@
 MAKEINFO = @MAKEINFO@
 mkinstalldirs = $(SHELL) $(top_srcdir)/../mkinstalldirs
 LATEX = @LATEX@
-# $Header: /home/mojca/cron/mojca/github/cvs/gnuplot2/gnuplot/lisp/Attic/Makefile.in,v 1.14 2002/05/23 18:14:30 lhecking Exp $
 
 DVIPS = @DVIPS@
 INSTALL = @INSTALL@
@@ -101,7 +102,7 @@ info-look.elc:  info-look.20.2.el info-look.20.3.el
 
 
 pdf: gpelcard.pdf
-ps:  gpelcard.ps
+ps: gpelcard.ps
 
 gpelcard.ps: gpelcard.dvi
 	$(DVIPS) -o gpelcard.ps gpelcard.dvi
