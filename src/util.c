@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.14 1999/07/09 21:03:03 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.15 1999/07/18 17:36:57 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -99,8 +99,10 @@ const char *str;
     register int start = token[t_num].start_index;
     register int length = token[t_num].length;
 
+    if (!str)
+	return FALSE;
     if (!token[t_num].is_token)
-	return (FALSE);		/* must be a value--can't be equal */
+	return FALSE;		/* must be a value--can't be equal */
     for (i = 0; i < length + after; i++) {
 	if (str[i] != input_line[start + i]) {
 	    if (str[i] != '$')
