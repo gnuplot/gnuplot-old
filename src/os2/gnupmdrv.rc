@@ -1,4 +1,3 @@
-#include <os2.h>
 #include "dialogs.h"
 
 ICON 1 "gnuplot.ico"
@@ -161,7 +160,7 @@ BEGIN
     BEGIN
         CTEXT           "GnuplotPM", -1, 8, 65, 128, 8
         CTEXT           "Gnuplot display for OS/2", -1, 8, 50, 128, 8
-        CTEXT           "$Revision: 1.3 $", -1, 8, 35, 128, 8
+        CTEXT           "$Revision: 1.4 $", -1, 8, 35, 128, 8
         DEFPUSHBUTTON   "OK", DID_OK, 56, 10, 32, 14, WS_GROUP
     END
 END
