@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.4 1999/06/10 19:53:17 lhecking Exp $
+ * $Id: stdfn.h,v 1.5 1999/06/19 20:55:05 lhecking Exp $
  *
  */
 
@@ -78,6 +78,9 @@
 # ifdef HAVE_RINDEX
 #  define strrchr rindex
 # endif
+#endif
+#ifndef HAVE_STRCSPN
+# define strcspn gp_strcspn
 #endif
 
 #ifdef NO_STDLIB_H
