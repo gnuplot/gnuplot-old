@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.10 1998/07/14 17:24:13 lhecking Exp $
+# $Id: Makefile.in,v 1.11 1998/07/15 15:26:00 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -155,7 +155,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.10 1998/07/14 17:24:13 lhecking Exp $
+# $Id: Makefile.in,v 1.11 1998/07/15 15:26:00 lhecking Exp $
 #
 ########################################################
 #
@@ -410,7 +410,7 @@ $(COREOBJS) version.o bf_test.o : $(CONFIG_HEADER)
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	cd $(top_builddir) \
 	  && CONFIG_FILES=$@ CONFIG_HEADERS= \
-	  INCLUDES="@CPPFLAGS@" TERMLIBS="@TERMLIBS@" \
+	  CPPFLAGS="@CPPFLAGS@" TERMLIBS="@TERMLIBS@" \
 	  $(SHELL) ./config.status
 
 $(ACLOCAL_M4): configure.in
