@@ -1,5 +1,8 @@
-/* GNUPLOT - term/win.trm */
+/*
+ * $Id: win.trm,v 1.4 1998/09/22 15:01:47 lhecking Exp $
+ */
 
+/* GNUPLOT - win.trm */
 
 /*[
  * Copyright 1992 - 1993, 1998
