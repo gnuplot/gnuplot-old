@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.46 2002/08/16 08:11:37 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.47 2002/08/24 22:04:13 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -900,11 +900,13 @@ save_tics(fp, axis)
 	fprintf(fp, "set no%stics\n", axis_defaults[axis].name);
 	return;
     }
-    fprintf(fp, "set %stics %s %smirror %srotate ", axis_defaults[axis].name,
+    fprintf(fp, "set %stics %s %smirror %s ", axis_defaults[axis].name,
 	    ((axis_array[axis].ticmode & TICS_MASK) == TICS_ON_AXIS)
 	    ? "axis" : "border",
 	    (axis_array[axis].ticmode & TICS_MIRROR) ? "" : "no",
-	    axis_array[axis].tic_rotate ? "" : "no");
+	    axis_array[axis].tic_rotate ? "rotate" : "norotate");
+    if (axis_array[axis].tic_rotate)
+    	fprintf(fp,"by %d ",axis_array[axis].tic_rotate);
     switch (axis_array[axis].ticdef.type) {
     case TIC_COMPUTED:{
 	    fputs("autofreq ", fp);

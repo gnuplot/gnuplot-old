@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.84 2002/08/16 08:11:37 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.85 2002/08/24 22:04:13 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2562,9 +2562,11 @@ AXIS_INDEX axis;
     }
 
     fprintf(stderr, "\n\t  labels are format \"%s\"", ticfmt);
-    if (axis_array[axis].tic_rotate)
-	fputs(", rotated in 2D mode, terminal permitting.\n\t", stderr);
-    else
+    if (axis_array[axis].tic_rotate) {
+	fprintf(stderr," rotated");
+	fprintf(stderr," by %d",axis_array[axis].tic_rotate);
+	fputs(" in 2D mode, terminal permitting.\n\t", stderr);
+    } else
 	fputs(" and are not rotated\n\t", stderr);
 
     switch (axis_array[axis].ticdef.type) {
