@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.122 2004/09/01 15:53:47 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.123 2004/09/15 20:25:41 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -662,9 +662,11 @@ boundary(struct curve_points *plots, int count)
     setup_tics(SECOND_Y_AXIS, 20);
     /*}}} */
 
+#ifdef PM3D
     /* Adjust color axis limits if necessary. */
     set_cbminmax();
     axis_checked_extend_empty_range(COLOR_AXIS, "All points of color axis undefined.");
+#endif
 
     /*{{{  recompute xleft based on widths of ytics, ylabel etc
        unless it has been explicitly set by lmargin */
