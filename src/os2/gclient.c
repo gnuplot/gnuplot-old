@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.8.2.4 2000/08/04 14:01:28 joze Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.8.2.5 2000/10/23 08:03:28 mikulik Exp $" ;
 #endif
 
 /****************************************************************************
@@ -64,7 +64,7 @@ static char RCSid[]="$Id: gclient.c,v 1.8.2.4 2000/08/04 14:01:28 joze Exp $" ;
  *	      new menu items under 'Mouse' and 'Utilities' (August 1999)
  *	- rewrite of mouse support for the new scheme common with X11
  *	      (October 1999 - January 2000)
- *      - pm3d stuff (January 1999 - January 2000)
+ *      - pm3d stuff (since January 1999)
  *
  *   Franz Bakan  (see  //fraba  labels)
  *       - communication gnupmdrv -> gnuplot via shared memory (April 1999)
@@ -2033,7 +2033,7 @@ static void ReadGnu( void* arg )
 #ifdef PM3D
     HPAL pm3d_hpal = 0;     // palette used for make_palette()
     HPAL pm3d_hpal_old = 0; // default palette used before make_palette()
-    LONG pm3d_color = 0;    // current colour
+    LONG pm3d_color = 0;    // current colour (used if it is >0)
 #endif
     hab = WinInitialize( 0 ) ;
     DosEnterCritSec() ;
@@ -2202,6 +2202,14 @@ server:
 
                 case 'M' :   /* move */
                 case 'V' :   /* draw vector */
+#ifdef PM3D
+		    {
+		    LONG curr_color;
+		    if (pm3d_color>=0) {
+			curr_color = GpiQueryColor(hps);
+			GpiSetColor( hps, pm3d_color);
+		    }
+#endif
                     if( *buff=='M' ) {
                         if( bPath ) {
                             GpiEndPath( hps ) ;
@@ -2220,6 +2228,10 @@ server:
 		    else if( (*buff=='M') && bDots ) ptl.x -= 5 ;
                     if( *buff == 'M' ) LMove( hps, &ptl ) ;
                     else LLine( hps, &ptl ) ;
+#ifdef PM3D
+		    if (pm3d_color >= 0) GpiSetColor( hps, curr_color);
+		    }
+#endif
                     break ;
                   
                 case 'P' :   /* pause */
@@ -2358,6 +2370,9 @@ lOldLine=lt ;
 //                        else GpiSetColor( hps, CLR_BLACK ) ;
                         else GpiSetColor( hps, CLR_NEUTRAL ) ;
                         }
+#ifdef PM3D
+		    pm3d_color = -1; // switch off using pm3d colours
+#endif
                     }
                     break ;
                     
@@ -2552,7 +2567,7 @@ GpiCreatePalette?
 		    BufRead(hRead,&points, sizeof(points), &cbR) ;
 		    // GpiSetPattern(hps,PATSYM_SOLID);
 		    // GpiSetBackMix(hps,BM_OVERPAINT);
-		    GpiSetColor( hps, pm3d_color);
+		    if (pm3d_color>=0) GpiSetColor( hps, pm3d_color);
 		    // using colours defined in the palette
 		    GpiBeginArea( hps, BA_BOUNDARY | BA_ALTERNATE);
 		    for (i = 0; i < points; i++) {
