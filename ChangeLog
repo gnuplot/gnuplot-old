@@ -1,3 +1,8 @@
+2000-05-24  Lars Hecking  <lhecking@nmrc.ie>
+
+	* configure.in: configure should always exit with an exit code
+	of zero.
+
 2000-05-16  Petr Mikulik <mikulik@physics.muni.cz>
 	* pm3d/contrib: updated pm3dConvertToImage.awk to support colour images
 
