@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.15 1998/10/09 14:30:05 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.16 1998/10/12 20:16:21 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -1693,10 +1693,10 @@ show_version_long ()
 #endif
 	}
 
-	fprintf (stderr,"HELPFILE=\"%s\"\n\
-FAQ location=<%s>\n\
-CONTACT=<%s>\n\
-HELPMAIL=<%s>\n",helpfile,faq_location,bug_email,help_email);
+	fprintf (stderr,"HELPFILE     = \"%s\"\n\
+FAQ location = <%s>\n\
+CONTACT      = <%s>\n\
+HELPMAIL     = <%s>\n",helpfile,faq_location,bug_email,help_email);
 }
 
 static void
