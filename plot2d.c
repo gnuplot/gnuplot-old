@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot2d.c,v 1.11 1998/10/20 19:46:46 lhecking Exp $";
+static char *RCSid = "$Id: plot2d.c,v 1.12 1998/10/28 21:09:55 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -44,17 +44,6 @@ static char *RCSid = "$Id: plot2d.c,v 1.11 1998/10/20 19:46:46 lhecking Exp $";
 #else
 # define MAXSTR 255
 #endif
-
-#if defined(ATARI) || defined(MTOS)
-# ifdef __PUREC__
-#  include <ext.h>
-#  include <tos.h>
-#  include <aes.h>
-# else				/* !PUREC */
-#  include <osbind.h>
-#  include <aesbind.h>
-# endif				/* !PUREC */
-#endif /* ATARI || MTOS */
 
 #ifndef STDOUT
 #define STDOUT 1
