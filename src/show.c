@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.36.2.5 2000/09/20 01:25:58 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.36.2.6 2000/10/06 04:14:50 joze Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1401,8 +1401,10 @@ int tag;			/* 0 means show all */
 		fprintf(stderr, " font \"%s\"", this_label->font);
 	    if (this_label->pointstyle < 0)
 		fprintf(stderr, "nopointstyle");
-	    else
-		fprintf(stderr, "pointstyle %d", this_label->pointstyle);
+	    else {
+		fprintf(stderr, "pointstyle %d offset %f,%f",
+		    this_label->pointstyle, this_label->hoffset, this_label->voffset);
+	    }
 	    /* Entry font added by DJL */
 	    fputc('\n', stderr);
 	}
