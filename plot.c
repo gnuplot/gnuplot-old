@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.12 1998/11/06 22:10:31 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.13 1998/11/20 12:20:10 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -87,6 +87,10 @@ char *infile_name = NULL;	/* name of command file; NULL if terminal */
 #ifdef GNU_READLINE
 extern char *rl_readline_name;
 extern int rl_complete_with_tilde_expansion;
+#endif
+
+#ifdef X11
+extern int X11_args __PROTO((int, char **));
 #endif
 
 /* patch to get home dir, see command.c */
@@ -332,7 +336,6 @@ char **argv;
 
 #ifdef X11
     {
-	extern int X11_args __PROTO((int argc, char *argv[]));
 	int n = X11_args(argc, argv);
 	argv += n;
 	argc -= n;
