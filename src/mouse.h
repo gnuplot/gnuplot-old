@@ -1,5 +1,5 @@
 /*
- * $Id: mouse.h,v 1.7 2000/11/01 18:57:33 broeker Exp $
+ * $Id: mouse.h,v 1.8 2000/11/01 20:37:48 joze Exp $
  */
 
 /* GNUPLOT - mouse.h */
@@ -198,6 +198,7 @@ enum {
 #endif
 
 
+void event_plotdone __PROTO((void));
 void recalc_statusline __PROTO((void));
 void update_ruler __PROTO((void));
 void UpdateStatusline __PROTO((void));
