@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.16 1998/11/20 12:17:38 lhecking Exp $
+ * $Id: stdfn.h,v 1.17 1998/12/03 22:22:14 lhecking Exp $
  *
  */
 
@@ -57,7 +57,6 @@
 #endif
 
 #ifdef HAVE_BCOPY
-void bcopy ();
 # ifdef NO_MEMCPY
 #  define memcpy(d,s,n) bcopy((s),(d),(n))
 # endif
