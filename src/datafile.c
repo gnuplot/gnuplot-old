@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.34 2002/02/27 21:18:54 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.35 2002/02/28 09:36:44 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -151,9 +151,6 @@ static char *RCSid() { return RCSid("$Id: datafile.c,v 1.34 2002/02/27 21:18:54 
 #include "misc.h"
 #include "parse.h"
 #include "plot.h"
-#ifdef PM3D
-# include "plot3d.h"
-#endif
 #include "util.h"
 
 /* if you change this, change the scanf in readline */
