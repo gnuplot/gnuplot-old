@@ -1,11 +1,6 @@
-/*{{{}}}*/
-/***************************************************************************/
-/*                                                                         */
-/* $Id: tgif.trm,v 1.14 1999/07/30 19:06:47 lhecking Exp $                 */
-/*                                                                         */
-/***************************************************************************/
-/* GNUPLOT - tgif.trm                                                      */
+/* $Id: tgif.trm,v 1.15 1999/08/07 17:19:14 lhecking Exp $ */
 
+/* GNUPLOT - tgif.trm */
 
 /*[
  * Copyright 1990 - 1993, 1998
@@ -314,8 +309,8 @@ TGIF_options()
 /*}}}  */
 
     if (TgifPortrait) {
-	dscaleH = (double) 100.0 *(TGIF_XTOT) / (x_props.size * (TGIF_XMAX + (uTgif_win_horiz - 1) * TGIF_XSHIFT));
-	dscaleV = (double) 100.0 *(TGIF_YTOT) / (y_props.size * (TGIF_YMAX + (uTgif_win_verti - 1) * TGIF_YSHIFT));
+	dscaleH = (double) 100.0 *(TGIF_XTOT) / (xsize * (TGIF_XMAX + (uTgif_win_horiz - 1) * TGIF_XSHIFT));
+	dscaleV = (double) 100.0 *(TGIF_YTOT) / (ysize * (TGIF_YMAX + (uTgif_win_verti - 1) * TGIF_YSHIFT));
 	uActResolution = (int) GPMIN(dscaleH, dscaleV);
 	switch (uTgif_win_verti) {
 	case 1:
@@ -331,8 +326,8 @@ TGIF_options()
 
 	}
     } else {
-	dscaleH = (double) 100.0 *(TGIF_YTOT) / (x_props.size * (TGIF_XMAX + (uTgif_win_horiz - 1) * TGIF_XSHIFT));
-	dscaleV = (double) 100.0 *(TGIF_XTOT) / (y_props.size * (TGIF_YMAX + (uTgif_win_verti - 1) * TGIF_YSHIFT));
+	dscaleH = (double) 100.0 *(TGIF_YTOT) / (xsize * (TGIF_XMAX + (uTgif_win_horiz - 1) * TGIF_XSHIFT));
+	dscaleV = (double) 100.0 *(TGIF_XTOT) / (ysize * (TGIF_YMAX + (uTgif_win_verti - 1) * TGIF_YSHIFT));
 	uActResolution = (unsigned int) GPMIN(dscaleH, dscaleV);
 
 	switch (uTgif_win_verti) {
@@ -377,7 +372,7 @@ TGIF_init()
     fprintf(gpoutfile, "\
 %%TGIF 2.15-p7\n\
 state(%d,30,%u,0,0,%u,16,1,9,1,1,0,0,0,0,1,0,'%s',0,%u,0,0,1,10,0,0,1,1,0,16,0,0,1,1,1).\n\
-%%\n%% @(#)$Header: /home/mojca/cron/mojca/github/cvs/gnuplot2/gnuplot/term/tgif.trm,v 1.14 1999/07/30 19:06:47 lhecking Exp $\n%% %%W%%\n%%\n\
+%%\n%% @(#)$Header: /home/mojca/cron/mojca/github/cvs/gnuplot2/gnuplot/term/tgif.trm,v 1.15 1999/08/07 17:19:14 lhecking Exp $\n%% %%W%%\n%%\n\
 page(1,\"\").\n",
 	    TgifPortrait ? 0 : 1, uActResolution, uActZoom, sActFont, uActFontSize);
     eTgifState = NEWPOLY;
@@ -412,8 +407,8 @@ TGIF_graphics()
 	    return;
 	}
 
-	uXshift = (unsigned int) TGIF_XOFF *100 / uActResolution + (x_props.size * (uTgifPlotCol - 1) * TGIF_XSHIFT);
-	uYshift = (unsigned int) TGIF_YOFF *100 / uActResolution + (y_props.size * (TGIF_YMAX +
+	uXshift = (unsigned int) TGIF_XOFF *100 / uActResolution + (xsize * (uTgifPlotCol - 1) * TGIF_XSHIFT);
+	uYshift = (unsigned int) TGIF_YOFF *100 / uActResolution + (ysize * (TGIF_YMAX +
 									     (uTgifPlotRow - 1) * TGIF_YSHIFT));
 
 	if (uTgifPlotCount % uTgif_win_horiz == 0) {
