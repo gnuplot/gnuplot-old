@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.13 1998/10/03 20:21:23 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.14 1998/10/05 12:41:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -1532,14 +1532,27 @@ void
 show_version(fp)
 FILE *fp;
 {
-	char prefix[] = "#    ";
+	/* If printed to a file, we prefix everything with
+	 * a hash mark to comment out the version information.
+	 */
+	char prefix[6];		/* "#    " */
 	char *p = prefix;
 
-	/* If printed to a file, we add a hash mark to
-	 * comment out the version information.
-	 */
-	p += ( fp == stderr? sizeof(prefix) : 0);
+	prefix[0] = '#'; prefix[1] = prefix[2] = prefix[3] = prefix[4] = ' ';
+	prefix[5] = NUL;
 
+	if (fp == stderr) {
+		/* No hash mark - let p point to the trailing '\0' */
+		p += sizeof(prefix) - 1;
+	} else {
+#ifdef GNUPLOT_BINDIR
+# ifdef X11
+		fprintf(fp, "#!%s/gnuplot -persist\n#\n", GNUPLOT_BINDIR);
+#  else
+		fprintf(fp, "#!%s/gnuplot\n#\n", GNUPLOT_BINDIR);
+# endif /* not X11 */
+#endif /* GNUPLOT_BINDIR */
+	}
 	fprintf(fp, "%s\n\
 %s\t%s\n\
 %s\t%sversion %s\n\
