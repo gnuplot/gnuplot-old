@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.8 1998/12/07 22:08:18 lhecking Exp $
+ * $Id: syscfg.h,v 1.9 1998/12/17 22:08:50 lhecking Exp $
  *
  */
 
@@ -179,6 +179,7 @@
 # ifdef MTOS
 #  define OS "TOS & MiNT & MULTITOS & Magic - "
 # endif /* MTOS */
+# undef HELPFILE
 # define HELPFILE "gnuplot.gih"
 # define HOME "GNUPLOT"
 # define PLOTRC "gnuplot.ini"
