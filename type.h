@@ -1,10 +1,10 @@
-/* $Id: type.h,v 1.1.1.1 1998/04/15 19:16:35 lhecking Exp $ */
+/* $Id: type.h,v 1.1.1.2 1998/04/15 19:23:23 lhecking Exp $ */
 
 /*
  *	Header file: commonly used types
  *
  *
- *	Copyright of this module:   Carsten Grammes, 1993
+ *	Copyright of this module:   Carsten Grammes, 1993, 1998
  *      Experimental Physics, University of Saarbruecken, Germany
  *
  *      Internet address: ph12hucg@rz.uni-sb.de

@@ -1,5 +1,5 @@
 /*
- * $Id: xref.c,v 1.1.1.1 1998/04/15 19:16:45 lhecking Exp $
+ * $Id: xref.c,v 1.1.1.2 1998/04/15 19:24:19 lhecking Exp $
  *
  */
 
@@ -99,6 +99,7 @@ unsigned int size;
 		return p;
 	fprintf(stderr, "Malloc failed\n");
 	exit(1);
+	return NULL; /* HBB 980317: kill superfluous warnings */
 }
 	
 /* scan the file and build a list of line numbers where particular levels are */

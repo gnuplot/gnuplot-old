@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.1.1.1 1998/04/15 19:16:29 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.1.1.2 1998/04/15 19:22:22 lhecking Exp $";
 #endif
 
 /*
@@ -12,7 +12,7 @@ static char *RCSid = "$Id: fit.c,v 1.1.1.1 1998/04/15 19:16:29 lhecking Exp $";
  *
  *	Internet address: cagr@rz.uni-sb.de
  *
- *	Copyright of this module:  1993, 1997  Carsten Grammes
+ *	Copyright of this module:  1993, 1998  Carsten Grammes
  *
  *	Permission to use, copy, and distribute this software and its
  *	documentation for any purpose with or without fee is hereby granted,
@@ -234,6 +234,9 @@ static void ctrlc_setup()
     getch that handles also function keys etc.
 *****************************************************************/
 #if defined(MSDOS) || defined(DOS386)
+/* HBB 980317: added a prototype... */
+int getchx __PROTO((void));
+
 int getchx ()
 {
     register int c = getch();
