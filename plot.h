@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.5 1998/09/16 11:30:32 lhecking Exp $
+ * $Id: plot.h,v 1.6 1998/09/16 21:15:51 lhecking Exp $
  *
  */
 
@@ -399,6 +399,11 @@ typedef double coordval;
 #  warning "using last resort 1e37 as VERYLARGE define, please check your headers"
 # endif /* HUGE */
 #endif /* VERYLARGE */
+
+/* Some older platforms, namely SunOS 4.x, don't define this. */
+#ifndef DBL_EPSILON
+# define DBL_EPSILON     2.2204460492503131E-16
+#endif
 
 /* argument: char *fn */
 #define VALID_FILENAME(fn) ((fn) != NULL && (*fn) != '\0')
