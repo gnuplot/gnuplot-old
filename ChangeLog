@@ -1,3 +1,9 @@
+2000-09-14  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* graphics.c (map_position), graph3d.c (map_position): Fix
+ 	off-by-one bug in treatment of term->{x,y}max when translating
+ 	'screen' coordinates.
+
 2000-07-26 Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/axis.h (STORE_WITH_LOG_AND_UPDATE_RANGE): don't store

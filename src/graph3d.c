@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.5 2000/07/26 18:52:58 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.6 2000/09/14 13:33:35 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -2005,8 +2005,10 @@ const char *what;
     } 
     {
 	register struct termentry *t = term;
-	*x = pos->x * (t->xmax) + 0.5;
-	*y = pos->y * (t->ymax) + 0.5;
+	/* HBB 20000914: off-by-one bug. Maximum allowed output is
+         * t->?max - 1, not t->?max itself! */
+	*x = pos->x * (t->xmax -1) + 0.5;
+	*y = pos->y * (t->ymax -1) + 0.5;
     }
 
     return;
