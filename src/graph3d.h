@@ -1,5 +1,5 @@
 /*
- * $Id: graph3d.h,v 1.10 2000/11/23 14:14:37 broeker Exp $
+ * $Id: graph3d.h,v 1.11 2002/01/26 17:55:07 joze Exp $
  */
 
 /* GNUPLOT - graph3d.h */
@@ -96,6 +96,11 @@ typedef struct surface_points {
     int num_iso_read;		
     struct gnuplot_contours *contours; /* NULL if not doing contours. */
     struct iso_curve *iso_crvs;	/* the actual data */
+
+#ifdef PM3D
+    int pm3d_color_from_column;
+#endif
+    
 } surface_points;
 
 /* Variables of graph3d.c needed by other modules: */
