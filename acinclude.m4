@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.9 1998/10/05 12:42:20 lhecking Exp $
+dnl $Id: acinclude.m4,v 1.10 1998/10/09 14:35:50 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -130,17 +130,17 @@ AC_EGREP_CPP(yes,
   yes
 #endif
 ], AC_MSG_RESULT(yes)
-   LDFLAGS="$LDFLAGS -lpc"
+   LIBS="-lpc $LIBS"
    AC_DEFINE(MSDOS)
    AC_DEFINE(DOS32)
    with_linux_vga=no
-   AC_CHECK_LIB(grx20,GrLine,
-      LDFLAGS="$LDFLAGS -lgrx20"
+   AC_CHECK_LIB(grx20,GrLine,dnl
+      LIBS="-lgrx20 $LIBS"
       CFLAGS="$CFLAGS -fno-inline-functions"
       AC_DEFINE(DJSVGA)
-      AC_CHECK_LIB(grx20,GrCustomLine,AC_DEFINE(GRX21)))
- , AC_MSG_RESULT(no)
- )dnl 
+      AC_CHECK_LIB(grx20,GrCustomLine,AC_DEFINE(GRX21))),dnl
+   AC_MSG_RESULT(no)
+   )dnl 
 ])
 
 ## ------------------------------- ##
@@ -159,7 +159,7 @@ AC_EGREP_CPP(yes,
 ], AC_MSG_RESULT(yes)
    LIBS="$LIBS -lsys_s -lNeXT_s"
    NEXTOBJS=epsviewe.o
-   CFLAGS="$CFLAGS -ObjC",
+   CFLAGS="$CFLAGS -ObjC",dnl
    NEXTOBJS=
    AC_MSG_RESULT(no))
 ])
