@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.105 2004/07/06 02:44:08 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.103.2.1 2004/10/07 05:07:33 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -482,7 +482,6 @@ static GC gc = (GC) 0;
 static GC *current_gc = (GC *) 0;
 static GC gc_xor = (GC) 0;
 static GC gc_xor_dashed = (GC) 0;
-static GC fill_gc = (GC) 0;
 static XFontStruct *font;
 /* must match the definition in term/x11.trm: */
 /* FIXME HBB 20020225: that really should be ensured by sharing a common
@@ -1658,7 +1657,7 @@ DrawRotatedErrorHandler(Display * display, XErrorEvent * error_event)
 
 static void
 DrawRotated(plot_struct *plot, Display *dpy, GC gc, int xdest, int ydest,
-	const char *str, int len)
+       	const char *str, int len)
 {
     Window w = plot->window;
     Drawable d = plot->pixmap;
@@ -1841,7 +1840,7 @@ exec_cmd(plot_struct *plot, char *command)
 	cy = y;
 	/* Limit the number of vertices in any single polyline */
 	if (polyline_size > max_request_size) {
-	    FPRINTF((stderr, "(display) dumping polyline size %d\n",polyline_size));
+ 	    FPRINTF((stderr, "(display) dumping polyline size %d\n",polyline_size));
 	    XDrawLines(dpy, plot->pixmap, *current_gc,
 			polyline, polyline_size+1, CoordModeOrigin);
 	    polyline_size = 0;
@@ -2252,57 +2251,10 @@ exec_cmd(plot_struct *plot, char *command)
 	    static XPoint *points = NULL;
 	    static int st_npoints = 0;
 	    static int saved_npoints = -1, saved_i = -1;	/* HBB 20010919 */
-	    int i, npoints, style;
+	    int i, npoints;
 	    char *ptr = buffer + 1;
 
 	    sscanf(ptr, "%4d", &npoints);
-
-#if USE_ULIG_FILLEDBOXES
-	    if (npoints > 0) {
-		int fillpar, idx;
-
-		/* Load selected pattern or fill into a separate gc */
-		if (!fill_gc)
-		    fill_gc = XCreateGC(dpy,plot->window,0,0);
-		XCopyGC(dpy, *current_gc, ~0, fill_gc);
-		current_gc = &fill_gc;
-
-		ptr += 4;
-		sscanf(ptr, "%4d", &style);
-		fillpar = style >> 4;
-		switch (style & 0xf) {
-		case FS_SOLID:
-		    /* use halftone fill pattern according to filldensity */
-		    /* filldensity is from 0..100 percent */
-		    idx = (int) (fillpar * (stipple_halftone_num - 1) / 100);
-		    if (idx < 0)
-			idx = 0;
-		    if (idx >= stipple_halftone_num)
-			idx = stipple_halftone_num - 1;
-		    XSetStipple(dpy, *current_gc, stipple_halftone[idx]);
-		    XSetFillStyle(dpy, *current_gc, FillOpaqueStippled);
-		    break;
-		case FS_PATTERN:
-		    /* use fill pattern according to fillpattern */
-		    idx = (int) fillpar;	/* fillpattern is enumerated */
-		    if (idx < 0)
-			idx = 0;
-		    idx = idx % stipple_pattern_num;
-		    XSetStipple(dpy, *current_gc, stipple_pattern[idx]);
-		    XSetFillStyle(dpy, *current_gc, FillOpaqueStippled);
-		    break;
-		case FS_EMPTY:
-		    /* fill with background color */
-		    XSetFillStyle(dpy, *current_gc, FillSolid);
-		    XSetForeground(dpy, *current_gc, plot->cmap->colors[0]);
-		    break;
-		default:
-		    /* fill with current color */
-		    XSetFillStyle(dpy, *current_gc, FillSolid);
-		    break;
-		}
-	    }
-#endif /* USE_ULIG_FILLEDBOXES */
 
 	    /* HBB 20010919: Implement buffer overflow protection by
 	     * breaking up long lines */
@@ -3283,7 +3235,7 @@ getMultiTabConsoleSwitchCommand(unsigned long *newGnuplotXID)
 	    cmd = malloc(strlen(konsole_name) + strlen(konsole_tab) + 64);
 #endif
 	    sprintf(cmd, "dcop %s konsole-mainwindow#1 getWinID 2>/dev/null", konsole_name);
-		/* is  2>/dev/null  portable among various shells? */
+      		/* is  2>/dev/null  portable among various shells? */
 	    p = popen(cmd, "r");
 	    if (p) {
 		fscanf(p, "%lu", &w);
@@ -3368,8 +3320,9 @@ update_modifiers(unsigned int state)
 
 #endif
 
+
 static void
-process_configure_notify_event(XEvent *event)
+process_event(XEvent *event)
 {
     plot_struct *plot;
     KeySym keysym;
@@ -3378,100 +3331,80 @@ process_configure_notify_event(XEvent *event)
     fprintf(stderr, "Event 0x%x\n", event->type);
 #endif
 
-    /* Filter down to the last ConfigureNotify event */
-    XSync(dpy, False);
-    while (XCheckTypedWindowEvent(dpy, event->xany.window, ConfigureNotify, event))
-	;
-
-    plot = Find_Plot_In_Linked_List_By_Window(event->xconfigure.window);
-    if (plot) {
-	int w = event->xconfigure.width, h = event->xconfigure.height;
-
-	/* store settings in case window is closed then recreated */
-	/* but: don't do this if both x and y are 0, since some
-	 * (all?) systems set these to zero when only resizing
-	 * (not moving) the window. This does mean that a move to
-	 * (0,0) won't be registered: can we solve that? */
-	if (event->xconfigure.x != 0 || event->xconfigure.y != 0) {
-	    plot->x = event->xconfigure.x;
-	    plot->y = event->xconfigure.y;
-	    plot->posn_flags = (plot->posn_flags & ~PPosition) | USPosition;
-	}
-#ifdef USE_MOUSE
-	/* first, check whether we were waiting for completion of a resize */
-	if (plot->resizing) {
-	    /* it seems to be impossible to distinguish between a
-	     * resize caused by our call to XResizeWindow(), and a
-	     * resize started by the user/windowmanager; but we can
-	     * make a good guess which can only fail if the user
-	     * resizes the window while we're also resizing it
-	     * ourselves: */
-	    if (w == plot->width
-	    && (h == plot->gheight || h == plot->gheight + vchar)) {
-		/* most likely, it's a resize for showing/hiding
-		 * the status line: test whether the height is now
-		 * correct; if not, start another resize: */
-		if (w == plot->width
-		&& h == plot->gheight + (plot->str[0] ? vchar : 0)) {
-		    plot->resizing = FALSE;
-		} else {
-		    XResizeWindow(dpy, plot->window, plot->width,
-				plot->gheight + (plot->str[0] ? vchar : 0));
-		}
-		plot->height = h;
-		return;
-		}
-	    plot->resizing = FALSE;
-	}
-#endif
-
-	if (w > 1 && h > 1 && (w != plot->width || h != plot->height)) {
-
-	    plot->width = w;
-	    plot->height = h;
-#ifdef USE_MOUSE
-	    /* Make sure that unsigned number doesn't underflow. */
-	    if (plot->str[0])
-		plot->gheight = (vchar > plot->height) ? 0 : plot->height - vchar;
-	    else
-		plot->gheight = plot->height;
-#endif
-	    plot->posn_flags = (plot->posn_flags & ~PSize) | USSize;
-#if USE_ULIG_FILLEDBOXES
-	    if (stipple_initialized) {
-		int i;
-		for (i = 0; i < stipple_halftone_num; i++)
-			XFreePixmap(dpy, stipple_halftone[i]);
-		for (i = 0; i < stipple_pattern_num; i++)
-			XFreePixmap(dpy, stipple_pattern[i]);
-		stipple_initialized = 0;
-	    }
-#endif /* USE_ULIG_FILLEDBOXES */
-	    if (plot->pixmap) {
-		/* it is the wrong size now */
-		FPRINTF((stderr, "Free pixmap %d\n", 0));
-		XFreePixmap(dpy, plot->pixmap);
-		plot->pixmap = None;
-	    }
-	    display(plot);
-	}
-    }
-}
-
-static void
-process_event(XEvent *event)
-{
-    plot_struct *plot;
-    KeySym keysym;
-    char key_sequence[8];
-
-    FPRINTF((stderr, "Event 0x%x\n", event->type));
-
     switch (event->type) {
     case ConfigureNotify:
-	process_configure_notify_event(event);
-	break;
+	plot = Find_Plot_In_Linked_List_By_Window(event->xconfigure.window);
+	if (plot) {
+	    int w = event->xconfigure.width, h = event->xconfigure.height;
 
+	    /* store settings in case window is closed then recreated */
+	    /* but: don't do this if both x and y are 0, since some
+	     * (all?) systems set these to zero when only resizing
+	     * (not moving) the window. This does mean that a move to
+	     * (0,0) won't be registered: can we solve that? */
+	    if (event->xconfigure.x != 0 || event->xconfigure.y != 0) {
+		plot->x = event->xconfigure.x;
+		plot->y = event->xconfigure.y;
+		plot->posn_flags = (plot->posn_flags & ~PPosition) | USPosition;
+	    }
+#ifdef USE_MOUSE
+	    /* first, check whether we were waiting
+	     * for completion of a resize */
+	    if (plot->resizing) {
+		/* it seems to be impossible to distinguish between a
+		 * resize caused by our call to XResizeWindow(), and a
+		 * resize started by the user/windowmanager; but we can
+		 * make a good guess which can only fail if the user
+		 * resizes the window while we're also resizing it
+		 * ourselves: */
+		if (w == plot->width && (h == plot->gheight || h == plot->gheight + vchar)) {
+		    /* most likely, it's a resize for showing/hiding
+		     * the status line: test whether the height is now
+		     * correct; if not, start another resize: */
+		    if (w == plot->width && h == plot->gheight + (plot->str[0] ? vchar : 0)) {
+			plot->resizing = FALSE;
+		    } else {
+			XResizeWindow(dpy, plot->window, plot->width, plot->gheight + (plot->str[0] ? vchar : 0));
+		    }
+		    plot->height = h;
+		    break;
+		}
+		plot->resizing = FALSE;
+	    }
+#endif
+
+	    if (w > 1 && h > 1 && (w != plot->width || h != plot->height)) {
+
+		plot->width = w;
+		plot->height = h;
+#ifdef USE_MOUSE
+		if (plot->str[0])
+		    /* Make sure that unsigned number doesn't underflow. */
+		    plot->gheight = (vchar > plot->height) ? 0 : plot->height - vchar;
+		else
+		    plot->gheight = plot->height;
+#endif
+		plot->posn_flags = (plot->posn_flags & ~PSize) | USSize;
+#if USE_ULIG_FILLEDBOXES
+		if (stipple_initialized) {	/* ULIG */
+		    int i;
+		    for (i = 0; i < stipple_halftone_num; i++)
+			XFreePixmap(dpy, stipple_halftone[i]);
+		    for (i = 0; i < stipple_pattern_num; i++)
+			XFreePixmap(dpy, stipple_pattern[i]);
+		    stipple_initialized = 0;
+		}
+#endif /* USE_ULIG_FILLEDBOXES */
+		if (plot->pixmap) {
+		    /* it is the wrong size now */
+		    FPRINTF((stderr, "Free pixmap %d\n", 0));
+		    XFreePixmap(dpy, plot->pixmap);
+		    plot->pixmap = None;
+		}
+		display(plot);
+	    }
+	}
+	break;
     case KeyPress:
 	plot = Find_Plot_In_Linked_List_By_Window(event->xkey.window);
 
@@ -3495,7 +3428,7 @@ process_event(XEvent *event)
 		    cmd = getMultiTabConsoleSwitchCommand(&newGnuplotXID);
 		/* overwrite gnuplotXID (re)set after x11.trm:X11_options() */
 	    	if (newGnuplotXID) gnuplotXID = newGnuplotXID;
-		if (cmd) system(cmd);
+    		if (cmd) system(cmd);
 		}
 		if (gnuplotXID) {
 		    XMapRaised(dpy, gnuplotXID);
@@ -3745,24 +3678,14 @@ process_event(XEvent *event)
 	 * might be on another window which generates the
 	 * expose events. (joze)
 	 */
-
-	/* Check for any ConfigureNotify events further down in the X11
-	 * event queue. If one is found, handle it first and let the
-	 * expose event that is generated be handled later.
-	 * Jay Painter Nov 2003.
-	 */
-	if (XCheckTypedWindowEvent(dpy, event->xany.window, ConfigureNotify, event)) {
-	    process_configure_notify_event(event);
-	    break;
-	}
-	while (XCheckTypedWindowEvent(dpy, event->xany.window, Expose, event));
-
 	plot = Find_Plot_In_Linked_List_By_Window(event->xexpose.window);
-
-	if (plot)
+	if (!plot)
+	    break;
+	if (!event->xexpose.count) {
+	    /* XXX jitters display while resizing */
 	    UpdateWindow(plot);
+	}
 	break;
-
     case EnterNotify:
 	plot = Find_Plot_In_Linked_List_By_Window(event->xcrossing.window);
 	if (!plot)
@@ -4419,6 +4342,11 @@ char *fontname;
 
     if (!fontname)
 	fontname = FallbackFont;
+
+    /* Release current font. This is inefficient, but plugs a memory leak. */
+    if (font)
+	XFreeFont(dpy, font);
+	
     font = XLoadQueryFont(dpy, fontname);
 
     if (!font) {
