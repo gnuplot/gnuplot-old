@@ -1,5 +1,5 @@
 /*
- * $Id: specfun.h,v 1.5 2000/11/01 18:57:33 broeker Exp $
+ * $Id: specfun.h,v 1.6 2000/11/07 14:37:28 broeker Exp $
  */
 
 /* GNUPLOT - specfun.h */
@@ -58,5 +58,6 @@ void f_rand __PROTO((void));
 void f_normal __PROTO((void));
 void f_inverse_normal __PROTO((void));
 void f_inverse_erf __PROTO((void));
+void f_lambertw __PROTO((void));
 
 #endif /* GNUPLOT_SPECFUN_H */
