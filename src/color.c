@@ -495,7 +495,13 @@ void draw_color_smooth_box ()
        only few lines of code is written into the output file.
      */
     if (!strcmp(term->name,"postscript") ||
-	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex"))
+	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex")
+#if 0
+#ifdef USE_EPSLATEX_DRIVER
+	|| !strcmp(term->name, "epslatex")
+#endif
+#endif
+	    )
 	draw_inside_color_smooth_box_postscript( x_from, y_from, x_to, y_to, color_box.border , color_box.border_lt_tag);
     else
 	draw_inside_color_smooth_box_bitmap ( x_from, y_from, x_to, y_to, color_box.border, color_box.border_lt_tag );

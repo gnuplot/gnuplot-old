@@ -19,7 +19,7 @@ supported terminals are:
 	X11
 	Linux VGA
 	PostScript
-	pslatex, pstex
+	pslatex, pstex, epslatex
 	GIF
 	Xfig
 

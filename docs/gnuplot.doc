@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.40.2.6 2000/06/09 07:33:04 joze Exp $
+C RCS $Id: gnuplot.doc,v 1.40.2.7 2000/06/14 00:38:37 joze Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -5239,9 +5239,9 @@ C ... and restart the table:
 
      OS/2 Presentation Manager
      X11
-     Linux VGA
+     Linux VGA (vgagl)
      PostScript
-     pslatex, pstex
+     pslatex, pstex, epslatex
      GIF
      Xfig
 
