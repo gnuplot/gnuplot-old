@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.48 1999/02/25 15:43:02 lhecking Exp $
+dnl $Id: configure.in,v 1.49 1999/03/01 21:18:59 lhecking Exp $
 dnl
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.48 $)
+AC_REVISION($Revision: 1.49 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*version.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 PATCHLVL=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
@@ -201,7 +201,7 @@ AC_CHECK_FUNCS(atexit memcpy memmove memset \
   index rindex \
   erf erfc gamma lgamma \
   getcwd poll pclose popen select sleep snprintf \
-  strncasecmp strnicmp sysinfo tcgetattr
+  strncasecmp strnicmp sysinfo tcgetattr vfprintf doprnt
 )
 
 if test "$ac_cv_func_pclose" = yes && test "$ac_cv_func_popen" = yes ; then
