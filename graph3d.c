@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graph3d.c,v 1.10 1998/11/17 20:55:13 lhecking Exp $";
+static char *RCSid = "$Id: graph3d.c,v 1.11 1998/11/20 12:19:39 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1947,8 +1947,14 @@ int xl, yl;
 		(*term->move)(xl+key_sample_left,yl);
 		(*term->vector)(xl+key_sample_right,yl);
 	} else {
+		/* HBB 981118: avoid crash if hidden3d sees a manually placed key:
+		 * simply turn off hidden-lining while we're drawing the key line: */
+		int save_hidden_active = hidden_active;
+		hidden_active = FALSE;
+
 		clip_move(xl+key_sample_left,yl);
 		clip_vector(xl+key_sample_right,yl);
+		hidden_active = save_hidden_active;
 	}
 }
 
