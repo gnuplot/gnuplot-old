@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.41 2005/01/08 15:37:22 mikulik Exp $
+ * $Id: term_api.h,v 1.42 2005/01/08 16:08:59 mikulik Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -292,7 +292,6 @@ extern int curr_arrow_headfilled;
 extern char *outstr;
 extern FILE *gpoutfile;
 
-#if defined(PM3D) || defined(WITH_IMAGE)
 /* Output file where the PostScript output goes to.
    In particular:
 	gppsfile == gpoutfile
@@ -306,7 +305,6 @@ extern FILE *gpoutfile;
    for PS, for instance).
 */
 extern FILE *gppsfile;
-#endif
 
 extern TBOOLEAN multiplot;
 
