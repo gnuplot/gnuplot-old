@@ -10,7 +10,7 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-dnl $Id: aclocal.m4,v 1.7 1998/08/31 20:29:02 lhecking Exp $
+dnl $Id: aclocal.m4,v 1.8 1998/09/23 19:54:37 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -99,6 +99,7 @@ case "x$am_cv_prog_cc_stdc" in
   *) CC="$CC $am_cv_prog_cc_stdc" ;;
 esac
 ])
+
 
 AC_DEFUN(gp_PROG_CPP_STRINGIFY,
 [AC_REQUIRE([AC_PROG_CC])
@@ -267,7 +268,6 @@ fi dnl with_$1 != no
 ])dnl macro end
 
 
-
 # serial 1
 
 dnl gp_CHECK_HEADER(HEADER-FILE, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
@@ -296,6 +296,38 @@ ifelse([$3], , , [$3
 fi
 
 ])dnl macro end
+
+
+# serial 1
+
+AC_DEFUN(gp_FIND_SELECT_ARGTYPES,
+[AC_MSG_CHECKING([types of arguments accepted by select])
+ for arg_fdset_p in 'fd_set *' 'int *'; do
+  for arg_size_t in 'int' 'size_t' 'unsigned'; do
+   for arg_timeval_p in 'struct timeval *' 'const struct timeval *'; do
+    AC_TRY_COMPILE(
+[#ifndef NO_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifndef NO_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#include <sys/socket.h>
+#endif
+extern select ($arg_size_t,$arg_fdset_p,$arg_fdset_p,$arg_fdset_p,$arg_timeval_p);],[int empty_declaration;],
+    [break 3])
+   done
+  done
+ done
+ AC_MSG_RESULT([$arg_size_t,$arg_fdset_p,$arg_timeval_p])
+ AC_DEFINE_UNQUOTED(SELECT_ARGTYPE_1,$arg_size_t)
+ AC_DEFINE_UNQUOTED(SELECT_ARGTYPE_234,($arg_fdset_p))
+ AC_DEFINE_UNQUOTED(SELECT_ARGTYPE_5,($arg_timeval_p))
+]) dnl macro end
 
 # Do all the work for Automake.  This macro actually does too much --
 # some checks are only needed if your package does certain things.
