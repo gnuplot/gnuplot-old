@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: vms.c,v 1.5 1998/07/15 15:34:47 lhecking Exp $";
+static char    *RCSid = "$Id: vms.c,v 1.6 1998/11/20 12:14:51 lhecking Exp $";
 #endif
 
 /* GNUPLOT - vms.c */
@@ -51,10 +51,6 @@ static int something_in_this_file;
 #define FATAL(msg) { fprintf(stderr, "%s\nFile %s line %d\n", msg, __FILE__, __LINE__); exit(EXIT_FAILURE); }
 
  
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include <dvidef.h>
 #include <syidef.h>
 #include <jpidef.h>
