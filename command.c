@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: command.c,v 1.8 1998/09/21 21:07:18 lhecking Exp $";
+static char    *RCSid = "$Id: command.c,v 1.9 1998/09/25 15:27:46 lhecking Exp $";
 #endif
 
 /* GNUPLOT - command.c */
@@ -59,6 +59,7 @@ static char    *RCSid = "$Id: command.c,v 1.8 1998/09/21 21:07:18 lhecking Exp $
 # ifdef DJGPP
 #  include <dos.h>
 #  include <dir.h>            /* HBB: for setdisk() */
+extern char HelpFile[MAXPATH] ;      /* patch for do_help  - AP */
 # else
 #  include <process.h>
 # endif /* DJGPP */
@@ -956,7 +957,7 @@ int toplevel;
 	/* if can't find environment variable then just use HELPFILE */
 
 /* patch by David J. Liu for getting GNUHELP from home directory */
-#if defined(__TURBOC__) && (defined(MSDOS) || defined(DOS386))
+#if (defined(__TURBOC__) && (defined(MSDOS) || defined(DOS386))) || defined(__DJGPP__)
         help_ptr = HelpFile ;
 #else
 #if defined(MTOS) || defined(ATARI)
