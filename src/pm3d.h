@@ -1,5 +1,5 @@
 /*
- * $Id: pm3d.h,v 1.14 2002/03/09 22:41:45 mikulik Exp $
+ * $Id: pm3d.h,v 1.15 2002/07/07 18:15:55 mikulik Exp $
  */
 
 /* GNUPLOT - pm3d.h */
@@ -95,8 +95,6 @@ typedef struct {
   PM3D_IMPL_MODE implicit;
 			/* 1: [default] draw ALL surfaces with pm3d
 			   0: only surfaces specified with 'with pm3d' */
-  int use_column;	/* use color value from column 2 or 4
-			   ('using 1:2' or 'using 1:2:3:4') */
 } pm3d_struct;
 
 
