@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.12 2001/10/31 17:13:59 mikulik Exp $
+ * $Id: axis.h,v 1.13 2002/02/13 17:59:36 broeker Exp $
  *
  */
 
@@ -319,6 +319,9 @@ extern AXIS_INDEX x_axis, y_axis, z_axis;
 #ifdef PM3D
 #define CB_AXIS axis_array[COLOR_AXIS]
 #endif
+
+/* decimal sign */
+extern char *decimalsign;
 
 /* -------- macros using these variables: */
 
