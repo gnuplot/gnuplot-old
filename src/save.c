@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.69 2003/10/21 10:07:39 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.70 2004/01/13 20:51:58 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -281,6 +281,9 @@ set y2data%s\n",
     SAVE_FORMAT(SECOND_X_AXIS);
     SAVE_FORMAT(SECOND_Y_AXIS);
     SAVE_FORMAT(FIRST_Z_AXIS );
+#ifdef PM3D
+    SAVE_FORMAT(COLOR_AXIS );
+#endif
 #undef SAVE_FORMAT
 
     fprintf(fp, "set angles %s\n",
