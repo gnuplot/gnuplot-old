@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: version.c,v 1.2 1998/08/18 16:28:50 lhecking Exp $";
+static char *RCSid = "$Id: version.c,v 1.3 1998/09/18 19:48:56 lhecking Exp $";
 #endif
 
 /* GNUPLOT - version.c */
@@ -46,8 +46,8 @@ static char *RCSid = "$Id: version.c,v 1.2 1998/08/18 16:28:50 lhecking Exp $";
  * do not agree with the one in the log. I hope to fix this some time soon.
  *
  * $Log: version.c,v $
- * Revision 1.2  1998/08/18 16:28:50  lhecking
- * Fix typos.
+ * Revision 1.3  1998/09/18 19:48:56  lhecking
+ * Move defs to plot.h and bump version.
  *
  * Revision 1.347  1998/06/22 12:24:56  ddenholm
  * dd : retrieve fit.*, matrix.*, docs/latextut/makefile from earlier vsns
@@ -1821,18 +1821,12 @@ static char *RCSid = "$Id: version.c,v 1.2 1998/08/18 16:28:50 lhecking Exp $";
  *
  */
 
+#include "plot.h"
+
 char version[] = "3.5 (pre 3.6)";
-char patchlevel[] = "beta 347";
+char patchlevel[] = "beta 347pl2";
 char date[] = "Mon Jun 22 13:22:33 BST 1998"; 
 char gnuplot_copyright[] = "Copyright(C) 1986 - 1993, 1998";
 
-
-/* override in Makefile */
-#ifndef CONTACT
-# define CONTACT "bug-gnuplot@dartmouth.edu"
-#endif
-#ifndef HELPMAIL
-# define HELPMAIL "info-gnuplot@dartmouth.edu"
-#endif
 char bug_email[] = CONTACT;
 char help_email[] = HELPMAIL;
