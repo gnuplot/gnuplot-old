@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.142 2004/12/21 08:09:35 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.143 2005/01/04 20:12:52 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2586,6 +2586,9 @@ show_xyzlabel(const char *name, const char *suffix, label_struct *label)
 
     if (label->textcolor.type == TC_LT)
     	fprintf(stderr,", textcolor lt %d", label->textcolor.lt+1);
+
+    if (label->noenhanced)
+	fprintf(stderr," noenhanced");
 
     putc('\n', stderr);
 }
