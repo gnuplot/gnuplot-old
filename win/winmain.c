@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: winmain.c,v 1.2 1998/12/01 20:10:04 lhecking Exp $";
+static char *RCSid = "$Id: winmain.c,v 1.3 1998/12/04 15:16:59 lhecking Exp $";
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -91,7 +91,9 @@ LPSTR szModuleName;
 LPSTR winhelpname;
 LPSTR szMenuName;
 #define MENUNAME "wgnuplot.mnu"
+#ifndef HELPFILE /* HBB 981203: makefile.win predefines this... */
 #define HELPFILE "wgnuplot.hlp"
+#endif
 
 extern char version[];
 extern char patchlevel[];

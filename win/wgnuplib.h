@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.2 1998/12/01 20:09:53 lhecking Exp $
+ * $Id: wgnuplib.h,v 1.3 1998/12/04 15:17:17 lhecking Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -76,9 +76,11 @@ BOOL WDPROC CheckWGNUPLOTVersion(LPSTR str);
 #define OFFSETOF(x)  (x)
 #define SELECTOROF(x)  (x)
 #define MoveTo(hdc,x,y) MoveToEx(hdc,x,y,(LPPOINT)NULL);
+# ifndef __TURBOC__ /* Borland C has these defines, already... */
 #define farmalloc(x) malloc(x)
 #define farrealloc(s,n) realloc(s,n)
 #define farfree(s) free(s)
+# endif /* __TURBOC__ */
 #endif
  
 #ifdef __MINGW32__

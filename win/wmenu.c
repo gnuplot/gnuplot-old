@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wmenu.c,v 1.2 1998/12/01 20:10:09 lhecking Exp $";
+static char *RCSid = "$Id: wmenu.c,v 1.3 1998/12/04 15:16:53 lhecking Exp $";
 #endif
 
 /* GNUPLOT - win/wmenu.c */
@@ -496,14 +496,18 @@ char FAR *ButtonText[BUTTONMAX];
 			goto errorcleanup;
 		}
 		LeftJustify(buf,buf);
+/* HBB 981202: added MF_SEPARATOR to the MF_MENU*BREAK items. This  is meant
+ * to maybe avoid a CodeGuard warning about passing last argument zero
+ * when item style is not SEPARATOR... Actually, a better solution would
+ * have been to combine the '|' divider with the next menu item. */
 		if (buf[0]=='-') {
 		    if (nMenuLevel == 0)
-			AppendMenu(hMenu[0], MF_MENUBREAK, 0, (LPSTR)NULL);
+				AppendMenu(hMenu[0], MF_SEPARATOR | MF_MENUBREAK, 0, (LPSTR)NULL);
 		    else
 			AppendMenu(hMenu[nMenuLevel], MF_SEPARATOR, 0, (LPSTR)NULL);
 		}
 		else if (buf[0]=='|') {
-			AppendMenu(hMenu[nMenuLevel], MF_MENUBARBREAK, 0, (LPSTR)NULL);
+			AppendMenu(hMenu[nMenuLevel], MF_SEPARATOR | MF_MENUBARBREAK, 0, (LPSTR)NULL);
 		}
 		else {
 			AppendMenu(hMenu[nMenuLevel],MF_STRING, lpmw->nCountMenu, (LPSTR)buf);
