@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.c,v 1.2.2.5 2000/10/24 18:58:12 broeker Exp $
+ * $Id: axis.c,v 1.2.2.6 2000/10/30 12:14:32 broeker Exp $
  *
  */
 
@@ -1209,7 +1209,7 @@ gen_tics(axis, grid, callback)
 			       : mplace);
 		    if (inrange(mtic, internal_min, internal_max)
 			&& inrange(mtic, start - step * SIGNIF, end + step * SIGNIF))
-			(*callback) (axis, mtic, "", mgrd);
+			(*callback) (axis, mtic, NULL, mgrd);
 		}
 		/*}}} */
 	    }

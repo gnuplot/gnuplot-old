@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.8 2000/10/24 18:58:12 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.9 2000/10/30 12:14:32 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -235,9 +235,11 @@ double place;
 char *text;
 struct lp_style_type grid;
 {
-    int len = label_width(text, NULL);
-    if (len > widest_tic)
-	widest_tic = len;
+    if (text) {			/* minitics have no text at all */
+	int len = label_width(text, NULL);
+	if (len > widest_tic)
+	    widest_tic = len;
+    }
 }
 
 /*}}} */
