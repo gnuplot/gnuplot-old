@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: util.c,v 1.3 1999/05/14 19:43:54 lhecking Exp $";
+static char *RCSid = "$Id: util.c,v 1.4 1999/05/30 17:09:44 lhecking Exp $";
 #endif
 
 /* GNUPLOT - util.c */
@@ -294,14 +294,14 @@ int start, end;
 
 
 /*
- *    m_quote_capture() is similar to m_capture(), but it removes
- quotes from either end if the string.
+ * m_quote_capture() is similar to m_capture(), but it removes
+ * quotes from either end if the string.
  */
 void m_quote_capture(str, start, end)
 char **str;
 int start, end;
 {
-    register int i, e, escflag = 0;
+    register int i, e;
     register char *s;
 
     if (*str)			/* previous pointer to malloc'd memory there */
