@@ -1,5 +1,5 @@
 #
-# $Id: makefile.os2,v 1.8 1998/10/09 14:31:31 lhecking Exp $
+# $Id: makefile.os2,v 1.9 1998/10/12 20:11:08 lhecking Exp $
 #
 # Makefile for use with emx (0.9 and above) and GNUMake
 #   on OS/2 3.0 and above (might also work for OS/2 2.x)
@@ -295,8 +295,8 @@ $(DOCDIR)\allterm.h: $(CORETERM)
 	cd $(TERMDIR) & type *.trm > ..\$@
 doc2gih.exe:  $(DOCDIR)\doc2gih.c $(DOCDIR)\termdoc.c $(OS2TERMS)
 	$(CC3) $(CFLAGS3) $(TERMFLAGS) -o $@ $(DOCDIR)\doc2gih.c $(DOCDIR)\termdoc.c
-doc2ipf.exe:  $(DOCDIR)\doc2ipf.c $(DOCDIR)\termdoc.c $(OS2TERMS)
-	$(CC3) $(CFLAGS3) $(TERMFLAGS) -o $@ $(DOCDIR)\doc2ipf.c $(DOCDIR)\termdoc.c
+doc2ipf.exe:  $(DOCDIR)\doc2ipf.c $(DOCDIR)\termdoc.c $(DOCDIR)\xref.c $(OS2TERMS)
+	$(CC3) $(CFLAGS3) $(TERMFLAGS) -o $@ $(DOCDIR)\doc2ipf.c $(DOCDIR)\termdoc.c $(DOCDIR)\xref.c
 doc2tex.exe:  $(DOCDIR)\doc2tex.c $(DOCDIR)\termdoc.c $(OS2TERMS) $(DOCDIR)\allterm.h
 	$(CC3) $(CFLAGS3) $(TERMFLAGS) -DALL_TERM_DOC -o $@ $(DOCDIR)\doc2tex.c $(DOCDIR)\termdoc.c
 doc2html.exe: $(DOCDIR)\doc2html.c $(DOCDIR)\termdoc.c $(DOCDIR)\xref.c $(OS2TERMS)
