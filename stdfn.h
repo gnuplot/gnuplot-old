@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.2 1998/04/15 19:50:17 lhecking Exp $
+ * $Id: stdfn.h,v 1.3 1998/04/22 18:57:04 lhecking Exp $
  *
  */
 
@@ -185,6 +185,10 @@ int strnicmp __PROTO((char *, char *, int));
 #   define GP_GETCWD(path,len) getwd (path)
 #  endif
 # endif
+#endif
+
+#ifdef __TURBOC__ /* HBB 980324: for sleep() prototype */
+# include <dos.h>
 #endif
 
 #ifndef GP_SLEEP

@@ -1,6 +1,6 @@
-/* $Id: driver.h,v 1.2 1998/04/16 19:30:31 lhecking Exp $ */
+/* $Id: driver.h,v 1.3 1998/04/22 18:57:27 lhecking Exp $ */
 
-/* GNUPLOT - driver.h  $Id: driver.h,v 1.2 1998/04/16 19:30:31 lhecking Exp $ */
+/* GNUPLOT - driver.h  $Id: driver.h,v 1.3 1998/04/22 18:57:27 lhecking Exp $ */
 
 /*[
  * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
@@ -39,6 +39,9 @@
 #include "plot.h"
 #include "bitmap.h"
 #include "setshow.h"
+
+/* corey@cac added the next line for efficiency */
+#define fputc putc
 
 /* functions provided by in term.c */
 

@@ -1,5 +1,5 @@
 #
-# $Id: makefile.os2,v 1.2 1998/04/16 19:28:20 lhecking Exp $
+# $Id: makefile.os2,v 1.3 1998/04/22 18:56:41 lhecking Exp $
 #
 # Makefile for use with emx and nmake
 # for compiling for OS/2 2.0 and above

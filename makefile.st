@@ -1,5 +1,5 @@
 #
-# $Id: makefile.st,v 1.2 1998/04/16 19:28:24 lhecking Exp $
+# $Id: makefile.st,v 1.3 1998/04/22 18:56:43 lhecking Exp $
 #
 
 #

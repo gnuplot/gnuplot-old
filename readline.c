@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.2 1998/04/15 19:41:29 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.3 1998/04/22 18:56:58 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -258,7 +258,7 @@ char tos_getch();
 #undef special_getc() 
 #endif
 #define special_getc() msdos_getch()
-static char msdos_getch();
+static char msdos_getch __PROTO((void));    /* HBB 980308: PROTO'ed it */
 #endif
 
 

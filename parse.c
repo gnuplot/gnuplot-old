@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: parse.c,v 1.3 1998/04/15 20:21:02 lhecking Exp $";
+static char    *RCSid = "$Id: parse.c,v 1.4 1998/04/22 18:56:53 lhecking Exp $";
 #endif
 
 /* GNUPLOT - parse.c */
@@ -157,6 +157,18 @@ void evaluate_at(at_ptr, val_ptr)
 			undefined = TRUE;
 		}
 	}
+#if defined(NeXT) || defined(ultrix) || defined(__osf__)
+    /*
+     * linux was able to fit curves which NeXT gave up on -- traced it to
+     * silently returning NaN for the undefined cases and plowing ahead
+     * I can force that behavior this way.  (0.0/0.0 generates NaN)
+     */
+	if (undefined && (errno == EDOM || errno == ERANGE)) {	/* corey@cac */
+		undefined = FALSE;
+		errno = 0;
+		Gcomplex(val_ptr, 0.0/0.0, 0.0/0.0);
+	}
+#endif /* NeXT || ultrix || __osf__ */
 }
 
 
