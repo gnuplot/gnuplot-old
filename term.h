@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.11 1998/10/28 21:10:54 lhecking Exp $
+ * $Id: term.h,v 1.12 1998/11/30 21:51:24 lhecking Exp $
  *
  */
 
@@ -153,7 +153,7 @@
 # include "apollo.trm"
 #  ifdef GPR
 /* with fixed windows */
-#   include "gpr.h"
+#   include "gpr.trm"
 #  endif
 #endif /* Apollo */
 
