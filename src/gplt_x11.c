@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.115 2004/10/03 19:08:34 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.116 2004/10/04 06:37:11 mikulik Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -4143,8 +4143,10 @@ process_event(XEvent *event)
 		if (ctrlq && !(modifier_mask & Mod_Ctrl))
 		    break;
 
-		if (!cmd_tried)
+		if (!cmd_tried) {
 		    cmd = getMultiTabConsoleSwitchCommand(&newGnuplotXID);
+		    cmd_tried = 1;
+		}
 		/* overwrite gnuplotXID (re)set after x11.trm:X11_options() */
 	    	if (newGnuplotXID) gnuplotXID = newGnuplotXID;
 		if (cmd) system(cmd);
