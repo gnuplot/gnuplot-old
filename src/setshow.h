@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.7 1999/06/11 18:53:17 lhecking Exp $
+ * $Id: setshow.h,v 1.8 1999/06/14 19:23:21 lhecking Exp $
  *
  */
 
@@ -232,8 +232,6 @@ extern struct arrow_def *first_arrow;
 extern struct linestyle_def *first_linestyle;
 
 extern int lmargin, bmargin,rmargin,tmargin; /* plot border in characters */
-
-extern char cur_locale[MAX_ID_LEN+1];
 
 extern char full_month_names[12][32];
 extern char abbrev_month_names[12][8];
