@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.113 2005/02/12 05:43:51 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.114 2005/02/12 05:51:44 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -3022,6 +3022,13 @@ key_sample_line_pm3d(struct surface_points *plot, int xl, int yl)
     int i = 1, x1 = xl + key_sample_left, x2;
     double cbmin, cbmax;
     double gray, gray_from, gray_to, gray_step;
+
+    /* If plot uses a constant color, set it here and then let simpler routine take over */
+    if (plot->lp_properties.use_palette && plot->lp_properties.pm3d_color.type == TC_RGB) {
+	apply_pm3dcolor(&(plot->lp_properties.pm3d_color), term);
+	key_sample_line(xl,yl);
+	return;
+    }
 
     /* color gradient only over the cb-values of the surface, if smaller than the
      * cb-axis range (the latter are gray values [0:1]) */
