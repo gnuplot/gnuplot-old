@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.14 2002/01/23 09:57:07 mikulik Exp $
+ * $Id: wgnuplib.h,v 1.15 2003/01/23 13:22:04 broeker Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -72,7 +72,8 @@
  *      variables no longer needed, in struct GW */
 /* HBB: bumped version because of changes in PM3D interface and pointtypes */
 /* HBB: bumped version for filledboxes support */
-#define WGNUPLOTVERSION  "1.6   2001-09-18"
+/* HBB: bumped version for larger NUMMENU in wresourc.h */
+#define WGNUPLOTVERSION  "1.6   2003-01-23"
 BOOL WDPROC CheckWGNUPLOTVersion(LPSTR str);
 
 /* ================================== */
