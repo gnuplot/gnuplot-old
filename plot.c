@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.21 1999/01/29 18:18:03 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.22 1999/02/10 16:50:59 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -444,7 +444,7 @@ char **argv;
 
 	if (interactive && term != 0) {  /* not unknown */
 #if defined(HAVE_LIBREADLINE) && defined(GNUPLOT_HISTORY)
-	    FPRINTF((stderr, "Before read_history\n));
+	    FPRINTF((stderr, "Before read_history\n"));
 	    expanded_history_filename = tilde_expand (GNUPLOT_HISTORY_FILE);
 	    FPRINTF((stderr, "expanded_history_filename = %s\n", expanded_history_filename));
 	    read_history (expanded_history_filename);
