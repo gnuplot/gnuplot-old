@@ -1,5 +1,5 @@
 /*
- * $Id: t410x.trm,v 1.10 1999/10/01 15:09:13 lhecking Exp $
+ * $Id: t410x.trm,v 1.11 1999/10/29 18:39:40 lhecking Exp $
  *
  */
 
@@ -244,7 +244,7 @@ int ang;
  * 4106/4107/4109/CX PROGRAMMERS manual.
  */
 
-void
+static void
 T410X_encode_x_y(x, y)
 unsigned int x, y;
 {
