@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.4 1998/06/23 13:41:36 lhecking Exp $
+ * $Id: stdfn.h,v 1.5 1998/07/08 20:46:47 lhecking Exp $
  *
  */
 
@@ -173,6 +173,11 @@ int pclose __PROTO((FILE *));
 #  else
 int strnicmp __PROTO((char *, char *, int));
 #  endif
+#endif
+
+#ifdef __WATCOMC__
+#include <direct.h>
+#define HAVE_GETCWD 1
 #endif
 
 #ifndef GP_GETCWD

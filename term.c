@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.5 1998/06/23 13:41:37 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.6 1998/07/08 20:46:48 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -1337,6 +1337,7 @@ reopen_binary()
 #include <ssdef.h>
 #include <stat.h>
 #include <fab.h>
+/* If you use WATCOM C, you may have to comment out the following branch */
 #ifndef TT2$M_DECCRT3         /* VT300 not defined as of VAXC v2.4 */
 #define TT2$M_DECCRT3 0X80000000
 #endif 
