@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.8 1998/06/29 18:35:22 lhecking Exp $
+# $Id: Makefile.in,v 1.9 1998/07/01 20:37:10 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -155,7 +155,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.8 1998/06/29 18:35:22 lhecking Exp $
+# $Id: Makefile.in,v 1.9 1998/07/01 20:37:10 lhecking Exp $
 #
 ########################################################
 #
@@ -384,6 +384,9 @@ uninstall:
 	$(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS) $<
 
 command.o: command.c fit.h help.h setshow.h
+	$(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\" $<
+
+show.o: show.c plot.h setshow.h
 	$(CC) -c $(CPPFLAGS) $(DEFS) $(INCLUDES) $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\" $<
 
 term.o: term.c term.h $(CORETERM)

@@ -7,10 +7,10 @@ dnl a macro is the usual case : this saves having to update
 dnl countless makefiles when new tests are added. By usual case
 dnl I guess ansi compiler on posix system or something like that
 dnl
-dnl $Id: configure.in,v 1.5 1998/06/23 13:36:56 lhecking Exp $
+dnl $Id: configure.in,v 1.6 1998/07/01 20:37:14 lhecking Exp $
 dnl
 AC_PREREQ(2.1)
-AC_REVISION($Revision: 1.5 $)
+AC_REVISION($Revision: 1.6 $)
 AC_INIT(graphics.c)
 AC_CONFIG_HEADER(config.h:config.hin)
 
@@ -57,9 +57,9 @@ AC_ARG_WITH(png,dnl
 with_png=yes
 )dnl
 
-dnl Use the .gnuplotrc file
+dnl Use .gnuplot file in current directory
 AC_ARG_WITH(cwdrc,dnl
-[  --with-cwdrc            check current directory for .gnuplotrc file,
+[  --with-cwdrc            check current directory for .gnuplot file,
                           normally disabled for security reasons],
 if test "$withval" = no; then AC_DEFINE(NOCWDRC) fi, AC_DEFINE(NOCWDRC)
 )dnl
@@ -160,6 +160,7 @@ dnl
 AC_CHECK_HEADERS(sys/bsdtypes.h sys/select.h)
 AC_CHECK_HEADERS(sys/systeminfo.h, AC_CHECK_FUNCS(sysinfo))
 AC_CHECK_HEADER(sys/types.h, , AC_DEFINE(NO_SYS_TYPES_H))
+AC_CHECK_HEADERS(sys/utsname.h)
 AC_CHECK_HEADERS(libc.h malloc.h)
 AC_CHECK_HEADERS(termios.h, ,AC_CHECK_HEADERS(sgtty.h))
 dnl
