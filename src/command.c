@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.48 2001/01/22 18:30:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.49 2001/02/01 17:56:04 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -328,7 +328,7 @@ do_line()
     char *inlptr = input_line;
 
     /* Skip leading whitespace */
-    while (isspace((int) *inlptr))
+    while (isspace((unsigned char) *inlptr))
 	inlptr++;
 
     if (inlptr != input_line) {

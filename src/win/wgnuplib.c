@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgnuplib.c,v 1.1 1999/03/26 22:11:03 lhecking Exp $";
+static char *RCSid = "$Id: wgnuplib.c,v 1.2 2001/02/01 17:56:05 broeker Exp $";
 #endif
 
 /* GNUPLOT - win/wgnuplib.c */
@@ -127,29 +127,32 @@ HLOCAL hlocal;
 LPSTR
 GetInt(LPSTR str, LPINT pval)
 {
-int val = 0;
-BOOL negative = FALSE;
-BOOL success = FALSE;
-int ch;
-	if (!str)
-		return NULL;
-	while ( (ch = *str)!=0 && isspace(ch) )
-		str++;
-	if (ch == '-') {
-		negative = TRUE;
-		str++;
-	}
-	while ( (ch = *str)!=0 && isdigit(ch) ) {
-		success = TRUE;
-		val = val * 10 + (ch - '0');
-		str++;
-	}
-	if (success) {
-		if (negative)
-			val = -val;
-		*pval = val;
-		return str;
-	}
+    int val = 0;
+    BOOL negative = FALSE;
+    BOOL success = FALSE;
+    unsigned char ch;
+
+    if (!str)
 	return NULL;
+    while ( (ch = *str)!=0 && isspace(ch) )
+	str++;
+
+    if (ch == '-') {
+	negative = TRUE;
+	str++;
+    }
+    while ( (ch = *str)!=0 && isdigit(ch) ) {
+	success = TRUE;
+	val = val * 10 + (ch - '0');
+	str++;
+    }
+
+    if (success) {
+	if (negative)
+	    val = -val;
+	*pval = val;
+	return str;
+    }
+    return NULL;
 }
 
