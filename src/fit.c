@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.37 2004/01/07 19:11:30 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.38 2004/04/10 14:28:02 broeker Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -1685,6 +1685,8 @@ va_dcl
     VA_START(args, fmt);
 # if defined(HAVE_VFPRINTF) || _LIBC
     vfprintf(STANDARD, fmt, args);
+    va_end(args);
+    VA_START(args, fmt);
     vfprintf(log_f, fmt, args);
 # else
     _doprnt(fmt, args, STANDARD);
