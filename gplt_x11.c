@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.21 1999/02/25 15:53:30 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.22 1999/03/04 20:44:46 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -1123,10 +1123,12 @@ XEvent *event;
 /*-----------------------------------------------------------------------------
  *   preset - determine options, open display, create window
  *---------------------------------------------------------------------------*/
-
+/*
 #define On(v) ( !strcmp(v,"on") || !strcmp(v,"true") || \
                 !strcmp(v,"On") || !strcmp(v,"True") || \
                 !strcmp(v,"ON") || !strcmp(v,"TRUE") )
+*/
+#define On(v) ( !strnicmp(v,"on",2) || !strnicmp(v,"true",4) )
 
 #define AppDefDir "/usr/lib/X11/app-defaults"
 #ifndef MAXHOSTNAMELEN
@@ -1204,7 +1206,7 @@ char *argv[];
 /*---prescan arguments for "-name"----------------------------------------*/
 
     while (++Argv, --Argc > 0) {
-	if (!strcmp(*Argv, "-name") && Argc > 1) {
+	if (STREQ(*Argv, "-name") && Argc > 1) {
 	    safe_strncpy(Name, Argv[1], sizeof(Name));
 	    safe_strncpy(Class, Argv[1], sizeof(Class));
 	    if (Class[0] >= 'a' && Class[0] <= 'z')

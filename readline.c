@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.12 1999/02/23 17:28:13 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.13 1999/03/04 20:44:50 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -704,7 +704,7 @@ char *line;
     entry = history;
     while (entry != NULL) {
 	/* Don't store duplicate entries */
-	if (!strcmp(entry->line, line)) {
+	if (STREQ(entry->line, line)) {
 	    /* cmd lines are equal, relink entry that was found last */
 	    if (entry->next == NULL) {
 		/* previous command repeated, no change */
