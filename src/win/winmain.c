@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: winmain.c,v 1.12 2002/11/20 17:20:15 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: winmain.c,v 1.13 2004/02/12 09:08:40 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -265,7 +265,8 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	if (_argc>1) {
 		int i,noend=FALSE;
 		for (i=0; i<_argc; ++i)
-			if (!stricmp(_argv[i],"-noend") || !stricmp(_argv[i],"/noend"))
+			if (!stricmp(_argv[i],"-noend") || !stricmp(_argv[i],"/noend")
+			    || !stricmp(_argv[i],"-persist"))
 				noend = TRUE;
 		if (noend)
 			ShowWindow(textwin.hWndParent, textwin.nCmdShow);
