@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.20.2.12 2003/02/14 16:04:09 broeker Exp $
+C RCS $Id: gnuplot.doc,v 1.20.2.13 2003/08/22 13:47:41 lhecking Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -1668,8 +1668,8 @@ C ... and restart the table:
  the `smooth` option to `plot` may be what you've been looking for rather
  than `fit`.
 3 error estimates
-?commands fit error_estimate
-?fit error_estimate
+?commands fit error_estimates
+?fit error_estimates
 ?fit errors
  In `fit`, the term "error" is used in two different contexts, data error
  estimates and parameter error estimates.
