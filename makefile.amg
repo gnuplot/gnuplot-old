@@ -1,6 +1,6 @@
 # Makefile for SAS/C 6.1 on the Amiga
 #
-# $Id: makefile.amg,v 1.3 1998/04/22 18:56:36 lhecking Exp $
+# $Id: makefile.amg,v 1.4 1998/09/16 11:31:37 lhecking Exp $
 #
 #
 
@@ -106,7 +106,7 @@ binary.o: binary.c plot.h
 bitmap.o: bitmap.c bitmap.h plot.h
 command.o: command.c plot.h setshow.h help.h
 contour.o: contour.c plot.h
-datafile.o: datafile.c plot.h fnproto.h binary.h setshow.h stdfn.h
+datafile.o: datafile.c plot.h fnproto.h binary.h setshow.h
 eval.o: eval.c plot.h
 fit.o: fit.c fit.h matrix.h plot.h type.h
 graph3d.o: graph3d.c plot.h setshow.h
