@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gpltconv.c,v 1.3 1999/10/29 18:51:12 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: gpltconv.c,v 1.4 1999/11/04 12:29:03 lhecking Exp $"); }
 #endif
 
 /* gnuplot - gpltconv.c */
@@ -63,6 +63,7 @@ static const char *instrings[] =
     "set data style ",
     "set function style ",
     "set linestyle ",
+    "set nolinestyle",
     "set no"
 };
 
@@ -72,6 +73,7 @@ static const char *outstrings[] =
     "set style data ",
     "set style function ",
     "set style line ",
+    "unset style line",
     "unset "
 };
 
