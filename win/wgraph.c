@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgraph.c,v 1.2 1998/06/30 17:01:48 lhecking Exp $";
+static char *RCSid = "$Id: wgraph.c,v 1.3 1998/11/17 20:51:54 lhecking Exp $";
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -72,9 +72,9 @@ void ReadGraphIni(LPGW lpgw);
 
 #define WGDEFCOLOR 15
 COLORREF wginitcolor[WGDEFCOLOR] =  {
-	RGB(0,0,255),	/* blue */
-	RGB(0,255,0),	/* green */
 	RGB(255,0,0),	/* red */
+	RGB(0,255,0),	/* green */
+	RGB(0,0,255),	/* blue */
 	RGB(255,0,255), /* magenta */
 	RGB(0,0,128),	/* dark blue */
 	RGB(128,0,0),	/* dark red */
