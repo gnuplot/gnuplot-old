@@ -1,7 +1,7 @@
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: makefile.all,v 1.28.2.8 2002/01/26 18:55:01 lhecking Exp $
+# $Id: makefile.all,v 1.28.2.9 2003/01/20 19:02:27 lhecking Exp $
 #
 ########################################################
 #
@@ -125,7 +125,7 @@ DEMOS = $(M)1.dat $(M)2.dat $(M)3.dat $(M)airfoil.dem $(M)all.dem \
 
 ETC =   0BUGS 0FAQ 0INSTALL 0PORTING 0README ChangeLog CodeStyle Copyright \
 	INSTALL.gnu Makefile.in NEWS PGPKEYS TODO acconfig.h $(ACLOCAL_M4) \
-	amiga.c buildvms.com commitvers $(CONFIG_HEADER_IN) configure \
+	amiga.c buildvms.com $(CONFIG_HEADER_IN) configure \
 	configure.in configure.vms corgraph.asm corplot.c ctrl87.c ctrl87.h \
 	djconfig.sh errorfix.sh genopt.com gnuplot.def gnuplot.el gnuplot.opt \
 	gnuplot.prj header.mac hrcgraph.asm install-sh intergra.x11 lasergnu \
