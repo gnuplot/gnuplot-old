@@ -1,0 +1,7 @@
+pm3dCompress.awk
+	script to shorten postscript files with pm3d splot and regular
+	(grided) data
+
+colorpts.awk
+	script for drawing colour points (colour according to the point
+	z-coordinate). Try colorpts-demo.gp

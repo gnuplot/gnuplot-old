@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.26 1999/11/24 13:28:31 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.26.2.1 2000/05/01 00:17:19 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1368,6 +1368,22 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
     WRITEBACK(FIRST_Y_AXIS, ymin, ymax)
     WRITEBACK(SECOND_X_AXIS, x2min, x2max)
     WRITEBACK(SECOND_Y_AXIS, y2min, y2max)
+
+
+    /* the following ~5 lines were moved from the end of the
+     * function to here, as do_plot calles term->text, which
+     * itself might process input events in mouse enhanced
+     * terminals. For redrawing to work, line capturing and
+     * setting the plot_num must already be done before
+     * entering do_plot(). Thu Jan 27 23:56:24 2000 (joze) */
+    /* if we get here, all went well, so record this line for replot */
+    if (plot_token != -1) {
+	/* note that m_capture also frees the old replot_line */
+	m_capture(&replot_line, plot_token, c_token - 1);
+	plot_token = -1;
+    }
+
+    /* if we get here, all went well, so record the line for replot */
     if (strcmp(term->name, "table") == 0)
 	print_table(first_plot, plot_num);
     else {
@@ -1379,13 +1395,6 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 	END_LEAK_CHECK();
     }
 
-    /* if we get here, all went well, so record this line for replot */
-
-    if (plot_token != -1) {
-	/* note that m_capture also frees the old replot_line */
-	m_capture(&replot_line, plot_token, c_token - 1);
-	plot_token = -1;
-    }
     cp_free(first_plot);
     first_plot = NULL;
 }				/* eval_plots */

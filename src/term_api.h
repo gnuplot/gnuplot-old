@@ -73,4 +73,7 @@ void LINUX_setup __PROTO((void));
 void vms_reset();
 #endif
 
+/* in set.c (used in pm3d.c) */
+void lp_use_properties __PROTO((struct lp_style_type *lp, int tag, int pointflag));
+
 #endif /* GNUPLOT_TERM_API_H */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.17 2000/02/11 19:17:20 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.17.2.1 2000/05/01 00:17:19 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1639,15 +1639,13 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 	    }
 	}
     }				/* draw_contour */
-    /* perform the plot */
-    if (strcmp(term->name, "table") == 0)
-	print_3dtable(plot_num);
-    else {
-	START_LEAK_CHECK();	/* assert no memory leaks here ! */
-	do_3dplot(first_3dplot, plot_num, 0);
-	END_LEAK_CHECK();
-    }
 
+    /* the following ~9 lines were moved from the end of the
+     * function to here, as do_3dplot calles term->text, which
+     * itself might process input events in mouse enhanced
+     * terminals. For redrawing to work, line capturing and
+     * setting the plot3d_num must already be done before
+     * entering do_3dplot(). Thu Jan 27 23:54:49 2000 (joze) */
     /* if we get here, all went well, so record the line for replot */
     if (plot_token != -1) {
 	/* note that m_capture also frees the old replot_line */
@@ -1657,6 +1655,15 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 
     /* record that all went well */
     plot3d_num=plot_num;
+
+    /* perform the plot */
+    if (strcmp(term->name, "table") == 0)
+	print_3dtable(plot_num);
+    else {
+	START_LEAK_CHECK();	/* assert no memory leaks here ! */
+	do_3dplot(first_3dplot, plot_num, 0);
+	END_LEAK_CHECK();
+    }
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.5 1999/08/24 11:24:23 lhecking Exp $
+ * $Id: term.h,v 1.5.2.1 2000/05/01 00:17:20 joze Exp $
  *
  */
 
@@ -178,6 +178,10 @@
 # include "linux.trm"
 #endif
 
+/* Linux VGAGL */
+#ifdef VGAGL
+# include "vgagl.trm"
+#endif
 
 /* MGR Window system */
 #ifdef MGR

@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.8 2000/03/28 21:28:36 lhecking Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.8.2.1 2000/05/01 00:17:20 joze Exp $" ;
 #endif
 
 /****************************************************************************
@@ -64,6 +64,7 @@ static char RCSid[]="$Id: gclient.c,v 1.8 2000/03/28 21:28:36 lhecking Exp $" ;
  *	      new menu items under 'Mouse' and 'Utilities' (August 1999)
  *	- rewrite of mouse support for the new scheme common with X11
  *	      (October 1999 - January 2000)
+ *      - pm3d stuff (January 1999 - January 2000)
  *
  *   Franz Bakan  (see  //fraba  labels)
  *       - communication gnupmdrv -> gnuplot via shared memory (April 1999)
@@ -150,7 +151,8 @@ static long lCols_init = 0;
 static long lCols_num = 16;
 static long bkColor = -1;
 
-static LONG alColourTable[ 18 ] ;
+#define nColors 16
+static LONG alColourTable[ nColors+2  ] ;
 
 #define   GNUBUF    1024        /* buffer for gnuplot commands */
 #define   PIPEBUF   4096        /* size of pipe buffers */
@@ -1363,7 +1365,7 @@ GetMousePosViewport(hWnd,&mx,&my);
 	case IDM_SET_D_S_POINTS:
 	case IDM_SET_D_S_STEPS:
 	    if (input_from_PM_Terminal)
-            sprintf(input_from_PM_Terminal, "set data style %s; replot",
+            sprintf(input_from_PM_Terminal, "set style data %s; replot",
 		SetDataStyles[ (USHORT) SHORT1FROMMP( mp1 ) - IDM_SET_D_S_BOXES ] );
 	    gp_execute(0);
 	    return 0L;
@@ -1378,7 +1380,7 @@ GetMousePosViewport(hWnd,&mx,&my);
 	case IDM_SET_F_S_POINTS:
 	case IDM_SET_F_S_STEPS:
 	    if (input_from_PM_Terminal)
-            sprintf(input_from_PM_Terminal, "set function style %s; replot",
+            sprintf(input_from_PM_Terminal, "set style function %s; replot",
 		SetDataStyles[ (USHORT) SHORT1FROMMP( mp1 ) - IDM_SET_F_S_BOXES ] );
 	    gp_execute(0);
 	    return 0L;
@@ -2024,7 +2026,11 @@ static void ReadGnu( void* arg )
     HPS hps ;
     HAB hab ;
     int linewidth = DEFLW ;
-
+#ifdef PM3D
+    HPAL pm3d_hpal = 0;     // palette used for make_palette()
+    HPAL pm3d_hpal_old = 0; // default palette used before make_palette()
+    LONG pm3d_color = 0;    // current colour
+#endif
     hab = WinInitialize( 0 ) ;
     DosEnterCritSec() ;
     pszPipeName = malloc( 256 ) ;
@@ -2457,6 +2463,87 @@ lOldLine=lt ;
 		    }
 		    }
 		    break ;
+
+#ifdef PM3D
+	       case 'p': { // GR_MAKE_PALETTE
+/* 
+Implementation problems (I haven't understood that from .INF doc):
+what is the difference between GpiCreateLogColorTable and
+GpiCreatePalette?
+*/
+		    char c;
+		    int i;
+		    LONG lRetCount;
+		      /* must be equal to that from InitScreenPS() and
+			 must be synchronized with:
+			   * the value in pm.trm: PM_make_palette (otherwise
+			     this values would have to be piped there, but
+			     nowadays exactly 16 is used
+			   * with the offset SetColor in GR_FILLED_POLYGON
+		      */
+		    ULONG rgbTable[256];
+		    /* read switch */
+		    BufRead(hRead, &c, sizeof(c), &cbR);
+		    if (c == 0) {
+		      // gnuplot asks for the number of colours in palette
+		      i = 256 - nColors;
+		      DosWrite( hRead, &i, sizeof(int), &cbR ) ;
+		      break;
+		      }
+		    /* retrieve the current table */
+		    lRetCount = GpiQueryLogColorTable(hps, 0L, 0L, nColors, alColourTable);
+// {FILE *ff; ff=fopen("deb","a");
+// fprintf(ff,"lret=%i  ncol=%i\n",(int)lRetCount,(int)nColors);fclose(ff);}
+		    if (lRetCount>0 && lRetCount!=nColors) // ring for developers!
+		      DosBeep(880,777);
+		    for (i=0; i<nColors; i++)
+		      rgbTable[i] = alColourTable[i];
+		    /* append new RGB table after */
+		    BufRead(hRead, &rgbTable[nColors], (256-nColors)*sizeof(rgbTable[0]), &cbR);
+		    if (pm3d_hpal != 0) GpiDeletePalette( pm3d_hpal );
+		    pm3d_hpal = GpiCreatePalette(hab,0L,LCOLF_CONSECRGB, 256L, rgbTable);
+		    pm3d_hpal_old = GpiSelectPalette( hps, pm3d_hpal );
+		    }
+		    break ;
+	       case 'e': // GR_RELEASE_PALETTE
+#if 0 // REMOVE THIS ROUTINE COMPLETELY!
+		    if (pm3d_hpal) {
+		      GpiDeletePalette( pm3d_hpal );
+		      pm3d_hpal = 0;
+		      }
+//		      GpiSelectPalette( hps, pm3d_hpal_old );
+#endif
+		    break ;
+	       case 'C': { // GR_SET_COLOR
+		    unsigned char c;
+		    BufRead(hRead,&c, 1, &cbR) ;
+		    pm3d_color = c;
+		    }
+		    break ;
+	       case 'f': { // GR_FILLED_POLYGON
+		    int points, x,y, i;
+		    LONG curr_color = GpiQueryColor(hps);
+		    POINTL p;
+		    BufRead(hRead,&points, sizeof(points), &cbR) ;
+		    // GpiSetPattern(hps,PATSYM_SOLID);
+		    // GpiSetBackMix(hps,BM_OVERPAINT);
+		    GpiSetColor( hps, pm3d_color);
+		    // using colours defined in the palette
+// FILE *ff;ff=fopen("deb","a");
+//fprintf(ff,"f --- GpiSetColor %li\n",pm3d_color); fclose(ff);}
+		    GpiBeginArea( hps, BA_BOUNDARY | BA_ALTERNATE);
+		    for (i = 0; i < points; i++) {
+		      BufRead(hRead,&x, sizeof(x), &cbR) ;
+		      BufRead(hRead,&y, sizeof(y), &cbR) ;
+		      p.x = x; p.y = y;
+		      if (i) GpiLine( hps, &p );
+			else GpiMove( hps, &p );
+		      }
+		    GpiEndArea(hps);
+		    GpiSetColor( hps, curr_color);
+		    }
+		    break ;
+#endif //PM3D
 
 		case 'u' : {  /* set_ruler(int x, int y) term API: x<0 switches ruler off */
 		    int x, y;

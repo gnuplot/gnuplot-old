@@ -1,12 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.83 2000/03/30 14:13:23 lhecking Exp $
+dnl $Id: configure.in,v 1.83.2.1 2000/05/01 00:17:18 joze Exp $
 dnl
 AC_INIT(src/graphics.c)
 AM_CONFIG_HEADER(config.h:config.hin)
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.83 $)
+AC_REVISION($Revision: 1.83.2.1 $)
 
 VERSION="`cat $srcdir/VERSION`"
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -121,6 +121,12 @@ dnl use mouse for x11 interface
 AC_ARG_ENABLE(mouse,dnl
 [  --enable-mouse          enable mouse for the x11 terminal (EXPERIMENTAL)],,
 test -z "$enable_mouse" && enable_mouse=no
+)dnl
+
+dnl pm3d
+AC_ARG_ENABLE(pm3d,dnl
+[  --enable-pm3d           enable pm3d (EXPERIMENTAL)],,
+test -z "$enable_pm3d" && enable_pm3d=no
 )dnl
 
 dnl use a different x11 driver name ?
@@ -269,6 +275,36 @@ if test "$with_linux_vga" = yes; then
      TERMLIBS="$TERMLIBS -lvga"],
     with_linux_vga=no)
 fi
+
+dnl check for installed linux vgagl lib if
+dnl both pm3d and linux_vga are defined.
+if test "$with_linux_vga" = yes -a "$enable_pm3d" = yes; then
+  AC_MSG_CHECKING(for vgagl library)
+  AC_CHECK_LIB(vgagl, gl_hline,
+     [  
+	AC_DEFINE(VGAGL, 1, [ Define if the vgagl libray is present. ])
+	dnl yup, we've the libvgagl.
+	dnl check now, if libthreedkit is found.
+	AC_ARG_WITH(threedkit,dnl
+	[  --with-threedkit        where to look for libthreedkit])
+	oflags=$LDFLAGS
+	LDFLAGS="$LDFLAGS -L$with_threedkit"
+	AC_CHECK_LIB(threedkit, gl_striangle,
+	   [
+	      AC_DEFINE(THREEDKIT, 1, [ Define if the threedkit libray is present. ])
+	      AC_DEFINE(EXTENDED_COLOR_SPECS, 1,
+		 [ Define if color information should be passed for each vertex. ])
+	      VGAGLLIB="-L$with_threedkit -lthreedkit -lvgagl"
+	      with_vgagl=yes
+	   ], # <-- threedkit is present / not present -->
+	   [with_vgagl=no]
+	)
+      ], # <-- vgagl is present / not present -->
+      [with_vgagl=no]
+  )
+fi
+
+TERMLIBS="$VGAGLLIB $TERMLIBS"
 
 dnl GNU readline and the required terminal library
 if test "$with_readline" != no; then
@@ -481,6 +517,11 @@ if test "$enable_mouse" = yes; then
             [ Define if you want to have mouse support for the x11 terminal. ])
 fi
 
+if test "$enable_pm3d" = yes; then
+  AC_DEFINE(PM3D, 1,
+            [ Define if you want to have Petr Mikulik's fancy pm3d. ])
+fi
+
 dnl Substitute variables
 AC_SUBST(PACKAGE)
 AC_SUBST(VERSION)
@@ -574,6 +615,10 @@ if test "$with_linux_vga" = yes; then
   AC_MSG_RESULT([    gnuplot is installed suid root!])
 fi
 
+if test "$with_vgagl" = yes; then
+  AC_MSG_RESULT([  enable vgagl terminal with mouse and pm3d support])
+fi
+
 test "$enable_thin_splines" = yes && \
   AC_MSG_RESULT([  Enable thin plate splines (EXPERIMENTAL)])
 
@@ -607,6 +652,8 @@ if test "$no_x" != yes; then
     AC_MSG_RESULT([  Enable MOUSE for X11 (EXPERIMENTAL)])
   fi
 fi
+test "$enable_pm3d" = yes && \
+  AC_MSG_RESULT([  Enable pm3d (EXPERIMENTAL)])
 dnl end config report
 
 dnl end configure.in

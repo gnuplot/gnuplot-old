@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29 2000/03/30 14:03:24 lhecking Exp $
+ * $Id: plot.h,v 1.29.2.1 2000/05/01 00:17:19 joze Exp $
  *
  */
 
@@ -597,6 +597,11 @@ struct surface_points {
 	struct iso_curve *iso_crvs;
 };
 
+#ifdef PM3D
+/* color.h is included here, since it requires the definition of `coordinate' */
+#include "color.h"
+#endif
+
 /* It should go without saying that additional entries may be made
  * only at the end of this structure. Any fields added must be
  * optional - a value of 0 (or NULL pointer) means an older driver
@@ -652,6 +657,33 @@ struct TERMENTRY {
     void (*set_ruler) __PROTO((int, int));    /* set ruler location; x<0 switches ruler off */
     void (*set_cursor) __PROTO((int, int, int));   /* set cursor style and corner of rubber band */
     void (*set_clipboard) __PROTO((const char[]));  /* write text into cut&paste buffer (clipboard) */
+#endif
+#ifdef PM3D
+    int (*make_palette) __PROTO((t_sm_palette *palette));
+    /* 1. if palette==NULL, then return nice/suitable
+       maximal number of colours supported by this terminal.
+       Returns 0 if it can make colours without palette (like 
+       postscript).
+       2. if palette!=NULL, then allocate its own palette
+       return value is undefined
+       3. available: some negative values of max_colors for whatever 
+       can be useful
+     */
+    void (*previous_palette) __PROTO((void));	
+    /* release the palette that the above routine allocated and get 
+       back the palette that was active before.
+       Some terminals, like displays, may draw parts of the figure
+       using their own palette. Those terminals that possess only 
+       one palette for the whole plot don't need this routine.
+     */
+
+    void (*set_color) __PROTO((double gray));
+    /* gray is from [0;1], terminal uses its palette or another way
+       to transform in into gray or r,g,b
+       This routine (for each terminal separately) remembers or not
+       this colour so that it can apply it for the subsequent drawings
+     */
+    void (*filled_polygon) __PROTO((int points, gpiPoint *corners));
 #endif
 };
 

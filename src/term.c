@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.23 2000/02/11 19:17:20 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.23.2.1 2000/05/01 00:17:20 joze Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -101,6 +101,8 @@ void close_printer __PROTO((FILE * outfile));
 #  include <alloc.h>
 # endif				/* MSC */
 #endif /* _Windows */
+
+enum { UNSET = -1, no = 0, yes = 1 };
 
 /* the 'output' file handle */
 FILE *gpoutfile;
@@ -1164,7 +1166,11 @@ init_terminal()
    LINUX_setup has failed, also if we are logged in by network */
 #ifdef LINUXVGA
 	if (LINUX_graphics_allowed)
+#ifdef VGAGL
+	    term_name = "vgagl";
+#else
 	    term_name = "linux";
+#endif
 #endif /* LINUXVGA */
     }
 

@@ -1,4 +1,7 @@
 2000-05-01  Johannes Zellner <johannes@zellner.org>
+	* branched off pm3d
+
+2000-05-01  Johannes Zellner <johannes@zellner.org>
 	* removed a superfluous ifndef(OS2) in term/x11.trm
 	* added a SELECT_FD_SET_CAST in term/x11.trm
 

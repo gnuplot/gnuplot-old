@@ -1,4 +1,4 @@
-/* $Id: tables.c,v 1.13 2000/02/11 19:14:34 lhecking Exp $ */
+/* $Id: tables.c,v 1.13.2.1 2000/05/01 00:17:20 joze Exp $ */
 
 /* GNUPLOT - tables.c */
 
@@ -201,6 +201,10 @@ struct gen_table set_tbl[] =
     { "or$igin", S_ORIGIN },
     { "o$utput", S_OUTPUT },
     { "pa$rametric", S_PARAMETRIC },
+#ifdef PM3D
+    { "pal$ette", S_PALETTE },
+    { "pm$3d", S_PM3D },
+#endif
     { "p$lot", S_PLOT },
     { "poi$ntsize", S_POINTSIZE },
     { "pol$ar", S_POLAR },
