@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: standard.c,v 1.4 1998/10/28 21:08:24 lhecking Exp $";
+static char *RCSid = "$Id: standard.c,v 1.5 1998/12/07 22:09:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - standard.c */
@@ -794,10 +794,8 @@ register double mag, ang;
 void f_log10()
 {
 struct value a;
-register double l10;;
 	(void) pop(&a);
-	l10 = log(10.0);	/***** replace with a constant! ******/
-	push( Gcomplex(&a,log(magnitude(&a))/l10, angle(&a)/l10) );
+	push( Gcomplex(&a,log(magnitude(&a))/M_LN10, angle(&a)/M_LN10) );
 }
 
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.20 1998/11/19 10:41:36 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.21 1998/12/07 22:09:12 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -1020,7 +1020,7 @@ else if (almost_equals(c_token, MAX)) { AUTO |= 2;    ++c_token; }
 	if (END_OF_COMMAND) {
 	    is_log_x = is_log_y = is_log_z = is_log_x2 = is_log_y2 = TRUE;
 	    base_log_x = base_log_y = base_log_z = base_log_x2 = base_log_y2 = 10.0;
-	    log_base_log_x = log_base_log_y = log_base_log_z = log_base_log_x2 = log_base_log_y2 = log(10.0);
+	    log_base_log_x = log_base_log_y = log_base_log_z = log_base_log_x2 = log_base_log_y2 = M_LN10;
 	} else {
 	    TBOOLEAN change_x = FALSE;
 	    TBOOLEAN change_y = FALSE;
