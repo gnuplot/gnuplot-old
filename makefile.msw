@@ -1,5 +1,5 @@
 #
-# $Id: makefile.msw,v 1.1.1.2 1998/04/22 13:37:39 lhecking Exp $
+# $Id: makefile.msw,v 1.5.2.1 2002/01/26 18:55:01 lhecking Exp $
 #
 # Make file for Microsoft C  Version 7.0 Windows Version
 # and Microsoft Program Maintenance Utility  Version 1.20
@@ -43,8 +43,8 @@ CSOURCE5 = term\aed.trm term\cgi.trm term\dumb.trm term\dxy.trm \
 	term\eepic.trm term\epson.trm term\fig.trm term\hp26.trm \
 	term\hp2648.trm term\hpgl.trm term\hpljii.trm 
 CSOURCE6 = term\impcodes.h term\imagen.trm term\object.h \
-	term\iris4d.trm term\kyo.trm term\latex.trm term/pbm.trm term\win.trm
-CSOURCE7 = term\post.trm term\qms.trm term\regis.trm term\sun.trm \
+	term\iris4d.trm term\kyo.trm term\latex.trm term\pbm.trm term\pdf.trm term\win.trm
+CSOURCE7 = term\post.trm term\qms.trm term\regis.trm term\sun.trm term\svg.trm \
 	term\t410x.trm term\tek.trm term\unixpc.trm term\unixplot.trm \
 	term\v384.trm term\x11.trm
 CSOURCE8 = contour.c specfun.c binary.c interpol.c
@@ -124,6 +124,7 @@ scanner.obj: scanner.c plot.h
 set.obj: set.c plot.h setshow.h
 
 show.obj: show.c plot.h setshow.h
+	cl $(CFLAGS)  /DHELPFILE=\"$(HELPFILE)\" show.c
 
 standard.obj: standard.c plot.h
 
@@ -191,13 +192,13 @@ wprinter.obj: win/wprinter.c win/wgnuplib.h win/wcommon.h win/wresourc.h
 wgraph.obj: win/wgraph.c win/wgnuplib.h win/wcommon.h win/wresourc.h
 	$(DLLCC) win/wgraph.c
 	
-# convert gnuplot.doc to gnuplot.gih
+# convert gnuplot.doc to gnuplot.rtf
 $(HELPFILE): doc2rtf.exe docs\gnuplot.doc win\wgnuplot.hpj
 	doc2rtf docs\gnuplot.doc win\gnuplot.rtf
 	hc31 win\wgnuplot.hpj 
 
-doc2rtf.exe: docs\doc2rtf.c
-	cl /AS /F 5000 /W1 docs\doc2rtf.c
+doc2rtf.exe: docs\doc2rtf.c docs\termdoc.c docs\xref.c
+	cl /AS /F 5000 /W1 /Fedoc2rtf.exe docs\doc2rtf.c docs\termdoc.c docs\xref.c
 
 #make binary demo files
 demo\bf_test.exe: bf_test.c dbinary.obj alloc.obj

@@ -1,5 +1,5 @@
 #
-# $Id: makefile.st,v 1.1.1.2 1998/04/22 13:37:47 lhecking Exp $
+# $Id: makefile.st,v 1.5.2.1 2002/01/26 18:55:01 lhecking Exp $
 #
 
 #
@@ -79,7 +79,8 @@ TERM=term$(SL)
 
 TERMS = $(TERM)atariaes.trm $(TERM)dumb.trm $(TERM)eepic.trm $(TERM)epson.trm \
 	$(TERM)hpgl.trm $(TERM)hpljii.trm $(TERM)hppj.trm $(TERM)latex.trm \
-	$(TERM)pbm.trm $(TERM)post.trm $(TERM)texdraw.trm
+	$(TERM)pbm.trm $(TERM)pdf.trm $(TERM)post.trm $(TERM)svg.trm \
+	$(TERM)texdraw.trm
 
 all: gnuplot.prg $(HELPFILE) demo$(SL)bf_test.tos
 
@@ -122,6 +123,7 @@ plot3d.o:    plot3d.c plot.h setshow.h binary.h help.h
 readline.o:  readline.c
 scanner.o:   scanner.c plot.h
 show.o:      set.c plot.h setshow.h
+		$(CC) -o $@ $(CFLAGS) -DHELPFILE=\"$(HELPFILE)\" $<
 set.o:       show.c plot.h setshow.h
 specfun.o:   plot.h specfun.c
 standard.o:  standard.c plot.h
@@ -135,8 +137,8 @@ version.o:   version.c
 $(HELPFILE): doc2gih docs$(SL)gnuplot.doc
 	doc2gih docs$(SL)gnuplot.doc $(HELPFILE)
 
-doc2gih: docs$(SL)doc2gih.c
-	$(HOSTCC) -I. -I.. -o doc2gih docs$(SL)doc2gih.c
+doc2gih: docs$(SL)doc2gih.c docs$(SL)termdoc.c
+	$(HOSTCC) -I. -I.. -o doc2gih docs$(SL)doc2gih.c docs$(SL)termdoc.c 
 
 demo$(SL)bf_test.tos: bf_test.o binary.o alloc.o
 	$(CC) -s -o $@ bf_test.o binary.o alloc.o -lpml
