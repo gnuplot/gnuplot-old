@@ -1,4 +1,4 @@
-/* $Id: fit.h,v 1.2 1998/05/07 14:08:57 lhecking Exp $ */
+/* $Id: fit.h,v 1.3 1998/06/19 15:05:10 lhecking Exp $ */
 
 /*
  *	Header file: public functions in fit.c
@@ -32,7 +32,7 @@
 #define EXT extern
 #endif
 
-#include "type.h"
+/*#include "type.h"*/  /*HBB 961110: unused now! */
 #include "plot.h"
 
 #include "ansichek.h"
