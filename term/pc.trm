@@ -1,5 +1,5 @@
 /*
- * $Id: pc.trm,v 1.15 2000/02/11 19:21:47 lhecking Exp $
+ * $Id: pc.trm,v 1.16 2002/07/26 16:42:29 mikulik Exp $
  *
  */
 
@@ -457,6 +457,7 @@ int ang;
     case 0:
 	pc_text_dir = HORIZ_DIR;
 	break;
+    default:
     case 1:
 	pc_text_dir = VERT_DIR;
 	break;

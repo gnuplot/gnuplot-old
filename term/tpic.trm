@@ -1,5 +1,5 @@
 /*
- * $Id: tpic.trm,v 1.13 2001/07/09 13:22:03 broeker Exp $
+ * $Id: tpic.trm,v 1.14 2002/07/26 16:42:29 mikulik Exp $
  */
 
 /* GNUPLOT - tpic.trm */
@@ -557,7 +557,7 @@ TERM_PUBLIC int
 TPIC_text_angle(ang)
 int ang;
 {
-    tpic_angle = ang;
+    tpic_angle = (ang ? 1 : 0);
     return (TRUE);
 }
 

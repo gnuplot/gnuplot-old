@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.86 2002/07/23 18:53:12 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.87 2002/07/26 16:42:28 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1760,12 +1760,16 @@ set_label()
 	/* get rotation (added by RCC) */
 	if (! set_rot) {
 	    if (almost_equals(c_token, "rot$ate")) {
-		rotate = TRUE;
+		rotate = 90;
 		c_token++;
 		set_rot = TRUE;
+		if (equals(c_token, "by")) {
+		    c_token++;
+		    rotate = (int)real(const_express(&a));
+		}
 		continue;
 	    } else if (almost_equals(c_token, "norot$ate")) {
-		rotate = FALSE;
+		rotate = 0;
 		c_token++;
 		set_rot = TRUE;
 		continue;
