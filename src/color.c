@@ -28,7 +28,7 @@
 
 /** NOTICE: currently, this file is included only if PM3D is defined **/
 #ifdef HAVE_CONFIG_H
-#   include "config.h"
+#include "config.h"
 #endif
 
 #ifdef PM3D
@@ -41,7 +41,7 @@
 #include "pm3d.h"
 #include "graphics.h"
 #include "term_api.h"
-   /* need to access used_pm3d_zmin, used_pm3d_zmax; */
+/* need to access used_pm3d_zmin, used_pm3d_zmax; */
 
 /* defined in graph3d.c */
 void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned int *yt));
@@ -304,7 +304,7 @@ void filled_polygon_3dcoords_zfixed ( int points, struct coordinate GPHUGE *coor
 /*
    Draw colour smooth box
 
-   Firstly two helper routines for plotting inside of the box + the border
+   Firstly two helper routines for plotting inside of the box
    for postscript and for other terminals, finally the main routine
  */
 
@@ -315,10 +315,8 @@ void filled_polygon_3dcoords_zfixed ( int points, struct coordinate GPHUGE *coor
    PS routine
  */
 static void draw_inside_color_smooth_box_postscript
-( int x_from, int y_from, int x_to, int y_to, int border, int border_lt_tag )
+(FILE *out, int x_from, int y_from, int x_to, int y_to)
 {
-    extern FILE *PSLATEX_auxfile;
-    FILE *out = PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile;
     int scale_x = (x_to-x_from), scale_y = (y_to-y_from);
     fprintf(out,"stroke gsave /imax 1024 def\t%% draw gray scale smooth box\n");
     /* nb. of discrete steps (counted in the loop) */
@@ -338,25 +336,8 @@ static void draw_inside_color_smooth_box_postscript
 	fprintf(out,"y0 0 N 0 1 V ystep 0 V 0 -1 f\n");
     fprintf(out,"/y0 y0 ystep add def /ii ii 1 add def\n");
     fprintf(out,"ii imax gt {exit} if } loop\n");
-    /* now black boundary around the box */
-    if (border) {
-	if (border_lt_tag >= 0) {
-	    /* user specified line type */
-	    struct lp_style_type lp;
-	    lp_use_properties(&lp, border_lt_tag, 1);
-	    term_apply_lp_properties(&lp);
-	    fprintf(gpoutfile, "userlinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n", scale_y);
-	    fprintf(gpoutfile, "userlinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n", scale_x);
-	} else {
-	    fprintf(out,"0 setgray gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
-	    fprintf(out,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
-	}
-    }
-    /* that strange  2 mul  is there because grid is twice thicker, see /BL */
     fprintf(out,"grestore 0 setgray\n");
 } /* end of optimized PS output */
-
-
 
 /* plot the colour smooth box for from terminal's integer coordinates
    [x_from,y_from] to [x_to,y_to].
@@ -364,83 +345,64 @@ static void draw_inside_color_smooth_box_postscript
    over all thin rectangles
  */
 static void draw_inside_color_smooth_box_bitmap
-( int x_from, int y_from, int x_to, int y_to, int border, int border_lt_tag )
+(FILE * out , int x_from, int y_from, int x_to, int y_to)
 {
-    int steps = 128; /* I think that nobody can distinguish more colours from the palette */
-    int i, xy, xy2, xy_from, xy_to;
-    double xy_step, gray;
-    gpiPoint corners[4];
+  int steps = 128; /* I think that nobody can distinguish more colours from the palette */
+  int i, xy, xy2, xy_from, xy_to;
+  double xy_step, gray;
+  gpiPoint corners[4];
+  if (color_box.rotation == 'v') {
+    corners[0].x = corners[3].x = x_from;
+    corners[1].x = corners[2].x = x_to;
+    xy_from = y_from;
+    xy_to = y_to;
+  }
+  else {
+    corners[0].y = corners[1].y = y_from;
+    corners[2].y = corners[3].y = y_to;
+    xy_from = x_from;
+    xy_to = x_to;
+  }
+  xy_step = ( color_box.rotation == 'h' ? x_to - x_from : y_to - y_from ) / (double)steps;
+
+  for (i = 0; i < steps; i++) {
+    gray = (double)i / (steps-1); /* colours equidistantly from [0,1] */
+    /* set the colour (also for terminals which support extended specs) */
+    set_color( gray );
+    xy  = xy_from + (int)(xy_step * i);
+    xy2 = xy_from + (int)(xy_step * (i+1));
     if (color_box.rotation == 'v') {
-	corners[0].x = corners[3].x = x_from;
-	corners[1].x = corners[2].x = x_to;
-	xy_from = y_from;
-	xy_to = y_to;
+      corners[0].y = corners[1].y = xy;
+      corners[2].y = corners[3].y = (i==steps-1) ? xy_to : xy2;
     }
     else {
-	corners[0].y = corners[1].y = y_from;
-	corners[2].y = corners[3].y = y_to;
-	xy_from = x_from;
-	xy_to = x_to;
+      corners[0].x = corners[3].x = xy;
+      corners[1].x = corners[2].x = (i==steps-1) ? xy_to : xy2;
     }
-    xy_step = ( color_box.rotation == 'h' ? x_to - x_from : y_to - y_from ) / (double)steps;
-
-    for (i = 0; i < steps; i++) {
-	gray = (double)i / (steps-1); /* colours equidistantly from [0,1] */
-	/* set the colour (also for terminals which support extended specs) */
-	set_color( gray );
-	xy  = xy_from + (int)(xy_step * i);
-	xy2 = xy_from + (int)(xy_step * (i+1));
-	if (color_box.rotation == 'v') {
-	    corners[0].y = corners[1].y = xy;
-	    corners[2].y = corners[3].y = (i==steps-1) ? xy_to : xy2;
-	}
-	else {
-	    corners[0].x = corners[3].x = xy;
-	    corners[1].x = corners[2].x = (i==steps-1) ? xy_to : xy2;
-	}
 #ifdef EXTENDED_COLOR_SPECS
-	if (supply_extended_color_specs) {
-	    corners[0].spec.gray = -1; /* force solid color */
-	}
+    if (supply_extended_color_specs) {
+      corners[0].spec.gray = -1; /* force solid color */
+    }
 #endif
-	/* print the rectangle with the given colour */
-	term->filled_polygon( 4, corners );
-    }
-
-    if (border) {
-	/* now make boundary around the colour box */
-	if (border_lt_tag >= 0) {
-	    /* user specified line type */
-	    struct lp_style_type lp;
-	    lp_use_properties(&lp, border_lt_tag, 1);
-	    term_apply_lp_properties(&lp);
-	} else {
-	    /* black solid colour should be chosen, so it's border linetype */
-	    struct lp_style_type border_lp;
-	    term_apply_lp_properties(&border_lp);
-	}
-	(term->move) (x_from,y_from);
-	(term->vector) (x_to,y_from);
-	(term->vector) (x_to,y_to);
-	(term->vector) (x_from,y_to);
-	(term->vector) (x_from,y_from);
-    }
+    /* print the rectangle with the given colour */
+    term->filled_polygon( 4, corners );
+  }
 }
 
 static float
 color_box_text_displacement(const char* str, int just)
 {
-    if (JUST_TOP) {
-	if (just && strchr(str, '^') != NULL) /* adjust it = sth like JUST_TOP */
-	    return 1.15; /* the string contains upper index, so shift the string down */
-	else
-	    return 0.6;
-    } else {
-	if (strchr(str, '_') != NULL) /* adjust it = sth like JUST_BOT */
-	    return 1.0; /* the string contains lower index, so shift the string up */
-	else
-	    return 0.75; 
-    }
+  if (JUST_TOP) {
+    if (just && strchr(str, '^') != NULL) /* adjust it = sth like JUST_TOP */
+      return 1.15; /* the string contains upper index, so shift the string down */
+    else
+      return 0.6;
+  } else {
+    if (strchr(str, '_') != NULL) /* adjust it = sth like JUST_BOT */
+      return 1.0; /* the string contains lower index, so shift the string up */
+    else
+      return 0.75; 
+  }
 }
 
 /*
@@ -448,113 +410,140 @@ color_box_text_displacement(const char* str, int just)
  */
 void draw_color_smooth_box ()
 {
-    unsigned int x_from, x_to, y_from, y_to;
-    double tmp;
-    char s[64];
-    extern double base_z, ceiling_z; /* defined in graph3d.c */
-
-    if (color_box.where == SMCOLOR_BOX_NO) return;
-
-    /*
-       firstly, choose some good position of the color box
-
-       user's position like that (?):
-       else {
-       x_from = color_box.xlow;
-       x_to   = color_box.xhigh;
-       }
-     */
-    if (color_box.where == SMCOLOR_BOX_USER) {
-	x_from = color_box.xorigin * (term->xmax) + 0.5;
-	y_from = color_box.yorigin * (term->ymax) + 0.5;
-	x_to   = color_box.xsize   * (term->xmax) + 0.5;
-	y_to   = color_box.ysize   * (term->ymax) + 0.5;
-	x_to += x_from;
-	y_to += y_from;
+  unsigned int x_from, x_to, y_from, y_to;
+  double tmp;
+  char s[64];
+  extern double base_z, ceiling_z; /* defined in graph3d.c */
+  extern FILE *PSLATEX_auxfile; /* defined in pslatex.trm */
+  FILE *out = PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile;
+  
+  if (color_box.where == SMCOLOR_BOX_NO) return;
+  
+  /*
+    firstly, choose some good position of the color box
+    
+    user's position like that (?):
+    else {
+    x_from = color_box.xlow;
+    x_to   = color_box.xhigh;
     }
-    else { /* color_box.where == SMCOLOR_BOX_DEFAULT */
-	double dx = ( max_array[FIRST_X_AXIS] - min_array[FIRST_X_AXIS] );
-	double dz = ( used_pm3d_zmax - used_pm3d_zmin );
-	map3d_xy(max_array[FIRST_X_AXIS]+dx*0.05,max_array[FIRST_Y_AXIS],base_z+dz*0.35, &x_from,&y_from);
-	map3d_xy(max_array[FIRST_X_AXIS]+dx*0.20,max_array[FIRST_Y_AXIS],ceiling_z-dz*0.0, &x_to,&y_to);
-	if (y_from == y_to || x_from == x_to) { /* map, i.e. plot with "set view 0,0 or 180,0" */
-	    dz = max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS];
-	    map3d_xy(max_array[FIRST_X_AXIS]+dx*0.04,min_array[FIRST_Y_AXIS]+dz*0.25,base_z, &x_from,&y_from);
-	    map3d_xy(max_array[FIRST_X_AXIS]+dx*0.18,max_array[FIRST_Y_AXIS]-dz*0.25,ceiling_z, &x_to,&y_to);
-	}
+  */
+  if (color_box.where == SMCOLOR_BOX_USER) {
+    x_from = color_box.xorigin * (term->xmax) + 0.5;
+    y_from = color_box.yorigin * (term->ymax) + 0.5;
+    x_to   = color_box.xsize   * (term->xmax) + 0.5;
+    y_to   = color_box.ysize   * (term->ymax) + 0.5;
+    x_to += x_from;
+    y_to += y_from;
+  }
+  else { /* color_box.where == SMCOLOR_BOX_DEFAULT */
+    double dx = ( max_array[FIRST_X_AXIS] - min_array[FIRST_X_AXIS] );
+    double dz = ( used_pm3d_zmax - used_pm3d_zmin );
+    map3d_xy(max_array[FIRST_X_AXIS]+dx*0.05,max_array[FIRST_Y_AXIS],base_z+dz*0.35, &x_from,&y_from);
+    map3d_xy(max_array[FIRST_X_AXIS]+dx*0.20,max_array[FIRST_Y_AXIS],ceiling_z-dz*0.0, &x_to,&y_to);
+    if (y_from == y_to || x_from == x_to) { /* map, i.e. plot with "set view 0,0 or 180,0" */
+      dz = max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS];
+      map3d_xy(max_array[FIRST_X_AXIS]+dx*0.04,min_array[FIRST_Y_AXIS]+dz*0.25,base_z, &x_from,&y_from);
+      map3d_xy(max_array[FIRST_X_AXIS]+dx*0.18,max_array[FIRST_Y_AXIS]-dz*0.25,ceiling_z, &x_to,&y_to);
     }
-
-    if (y_from > y_to) { /* switch them */
-	tmp = y_to;
-	y_to = y_from;
-	y_from = tmp;
-    }
-
-    /* optimized version of the smooth colour box in postscript. Advantage:
-       only few lines of code is written into the output file.
-     */
-    if (!strcmp(term->name,"postscript") ||
-	!strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex")
-#if 0
+  }
+  
+  if (y_from > y_to) { /* switch them */
+    tmp = y_to;
+    y_to = y_from;
+    y_from = tmp;
+  }
+  
+  /* optimized version of the smooth colour box in postscript. Advantage:
+     only few lines of code is written into the output file.
+  */
+  if (!strcmp(term->name,"postscript") ||
+      !strcmp(term->name,"pslatex") || !strcmp(term->name,"pstex")
 #ifdef USE_EPSLATEX_DRIVER
-	|| !strcmp(term->name, "epslatex")
+      || !strcmp(term->name, "epslatex")
 #endif
-#endif
-	    )
-	draw_inside_color_smooth_box_postscript( x_from, y_from, x_to, y_to, color_box.border , color_box.border_lt_tag);
-    else
-	draw_inside_color_smooth_box_bitmap ( x_from, y_from, x_to, y_to, color_box.border, color_box.border_lt_tag );
+      )
+    draw_inside_color_smooth_box_postscript( out, x_from, y_from, x_to, y_to);
+  /* color_box.border , color_box.border_lt_tag); */
+  else
+    draw_inside_color_smooth_box_bitmap (out, x_from, y_from, x_to, y_to);
+  
+  if (color_box.border) {
+    /* now make boundary around the colour box */
+    if (color_box.border_lt_tag >= 0) {
+      /* user specified line type */
+      struct lp_style_type lp;
+      lp_use_properties(&lp, color_box.border_lt_tag, 1);
+      term_apply_lp_properties(&lp);
+    }  else {
+      /* black solid colour should be chosen, so it's border linetype */
+      extern struct lp_style_type border_lp;
+      term_apply_lp_properties(&border_lp);
+    }
+    (term->move) (x_from,y_from);
+    (term->vector) (x_to,y_from);
+    (term->vector) (x_to,y_to);
+    (term->vector) (x_from,y_to);
+    (term->vector) (x_from,y_from);
+    
+    /* Ugly */
+    /*Set line properties to some value, this also draws lines in postscript terminals!*/
+    {
+      extern struct lp_style_type border_lp;
+      term_apply_lp_properties(&border_lp);
+    }
+  }
 
-    /* and finally place text of min z and max z below and above wrt
-       colour box, respectively
-     */
+    
+  /* and finally place text of min z and max z below and above wrt
+     colour box, respectively
+  */
 
-    tmp = is_log_z ? exp( used_pm3d_zmin * log_base_array[FIRST_Z_AXIS] ) : used_pm3d_zmin;
+  tmp = is_log_z ? exp( used_pm3d_zmin * log_base_array[FIRST_Z_AXIS] ) : used_pm3d_zmin;
 #if 0
-    sprintf(s,"%g",tmp);
+  sprintf(s,"%g",tmp);
 #else /* format the label using `set format z` */
-    gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], tmp);
+  gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], tmp);
 #endif
-    if (color_box.rotation == 'v') {
-	if (term->justify_text) term->justify_text(LEFT);
-	tmp = color_box_text_displacement(s, JUST_TOP);
-	(term->put_text) (x_from, y_from - term->v_char * tmp, s);
+  if (color_box.rotation == 'v') {
+    if (term->justify_text) term->justify_text(LEFT);
+    tmp = color_box_text_displacement(s, JUST_TOP);
+    (term->put_text) (x_from, y_from - term->v_char * tmp, s);
+  } else {
+    if (term->justify_text) term->justify_text(CENTRE);
+    if (y_to > term->ymax / 2) {
+      /* color box is somewhere at the top, draw the text below */
+      tmp = color_box_text_displacement(s, JUST_TOP);
+      (term->put_text) (x_from, y_from - term->v_char * tmp, s);
     } else {
-	if (term->justify_text) term->justify_text(CENTRE);
-	if (y_to > term->ymax / 2) {
-	    /* color box is somewhere at the top, draw the text below */
-	    tmp = color_box_text_displacement(s, JUST_TOP);
-	    (term->put_text) (x_from, y_from - term->v_char * tmp, s);
-	} else {
-	    /* color box is somewhere at the bottom, draw the text above */
-	    tmp = color_box_text_displacement(s, JUST_BOT);
-	    (term->put_text) (x_from, y_to + term->v_char * tmp, s);
-	}
+      /* color box is somewhere at the bottom, draw the text above */
+      tmp = color_box_text_displacement(s, JUST_BOT);
+      (term->put_text) (x_from, y_to + term->v_char * tmp, s);
     }
+  }
 
-    tmp = is_log_z ? exp( used_pm3d_zmax * log_base_array[FIRST_Z_AXIS] ) : used_pm3d_zmax;
+  tmp = is_log_z ? exp( used_pm3d_zmax * log_base_array[FIRST_Z_AXIS] ) : used_pm3d_zmax;
 #if 0
-    sprintf(s,"%g",tmp);
+  sprintf(s,"%g",tmp);
 #else
-    gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], tmp);
+  gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], tmp);
 #endif
-
-    if (color_box.rotation == 'v') {
-	/* text was eventually already left-justified above */
-	tmp = color_box_text_displacement(s, JUST_BOT);
-	(term->put_text) (x_from,y_to + term->v_char * tmp, s);
+  if (color_box.rotation == 'v') {
+    /* text was eventually already left-justified above */
+    tmp = color_box_text_displacement(s, JUST_BOT);
+    (term->put_text) (x_from,y_to + term->v_char * tmp, s);
+  } else {
+    if (term->justify_text) term->justify_text(CENTRE);
+    if (y_to > term->ymax / 2) {
+      tmp = color_box_text_displacement(s, JUST_TOP);
+      /* color box is somewhere at the top, draw the text below */
+      (term->put_text) (x_to, y_from - term->v_char * tmp, s);
     } else {
-	if (term->justify_text) term->justify_text(CENTRE);
-	if (y_to > term->ymax / 2) {
-	    tmp = color_box_text_displacement(s, JUST_TOP);
-	    /* color box is somewhere at the top, draw the text below */
-	    (term->put_text) (x_to, y_from - term->v_char * tmp, s);
-	} else {
-	    tmp = color_box_text_displacement(s, JUST_BOT);
-	    /* color box is somewhere at the top, draw the text below */
-	    (term->put_text) (x_to, y_to + term->v_char * tmp, s);
-	}
+      tmp = color_box_text_displacement(s, JUST_BOT);
+      /* color box is somewhere at the top, draw the text below */
+      (term->put_text) (x_to, y_to + term->v_char * tmp, s);
     }
+  }
 
 }
 

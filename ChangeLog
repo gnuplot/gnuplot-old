@@ -1,3 +1,9 @@
+2000-07-10  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* src/color.c: boundary around the color box is drawn by move&line
+	for bitmap as well as postscript-including terminals.
+	Contributed by Gregor Thalhammer <Gregor.Thalhammer@uibk.ac.at>
+
 2000-06-24  Petr Mikulik  <mikulik@physics.muni.cz>
 
 	* src/color.c: if is_log_z, then print the non-logged values of z_min
