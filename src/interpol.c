@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: interpol.c,v 1.12 1999/10/29 18:47:19 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: interpol.c,v 1.13 1999/11/08 19:24:31 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - interpol.c */
@@ -114,11 +114,11 @@ static char *RCSid() { return RCSid("$Id: interpol.c,v 1.12 1999/10/29 18:47:19 
  *      implemented handling of UNDEFINED points
  */
 
-#include "plot.h"
+#include "interpol.h"
+
 #include "alloc.h"
 #include "contour.h"
 #include "graphics.h"
-#include "interpol.h"
 #include "misc.h"
 #include "setshow.h"
 #include "util.h"

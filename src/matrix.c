@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: matrix.c,v 1.6 1999/10/29 18:47:19 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: matrix.c,v 1.7 1999/11/08 19:24:31 lhecking Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -35,11 +35,10 @@ static char *RCSid() { return RCSid("$Id: matrix.c,v 1.6 1999/10/29 18:47:19 lhe
  *      This software is provided "as is" without express or implied warranty.
  */
 
-#include "plot.h"
+#include "matrix.h"
+
 #include "alloc.h"
 #include "fit.h"
-#include "matrix.h"
-#include "stdfn.h"
 
 /*****************************************************************/
 

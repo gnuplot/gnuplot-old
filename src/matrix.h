@@ -1,4 +1,4 @@
-/* $Id: matrix.h,v 1.3 1999/10/01 14:54:33 lhecking Exp $ */
+/* $Id: matrix.h,v 1.4 1999/11/08 19:24:16 lhecking Exp $ */
 
 /*  NOTICE: Change of Copyright Status
  *
@@ -32,7 +32,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "ansichek.h"
+#include "plot.h"
 
 #ifdef EXT
 #undef EXT

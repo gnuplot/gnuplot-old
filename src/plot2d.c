@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.23 1999/10/29 18:52:30 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.24 1999/11/08 19:24:32 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -34,15 +34,17 @@ static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.23 1999/10/29 18:52:30 lh
  * to the extent permitted by applicable law.
 ]*/
 
-#include "plot.h"
+#include "plot2d.h"
+
 #include "alloc.h"
+#include "binary.h"
 #include "command.h"
 #include "datafile.h"
 #include "graphics.h"
+#include "fit.h"
 #include "interpol.h"
 #include "misc.h"
 #include "parse.h"
-#include "plot2d.h"
 #include "setshow.h"
 #include "tables.h"
 #include "term_api.h"
@@ -1120,7 +1122,8 @@ do{ assert(!polar && !parametric); \
  if (log_array[AXIS]) {\
   if (min_array[AXIS] <= 0.0 || max_array[AXIS] <= 0.0)\
    int_error(NO_CARET, "x/x2 range must be greater than 0 for log scale!");\
-  t_min = log(min_array[AXIS])/log_base_array[AXIS]; t_max = log(max_array[AXIS])/log_base_array[AXIS];\
+  t_min = log(min_array[AXIS])/log_base_array[AXIS];\
+  t_max = log(max_array[AXIS])/log_base_array[AXIS];\
  } else {\
   t_min = min_array[AXIS]; t_max = max_array[AXIS];\
  }\

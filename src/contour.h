@@ -1,5 +1,5 @@
 /*
- * $Id: contour.h,v 1.1 1999/10/01 14:04:17 lhecking Exp $
+ * $Id: contour.h,v 1.2 1999/11/08 19:24:14 lhecking Exp $
  *
  */
 
@@ -39,6 +39,7 @@
 # define GNUPLOT_CONTOUR_H
 
 /* #if... / #include / #define collection: */
+#include "plot.h"
 
 /* Type definitions */
 

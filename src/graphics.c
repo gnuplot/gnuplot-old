@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.22 1999/10/29 18:47:17 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.23 1999/11/08 19:24:29 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -34,13 +34,11 @@ static char *RCSid() { return RCSid("$Id: graphics.c,v 1.22 1999/10/29 18:47:17 
  * to the extent permitted by applicable law.
 ]*/
 
+#include "graphics.h"
 
-#include "plot.h"
 #include "alloc.h"
 #include "command.h"
 #include "gp_time.h"
-#include "graphics.h"
-#include "hidden3d.h"
 #include "misc.h"
 #include "setshow.h"
 #include "term_api.h"

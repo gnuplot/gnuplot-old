@@ -1,5 +1,5 @@
 /*
- * $Id: help.h,v 1.3 1999/10/01 14:54:32 lhecking Exp $
+ * $Id: help.h,v 1.4 1999/11/08 19:24:15 lhecking Exp $
  *
  */
 
@@ -38,8 +38,6 @@
 
 #ifndef GNUPLOT_HELP_H
 # define GNUPLOT_HELP_H
-
-#include "ansichek.h"
 
 #include "plot.h"		/* HBB 990828: for TBOOLEAN */
 
