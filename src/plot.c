@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.1 1999/03/26 21:48:31 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.2 1999/04/16 18:47:32 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -358,8 +358,8 @@ int argc;
 char **argv;
 {
 #ifdef LINUXVGA
+    LINUX_setup();      /* setup VGA before dropping privilege DBT 4/5/99 */
     drop_privilege();
-    LINUX_setup();
 #endif
 /* make sure that we really have revoked root access, this might happen if
    gnuplot is compiled without vga support but is installed suid by mistake */
