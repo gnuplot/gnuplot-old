@@ -1,5 +1,5 @@
 /*
- * $Id: ggi.trm,v 1.1.2.4 2000/10/24 02:10:12 joze Exp $
+ * $Id: ggi.trm,v 1.1.2.5 2000/10/24 13:14:09 joze Exp $
  */
 
 /* GNUPLOT - ggi.trm */
@@ -495,11 +495,11 @@ unsigned int x, y, w, h;
 TERM_PUBLIC void
 GGI_text()
 {
+    ggiFlush(GGIvisual);
 #ifdef USE_MOUSE
     /* now display the buffer which was just written */
     ggiSetDisplayFrame(GGIvisual, ggiGetWriteFrame(GGIvisual));
 #endif
-    ggiFlush(GGIvisual);
     if(Xenv) return;
     ggiGetc(GGIvisual);
     ggiClose(GGIvisual);
