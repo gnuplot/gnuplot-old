@@ -1,5 +1,5 @@
 /*
- * $Id: x11.trm,v 1.10 1998/12/14 18:41:59 lhecking Exp $
+ * $Id: x11.trm,v 1.11 1998/12/17 22:08:13 lhecking Exp $
  *
  */
 
@@ -332,7 +332,8 @@ static void X11_atexit HANDLER_DECL { /* WHAT SHOULD I DO ? */
 #endif
 #ifdef __GNUC__
 #include <errno.h>
-#else int vaxc$errno;
+#else
+int vaxc$errno;
 #endif
 
 #define SS$_NORMAL 1		/* or include <ssdef.h> for all SS$_ def's */
