@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.3 1998/04/22 18:56:28 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.4 1998/07/08 20:48:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -337,7 +337,7 @@ void mainloop() {
    int nf, nfds, cn = ConnectionNumber(dpy), in;
    struct timeval timeout, *timer = (struct timeval *)0;
    fd_set rset, tset;
-   unsigned long all = 0xffffffff;
+   unsigned long all = (unsigned long)(-1L);
 
    X11_ipc = stdin;
    in = fileno (X11_ipc);
@@ -416,7 +416,7 @@ void mainloop() {
    int nf, nfds, cn = ConnectionNumber(dpy);
    struct timeval timeout, *timer;
    fd_set rset, tset;
-   unsigned long all = 0xffffffff;
+   unsigned long all = (unsigned long)(-1L);
    XEvent xe;
 
    FD_ZERO(&rset);
