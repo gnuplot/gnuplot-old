@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.54 1999/03/19 21:05:21 lhecking Exp $
+dnl $Id: configure.in,v 1.55 1999/03/23 12:23:38 lhecking Exp $
 dnl
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.54 $)
+AC_REVISION($Revision: 1.55 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*version.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 PATCHLVL=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
@@ -454,8 +454,12 @@ ac_subdir_list=lisp
 AC_CONFIG_SUBDIRS([$ac_subdir_list])
 
 dnl Write Makefiles and configuration header
-AC_OUTPUT([Makefile beos/Makefile docs/Makefile docs/latextut/Makefile], \
-[test -z "$CONFIG_HEADERS" || echo timestamp >stamp-h])
+AC_OUTPUT([Makefile
+           beos/Makefile
+           docs/Makefile
+           docs/latextut/Makefile], \
+          [test -z "$CONFIG_HEADERS" || echo timestamp >stamp-h
+          ])
 
 dnl Report configuration
 eval gp_datadir=$datadir
