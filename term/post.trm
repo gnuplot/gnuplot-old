@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.8 1998/08/18 16:27:24 lhecking Exp $
+ * $Id: post.trm,v 1.9 1998/08/31 20:40:07 lhecking Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -655,7 +655,7 @@ static char GPFAR psi1[] = "%%%%Creator: gnuplot %s patchlevel %s\n\
 %%%%CreationDate: %s\
 %%%%DocumentFonts: %s\n";
 static char GPFAR psi2[] = "%%%%EndComments\n\
-/gnudict 120 dict def\ngnudict begin\n\
+/gnudict 256 dict def\ngnudict begin\n\
 /Color %s def\n\
 /Solid %s def\n\
 /gnulinewidth %.3f def\n\
