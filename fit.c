@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.22 1998/12/14 18:43:43 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.23 1999/01/06 15:50:16 lhecking Exp $";
 #endif
 
 /*
@@ -192,13 +192,13 @@ static void backup_file __PROTO((char *, const char *));
          but only the size of the string is returned.
 *****************************************************************/
 
-int wri_to_fil_last_fit_cmd(fp)
+size_t wri_to_fil_last_fit_cmd(fp)
 FILE *fp;
 {
     if (fp == NULL)
 	return strlen(last_fit_command);
     else
-	return fputs(last_fit_command, fp);
+	return (size_t) fputs(last_fit_command, fp);
 }
 
 
