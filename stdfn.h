@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.18 1999/01/28 14:29:30 lhecking Exp $
+ * $Id: stdfn.h,v 1.19 1999/02/10 16:49:42 lhecking Exp $
  *
  */
 
@@ -254,10 +254,13 @@ int strnicmp __PROTO((char *, char *, int));
 # endif
 #endif
 
-#ifdef SELECT_USES_FD_SET
-typedef fd_set gp_fd_set;
-#else
-typedef int gp_fd_set;
+/* Arument types for select */
+/* These may need some work ... */
+#ifndef fd_set_size_t
+# define fd_set_size_t size_t
+#endif
+#ifndef SELECT_FD_SET_CAST
+# define SELECT_FD_SET_CAST
 #endif
 
 #ifndef GP_GETCWD
