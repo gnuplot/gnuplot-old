@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.109 2005/02/01 11:28:50 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.110 2005/02/18 09:47:41 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -780,7 +780,7 @@ history_command()
     }
 #else
     c_token++;
-    int_warn(NO_CARET, "Command 'history' is supported by gnuplot's readline, but not by GNU readline (you are welcome to contribute).");
+    int_warn(NO_CARET, "Command 'history' is supported only by gnuplot's default readline. This gnuplot was configured with GNU readline. You are welcome to contribute.");
 #endif /* READLINE && !HAVE_LIBREADLINE */
 }
 
