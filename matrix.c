@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: matrix.c,v 1.2 1998/04/15 19:41:23 lhecking Exp $";
+static char *RCSid = "$Id: matrix.c,v 1.3 1998/04/15 20:02:39 lhecking Exp $";
 #endif
 
 /*
@@ -104,15 +104,15 @@ int rows;
 }
 
 
-void redim_vec (v, n)
+double *redim_vec (v, n)
 double **v;
 int n;
 {
-    if ( n < 1 ) {
-	*v = NULL;
-	return;
-    }
-    *v = (double *) gp_realloc (*v, n * sizeof(double), "vec");
+    if ( n < 1 ) 
+      *v = NULL;
+    else
+      *v = (double *) gp_realloc (*v, n * sizeof(double), "vec");
+    return *v;
 }
 
 void redim_ivec (v, n)
