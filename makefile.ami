@@ -1,5 +1,5 @@
 #
-# $Id: makefile.ami,v 1.3 1998/04/22 18:56:38 lhecking Exp $
+# $Id: makefile.ami,v 1.4 1998/08/31 20:38:02 lhecking Exp $
 #
 #
 #
@@ -14,7 +14,7 @@
 #
 
 # where to install help file gnuplot.gih
-HELPDEST=GNUPLOT:docs/gnuplot.gih
+HELPFILE=S:gnuplot.gih
 # Where to send email about bugs and comments (locally)
 EMAIL="bug-gnuplot@dartmouth.edu"
 
@@ -108,7 +108,10 @@ $(OBJS): plot.h
 	$(CC) $(CFLAGS) $*.c
 
 command.o:
-	$(CC) $(CFLAGS) -c command.c -DHELPFILE="$(HELPDEST)"
+	$(CC) $(CFLAGS) -c command.c -DHELPFILE="$(HELPFILE)"
+
+show.o:
+	$(CC) $(CFLAGS) -c show.c -DHELPFILE="$(HELPFILE)"
 
 command.o help.o misc.o: help.h
 
