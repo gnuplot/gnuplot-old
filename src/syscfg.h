@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.19 2001/07/20 14:04:06 broeker Exp $
+ * $Id: syscfg.h,v 1.20 2002/01/18 15:07:11 cgaylord Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -229,9 +229,9 @@
 #endif
 
 #ifndef FAQ_LOCATION
-#define FAQ_LOCATION "http://www.gnuplot.org/faq/"
+#define FAQ_LOCATION "http://www.gnuplot.info/faq/"
 /*
-#define FAQ_LOCATION "http://www.gnuplot.org/gnuplot-faq.html"
+#define FAQ_LOCATION "http://www.gnuplot.info/gnuplot-faq.html"
 #define FAQ_LOCATION "http://www.ucc.ie/gnuplot/gnuplot-faq.html"
 */
 #endif
