@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: command.c,v 1.21 1999/01/26 13:44:40 lhecking Exp $";
+static char *RCSid = "$Id: command.c,v 1.22 1999/01/28 14:27:01 lhecking Exp $";
 #endif
 
 /* GNUPLOT - command.c */
@@ -54,6 +54,12 @@ static char *RCSid = "$Id: command.c,v 1.21 1999/01/26 13:44:40 lhecking Exp $";
 #include "setshow.h"
 #include "fit.h"
 #include "binary.h"
+
+/* GNU readline stuff */
+#ifdef GNU_READLINE
+# include <readline/readline.h>
+# include <readline/history.h>
+#endif
 
 #if defined(MSDOS) || defined(DOS386)
 # ifdef DJGPP
