@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.10 2000/10/29 15:11:33 vanzandt Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.11 2000/10/29 15:37:35 vanzandt Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1682,8 +1682,8 @@ draw_3d_graphbox(plot, plot_num)
 	    double len = sqrt(dx * dx + dy * dy);
 
 	    if (len != 0) {
-		tic_unitx = dx / len / xscaler;
-		tic_unity = dy / len / yscaler;
+		tic_unitx = dx / len / (double)xscaler;
+		tic_unity = dy / len / (double)yscaler;
 	    } else {
 		tic_unitx = tic_unity = 0;
 	    }
@@ -1729,8 +1729,8 @@ draw_3d_graphbox(plot, plot_num)
 	    double len = sqrt(dx * dx + dy * dy);
 	    
 	    if (len != 0) {
-		tic_unitx = dx / len / xscaler;
-		tic_unity = dy / len / yscaler;
+		tic_unitx = dx / len / (double)xscaler;
+		tic_unity = dy / len / (double)yscaler;
 	    } else {
 		tic_unitx = tic_unity = 0;
 	    }
@@ -1965,7 +1965,7 @@ struct lp_style_type grid;
 
     if (Z_AXIS.ticmode & TICS_MIRROR) {
 	map3d_xyz(right_x, right_y, place, &v1);
-	v2.x = v1.x - len / xscaler;
+	v2.x = v1.x - len / (double)xscaler;
 	v2.y = v1.y;
 	v2.z = v1.z;
 	draw3d_line(&v1, &v2, &border_lp);
