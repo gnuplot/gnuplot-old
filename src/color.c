@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.28 2002/06/08 19:40:46 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.29 2002/06/10 18:49:00 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -174,23 +174,13 @@ make_palette(void)
    Set the colour on the terminal
    Currently, each terminal takes care of remembering the current colour,
    so there is not much to do here---well, except for reversing the gray
-   according to sm_palette.positive == SMPAL_POSITIVE or SMPAL_NEGATIVE.
-   Call term->set_color(gray) with
-	- gray = [0;1]: if sm_palette.colors==0 (infinite number of colors, e.g.
-		        postscript and no limit imposed by 'set palette maxcolor n'),
-	- gray = [0;1): if sm_palette.colors==0 (limited number of discrete colors).
+   according to sm_palette.positive == SMPAL_POSITIVE or SMPAL_NEGATIVE
  */
 void
 set_color(double gray)
 {
     if (sm_palette.positive == SMPAL_NEGATIVE)
 	gray = 1 - gray;
-    if (sm_palette.colors != 0 && gray >= 1)
-	gray -= 0.5 / sm_palette.colors;
-	/* PM 8.6.2002: do not pass gray==1 to terminals with discrete palette
-	   so that they can easily reference their discrete entries by
-	   color_number = (int)(gray * sm_palette.colors)
-	 */
     term->set_color(gray);
 }
 
