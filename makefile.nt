@@ -1,5 +1,5 @@
 #
-# $Id: makefile.nt,v 1.7 1999/03/12 21:45:08 lhecking Exp $
+# $Id: makefile.nt,v 1.8 1999/03/17 17:44:04 lhecking Exp $
 #
 # GNUPLOT Makefile to compile gnuplot for WinNT and Win95/98
 #
@@ -93,7 +93,7 @@ wgnuplot.exe: $(OBJS) $(WINOBJS) win\wgnuplot.def wgnuplot.res linkopt1.msw text
 wgnuplot.res :  win\wgnuplot.rc win\wgnuplib.rc win\wresourc.h texticon.ico grpicon.ico
    rc /l 0x409 /fowgnuplot.res /i "win" /d "NDEBUG" /d WIN32 /d MSRC win\wgnuplot.rc
 
-term.obj: term.c term.h plot.h setshow.h bitmap.h $(CSOURCE5) $(CSOURCE6) $(CSOURCE7)
+term.obj: term.c term.h plot.h setshow.h bitmap.h $(CORETERM)
 	$(CC) $(CFLAGS) $(TERMFLAGS) term.c
 
 
