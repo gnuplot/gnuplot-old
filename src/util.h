@@ -1,5 +1,5 @@
 /*
- * $Id: util.h,v 1.7 2000/05/02 20:56:27 broeker Exp $
+ * $Id: util.h,v 1.7.2.1 2000/05/02 21:26:21 broeker Exp $
  */
 
 /* GNUPLOT - util.h */
@@ -71,10 +71,12 @@ extern struct value * Ginteger __PROTO((struct value *, int));
 extern void os_error __PROTO((int, const char *, ...));
 extern void int_error __PROTO((int, const char *, ...));
 extern void int_warn __PROTO((int, const char *, ...));
+extern void graph_error __PROTO((const char *, ...));
 #else
 extern void os_error __PROTO(());
 extern void int_error __PROTO(());
 extern void int_warn __PROTO(());
+extern void graph_error __PROTO(());
 #endif
 extern void lower_case __PROTO((char *));
 extern void squash_spaces __PROTO((char *));

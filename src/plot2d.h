@@ -1,5 +1,5 @@
 /*
- * $Id: plot2d.h,v 1.5 2000/05/02 20:56:27 broeker Exp $
+ * $Id: plot2d.h,v 1.5.2.1 2000/05/02 21:26:21 broeker Exp $
  */
 
 /* GNUPLOT - plot2d.h */
@@ -41,7 +41,6 @@
 
 /* Variables of plot2d.c needed by other modules: */
 
-extern int reverse_range[];
 extern struct curve_points *first_plot;
 
 /* prototypes from plot2d.c */
