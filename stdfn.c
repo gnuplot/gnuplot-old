@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.1.1.1 1998/06/17 18:33:06 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.7.2.1 2002/03/11 16:05:25 lhecking Exp $";
 #endif
 
 
@@ -42,12 +42,7 @@ static char *RCSid = "$Id: stdfn.c,v 1.1.1.1 1998/06/17 18:33:06 lhecking Exp $"
  * - Lars Hecking
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include "ansichek.h"
-#include "stdfn.h"
+#include "plot.h"
 
 /*
  * ANSI C functions
@@ -56,9 +51,7 @@ static char *RCSid = "$Id: stdfn.c,v 1.1.1.1 1998/06/17 18:33:06 lhecking Exp $"
 /* memcpy() */
 
 #ifdef NO_MEMCPY
-# ifdef HAVE_BCOPY
-#  define memcpy(dest,src,len) bcopy((src),(dest),(len))
-# else
+# ifndef HAVE_BCOPY
 /*
  * cheap and slow version of memcpy() in case you don't have one 
  */
@@ -72,9 +65,8 @@ memcpy (dest, src, len)
   while (len--)
     *dest++ = *src++;
 }
-# endif /* HAVE_BCOPY */
+# endif /* !HAVE_BCOPY */
 #endif /* NO_MEMCPY */
-
 
 /* strchr()
  * Simple and portable version, conforming to Plauger.
@@ -156,13 +148,13 @@ const char *cs, *ct;
     return NULL;
 
   if (!*ct)
-    return cs;
+    return (char *)cs;
   
   len = strlen(ct);
   while (*cs)
     {
       if (strncmp(cs, ct, len)==0)
-	return cs;
+	return (char *)cs;
       cs++;
     }
 
@@ -350,6 +342,39 @@ sleep(delay)
     portable implementation of strnicmp (hopefully)
 *****************************************************************/
 
+#ifndef HAVE_STRCASECMP
+# ifndef HAVE_STRICMP
+
+/* return (see MSVC documentation and strcasecmp()):
+ *  -1  if str1 < str2
+ *   0  if str1 == str2
+ *   1  if str1 > str2 
+ */
+int
+gp_stricmp(s1, s2)
+    const char *s1;
+    const char *s2;
+{
+    unsigned char c1, c2;
+
+    do {
+	c1 = *s1++;
+	if (islower(c1))
+	    c1 = toupper(c1);
+	c2 = *s2++;
+	if (islower(c2))
+	    c2 = toupper(c2);
+    } while (c1 == c2 && c1 && c2);
+
+    if (c1 == c2)
+	return 0;
+    if (c1 == '\0' || c1 > c2)
+	return 1;
+    return -1;
+}
+# endif /* !HAVE_STRICMP */
+#endif /* !HAVE_STRCASECMP */
+
 #ifndef HAVE_STRNICMP
 # ifndef HAVE_STRNCASECMP
 int strnicmp __PROTO((char *, char *, int));
@@ -374,4 +399,23 @@ int n;
 }
 # endif /* !HAVE_STRNCASECMP */
 #endif /* !HAVE_STRNICMP */
+
+
+/* Safe, '\0'-terminated version of strncpy()
+ * safe_strncpy(dest, src, n), where n = sizeof(dest)
+ * This is basically the old fit.c(copy_max) function
+ */
+
+char *safe_strncpy(d, s, n)
+char *d, *s;
+size_t n;
+{
+    char *ret;
+
+    ret = strncpy(d, s, n);
+    if (strlen(s) >= n)
+	d[ n > 0 ? n-1 : 0] = NUL;
+
+    return ret;
+}
 
