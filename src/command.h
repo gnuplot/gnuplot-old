@@ -1,4 +1,4 @@
-/* $Id: command.h,v 1.13 1999/11/08 19:24:14 lhecking Exp $ */
+/* $Id: command.h,v 1.14 1999/11/24 13:01:56 lhecking Exp $ */
 
 /* GNUPLOT - command.h */
 
@@ -81,6 +81,7 @@ extern __far int num_tokens, c_token;
 extern int num_tokens, c_token;
 #endif
 
+extern size_t input_line_len;
 
 /* used by load_command() and save_command() */
 
