@@ -1,3 +1,34 @@
+2000-10-21  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/post.trm: bug fixed in Dick's overprinting patch: '10^{2}'
+	would come out as '10' without the exponent.
+
+	* src/set.c (fill_numbers_into_string): new function. Implements
+	long-outstanding feature of 'set label' with variable values in it
+	--- e.g. from 'fit' results, or parameters used in the plot.
+	(set_label): use the above, and remove unneeded checks from the
+	option parsing.
+
+	* src/axis.c (gprintf): remove 'static' qualifier, to make it
+	usable from set.c. FIXME: maybe it should move out of axis.c, into
+	util.c or so.
+
+
+2000-10-21  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/axis.h (X_AXIS): new macro to reduce code clutter.
+	'axis_array[FIRST_X_AXIS]' was getting a bit tedious to type.
+	(Y_AXIS): dito.
+	(Z_AXIS): dito.
+	(x_axis, y_axis, z_axis): new global variables to serve as
+	parameters for those macros. Replace function-local versions
+	in several places.
+
+	* all over the place: use the new macros to reduce code clutter.
+
+	* src/fit.c (fit_command): don't pass 'islog_override' to the
+	AXIS_INIT3D calls. Would cause 'fit' to unset log, involuntarily.
+
 2000-10-20  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/win/wgnuplib.h (WGNUPLOTVERSION): bumped version number of
