@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: bf_test.c,v 1.3 1998/04/22 18:56:18 lhecking Exp $";
+static char *RCSid = "$Id: bf_test.c,v 1.4 1998/10/09 14:34:58 lhecking Exp $";
 #endif
 
 
@@ -45,10 +45,11 @@ void int_error(error_text,dummy)
      char *error_text;
      int dummy;
 {
-  fprintf(stderr,"Fatal error..\n");
-  fprintf(stderr,"%s\n",error_text);
-  fprintf(stderr,"...now exiting to system ...\n");
-  exit(1);
+    fprintf(stderr,"Fatal error..\n\
+%s\n\
+...now exiting to system ...\n",
+	    error_text);
+    exit(1);
 }
 
 void FreeHelp(void)

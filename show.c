@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.14 1998/10/05 12:41:07 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.15 1998/10/09 14:30:05 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -1679,7 +1679,7 @@ show_version_long ()
 		""
 #endif
 		;
-		fprintf(stderr,"%s%s%s%s%s%s%s%s%s\n",readline,gnu_readline,
+		fprintf(stderr,"%s%s%s%s%s%s%s%s%s\n\n",readline,gnu_readline,
 			libgd,libpng,linuxvga,nocwdrc,x11,unixplot,gnugraph);
 	}
 

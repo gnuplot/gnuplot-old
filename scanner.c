@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.6 1998/07/15 15:28:47 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.7 1998/10/09 14:30:23 lhecking Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -382,6 +382,7 @@ int max;
 {
 	char line[100];
 
-	int_error( strcat(strcpy(line,"substitution not supported by "),OS),t_num);
+	sprintf (line, "substitution not supported by %s", OS);
+	int_error (line,t_num);
 }
 #endif /* unix || VMS || PIPES || ATARI && PUREC */

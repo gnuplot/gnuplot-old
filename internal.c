@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: internal.c,v 1.4 1998/09/21 21:03:57 lhecking Exp $";
+static char *RCSid = "$Id: internal.c,v 1.5 1998/10/09 14:34:21 lhecking Exp $";
 #endif
 
 /* GNUPLOT - internal.c */
@@ -102,7 +102,7 @@ void check_stack()	/* make sure stack's empty */
 struct value *pop(x)
 struct value *x;
 {
-	if (s_p  < 0 )
+	if (s_p < 0 )
 		int_error("stack underflow",NO_CARET);
 	*x = stack[s_p--];
 	return(x);
