@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.58 2004/07/01 17:10:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.59 2004/07/13 14:11:23 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -85,7 +85,7 @@ mouse_setting_t mouse_setting = {
 
 /* "usual well-known" keycodes, i.e. those not listed in special_keys in mouse.h
 */
-const struct gen_table usual_special_keys[] =
+static const struct gen_table usual_special_keys[] =
 {
     { "BackSpace", GP_BackSpace},
     { "Tab", GP_Tab},

@@ -1,5 +1,5 @@
 /*
- * $Id: save.h,v 1.7 2004/04/13 17:24:00 broeker Exp $
+ * $Id: save.h,v 1.8 2004/07/13 14:11:24 broeker Exp $
  */
 
 /* GNUPLOT - save.h */
@@ -41,6 +41,8 @@
 
 #include "syscfg.h"
 #include "stdfn.h"
+
+#include "axis.h"
 
 /* Type definitions */
 
