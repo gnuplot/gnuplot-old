@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.6 1998/05/12 15:49:39 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.7 1998/06/19 15:06:04 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -408,7 +408,7 @@ reset_command()
   clip_points	 = FALSE;
   clip_lines1	 = TRUE;
   clip_lines2	 = FALSE;
-  set_lp_properties(&border_lp,0,-2,0,2.0,1.0);
+  set_lp_properties(&border_lp,0,-2,0,1.0,1.0);
   draw_border	 = 31;
   draw_surface	 = TRUE;
   data_style	 = POINTSTYLE;
