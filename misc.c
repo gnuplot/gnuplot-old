@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.11 1998/11/03 12:54:57 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.12 1998/11/17 20:53:48 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -1040,7 +1040,13 @@ TBOOLEAN can_do_args;
 			/* Look, len was 1-1 = 0 before, take care here! */
 			if (len > 0)
 			    --len;
-		    } else if (len + 2 >= left) {
+			if (input_line[len] == '\r') {	/* remove any carriage return */
+			    input_line[len] = NUL;
+			    if (len > 0)
+				--len;
+			}
+		    }
+		     else if (len + 2 >= left) {
 			extend_input_line();
 			left = input_line_len - len - 1;
 			start = len + 1;
