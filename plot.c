@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.5 1998/09/21 21:05:59 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.6 1998/09/22 14:57:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -489,10 +489,10 @@ static void load_rcfile()
 	    p = &home[strlen(home)-1];
 	else
  	    p = home;
-	if ( (*p != PATHSEP1) && (*p != PATHSEP2) && (*p != NUL) ) {
+	if ( (*p != DIRSEP1) && (*p != DIRSEP2) && (*p != NUL) ) {
 	    assert (p>=home && p<=(home+sizeof(home)-1-2));
 	    if (*p) p++;
-	    *p++ = PATHSEP1;
+	    *p++ = DIRSEP1;
 	    *p = NUL;
 	}
     }
