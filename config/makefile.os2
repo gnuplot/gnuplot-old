@@ -1,5 +1,5 @@
 #
-# $Id: makefile.os2,v 1.3 1999/05/04 19:59:33 lhecking Exp $
+# $Id: makefile.os2,v 1.4 1999/05/07 13:35:52 lhecking Exp $
 #
 # GNUPLOT Makefile for use on OS/2 3.x and above (might also work for OS/2 2.x)
 # using emx 0.9 (and above) and GNUMake
@@ -34,7 +34,7 @@ VESA=1
 
 # GNU_ReadLine support
 # requires GNU readline library (static or DLL; not part of gnuplot)
-GNU_RL=1
+# GNU_RL=1
 
 # DEBUGging support
 # creates binaries suitable for debugging. Some bugs may come and go
@@ -43,7 +43,7 @@ GNU_RL=1
 
 # MOUSE support for PM terminal
 # (not yet supported in official release)
-# MOUSE=1
+MOUSE=1
 
 #
 # ****************** End of Configuration section ****************************
