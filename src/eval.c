@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.23 2004/12/05 08:04:42 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.24 2005/03/05 04:52:14 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -193,6 +193,7 @@ const struct ft_entry GPFAR ft[] =
     {"tm_yday",  f_tmyday},	/* for timeseries */
 
 #ifdef GP_STRING_VARS
+    {"stringcolumn",  f_stringcolumn},	/* for using */
     {"sprintf",  f_sprintf},	/* for string variables only */
     {"gprintf",  f_gprintf},	/* for string variables only */
 #endif

@@ -1,5 +1,5 @@
 /*
- * $Id: datafile.h,v 1.15 2004/09/01 15:53:47 mikulik Exp $
+ * $Id: datafile.h,v 1.16 2005/03/05 04:52:14 sfeam Exp $
  */
 
 /* GNUPLOT - datafile.h */
@@ -127,6 +127,9 @@ void f_dollars __PROTO((union argument *x));
 void f_column  __PROTO((union argument *x));
 void f_valid   __PROTO((union argument *x));
 void f_timecolumn   __PROTO((union argument *x));
+#ifdef GP_STRING_VARS
+void f_stringcolumn   __PROTO((union argument *x));
+#endif
 
 
 #if BINARY_DATA_FILE
