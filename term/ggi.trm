@@ -1,5 +1,5 @@
 /*
- * $Id: ggi.trm,v 1.12 2001/08/27 15:04:12 broeker Exp $
+ * $Id: ggi.trm,v 1.13 2002/01/29 20:39:30 joze Exp $
  */
 
 /* GNUPLOT - ggi.trm */
@@ -485,6 +485,7 @@ TERM_PUBLIC void GGI_init()
     GGI_miGC = miNewGC(GGIvisual, 2,
 	GGI_miPixels, GGI_numblendstages, GGI_blendstages);
 #endif
+    setvbuf(stdin, (char*)0, _IONBF, 0);
 }
 
 TERM_PUBLIC void GGI_linetype(linetype)
