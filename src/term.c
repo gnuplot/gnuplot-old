@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.98 2005/01/11 17:37:15 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.99 2005/02/01 11:28:51 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1378,7 +1378,7 @@ set_term(int c_token_arg)
 
     if (!token[c_token_arg].is_token)
 	int_error(c_token_arg, "terminal name expected");
-    input_name = input_line + token[c_token_arg].start_index;
+    input_name = gp_input_line + token[c_token_arg].start_index;
     t = change_term(input_name, token[c_token_arg].length);
     if (!t)
 	int_error(c_token_arg, "unknown or ambiguous terminal type; type just 'set terminal' for a list");
