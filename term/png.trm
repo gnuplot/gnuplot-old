@@ -1,5 +1,5 @@
 /*
- * $Id: png.trm,v 1.9 1998/11/20 12:11:04 lhecking Exp $
+ * $Id: png.trm,v 1.10 1998/11/25 21:07:41 lhecking Exp $
  *
  */
 
@@ -308,7 +308,7 @@ void PNGtext()
   pngtext.text_length=strlen(text);
 
   info_ptr->num_text=1;
-  info_ptr->text=&pngtext;
+  info_ptr->text = &pngtext;
 
   png_write_info(png_ptr, info_ptr);
 
