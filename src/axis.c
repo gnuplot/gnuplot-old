@@ -1,7 +1,8 @@
-/* 
- * $Id: axis.c,v 1.3 2000/11/01 18:57:25 broeker Exp $
- *
- */
+#ifndef lint
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.4 2000/11/03 13:45:15 lhecking Exp $"); }
+#endif
+
+/* GNUPLOT - axis.c */
 
 /*[
  * Copyright 2000   Thomas Williams, Colin Kelley
