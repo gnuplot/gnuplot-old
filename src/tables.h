@@ -1,5 +1,5 @@
 /*
- * $Id: tables.h,v 1.38 2003/03/13 14:47:55 mikulik Exp $
+ * $Id: tables.h,v 1.39 2003/05/17 05:59:01 sfeam Exp $
  */
 
 /* GNUPLOT - tables.h */
@@ -129,7 +129,8 @@ enum set_key_id {
     S_KEY_ENHANCED, S_KEY_NOENHANCED,
     S_KEY_BOX, S_KEY_NOBOX, S_KEY_SAMPLEN, S_KEY_SPACING, S_KEY_WIDTH,
     S_KEY_HEIGHT, S_KEY_TITLE,
-    S_KEY_AUTOTITLES, S_KEY_NOAUTOTITLES
+    S_KEY_AUTOTITLES, S_KEY_NOAUTOTITLES,
+    S_KEY_DEFAULT, S_KEY_ON, S_KEY_OFF
 };
 
 #ifdef PM3D

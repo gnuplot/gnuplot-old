@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.44 2003/03/13 14:47:55 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.45 2003/05/17 05:59:01 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -354,6 +354,9 @@ const struct gen_table set_hidden3d_tbl[] =
 /* 'set key' options */
 const struct gen_table set_key_tbl[] =
 {
+    { "def$ault", S_KEY_DEFAULT },
+    { "on", S_KEY_ON },
+    { "off", S_KEY_OFF },
     { "t$op", S_KEY_TOP },
     { "b$ottom", S_KEY_BOTTOM },
     { "l$eft", S_KEY_LEFT },
