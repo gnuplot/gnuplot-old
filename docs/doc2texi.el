@@ -6,7 +6,7 @@
 ;; Maintainer: Bruce Ravel <ravel@phys.washington.edu>
 ;; Created:    March 23 1999
 ;; Updated:
-;; Version:    $Id: doc2texi.el,v 1.1 1999/03/31 19:51:02 lhecking Exp $
+;; Version:    $Id: doc2texi.el,v 1.2 1999/04/16 18:45:25 lhecking Exp $
 ;; Keywords:   gnuplot, document, info
 
 ;; This file is not part of GNU Emacs.
@@ -133,10 +133,10 @@
 * GNUPLOT: (gnuplot).             An Interactive Plotting Program
 @end direntry
 
-@ifinfo
+@ifnottex
 @node Top, Introduction, (dir), (dir)
 @top Master Menu
-@end ifinfo
+@end ifnottex
 
 @example
                        GNUPLOT
