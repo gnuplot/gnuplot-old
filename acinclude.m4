@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.5 1998/09/23 19:53:56 lhecking Exp $
+dnl $Id: acinclude.m4,v 1.6 1998/09/25 15:28:03 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -349,7 +349,7 @@ AC_DEFUN(gp_FIND_SELECT_ARGTYPES,
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
-extern select ($arg_size_t,$arg_fdset_p,$arg_fdset_p,$arg_fdset_p,$arg_timeval_p);],[int empty_declaration;],
+extern select ($arg_size_t,$arg_fdset_p,$arg_fdset_p,$arg_fdset_p,$arg_timeval_p);],,
     [break 3])
    done
   done
