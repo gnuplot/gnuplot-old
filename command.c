@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: command.c,v 1.16 1998/11/21 18:05:12 lhecking Exp $";
+static char *RCSid = "$Id: command.c,v 1.17 1998/11/25 21:01:43 lhecking Exp $";
 #endif
 
 /* GNUPLOT - command.c */
@@ -70,7 +70,6 @@ extern char HelpFile[];		/* patch for do_help  - DJL */
 #ifndef _Windows
 # include "help.h"
 #else
-# define MAXSTR 255
 static int winsystem __PROTO((char *));
 #endif /* _Windows */
 

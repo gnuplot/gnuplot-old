@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot3d.c,v 1.13 1998/11/17 20:53:27 lhecking Exp $";
+static char *RCSid = "$Id: plot3d.c,v 1.14 1998/11/25 21:02:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -40,8 +40,6 @@ static char *RCSid = "$Id: plot3d.c,v 1.13 1998/11/17 20:53:27 lhecking Exp $";
 
 #ifndef _Windows
 # include "help.h"
-#else
-# define MAXSTR 255
 #endif
 
 #ifndef STDOUT
