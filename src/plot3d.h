@@ -1,5 +1,5 @@
 /*
- * $Id: plot3d.h,v 1.5 2000/11/01 18:57:33 broeker Exp $
+ * $Id: plot3d.h,v 1.6 2000/11/02 19:11:07 lhecking Exp $
  */
 
 /* GNUPLOT - plot3d.h */
@@ -44,7 +44,7 @@
 typedef enum en_data_mapping {
     MAP3D_CARTESIAN,
     MAP3D_SPHERICAL,
-    MAP3D_CYLINDRICAL,
+    MAP3D_CYLINDRICAL
 } t_data_mapping;
 
 /* Variables of plot3d.c needed by other modules: */

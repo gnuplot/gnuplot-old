@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: contour.c,v 1.15 2000/11/01 18:57:27 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: contour.c,v 1.16 2000/11/02 19:11:07 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - contour.c */
@@ -67,7 +67,7 @@ dynarray dyn_contour_levels_list;/* storage for z levels to draw contours at */
 typedef enum en_edge_position {
     INNER_MESH=1,
     BOUNDARY,
-    DIAGONAL,
+    DIAGONAL
 } t_edge_position;
 
 
