@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.32 2003/11/13 08:37:57 mikulik Exp $
+ * $Id: axis.h,v 1.33 2003/12/09 02:49:23 vanzandt Exp $
  *
  */
 
@@ -65,8 +65,8 @@ typedef enum AXIS_INDEX {
     SECOND_Y_AXIS,
     SECOND_X_AXIS,
     R_AXIS,			/* never used ? */
-    U_AXIS,			/* dito */
-    V_AXIS			/* dito */
+    U_AXIS,			/* ditto */
+    V_AXIS			/* ditto */
 #ifdef PM3D
     ,COLOR_AXIS
 #endif
