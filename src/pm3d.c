@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.2 2000/12/21 16:06:24 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.3 2000/12/26 20:08:38 joze Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -570,9 +570,9 @@ pm3d_draw_one(struct surface_points *plot)
 
     /* release the palette we have made use of (some terminals may need this)
        ...no, remove this, also remove it from plot.h !!!!
+     */
     if (term->previous_palette)
 	term->previous_palette();
-     */
 }
 
 /* DRAW PM3D ALL COLOUR SURFACES */
