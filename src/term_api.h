@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.8 2000/11/20 09:47:07 mikulik Exp $
+ * $Id: term_api.h,v 1.9 2000/11/23 18:25:48 lhecking Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -180,6 +180,10 @@ enum set_encoding_id {
 extern struct termentry *term;
 /* Options string of the currently used terminal driver */
 extern char term_options[];
+/* access head length + angle without changing API */
+extern int curr_arrow_headlength;
+/* angle in degrees */
+extern double curr_arrow_headangle;
 
 /* Current 'output' file: name and open filehandle */
 extern char *outstr;
