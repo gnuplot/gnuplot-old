@@ -1,5 +1,5 @@
 /*
- * $Id: mouse.h,v 1.14 2004/07/01 17:10:07 broeker Exp $
+ * $Id: mouse.h,v 1.15 2005/03/26 22:06:51 sfeam Exp $
  */
 
 /* GNUPLOT - mouse.h */
@@ -193,7 +193,7 @@ void update_menu_items_PM_terminal __PROTO((void));
 
 /* bind prototype(s) */
 
-void bind_process __PROTO((char* lhs, char* rhs));
+void bind_process __PROTO((char* lhs, char* rhs, TBOOLEAN allwindows));
 void bind_remove_all __PROTO((void));
 
 #endif /* !_HAVE_MOUSE_H */
