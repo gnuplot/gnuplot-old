@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.3 1998/09/21 21:04:28 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.4 1998/10/20 19:43:48 lhecking Exp $";
 #endif
 
 
@@ -42,12 +42,7 @@ static char *RCSid = "$Id: stdfn.c,v 1.3 1998/09/21 21:04:28 lhecking Exp $";
  * - Lars Hecking
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include "ansichek.h"
-#include "stdfn.h"
+#include "plot.h"
 
 /*
  * ANSI C functions

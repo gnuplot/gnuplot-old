@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.6 1998/09/22 14:58:43 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.7 1998/10/20 19:43:41 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -48,9 +48,9 @@ static char *RCSid = "$Id: readline.c,v 1.6 1998/09/22 14:58:43 lhecking Exp $";
  *     Petr Mikulik
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <signal.h>
+/* get prototype for alloc and gpfaralloc */
+#include "plot.h"
 
 #if defined(READLINE) && !defined(GNU_READLINE)
 
@@ -80,11 +80,6 @@ static char *RCSid = "$Id: readline.c,v 1.6 1998/09/22 14:58:43 lhecking Exp $";
  *
  * all other characters are ignored
  */
-
-#include <signal.h>
-/* get prototype for alloc and gpfaralloc */
-#include "plot.h"
-#include "stdfn.h"
 
 #ifdef __linux__
 /* HBB: to get prototype for ioctl() */
