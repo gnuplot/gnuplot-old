@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.13 1998/11/12 17:10:17 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.14 1998/11/19 10:39:33 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -90,6 +90,10 @@ static char *RCSid = "$Id: gplt_x11.c,v 1.13 1998/11/12 17:10:17 lhecking Exp $"
    The following makes EXPORT_SELECTION the default and 
    defining NOEXPORT over-rides the default
  */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #ifdef EXPORT_SELECTION
 # undef EXPORT_SELECTION
