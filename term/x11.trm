@@ -1,5 +1,5 @@
 /*
- * $Id: x11.trm,v 1.7 1998/09/25 15:17:19 lhecking Exp $
+ * $Id: x11.trm,v 1.8 1998/10/12 20:09:46 lhecking Exp $
  *
  */
 
@@ -362,8 +362,8 @@ TERM_PUBLIC void X11_init() {
 
 struct iosb iosb;
 
-char devnam_string[64];
-$DESCRIPTOR(devnam,devnam_string);
+static char devnam_string[64];
+static $DESCRIPTOR(devnam,devnam_string);
 
 struct  {
 	short int	buf_len;
