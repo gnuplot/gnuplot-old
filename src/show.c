@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.56 2001/06/16 14:22:51 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.57 2001/06/19 20:37:11 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -589,12 +589,6 @@ show_command()
 		  "'show' does not accept the 'no...' type of 'set' options");
 	/* FALLTHROUGH into S_INVALID! */
 #endif /* BACKWARDS_COMPATIBLE */
-
-#if defined(HAVE_LIBREADLINE) && defined(GNUPLOT_HISTORY)
-    case S_HISTORYSIZE:
-	fprintf(stderr,"history size is %li\n", gnuplot_history_size);
-	break;
-#endif
 
     case S_MULTIPLOT:
 	fprintf(stderr,"multiplot mode is %s\n", multiplot ? "on" : "off");
