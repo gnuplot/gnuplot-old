@@ -1,5 +1,5 @@
 /*
- * $Id: table.trm,v 1.5 1998/11/20 12:11:20 lhecking Exp $
+ * $Id: table.trm,v 1.6 1998/11/23 22:19:24 lhecking Exp $
  *
  */
 
@@ -41,6 +41,10 @@
       the documentation for gnuplot 3.6 (or higher) using the new
       including mechanismn.
 */
+
+#ifdef TERM_REGISTER
+register_term(table)
+#endif
 
 #ifdef TERM_HELP
 START_HELP(table)
