@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.19 2002/03/21 21:46:14 amai Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.20 2002/03/29 21:44:23 amai Exp $" ;
 #endif
 
 /****************************************************************************
@@ -106,11 +106,11 @@ static char RCSid[]="$Id: gclient.c,v 1.19 2002/03/21 21:46:14 amai Exp $" ;
 #include <process.h>
 #include <signal.h>
 #include <time.h>
-#include <os2.h>
+
 #include "gnupmdrv.h"
 
 #define GNUPMDRV
-#include "../mousecmn.h"
+#include "mousecmn.h"
 
 
 /*==== g l o b a l    d a t a ================================================*/
