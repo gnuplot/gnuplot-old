@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: specfun.c,v 1.5 1998/11/04 14:48:58 lhecking Exp $";
+static char *RCSid = "$Id: specfun.c,v 1.6 1998/11/12 17:09:31 lhecking Exp $";
 #endif
 
 
@@ -57,7 +57,7 @@ extern double zero;
 #else
 # define GP_ERF(x) ((x)<0.0 ? -igamma(0.5,(x)*(x)) : igamma(0.5,(x)*(x)))
 #endif
-#ifndef HAVE_ERFC
+#ifdef HAVE_ERFC
 # define GP_ERFC(x) erfc(x)
 #else
 # define GP_ERFC(x) ((x)<0.0 ? 1.0+igamma(0.5,(x)*(x)) : 1.0-igamma(0.5,(x)*(x)))
