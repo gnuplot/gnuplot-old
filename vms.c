@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: vms.c,v 1.4 1998/06/23 13:41:40 lhecking Exp $";
+static char    *RCSid = "$Id: vms.c,v 1.5 1998/07/15 15:34:47 lhecking Exp $";
 #endif
 
 /* GNUPLOT - vms.c */
@@ -38,6 +38,7 @@ static char    *RCSid = "$Id: vms.c,v 1.4 1998/06/23 13:41:40 lhecking Exp $";
  * (originally written by drd for port of perl to vms)
  */
 
+#include "plot.h"     /* for the prototypes */
 #include "stdfn.h"
 
 static int something_in_this_file;
@@ -120,7 +121,7 @@ popen_completion_ast(unsigned long int unused)
 FILE *
 popen(char *cmd, char *mode)
 {
-    char mbxname[64];
+    static char mbxname[64];
     unsigned short int chan;
     unsigned long int flags=1;  /* nowait - gnu c doesn't allow &1 */
     struct pipe_details *info;
