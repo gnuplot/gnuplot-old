@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.48 2002/08/30 18:45:45 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.49 2002/08/30 20:18:48 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -273,6 +273,12 @@ set y2data%s\n",
 	break;
     case 2: 
 	fprintf(fp, "set style filling pattern %d\n", fillpattern);
+	break;
+    case 3: 
+	fprintf(fp, "set style filling bsolid %f\n", filldensity / 100.0);
+	break;
+    case 4: 
+	fprintf(fp, "set style filling bpattern %d\n", fillpattern);
 	break;
     default: 
 	fprintf(fp, "set style filling empty\n");
