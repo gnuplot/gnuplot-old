@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.7 1999/04/22 16:32:23 lhecking Exp $
+# $Id: Makefile.in,v 1.8 1999/05/19 11:00:06 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -238,10 +238,10 @@ WINDOWS = $(W)geticon.c $(W)pgnuplot.c $(W)wcommon.h $(W)wgnupl32.def \
 	  $(W)wresourc.h $(W)wtext.c $(W)wtext.h
 
 # Other files which need to go into the distribution
-EXTRA_DIST = GNUmakefile Makefile.in Makefile.maint commitvers corgraph.asm \
-errorfix.sh genopt.com gnuplot.def gnuplot.opt gnuplot.prj header.mac \
-hrcgraph.asm intergra.x11 lasergnu lineproc.mac linkopt.vms linkopt.ztc \
-makefile.all pcgraph.asm rgipgnu
+EXTRA_DIST = GNUmakefile Makefile.in Makefile.maint corgraph.asm errorfix.sh \
+genopt.com gnuplot.def gnuplot.opt gnuplot.prj header.mac hrcgraph.asm \
+intergra.x11 lasergnu lineproc.mac linkopt.vms linkopt.ztc makefile.all \
+pcgraph.asm rgipgnu
 
 #########################################################################
 # Simple Dependencies
