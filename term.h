@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.13 1999/02/10 16:50:39 lhecking Exp $
+ * $Id: term.h,v 1.14 1999/02/17 17:59:24 lhecking Exp $
  *
  */
 
@@ -203,8 +203,8 @@
 #endif
 
 /****************************************************************************/
-/* Terminals not relevant for MSDOS, OS2, MS-Windows, ATARI or Amiga        */
-#if !(defined(MSDOS) || defined(OS2) || defined(_Windows) || defined(ATARI) || defined(MTOS) || defined(AMIGA))
+/* Terminals not relevant for MSDOS, MS-Windows, ATARI or Amiga             */
+#if !(defined(MSDOS) || defined(_Windows) || defined(ATARI) || defined(MTOS) || defined(AMIGA))
 
 /* AED 512 and AED 767 graphics terminals */
 # include "aed.trm"
@@ -225,13 +225,14 @@
 
 /* Tektronix 4106, 4107, 4109 and 420x terminals */
 # include "t410x.trm"
+
 /* a Tek 4010 and others including VT-style */
 # include "tek.trm"
 
 /* inboard terminal driver for X11 (dumps gnuplot_x11 commands) */
 # include "xlib.trm"
 
-#endif /* !MSDOS && !OS2 && !_Windows && !_ATARI && !_MTOS && !AMIGA */
+#endif /* !MSDOS && !_Windows && !_ATARI && !_MTOS && !AMIGA */
 /****************************************************************************/
 
 
