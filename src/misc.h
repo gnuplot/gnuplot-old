@@ -1,5 +1,5 @@
 /*
- * $Id: misc.h,v 1.8 2001/06/22 15:44:58 broeker Exp $
+ * $Id: misc.h,v 1.9 2002/01/06 16:31:12 mikulik Exp $
  */
 
 /* GNUPLOT - misc.h */
@@ -60,6 +60,10 @@ FILE *loadpath_fopen __PROTO((const char *, const char *));
 
 /* moved here, from setshow */
 enum PLOT_STYLE get_style __PROTO((void));
+#ifdef PM3D
+void get_filledcurves_style_options __PROTO((filledcurves_opts *));
+void filledcurves_options_tofile __PROTO((filledcurves_opts *, FILE *));
+#endif
 void lp_parse __PROTO((struct lp_style_type *, TBOOLEAN, TBOOLEAN, int, int));
 void lp_use_properties __PROTO((struct lp_style_type *lp, int tag, int pointflag));
 
