@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.29 2002/03/09 22:41:45 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.30 2002/03/11 08:43:03 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -607,7 +607,7 @@ int
 get_pm3d_at_option(char *pm3d_where)
 {
     char* c;
-    if (END_OF_COMMAND || token[c_token].length >= sizeof(pm3d_where)) {
+    if (END_OF_COMMAND || token[c_token].length >= sizeof(pm3d.where)) {
 	pm3d_option_at_error();
 	return 1;
     }
