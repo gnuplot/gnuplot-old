@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.42 2004/07/01 17:10:04 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.43 2004/07/02 05:03:30 sfeam Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -54,6 +54,7 @@ static char *RCSid() { return RCSid("$Id: fit.c,v 1.42 2004/07/01 17:10:04 broek
 #include "command.h"
 #include "datafile.h"
 #include "eval.h"
+#include "gp_time.h"
 #include "matrix.h"
 #include "plot.h"
 #include "misc.h"
