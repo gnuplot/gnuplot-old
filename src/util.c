@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: util.c,v 1.2 1999/04/16 18:47:57 lhecking Exp $";
+static char *RCSid = "$Id: util.c,v 1.3 1999/05/14 19:43:54 lhecking Exp $";
 #endif
 
 /* GNUPLOT - util.c */
@@ -146,6 +146,16 @@ int t_num;
     return (token[t_num].is_token &&
 	    ((isalpha((int)input_line[token[t_num].start_index])) ||
 	     (input_line[token[t_num].start_index] == '_')));
+}
+
+
+/* Returns TRUE if the string of token t_num is not empty
+ * If the length of a token is 2, it consists only of "" or ''
+ */
+int is_notempty(t_num)
+int t_num;
+{
+    return (token[t_num].is_token && token_len(t_num) > 2);
 }
 
 
