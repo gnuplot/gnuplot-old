@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.27 1999/02/17 17:56:20 lhecking Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.28 1999/03/04 20:50:26 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -931,7 +931,7 @@ int count;
 	double current_aspect_ratio;
 
 	if (aspect_ratio < 0 && (max_array[x_axis] - min_array[x_axis]) != 0.0) {
-	    current_aspect_ratio = -aspect_ratio * (max_array[y_axis] - min_array[y_axis]) / (max_array[x_axis] - min_array[x_axis]);
+	    current_aspect_ratio = -aspect_ratio * fabs((max_array[y_axis] - min_array[y_axis]) / (max_array[x_axis] - min_array[x_axis]));
 	} else
 	    current_aspect_ratio = aspect_ratio;
 
