@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -45,12 +45,20 @@ static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.2 2000/05/09 19:04:06 
 #include "alloc.h"
 #include "axis.h"
 #include "command.h"
+#include "contour.h"
+#include "datafile.h"
 #include "eval.h"
 #include "gp_time.h"
+#include "graphics.h"
 #include "hidden3d.h"
 #include "parse.h"
+#include "plot2d.h"
+#include "plot3d.h"
 #include "tables.h"
 #include "util.h"
+#include "term_api.h"
+#include "variable.h"
+#include "version.h"
 #ifdef USE_MOUSE
 # include "mouse.h"
 #endif
@@ -942,6 +950,9 @@ show_contour()
 	case CONTOUR_BOTH:
 	    fputs("grid base and surface\n", stderr);
 	    break;
+	case CONTOUR_NONE:
+	    /* should not happen --- be easy: don't complain... */
+	    break;
 	}
 	switch (contour_kind) {
 	case CONTOUR_KIND_LINEAR:
@@ -954,7 +965,7 @@ show_contour()
 	    fprintf(stderr, "\t\tas bspline approximation segments of order %d with %d pts\n", contour_order, contour_pts);
 	    break;
 	}
-	switch (levels_kind) {
+	switch (contour_levels_kind) {
 	case LEVELS_AUTO:
 	    fprintf(stderr, "\t\tapprox. %d automatic levels\n", contour_levels);
 	    break;
@@ -962,16 +973,16 @@ show_contour()
 	    {
 		int i;
 		fprintf(stderr, "\t\t%d discrete levels at ", contour_levels);
-		fprintf(stderr, "%g", levels_list[0]);
+		fprintf(stderr, "%g", contour_levels_list[0]);
 		for (i = 1; i < contour_levels; i++)
-		    fprintf(stderr, ",%g ", levels_list[i]);
+		    fprintf(stderr, ",%g ", contour_levels_list[i]);
 		putc('\n', stderr);
 		break;
 	    }
 	case LEVELS_INCREMENTAL:
-	    fprintf(stderr, "\t\t%d incremental levels starting at %g, step %g, end %g\n", contour_levels, levels_list[0],
-		    levels_list[1],
-		    levels_list[0] + (contour_levels - 1) * levels_list[1]);
+	    fprintf(stderr, "\t\t%d incremental levels starting at %g, step %g, end %g\n", contour_levels, contour_levels_list[0],
+		    contour_levels_list[1],
+		    contour_levels_list[0] + (contour_levels - 1) * contour_levels_list[1]);
 	    /* contour-levels counts both ends */
 	    break;
 	}
@@ -1038,7 +1049,7 @@ show_dummy()
     SHOW_ALL_NL;
 
     fprintf(stderr, "\tdummy variables are \"%s\" and \"%s\"\n",
-	    dummy_var[0], dummy_var[1]);
+	    set_dummy_var[0], set_dummy_var[1]);
 }
 
 
@@ -1219,7 +1230,7 @@ show_grid()
     if (polar_grid_angle)
 	fprintf(stderr, "\tGrid radii drawn every %f %s\n",
 		polar_grid_angle / ang2rad,
-		angles_format == ANGLES_DEGREES ? "degrees" : "radians");
+		(ang2rad == 1.0) ? "degrees" : "radians");
 }
 
 
@@ -1530,13 +1541,10 @@ show_angles()
     SHOW_ALL_NL;
 
     fputs("\tAngles are in ", stderr);
-    switch (angles_format) {
-    case ANGLES_RADIANS:
+    if (ang2rad == 1) {
 	fputs("radians\n", stderr);
-	break;
-    case ANGLES_DEGREES:
+    } else {
 	fputs("degrees\n", stderr);
-	break;
     }
 }
 

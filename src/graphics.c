@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.2 2000/05/09 19:04:05 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.3 2000/06/22 12:57:38 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -40,12 +40,26 @@ static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.2 2000/05/09 19:04
 #include "axis.h"
 #include "command.h"
 #include "gp_time.h"
-#include "graph3d.h"		/* HBB 2000506: back in, for clip_vector() */
-#include "misc.h"
-#include "setshow.h"
+#include "gadgets.h"
+/*  #include "graph3d.h" */		/* HBB 2000506: back in, for clip_vector() */
+/*  #include "misc.h" */
+/*  #include "setshow.h" */
 #include "term_api.h"
 #include "util.h"
-#include "util3d.h"		/* HBB 20000506: back in, for clip_line() */
+/*  #include "util3d.h" */		/* HBB 20000506: back in, for clip_line() */
+
+
+/* Externally visible/modifiable status variables */
+
+/* 'set offset' --- artificial buffer zone between coordinate axes and
+ * the area actually covered by the data */
+double loff = 0.0;
+double roff = 0.0;
+double toff = 0.0;
+double boff = 0.0;
+
+/* set bars */
+double bar_size = 1.0;
 
 /* key placement is calculated in boundary, so we need file-wide variables
  * To simplify adjustments to the key, we set all these once [depends on
@@ -126,6 +140,7 @@ static void widest2d_callback __PROTO((AXIS_INDEX, double place, char *text, str
 static void ytick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
 static void xtick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
 
+static int find_maxl_keys __PROTO((struct curve_points *plots, int count, int *kcnt));
 
 /* for plotting error bars
  * half the width of error bar tic mark
@@ -184,13 +199,34 @@ static t_key_flag lkey;
 
 /* arrays now in graphics.h */
 
-static int x_axis = FIRST_X_AXIS, y_axis = FIRST_Y_AXIS;	/* current axes */
+static AXIS_INDEX x_axis = FIRST_X_AXIS;
+static AXIS_INDEX y_axis = FIRST_Y_AXIS;	/* current axes */
 
-
-/* (DFK) Watch for cancellation error near zero on axes labels */
-#define CheckZero(x,tic) (fabs(x) < ((tic) * SIGNIF) ? 0.0 : (x))
-#define NearlyEqual(x,y,tic) (fabs((x)-(y)) < ((tic) * SIGNIF))
 /*}}} */
+
+static int
+find_maxl_keys(plots, count, kcnt)
+struct curve_points *plots;
+int count, *kcnt;
+{
+    int mlen, len, curve, cnt;
+    register struct curve_points *this_plot;
+
+    mlen = cnt = 0;
+    this_plot = plots;
+    for (curve = 0; curve < count; this_plot = this_plot->next, curve++)
+	if (this_plot->title
+	    && ((len = /*assign */ strlen(this_plot->title)) != 0)	/* HBB 980308: quiet BCC warning */
+	    ) {
+	    cnt++;
+	    if (len > mlen)
+		mlen = strlen(this_plot->title);
+	}
+    if (kcnt != NULL)
+	*kcnt = cnt;
+    return (mlen);
+}
+
 
 /*{{{  widest2d_callback() */
 /* we determine widest tick label by getting gen_ticks to call this
@@ -966,6 +1002,7 @@ int pcount;			/* count of plots in linked list */
     /* select first mapping */
     x_axis = FIRST_X_AXIS;
     y_axis = FIRST_Y_AXIS;
+
 /* RADIAL LINES FOR POLAR GRID */
 
     /* note that draw_clip_line takes unsigneds, but (fortunately)
@@ -991,33 +1028,21 @@ int pcount;			/* count of plots in linked list */
     }
 
 /* DRAW AXES */
-
     /* after grid so that axes linetypes are on top */
 
     x_axis = FIRST_X_AXIS;
     y_axis = FIRST_Y_AXIS;	/* chose scaling */
 
-#define DRAW_ZEROAXIS(axis,crossaxis)				\
-    do {							\
-	if (axis_position_zeroaxis(crossaxis)			\
-	    && (axis_zeroaxis[axis].l_type > -3)) {		\
-	    term_apply_lp_properties(&axis_zeroaxis[axis]);	\
-	    (*t->move) (xleft, axis_zero[crossaxis]);		\
-	    (*t->vector) (xright, axis_zero[crossaxis]);	\
-	}							\
-    } while (0);
-
-    DRAW_ZEROAXIS(FIRST_X_AXIS,FIRST_Y_AXIS);
-    DRAW_ZEROAXIS(FIRST_Y_AXIS,FIRST_X_AXIS);
+    axis_draw_2d_zeroaxis(FIRST_X_AXIS,FIRST_Y_AXIS);
+    axis_draw_2d_zeroaxis(FIRST_Y_AXIS,FIRST_X_AXIS);
 
     x_axis = SECOND_X_AXIS;
     y_axis = SECOND_Y_AXIS;	/* chose scaling */
 
-    DRAW_ZEROAXIS(SECOND_X_AXIS,SECOND_Y_AXIS);
-    DRAW_ZEROAXIS(SECOND_Y_AXIS,SECOND_X_AXIS);
-#undef DRAW_ZEROAXIS
+    axis_draw_2d_zeroaxis(SECOND_X_AXIS,SECOND_Y_AXIS);
+    axis_draw_2d_zeroaxis(SECOND_Y_AXIS,SECOND_X_AXIS);
 
-    /* DRAW PLOT BORDER */
+/* DRAW PLOT BORDER */
     if (draw_border) {
 	/* HBB 980609: just in case: move over to border linestyle only
 	 * if border is to be drawn */
@@ -1256,7 +1281,9 @@ int pcount;			/* count of plots in linked list */
 		 * We simply draw the point sample after plotting
 		 */
 
-		if (this_plot->plot_type == DATA && (this_plot->plot_style & 4) && bar_size > 0.0) {
+		if ((this_plot->plot_type == DATA)
+		    && (this_plot->plot_style & 4)
+		    && (bar_size > 0.0)) {
 		    (*t->move) (xl + key_sample_left, yl + ERRORBARTIC);
 		    (*t->vector) (xl + key_sample_left, yl - ERRORBARTIC);
 		    (*t->move) (xl + key_sample_right, yl + ERRORBARTIC);
@@ -3045,71 +3072,6 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
     return (FALSE);
 }
 
-void
-write_multiline(x, y, text, hor, vert, angle, font)
-unsigned int x, y;
-char *text;
-enum JUSTIFY hor;		/* horizontal ... */
-int vert;			/* ... and vertical just - text in hor direction despite angle */
-int angle;			/* assume term has already been set for this */
-const char *font;		/* NULL or "" means use default */
-{
-    register struct termentry *t = term;
-    char *p = text;
-
-    if (!p)
-	return;
-
-    if (vert != JUST_TOP) {
-	/* count lines and adjust y */
-	int lines = 0;		/* number of linefeeds - one fewer than lines */
-	while (*p++) {
-	    if (*p == '\n')
-		++lines;
-	}
-	if (angle)
-	    x -= (vert * lines * t->v_char) / 2;
-	else
-	    y += (vert * lines * t->v_char) / 2;
-    }
-    if (font && *font)
-	(*t->set_font) (font);
-
-
-    for (;;) {			/* we will explicitly break out */
-
-	if ((text != NULL) && (p = strchr(text, '\n')) != NULL)
-	    *p = 0;		/* terminate the string */
-
-	if ((*t->justify_text) (hor)) {
-	    (*t->put_text) (x, y, text);
-	} else {
-	    int fix = hor * (t->h_char) * strlen(text) / 2;
-	    if (angle)
-		(*t->put_text) (x, y - fix, text);
-	    else
-		(*t->put_text) (x - fix, y, text);
-	}
-	if (angle)
-	    x += t->v_char;
-	else
-	    y -= t->v_char;
-
-	if (!p)
-	    break;
-	else {
-	    /* put it back */
-	    *p = '\n';
-	}
-
-	text = p + 1;
-    }				/* unconditional branch back to the for(;;) - just a goto ! */
-
-    if (font && *font)
-	(*t->set_font) (default_font);
-
-}
-
 /* display a x-axis ticmark - called by gen_ticks */
 /* also uses global tic_start, tic_direction, tic_text and tic_just */
 static void
@@ -3219,6 +3181,7 @@ struct lp_style_type grid;	/* linetype or -2 */
 		clip_vector(map_x(x), map_y(y));
 	    }
 	} else {
+	    /* Make the grid avoid the key box */
 	    if (lkey && y < keybox.yt && y > keybox.yb && keybox.xl < xright /* catch TOUT */ ) {
 		if (keybox.xl > xleft) {
 		    (*t->move) (xleft, y);

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -45,15 +45,19 @@ static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.2 2000/05/09 19:04:06 b
 #include "alloc.h"
 #include "axis.h"
 #include "command.h"
+#include "contour.h"
+#include "datafile.h"
 #include "gp_time.h"
 #include "hidden3d.h"
 #include "misc.h"
 #include "parse.h"
+#include "plot.h"
 #include "plot2d.h"
 #include "plot3d.h"
 #include "tables.h"
 #include "term_api.h"
 #include "util.h"
+#include "variable.h"
 #ifdef USE_MOUSE
 #   include "mouse.h"
 #endif
@@ -69,137 +73,9 @@ static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.2 2000/05/09 19:04:06 b
  * you add another global variable, make sure that the change you make is
  * done in reset_command() as well (if that makes sense).
  */
-
-/* set angles */
-int angles_format = ANGLES_RADIANS;
-double ang2rad = 1.0;		/* 1 or pi/180, tracking angles_format */
-
-/* set arrow */
-struct arrow_def *first_arrow = NULL;
-
-/* set bars */
-double bar_size = 1.0;
-
-/* set border */
-struct lp_style_type border_lp = { 0, -2, 0, 1.0, 1.0 };
-int draw_border = 31;
-
-TBOOLEAN multiplot = FALSE;
-
-double boxwidth = -1.0;		/* box width (automatic) */
-TBOOLEAN clip_points = FALSE;
-TBOOLEAN clip_lines1 = TRUE;
-TBOOLEAN clip_lines2 = FALSE;
-TBOOLEAN draw_surface = TRUE;
-char dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1] = { "x", "y" };
-
-enum PLOT_STYLE data_style = POINTSTYLE;
-enum PLOT_STYLE func_style = LINES;
-
-int grid_selection = GRID_OFF;
-
-
-#define DEFAULT_GRID_LP { 0, -1, 0, 1.0, 1.0 }
-const struct lp_style_type default_grid_lp = DEFAULT_GRID_LP;
-struct lp_style_type grid_lp   = DEFAULT_GRID_LP;
-struct lp_style_type mgrid_lp  = DEFAULT_GRID_LP;
-double polar_grid_angle = 0;	/* nonzero means a polar grid */
-
-#define DEFAULT_KEYBOX_LP { 0, -3, 0, 1.0, 1.0 } /* -3 = no linetype */
-
-t_key_flag key = KEY_AUTO_PLACEMENT; /* default position */
-struct position key_user_pos;	/* user specified position for key */
-TBOOLEAN key_reverse = FALSE;	/* reverse text & sample ? */
-const struct lp_style_type default_keybox_lp = DEFAULT_KEYBOX_LP;
-struct lp_style_type key_box = DEFAULT_KEYBOX_LP; 
-double key_swidth = 4.0;
-double key_vert_factor = 1.0;
-double key_width_fix = 0.0;
-
-char *outstr = NULL;		/* means "STDOUT" */
-TBOOLEAN parametric = FALSE;
-double pointsize = 1.0;
-
-int encoding;
-
-TBOOLEAN polar = FALSE;
-TBOOLEAN hidden3d = FALSE;
-TBOOLEAN label_contours = TRUE;	/* different linestyles are used for contours when set */
-char contour_format[32] = "%8.3g";	/* format for contour key entries */
-int mapping3d = MAP3D_CARTESIAN;
-int samples = SAMPLES;		/* samples is always equal to samples_1 */
-int samples_1 = SAMPLES;
-int samples_2 = SAMPLES;
-int iso_samples_1 = ISO_SAMPLES;
-int iso_samples_2 = ISO_SAMPLES;
-float xsize = 1.0;		/* scale factor for size */
-float ysize = 1.0;		/* scale factor for size */
-float zsize = 1.0;		/* scale factor for size */
-float xoffset = 0.0;		/* x origin */
-float yoffset = 0.0;		/* y origin */
-float aspect_ratio = 0.0;	/* don't attempt to force it */
-float surface_rot_z = 30.0;	/* Default 3d transform. */
-float surface_rot_x = 60.0;
-float surface_scale = 1.0;
-float surface_zscale = 1.0;
-struct termentry *term = NULL;	/* unknown */
-char term_options[MAX_LINE_LEN+1] = "";
-label_struct title = EMPTY_LABELSTRUCT;
-label_struct timelabel = EMPTY_LABELSTRUCT;
-
-int timelabel_rotate = FALSE;
-int timelabel_bottom = TRUE;
-char key_title[MAX_LINE_LEN+1] = "";
-
-
-double loff = 0.0;
-double roff = 0.0;
-double toff = 0.0;
-double boff = 0.0;
-int draw_contour = CONTOUR_NONE;
-int contour_pts = 5;
-int contour_kind = CONTOUR_KIND_LINEAR;
-int contour_order = 4;
-int contour_levels = 5;
-double zero = ZERO;		/* zero threshold, not 0! */
-int levels_kind = LEVELS_AUTO;
-double *levels_list;		/* storage for z levels to draw contours at */
-static int max_levels = 0;	/* contour level capacity, before enlarging */
-
-int dgrid3d_row_fineness = 10;
-int dgrid3d_col_fineness = 10;
-int dgrid3d_norm_value = 1;
-TBOOLEAN dgrid3d = FALSE;
-
-double ticscale = 1.0;		/* scale factor for tic mark */
-double miniticscale = 0.5;	/* and for minitics */
-
-float ticslevel = 0.5;
-
-TBOOLEAN tic_in = TRUE;
-
-struct text_label *first_label = NULL;
-struct linestyle_def *first_linestyle = NULL;
-
-/* space between left edge and xleft in chars (-1: computed) */
-int lmargin = -1;
-/* space between bottom and ybot in chars (-1: computed) */
-int bmargin = -1;
-/* space between right egde and xright in chars (-1: computed) */
-int rmargin = -1;
-/* space between top egde and ytop in chars (-1: computed) */
-int tmargin = -1;
-
-/* string representing missing values in ascii datafiles */
-char *missing_val = NULL;
-
-/*** other things we need *****/
-
-/* input data, parsing variables */
-
-int key_hpos = TRIGHT;		/* place for curve-labels, corner or outside */
-int key_vpos = TTOP;		/* place for curve-labels, corner or below */
-int key_just = JRIGHT;		/* alignment of key labels, left or right */
+/* HBB 20000521: Moved these to their respective modules, or the new
+ * 'global status' keeping module, where no other single source module
+ * could be associated with a variable, meaningfully */
 
 static void set_angles __PROTO((void));
 static void set_arrow __PROTO((void));
@@ -279,7 +155,6 @@ static void set_linestyle __PROTO((void));
 static int assign_linestyle_tag __PROTO((void));
 static int looks_like_numeric __PROTO((char *));
 static void reset_lp_properties __PROTO((struct lp_style_type *arg));
-static void lp_use_properties __PROTO((struct lp_style_type *lp, int tag, int pointflag));
 static int set_tic_prop __PROTO((AXIS_INDEX));
 
 /* Backwards compatibility ... */
@@ -343,10 +218,6 @@ set_command()
     } else {
 
 #endif /* BACKWARDS_COMPATIBLE */
-
-	if (max_levels == 0)
-	    levels_list = (double *)gp_alloc((max_levels = 5)*sizeof(double), 
-					     "contour levels");
 
 	switch(lookup_table(&set_tbl[0],c_token)) {
 	case S_ANGLES:
@@ -657,14 +528,11 @@ set_angles()
     c_token++;
     if (END_OF_COMMAND) {
 	/* assuming same as defaults */
-	angles_format = ANGLES_RADIANS;
 	ang2rad = 1;
     } else if (almost_equals(c_token, "r$adians")) {
-	angles_format = ANGLES_RADIANS;
 	c_token++;
 	ang2rad = 1;
     } else if (almost_equals(c_token, "d$egrees")) {
-	angles_format = ANGLES_DEGREES;
 	c_token++;
 	ang2rad = DEG2RAD;
     } else
@@ -1007,11 +875,11 @@ set_cntrparam()
     c_token++;
     if (END_OF_COMMAND) {
 	/* assuming same as defaults */
-	contour_pts = 5;
+	contour_pts = DEFAULT_NUM_APPROX_PTS;
 	contour_kind = CONTOUR_KIND_LINEAR;
-	contour_order = 4;
-	contour_levels = 5;
-	levels_kind = LEVELS_AUTO;
+	contour_order = DEFAULT_CONTOUR_ORDER;
+	contour_levels = DEFAULT_CONTOUR_LEVELS;
+	contour_levels_kind = LEVELS_AUTO;
     } else if (almost_equals(c_token, "p$oints")) {
 	c_token++;
 	contour_pts = (int) real(const_express(&a));
@@ -1025,42 +893,43 @@ set_cntrparam()
 	c_token++;
 	contour_kind = CONTOUR_KIND_BSPLINE;
     } else if (almost_equals(c_token, "le$vels")) {
-	int i = 0;  /* local counter */
 	c_token++;
+	
+	init_dynarray(&dyn_contour_levels_list, sizeof(double), 5, 10);
+	
 	/*  RKC: I have modified the next two:
 	 *   to use commas to separate list elements as in xtics
 	 *   so that incremental lists start,incr[,end]as in "
 	 */
 	if (almost_equals(c_token, "di$screte")) {
-	    levels_kind = LEVELS_DISCRETE;
+	    contour_levels_kind = LEVELS_DISCRETE;
 	    c_token++;
 	    if(END_OF_COMMAND)
 		int_error(c_token, "expecting discrete level");
 	    else
-		levels_list[i++] = real(const_express(&a));
+		*(double *)nextfrom_dynarray(&dyn_contour_levels_list) =
+		    real(const_express(&a));
 
 	    while(!END_OF_COMMAND) {
 		if (!equals(c_token, ","))
 		    int_error(c_token,
 			      "expecting comma to separate discrete levels");
 		c_token++;
-		if (i == max_levels)
-		    levels_list = 
-			gp_realloc(levels_list,
-				   (max_levels += 10)*sizeof(double),
-				   "contour levels");
-		levels_list[i++] = real(const_express(&a));
+		*(double *)nextfrom_dynarray(&dyn_contour_levels_list) =
+		    real(const_express(&a));
 	    }
-	    contour_levels = i;
+	    contour_levels = dyn_contour_levels_list.end;
 	} else if (almost_equals(c_token, "in$cremental")) {
-	    levels_kind = LEVELS_INCREMENTAL;
+	    int i = 0;  /* local counter */
+
+	    contour_levels_kind = LEVELS_INCREMENTAL;
 	    c_token++;
-	    levels_list[i++] = real(const_express(&a));
+	    contour_levels_list[i++] = real(const_express(&a));
 	    if (!equals(c_token, ","))
 		int_error(c_token,
 			  "expecting comma to separate start,incr levels");
 	    c_token++;
-	    if((levels_list[i++] = real(const_express(&a))) == 0)
+	    if((contour_levels_list[i++] = real(const_express(&a))) == 0)
 		int_error(c_token, "increment cannot be 0");
 	    if(!END_OF_COMMAND) {
 		if (!equals(c_token, ","))
@@ -1070,15 +939,16 @@ set_cntrparam()
 		/* need to round up, since 10,10,50 is 5 levels, not four,
 		 * but 10,10,49 is four
 		 */
-		contour_levels = (int) ( (real(const_express(&a))-levels_list[0])/levels_list[1] + 1.0);
+		dyn_contour_levels_list.end = i;
+		contour_levels = (int) ( (real(const_express(&a))-contour_levels_list[0])/contour_levels_list[1] + 1.0);
 	    }
 	} else if (almost_equals(c_token, "au$to")) {
-	    levels_kind = LEVELS_AUTO;
+	    contour_levels_kind = LEVELS_AUTO;
 	    c_token++;
 	    if(!END_OF_COMMAND)
 		contour_levels = (int) real(const_express(&a));
 	} else {
-	    if(levels_kind == LEVELS_DISCRETE)
+	    if(contour_levels_kind == LEVELS_DISCRETE)
 		int_error(c_token, "Levels type is discrete, ignoring new number of contour levels");
 	    contour_levels = (int) real(const_express(&a));
 	}
@@ -1086,7 +956,7 @@ set_cntrparam()
 	int order;
 	c_token++;
 	order = (int) real(const_express(&a));
-	if ( order < 2 || order > 10 )
+	if ( order < 2 || order > MAX_BSPLINE_ORDER )
 	    int_error(c_token, "bspline order must be in [2..10] range.");
 	contour_order = order;
     } else
@@ -1167,12 +1037,12 @@ set_dummy()
 	int_error(c_token, "expecting dummy variable name");
     else {
 	if (!equals(c_token,","))
-	    copy_str(dummy_var[0],c_token++, MAX_ID_LEN);
+	    copy_str(set_dummy_var[0],c_token++, MAX_ID_LEN);
 	if (!END_OF_COMMAND && equals(c_token,",")) {
 	    c_token++;
 	    if (END_OF_COMMAND)
 		int_error(c_token, "expecting second dummy variable name");
-	    copy_str(dummy_var[1],c_token++, MAX_ID_LEN);
+	    copy_str(set_dummy_var[1],c_token++, MAX_ID_LEN);
 	}
     }
 }
@@ -2178,8 +2048,8 @@ set_parametric()
     if (!parametric) {
 	parametric = TRUE;
 	if (!polar) { /* already done for polar */
-	    strcpy (dummy_var[0], "t");
-	    strcpy (dummy_var[1], "y");
+	    strcpy (set_dummy_var[0], "t");
+	    strcpy (set_dummy_var[1], "y");
 	    if (interactive)
 		(void) fprintf(stderr,"\n\tdummy variable is t for curves, u/v for surfaces\n");
 	}
@@ -2212,7 +2082,7 @@ set_polar()
 	if (!parametric) {
 	    if (interactive)
 		(void) fprintf(stderr,"\n\tdummy variable is t for curves\n");
-	    strcpy (dummy_var[0], "t");
+	    strcpy (set_dummy_var[0], "t");
 	}
 	polar = TRUE;
 	if (set_axis_autoscale[T_AXIS]) {
@@ -2249,7 +2119,6 @@ set_samples()
 	first_3dplot = NULL;
 	sp_free(f_3dp);
 
-	samples = tsamp1;
 	samples_1 = tsamp1;
 	samples_2 = tsamp2;
     }
@@ -2639,7 +2508,7 @@ set_allzeroaxis()
 {
     c_token++;
     set_zeroaxis(FIRST_X_AXIS);
-    axis_zeroaxis[FIRST_Y_AXIS] = axis_zeroaxis[FIRST_Y_AXIS];
+    axis_zeroaxis[FIRST_Y_AXIS] = axis_zeroaxis[FIRST_X_AXIS];
 }
 
 /*********** Support functions for set_command ***********/
@@ -2951,67 +2820,6 @@ struct linestyle_def *prev, *this;
     }
 }
 
-/*
- * auxiliary functions for the `set linestyle` command
- */
-
-static void
-lp_use_properties(lp, tag, pointflag)
-struct lp_style_type *lp;
-int tag, pointflag;
-{
-    /*  This function looks for a linestyle defined by 'tag' and copies
-     *  its data into the structure 'lp'.
-     *
-     *  If 'pointflag' equals ZERO, the properties belong to a linestyle
-     *  used with arrows.  In this case no point properties will be
-     *  passed to the terminal (cf. function 'term_apply_lp_properties' below).
-     */
-
-    struct linestyle_def *this;
-
-    this = first_linestyle;
-    while (this != NULL) {
-	if (this->tag == tag) {
-	    *lp = this->lp_properties;
-	    lp->pointflag = pointflag;
-	    return;
-	} else {
-	    this = this->next;
-	}
-    }
-
-    /* tag not found: */
-    int_error(NO_CARET,"linestyle not found", NO_CARET);
-}
-
-
-/* not static; used by command.c */
-enum PLOT_STYLE
-get_style()
-{
-    /* defined in plot.h */
-    register enum PLOT_STYLE ps;
-
-    c_token++;
-
-    ps = lookup_table(&plotstyle_tbl[0],c_token);
-
-    c_token++;
-
-    if (ps == -1) {
-	int_error(c_token,"\
-expecting 'lines', 'points', 'linespoints', 'dots', 'impulses',\n\
-\t'yerrorbars', 'xerrorbars', 'xyerrorbars', 'steps', 'fsteps',\n\
-\t'histeps', 'boxes', 'boxerrorbars', 'boxxyerrorbars', 'vector',\n\
-\t'financebars', 'candlesticks', 'errorlines', 'xerrorlines',\n\
-\t'yerrorlines', 'xyerrorlines'");
-	ps = LINES;
-    }
-
-    return ps;
-}
-
 /* For set [xy]tics... command */
 static void
 load_tics(axis)
@@ -3312,43 +3120,6 @@ struct lp_style_type *arg;
     arg->l_width = arg->p_size = 1.0;
 }
 
-
-/* was a macro in plot.h */
-void
-lp_parse(lp, allow_ls, allow_point, def_line, def_point)
-struct lp_style_type *lp;
-int allow_ls, allow_point, def_line, def_point;
-{
-    struct value t;
-
-    if (allow_ls && (almost_equals(c_token, "lines$tyle") ||
-		     equals(c_token, "ls" ))) {
-	c_token++;
-	lp_use_properties(lp, (int) real(const_express(&t)), allow_point);
-    } else {
-	if (almost_equals(c_token, "linet$ype") || equals(c_token, "lt" )) {
-	    c_token++;
-	    lp->l_type = (int) real(const_express(&t))-1;
-	} else lp->l_type = def_line;
-	if (almost_equals(c_token, "linew$idth") || equals(c_token, "lw" )) {
-	    c_token++;
-	    lp->l_width = real(const_express(&t));
-	} else lp->l_width = 1.0;
-	if ( (lp->pointflag = allow_point) != 0) {
-	    if (almost_equals(c_token, "pointt$ype") ||
-		equals(c_token, "pt" )) {
-		c_token++;
-		lp->p_type = (int) real(const_express(&t))-1;
-	    } else lp->p_type = def_point;
-	    if (almost_equals(c_token, "points$ize") ||
-		equals(c_token, "ps" )) {
-		c_token++;
-		lp->p_size = real(const_express(&t));
-	    } else lp->p_size = pointsize; /* as in "set pointsize" */
-	} else lp->p_size = pointsize; /* give it a value */
-	LP_DUMP(lp);
-    }
-}
 
 /*
  * Backwards compatibility ...

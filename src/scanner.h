@@ -1,5 +1,5 @@
 /*
- * $Id: scanner.h,v 1.3 2000/05/02 18:01:03 lhecking Exp $
+ * $Id: scanner.h,v 1.3.2.1 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - scanner.h */
@@ -39,7 +39,8 @@
 
 /* #if... / #include / #define collection: */
 
-#include "plot.h"
+#include "syscfg.h"
+#include "stdfn.h"
 
 /* Type definitions */
 

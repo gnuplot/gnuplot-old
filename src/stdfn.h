@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.12.2.1 2000/05/02 21:26:21 broeker Exp $
+ * $Id: stdfn.h,v 1.12.2.2 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -339,7 +339,10 @@ int pclose __PROTO((FILE *));
 # define FPRINTF(a)      /* nought */
 #endif /* DEBUG */
 
-#include "plot.h"
+#include "syscfg.h"
+
+#define INT_STR_LEN (3*sizeof(int))
+
 
 /* The XOPEN ln(10) macro */
 #ifndef M_LN10
@@ -357,6 +360,32 @@ int pclose __PROTO((FILE *));
 #  define PATH_MAX MAXPATHLEN
 # endif
 #endif
+
+/* Concatenate a path name and a file name. The file name
+ * may or may not end with a "directory separation" character.
+ * Path must not be NULL, but can be empty
+ */
+#define PATH_CONCAT(path,file) \
+ { char *p = path; \
+   p += strlen(path); \
+   if (p!=path) p--; \
+   if (*p && (*p != DIRSEP1) && (*p != DIRSEP2)) { \
+     if (*p) p++; *p++ = DIRSEP1; *p = NUL; \
+   } \
+   strcat (path, file); \
+ }
+
+#ifndef inrange
+# define inrange(z,min,max) \
+   (((min)<(max)) ? (((z)>=(min)) && ((z)<=(max))) : \
+	            (((z)>=(max)) && ((z)<=(min))))
+#endif
+
+/* both min/max and MIN/MAX are defined by some compilers.
+ * we are now on GPMIN / GPMAX
+ */
+#define GPMAX(a,b) ( (a) > (b) ? (a) : (b) )
+#define GPMIN(a,b) ( (a) < (b) ? (a) : (b) )
 
 /* Prototypes from "stdfn.c" */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.22.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.22.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -37,9 +37,13 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.22.2.2 2000/05/09 19:04:06 
 #include "util.h"
 
 #include "alloc.h"
+#include "command.h"
 #include "misc.h"
-#include "setshow.h"		/* for month names etc */
+#include "plot.h"
+/*  #include "setshow.h" */		/* for month names etc */
 #include "term_api.h"		/* for term_end_plot() used by graph_error() */
+
+/* internal stuff */
 
 static char *num_to_str __PROTO((double r));
 static void parse_esc __PROTO((char *instr));

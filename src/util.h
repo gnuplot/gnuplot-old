@@ -1,5 +1,5 @@
 /*
- * $Id: util.h,v 1.7.2.1 2000/05/02 21:26:21 broeker Exp $
+ * $Id: util.h,v 1.7.2.2 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - util.h */
@@ -37,7 +37,13 @@
 #ifndef GNUPLOT_UTIL_H
 # define GNUPLOT_UTIL_H
 
-#include "plot.h"
+#include "gp_types.h"
+#include "stdfn.h"		/* for size_t */
+
+/* special token number meaning 'do not draw the "caret"', for
+ * int_error and friends: */
+#define NO_CARET (-1)
+
 
 /* TRUE if command just typed; becomes FALSE whenever we
  * send some other output to screen.  If FALSE, the command line

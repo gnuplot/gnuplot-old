@@ -1,5 +1,5 @@
 /*
- * $Id: bitmap.h,v 1.8 2000/05/02 18:01:03 lhecking Exp $
+ * $Id: bitmap.h,v 1.8.2.1 2000/06/22 12:57:38 broeker Exp $
  */
 
 /* GNUPLOT - bitmap.h */
@@ -37,7 +37,7 @@
 #ifndef GNUPLOT_BITMAP_H
 # define GNUPLOT_BITMAP_H
 
-#include "plot.h"
+#include "syscfg.h"
 
 /* allow up to 16 bit width for character array */
 typedef unsigned int char_row;

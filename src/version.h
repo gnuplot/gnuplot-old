@@ -1,11 +1,11 @@
 /*
- * $Id: hidden3d.h,v 1.3.2.1 2000/06/22 12:57:39 broeker Exp $
+ * $Id: version.h,v 1.1.2.1 2000/06/22 12:57:39 broeker Exp $
  */
 
-/* GNUPLOT - hidden3d.h */
+/* GNUPLOT - version.h */
 
 /*[
- * Copyright 1999   Thomas Williams, Colin Kelley
+ * Copyright 2000   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,
@@ -34,33 +34,22 @@
  * to the extent permitted by applicable law.
 ]*/
 
-#ifndef GNUPLOT_HIDDEN3D_H
-# define GNUPLOT_HIDDEN3D_H
-
-/* #if... / #include / #define collection: */
+#ifndef GNUPLOT_VERSION_H
+#define GNUPLOT_VERSION_H
 
 #include "syscfg.h"
-#include "stdfn.h"
-#include "graph3d.h"
-#include "util3d.h"
 
-/* Type definitions */
+extern const char gnuplot_version[];
+extern const char gnuplot_patchlevel[];
+extern const char gnuplot_date[];
+extern const char gnuplot_copyright[];
+extern const char faq_location[];
+extern const char bug_email[];
+extern const char help_email[];
 
-/* Variables of hidden3d.c needed by other modules: */
-
-/* Prototypes of functions exported by hidden3d.c */
-
-void set_hidden3doptions __PROTO((void));
-void show_hidden3doptions __PROTO((void));
-void save_hidden3doptions __PROTO((FILE *fp));
-#ifndef LITE
-void init_hidden_line_removal __PROTO((void));
-void reset_hidden_line_removal __PROTO((void));
-void term_hidden_line_removal __PROTO((void));
-void plot3d_hidden __PROTO((struct surface_points *plots, int pcount));
-void draw_line_hidden __PROTO((p_vertex, p_vertex, lp_style_type *)); 
-#endif
+extern char os_name[];
+extern char os_rel[];
 
 
 
-#endif /* GNUPLOT_HIDDEN3D_H */
+#endif /* GNUPLOT_VERSION_H */

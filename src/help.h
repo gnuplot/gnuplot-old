@@ -1,5 +1,5 @@
 /*
- * $Id: help.h,v 1.5 2000/05/02 18:01:03 lhecking Exp $
+ * $Id: help.h,v 1.5.2.1 2000/06/22 12:57:38 broeker Exp $
  */
 
 /* GNUPLOT - help.h */
@@ -38,7 +38,7 @@
 #ifndef GNUPLOT_HELP_H
 # define GNUPLOT_HELP_H
 
-#include "plot.h"		/* HBB 990828: for TBOOLEAN */
+#include "gp_types.h"
 
 /* Exit status returned by help() */
 #define	H_FOUND		0	/* found the keyword */

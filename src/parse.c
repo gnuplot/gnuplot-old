@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.10 1999/11/08 19:24:31 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.10.4.1 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -45,6 +45,11 @@ static char *RCSid() { return RCSid("$Id: parse.c,v 1.10 1999/11/08 19:24:31 lhe
 #include "help.h"
 #include "internal.h"
 #include "util.h"
+
+/* current dummy vars */
+char c_dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1];
+char set_dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1] = { "x", "y" };
+
 
 static RETSIGTYPE fpe __PROTO((int an_int));
 static void extend_at __PROTO((void));

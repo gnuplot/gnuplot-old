@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.11.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.11.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -38,13 +38,17 @@ static char *RCSid() { return RCSid("$Id: unset.c,v 1.11.2.2 2000/05/09 19:04:06
 
 #include "axis.h"
 #include "command.h"
+#include "contour.h"
+#include "datafile.h"
 #include "misc.h"
 #include "parse.h"
+#include "plot.h"
 #include "plot2d.h"
 #include "plot3d.h"
 #include "tables.h"
 #include "term_api.h"
 #include "util.h"
+#include "variable.h"
 #ifdef USE_MOUSE
 #   include "mouse.h"
 #endif
@@ -444,7 +448,6 @@ unset_command()
 static void
 unset_angles()
 {
-    angles_format = ANGLES_RADIANS;
     ang2rad = 1.0;
 }
 
@@ -582,11 +585,11 @@ unset_clip()
 static void
 unset_cntrparam()
 {
-    contour_pts = 5;
+    contour_pts = DEFAULT_NUM_APPROX_PTS;
     contour_kind = CONTOUR_KIND_LINEAR;
-    contour_order = 4;
-    contour_levels = 5;
-    levels_kind = LEVELS_AUTO;
+    contour_order = DEFAULT_CONTOUR_ORDER;
+    contour_levels = DEFAULT_CONTOUR_LEVELS;
+    contour_levels_kind = LEVELS_AUTO;
 }
 
 
@@ -613,8 +616,8 @@ unset_dgrid3d()
 static void
 unset_dummy()
 {
-    strcpy(dummy_var[0], "x");
-    strcpy(dummy_var[1], "y");
+    strcpy(set_dummy_var[0], "x");
+    strcpy(set_dummy_var[1], "y");
 }
 
 
@@ -985,7 +988,7 @@ unset_polar()
 	    set_axis_max[T_AXIS] = default_axis_min[T_AXIS];
 	}
 	if (!parametric) {
-	    strcpy (dummy_var[0], "x");
+	    strcpy (set_dummy_var[0], "x");
 	    if (interactive)
 		(void) fprintf(stderr,"\n\tdummy variable is x for curves\n");
 	}
@@ -1005,7 +1008,6 @@ unset_samples()
     sp_free(first_3dplot);
     first_3dplot = NULL;
 
-    samples = SAMPLES;
     samples_1 = SAMPLES;
     samples_2 = SAMPLES;
 }
@@ -1193,7 +1195,7 @@ static void
 unset_axislabel(axis)
     AXIS_INDEX axis;
 {
-    unset_axislabel_or_title(&axis_label[axis]);
+    axis_label[axis] = default_axis_label;
 }
 
 /******** The 'reset' command ********/

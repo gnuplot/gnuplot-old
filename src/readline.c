@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.19 2000/03/28 21:28:34 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.19.4.1 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -52,15 +52,16 @@ static char *RCSid() { return RCSid("$Id: readline.c,v 1.19 2000/03/28 21:28:34 
 
 #include "alloc.h"
 #include "gp_hist.h"
+#include "plot.h"
 #include "util.h"
+#include "term_api.h"
 
 #if defined(HAVE_LIBREADLINE)
-#include <readline/readline.h>
-#include <readline/history.h>
+/* #include <readline/readline.h> --- HBB 20000508: now included by readline.h*/
+/* #include <readline/history.h> --- HBB 20000508: now included by gp_hist */
 
 
 #if defined(USE_MOUSE) && !defined(OS2)
-#include "setshow.h" /* for the variable multiplot */
 static char* line_buffer;
 static int line_complete;
 

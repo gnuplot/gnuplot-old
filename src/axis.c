@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.c,v 1.2.2.2 2000/05/09 19:04:05 broeker Exp $
+ * $Id: axis.c,v 1.2.2.3 2000/06/22 12:57:38 broeker Exp $
  *
  */
 
@@ -36,9 +36,13 @@
 #include "axis.h"
 
 #include "stdfn.h"
+
 #include "command.h"
+#include "gadgets.h"
 #include "gp_time.h"
-#include "setshow.h"
+/*  #include "setshow.h" */
+#include "term_api.h"
+#include "variable.h"
 
 /* HBB 20000416: this is the start of my try to centralize everything
  * related to axes, once and for all. It'll probably end up as a
@@ -149,7 +153,7 @@ int range_flags[AXIS_ARRAY_SIZE];	/* = {0,0,...} */
 
 /* array of flags telling if an axis is formatted as time/date, on
  * output (--> 'set xdata time') */
-int axis_is_timedata[DATATYPE_ARRAY_SIZE];
+int axis_is_timedata[AXIS_ARRAY_SIZE];
 
 /* lots of tic control variables */
 #define DEFAULT_AXIS_TICS {			\
@@ -176,6 +180,9 @@ TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE);
 int axis_minitics[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(MINI_DEFAULT);
 double axis_mtic_freq[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(10);
 char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(DEF_FORMAT);
+double ticscale = 1.0;		/* scale factor for tic mark */
+double miniticscale = 0.5;	/* and for minitics */
+TBOOLEAN tic_in = TRUE;		/* tics on inside of coordinate box? */
 
 /* format for date/time for reading time in datafile */
 char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(TIMEFMT);
@@ -189,17 +196,15 @@ label_struct axis_label[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(EMPTY_LABELSTR
 const lp_style_type default_axis_zeroaxis = DEFAULT_AXIS_ZEROAXIS;
 lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE]
 = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_ZEROAXIS);
-  
 
-/* Define the boundary of the plot
- * These are computed at each call to do_plot, and are constant over
- * the period of one do_plot. They actually only change when the term
- * type changes and when the 'set size' factors change.
- * - no longer true, for 'set key out' or 'set key under'. also depend
- * on tic marks and multi-line labels.
- * They are shared with graph3d.c since we want to use its draw_clip_line()
- */
-int xleft, xright, ybot, ytop;
+/* grid drawing */  
+int grid_selection = GRID_OFF;
+#define DEFAULT_GRID_LP { 0, -1, 0, 1.0, 1.0 }
+const struct lp_style_type default_grid_lp = DEFAULT_GRID_LP;
+struct lp_style_type grid_lp   = DEFAULT_GRID_LP;
+struct lp_style_type mgrid_lp  = DEFAULT_GRID_LP;
+double polar_grid_angle = 0;	/* nonzero means a polar grid */
+
 
 /* --------- internal prototypes ------------------------- */
 static double dbl_raise __PROTO((double x, int y));
@@ -266,8 +271,6 @@ axis_log_value_checked(axis, coord, what)
 }
 
 /*}}} */
-
-#define CheckZero(x,tic) (fabs(x) < ((tic) * SIGNIF) ? 0.0 : (x))
 
 /*{{{  axis_checked_extend_empty_range() */
 /*
@@ -1469,6 +1472,25 @@ axis_position_zeroaxis(axis)
 
     return is_inside;
 }
+
+void
+axis_draw_2d_zeroaxis(axis, crossaxis)
+    AXIS_INDEX axis, crossaxis;
+{
+    if (axis_position_zeroaxis(crossaxis)
+	    && (axis_zeroaxis[axis].l_type > -3)) {
+	term_apply_lp_properties(&axis_zeroaxis[axis]);
+	if ((axis % SECOND_AXES) == FIRST_X_AXIS) {
+	    (*term->move) (axis_graphical_lower[axis], axis_zero[crossaxis]);
+	    (*term->vector) (axis_graphical_upper[axis], axis_zero[crossaxis]);
+	} else {
+	    (*term->move) (axis_zero[crossaxis], axis_graphical_lower[axis]);
+	    (*term->vector) (axis_zero[crossaxis], axis_graphical_upper[axis]);
+	}
+    }
+}
+
+
 
 /* loads a range specification from the input line into variables 'a'
  * and 'b' */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -38,17 +38,19 @@ static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.2 2000/05/09 19:04:06 
 
 #include "axis.h"
 #include "command.h"
+#include "contour.h"
+#include "datafile.h"
 #include "eval.h"
 #include "fit.h"
 #include "gp_time.h"
+#include "graphics.h"
 #include "hidden3d.h"
+#include "plot2d.h"
+#include "plot3d.h"
 #include "setshow.h"
+#include "term_api.h"
 #include "util.h"
-
-/* HBB 990825 FIXME: how come these strings are only used for
- * _displaying_ encodings (-->no use in set.c) ? */
-const char *encoding_names[] = {
-    "default", "iso_8859_1", "cp437", "cp850", NULL };
+#include "variable.h"
 
 static void save_functions__sub __PROTO((FILE *));
 static void save_variables__sub __PROTO((FILE *));
@@ -253,7 +255,7 @@ set y2data%s\n",
 		dgrid3d_col_fineness,
 		dgrid3d_norm_value);
 
-    fprintf(fp, "set dummy %s,%s\n", dummy_var[0], dummy_var[1]);
+    fprintf(fp, "set dummy %s,%s\n", set_dummy_var[0], set_dummy_var[1]);
 
 #define SAVE_FORMAT(axis)					\
     fprintf(fp, "set format %s \"%s\"\n", axisname_array[axis],	\
@@ -266,7 +268,7 @@ set y2data%s\n",
 #undef SAVE_FORMAT
 
     fprintf(fp, "set angles %s\n",
-	    (angles_format == ANGLES_RADIANS) ? "radians" : "degrees");
+	    (ang2rad == 1.0) ? "radians" : "degrees");
 
     if (grid_selection == 0)
 	fputs("unset grid\n", fp);
@@ -275,7 +277,7 @@ set y2data%s\n",
 	if (polar_grid_angle)	/* set angle already output */
 	    fprintf(fp, "set grid polar %f\n", polar_grid_angle / ang2rad);
 	else
-	    fputs("unset grid polar\n", fp);
+	    fputs("set grid nopolar\n", fp);
 	fprintf(fp,
 		"set grid %sxtics %sytics %sztics %sx2tics %sy2tics %smxtics %smytics %smztics %smx2tics %smy2tics lt %d lw %.3f, lt %d lw %.3f\n",
 		grid_selection & GRID_X ? "" : "no",
@@ -471,21 +473,21 @@ set isosamples %d, %d\n\
 	break;
     }
     fputs("set cntrparam levels ", fp);
-    switch (levels_kind) {
+    switch (contour_levels_kind) {
     case LEVELS_AUTO:
 	fprintf(fp, "auto %d\n", contour_levels);
 	break;
     case LEVELS_INCREMENTAL:
 	fprintf(fp, "incremental %g,%g,%g\n",
-		levels_list[0], levels_list[1],
-		levels_list[0] + levels_list[1] * contour_levels);
+		contour_levels_list[0], contour_levels_list[1],
+		contour_levels_list[0] + contour_levels_list[1] * contour_levels);
 	break;
     case LEVELS_DISCRETE:
 	{
 	    int i;
-	    fprintf(fp, "discrete %g", levels_list[0]);
+	    fprintf(fp, "discrete %g", contour_levels_list[0]);
 	    for (i = 1; i < contour_levels; i++)
-		fprintf(fp, ",%g ", levels_list[i]);
+		fprintf(fp, ",%g ", contour_levels_list[i]);
 	    fputc('\n', fp);
 	}
     }

@@ -1,5 +1,5 @@
 /*
- * $Id: graphics.h,v 1.14.2.1 2000/05/02 21:26:21 broeker Exp $
+ * $Id: graphics.h,v 1.14.2.2 2000/06/22 12:57:38 broeker Exp $
  */
 
 /* GNUPLOT - graphics.h */
@@ -37,17 +37,30 @@
 #ifndef GNUPLOT_GRAPHICS_H
 # define GNUPLOT_GRAPHICS_H
 
-#include "plot.h"
+#include "syscfg.h"
+#include "gp_types.h"
 
-/* Collect all global vars in one file.
- * HBB 990829: *Don't!* 
- * The comment below holds ... Lars
- *
- * The ultimate target is of course to eliminate global vars.
- * If possible. Over time. Maybe.
- */
+#include "gadgets.h"
+#include "term_api.h"
 
-extern char   default_font[];	/* Entry font added by DJL */
+/* types defined for 2D plotting */
+
+typedef struct curve_points {
+    struct curve_points *next;	/* pointer to next plot in linked list */
+    int token;			/* last token nr., for second pass */
+    enum PLOT_TYPE plot_type;
+    enum PLOT_STYLE plot_style;
+    enum PLOT_SMOOTH plot_smooth;
+    char *title;
+    struct lp_style_type lp_properties;
+    int p_max;			/* how many points are allocated */
+    int p_count;		/* count of points in points */
+    int x_axis;			/* FIRST_X_AXIS or SECOND_X_AXIS */
+    int y_axis;			/* FIRST_Y_AXIS or SECOND_Y_AXIS */
+    /* HBB 20000504: new field */
+    int z_axis;			/* same as either x_axis or y_axis, for 5-column plot types */
+    struct coordinate GPHUGE *points;
+} curve_points;
 
 /* From ESR's "Actual code patch" :) */
 /* An exclusion box.  
@@ -61,6 +74,16 @@ struct clipbox {
     int yb;
 };
 
+/* externally visible variables of graphics.h */
+
+extern char   default_font[];
+
+/* 'set offset' status variables */
+extern double loff, roff, toff, boff;
+
+/* 'set bar' status */
+extern double bar_size;
+
 /* function prototypes */
 
 void get_offsets __PROTO((struct text_label* this_label,
@@ -68,7 +91,6 @@ void get_offsets __PROTO((struct text_label* this_label,
 extern void do_plot __PROTO((struct curve_points *, int));
 extern int label_width __PROTO((const char *, int *));
 /* is this valid use of __P ? */
-extern void write_multiline __PROTO((unsigned int, unsigned int, char *, enum JUSTIFY, int, int, const char *));
 void map_position __PROTO((struct position * pos, unsigned int *x,
 				  unsigned int *y, const char *what));
 #if defined(sun386) || defined(AMIGA_SC_6_1)

@@ -1,5 +1,5 @@
 /*
- * $Id: plot3d.h,v 1.3 2000/05/02 18:53:53 lhecking Exp $
+ * $Id: plot3d.h,v 1.3.2.1 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - plot3d.h */
@@ -37,15 +37,31 @@
 #ifndef GNUPLOT_PLOT3D_H
 # define GNUPLOT_PLOT3D_H
 
-#include "plot.h"
+#include "syscfg.h"
+
+/* typedefs of plot3d.c */
+
+typedef enum en_data_mapping {
+    MAP3D_CARTESIAN,
+    MAP3D_SPHERICAL,
+    MAP3D_CYLINDRICAL,
+} t_data_mapping;
 
 /* Variables of plot3d.c needed by other modules: */
 
 extern struct surface_points *first_3dplot;
 extern int plot3d_num;
 
+extern t_data_mapping mapping3d;
+
+extern int dgrid3d_row_fineness;
+extern int dgrid3d_col_fineness;
+extern int dgrid3d_norm_value;
+extern TBOOLEAN	dgrid3d;
+
 /* prototypes from plot3d.c */
 
 void plot3drequest __PROTO((void));
+void sp_free __PROTO((struct surface_points *sp));
 
 #endif /* GNUPLOT_PLOT3D_H */

@@ -1,5 +1,5 @@
 /*
- * $Id: internal.h,v 1.3 2000/05/02 18:01:03 lhecking Exp $
+ * $Id: internal.h,v 1.3.2.1 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - internal.h */
@@ -39,11 +39,15 @@
 
 /* #if... / #include / #define collection: */
 
-#include "plot.h"
+#include "syscfg.h"
+#include "gp_types.h"
+#include "eval.h"
 
 #define STACK_DEPTH 100		/* maximum size of the execution stack */
 
 /* Variables of internal.c needed by other modules: */
+
+extern TBOOLEAN undefined;
 
 /* Prototypes from file "internal.c" */
 

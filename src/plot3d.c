@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -44,9 +44,10 @@ static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.2 2000/05/09 19:04:0
 #include "contour.h"
 #include "datafile.h"
 #include "graph3d.h"
+#include "internal.h"
 #include "misc.h"
 #include "parse.h"
-#include "setshow.h"
+/*  #include "setshow.h" */
 #include "term_api.h"
 #include "util.h"
 
@@ -58,6 +59,17 @@ static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.2 2000/05/09 19:04:0
 # include "help.h"
 #endif
 
+/* global variables exported by this module */
+
+t_data_mapping mapping3d = MAP3D_CARTESIAN;
+
+int dgrid3d_row_fineness = 10;
+int dgrid3d_col_fineness = 10;
+int dgrid3d_norm_value = 1;
+TBOOLEAN dgrid3d = FALSE;
+
+
+
 /* static prototypes */
 
 static void calculate_set_of_isolines __PROTO((AXIS_INDEX value_axis, TBOOLEAN cross, struct iso_curve **this_iso,
@@ -68,23 +80,130 @@ static void print_3dtable __PROTO((int pcount));
 static void eval_3dplots __PROTO((void));
 static void grid_nongrid_data __PROTO((struct surface_points * this_plot));
 static void parametric_3dfixup __PROTO((struct surface_points * start_plot, int *plot_num));
+static struct surface_points * sp_alloc __PROTO((int num_samp_1, int num_iso_1, int num_samp_2, int num_iso_2));
+static void sp_replace __PROTO((struct surface_points *sp, int num_samp_1, int num_iso_1, int num_samp_2, int num_iso_2));
 
 /* the curves/surfaces of the plot */
 struct surface_points *first_3dplot = NULL;
 static struct udft_entry plot_func;
 
-/* in order to support multiple axes, and to
- * simplify ranging in parametric plots, we use
- * arrays to store some things. For 2d plots,
- * elements are  y1 = 0 x1 = 1 y2 = 2 x2 = 3
- * for 3d,  z = 0, x = 1, y = 2
- * these are given symbolic names in plot.h
- */
-
 /* some file-wide variables to store which axis we are using */
 static int x_axis, y_axis, z_axis;
 
 int plot3d_num=0;
+
+/* HBB 20000508: moved these functions to the only module that uses them
+ * so they can be turned 'static' */
+/*
+ * sp_alloc() allocates a surface_points structure that can hold 'num_iso_1'
+ * iso-curves with 'num_samp_2' samples and 'num_iso_2' iso-curves with
+ * 'num_samp_1' samples.
+ * If, however num_iso_2 or num_samp_1 is zero no iso curves are allocated.
+ */
+static struct surface_points *
+sp_alloc(num_samp_1, num_iso_1, num_samp_2, num_iso_2)
+int num_samp_1, num_iso_1, num_samp_2, num_iso_2;
+{
+    struct surface_points *sp;
+
+    sp = (struct surface_points *) gp_alloc(sizeof(struct surface_points),
+					    "surface");
+    sp->next_sp = NULL;
+    sp->title = NULL;
+    sp->contours = NULL;
+    sp->iso_crvs = NULL;
+    sp->num_iso_read = 0;
+
+    if (num_iso_2 > 0 && num_samp_1 > 0) {
+	int i;
+	struct iso_curve *icrv;
+
+	for (i = 0; i < num_iso_1; i++) {
+	    icrv = iso_alloc(num_samp_2);
+	    icrv->next = sp->iso_crvs;
+	    sp->iso_crvs = icrv;
+	}
+	for (i = 0; i < num_iso_2; i++) {
+	    icrv = iso_alloc(num_samp_1);
+	    icrv->next = sp->iso_crvs;
+	    sp->iso_crvs = icrv;
+	}
+    } else
+	sp->iso_crvs = (struct iso_curve *) NULL;
+
+    return (sp);
+}
+
+/*
+ * sp_replace() updates a surface_points structure so it can hold 'num_iso_1'
+ * iso-curves with 'num_samp_2' samples and 'num_iso_2' iso-curves with
+ * 'num_samp_1' samples.
+ * If, however num_iso_2 or num_samp_1 is zero no iso curves are allocated.
+ */
+static void
+sp_replace(sp, num_samp_1, num_iso_1, num_samp_2, num_iso_2)
+struct surface_points *sp;
+int num_samp_1, num_iso_1, num_samp_2, num_iso_2;
+{
+    int i;
+    struct iso_curve *icrv, *icrvs = sp->iso_crvs;
+
+    while (icrvs) {
+	icrv = icrvs;
+	icrvs = icrvs->next;
+	iso_free(icrv);
+    }
+    sp->iso_crvs = NULL;
+
+    if (num_iso_2 > 0 && num_samp_1 > 0) {
+	for (i = 0; i < num_iso_1; i++) {
+	    icrv = iso_alloc(num_samp_2);
+	    icrv->next = sp->iso_crvs;
+	    sp->iso_crvs = icrv;
+	}
+	for (i = 0; i < num_iso_2; i++) {
+	    icrv = iso_alloc(num_samp_1);
+	    icrv->next = sp->iso_crvs;
+	    sp->iso_crvs = icrv;
+	}
+    } else
+	sp->iso_crvs = (struct iso_curve *) NULL;
+}
+
+/*
+ * sp_free() releases any memory which was previously malloc()'d to hold
+ *   surface points.
+ */
+/* HBB 20000506: don't risk stack havoc by recursion, use iterative list
+ * cleanup unstead */
+void
+sp_free(sp)
+struct surface_points *sp;
+{
+    while (sp) {
+	struct surface_points *next = sp->next_sp;
+	if (sp->title)
+	    free(sp->title);
+
+	while (sp->contours) {
+	    struct gnuplot_contours *next_cntrs = sp->contours->next;
+	    
+	    free(sp->contours->coords);
+	    free(sp->contours);
+	    sp->contours = next_cntrs;
+	}
+
+	while (sp->iso_crvs) {
+	    struct iso_curve *next_icrvs = sp->iso_crvs->next;
+
+	    iso_free(sp->iso_crvs);
+	    sp->iso_crvs = next_icrvs;
+	}
+
+	free(sp);
+	sp = next;
+    }
+}
 
 
 
@@ -104,9 +223,9 @@ plot3drequest()
 
     is_3d_plot = TRUE;
 
-    if (parametric && strcmp(dummy_var[0], "t") == 0) {
-	strcpy(dummy_var[0], "u");
-	strcpy(dummy_var[1], "v");
+    if (parametric && strcmp(set_dummy_var[0], "t") == 0) {
+	strcpy(set_dummy_var[0], "u");
+	strcpy(set_dummy_var[1], "v");
     }
 
     /* put stuff into arrays to simplify access */
@@ -138,12 +257,12 @@ plot3drequest()
     if (dummy_token0 >= 0)
 	copy_str(c_dummy_var[0], dummy_token0, MAX_ID_LEN);
     else
-	(void) strcpy(c_dummy_var[0], dummy_var[0]);
+	(void) strcpy(c_dummy_var[0], set_dummy_var[0]);
 
     if (dummy_token1 >= 0)
 	copy_str(c_dummy_var[1], dummy_token1, MAX_ID_LEN);
     else
-	(void) strcpy(c_dummy_var[1], dummy_var[1]);
+	(void) strcpy(c_dummy_var[1], set_dummy_var[1]);
 
     eval_3dplots();
 }
@@ -554,7 +673,7 @@ struct surface_points *this_plot;
 	xdatum = df_3dmatrix(this_plot);
     else {
 	/*{{{  read surface from text file */
-	struct iso_curve *local_this_iso = iso_alloc(samples);
+	struct iso_curve *local_this_iso = iso_alloc(samples_1);
 	struct coordinate GPHUGE *cp;
 	double x, y, z;
 
@@ -642,9 +761,9 @@ struct surface_points *this_plot;
 		    int_error(this_plot->token, "Need 2 or 3 columns");
 		if (j < 3)
 		    v[2] = 1;	/* default radius */
-		if (angles_format == ANGLES_DEGREES) {
-		    v[0] *= DEG2RAD;	/* Convert to radians. */
-		}
+		/* Convert to radians. */
+		v[0] *= ang2rad;
+
 		x = v[2] * cos(v[0]);
 		y = v[2] * sin(v[0]);
 		z = v[1];
@@ -1402,18 +1521,11 @@ eval_3dplots()
 		 * rkc@xn.ll.mit.edu
 		 */
 	    } else if (this_plot->plot_type == DATA3D) {
-		this_plot->contours = contour(
-						 this_plot->num_iso_read,
-						 this_plot->iso_crvs,
-						 contour_levels, contour_pts,
-						 contour_kind, contour_order,
-						 levels_kind, levels_list);
+		this_plot->contours = contour(this_plot->num_iso_read,
+					      this_plot->iso_crvs);
 	    } else {
 		this_plot->contours = contour(iso_samples_2,
-					      this_plot->iso_crvs,
-					      contour_levels, contour_pts,
-					      contour_kind, contour_order,
-					      levels_kind, levels_list);
+					      this_plot->iso_crvs);
 	    }
 	}
     }				/* draw_contour */

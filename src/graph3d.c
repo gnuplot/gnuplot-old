@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.2 2000/05/09 19:04:05 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.3 2000/06/22 12:57:38 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -54,10 +54,11 @@ static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.2 2000/05/09 19:04:
 
 #include "alloc.h"
 #include "axis.h"
-#include "graphics.h"		/* HBB 20000506: put in again, for label_width() */
+#include "gadgets.h"
+/*  #include "graphics.h" */		/* HBB 20000506: put in again, for label_width() */
 #include "hidden3d.h"
 #include "misc.h"
-#include "setshow.h"
+/*  #include "setshow.h" */
 #include "term_api.h"
 #include "util3d.h"
 #include "util.h"
@@ -66,35 +67,49 @@ static int p_height;
 static int p_width;		/* pointsize * t->h_tic */
 static int key_entry_height;	/* bigger of t->v_size, pointsize*t->v_tick */
 
-int suppressMove = 0;		/* to prevent moveto while drawing contours */
+/* is contouring wanted ? */
+t_contour_placement draw_contour = CONTOUR_NONE;
+/* different linestyles are used for contours when set */
+TBOOLEAN label_contours = TRUE;	
 
-/*
- * hidden_active - TRUE if hidden lines are to be removed.
- */
-int hidden_active = FALSE;
+/* Want to draw surfaces? FALSE mainly useful in contouring mode */
+TBOOLEAN draw_surface = TRUE;
 
-/* LITE defines a restricted memory version for MS-DOS, which doesn't
- * use the routines in hidden3d.c
- */
+/* Was hidden3d display selected by user? */
+TBOOLEAN hidden3d = FALSE;
+
+/* rotation and scale of the 3d view, as controlled by 'set view */
+float surface_rot_z = 30.0;
+float surface_rot_x = 60.0;
+float surface_scale = 1.0;
+float surface_zscale = 1.0;
+
+/* position of the base plane, as given by 'set ticslevel' */
+float ticslevel = 0.5;
+
+/* 'set isosamples' settings */
+int iso_samples_1 = ISO_SAMPLES;
+int iso_samples_2 = ISO_SAMPLES;
 
 double xscale3d, yscale3d, zscale3d;
-
-static void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned int *yt));
-/* static int map3d_z __PROTO((double x, double y, double z)); */
 
 static void plot3d_impulses __PROTO((struct surface_points * plot));
 static void plot3d_lines __PROTO((struct surface_points * plot));
 static void plot3d_points __PROTO((struct surface_points * plot));
 static void plot3d_dots __PROTO((struct surface_points * plot));
 static void cntr3d_impulses __PROTO((struct gnuplot_contours * cntr,
-				     struct surface_points * plot));
-static void cntr3d_lines __PROTO((struct gnuplot_contours * cntr));
+				     struct lp_style_type * lp));
+static void cntr3d_lines __PROTO((struct gnuplot_contours * cntr,
+				  struct lp_style_type * lp));
+static void cntr3d_linespoints __PROTO((struct gnuplot_contours * cntr,
+					struct lp_style_type * lp));
 static void cntr3d_points __PROTO((struct gnuplot_contours * cntr,
-				   struct surface_points * plot));
+				   struct lp_style_type * lp));
 static void cntr3d_dots __PROTO((struct gnuplot_contours * cntr));
 static void check_corner_height __PROTO((struct coordinate GPHUGE * point,
 					 double height[2][2], double depth[2][2]));
-static void draw_bottom_grid __PROTO((struct surface_points * plot,
+static void setup_3d_box_corners __PROTO((void));
+static void draw_3d_graphbox __PROTO((struct surface_points * plot,
 				      int plot_count));
 static void xtick_callback __PROTO((AXIS_INDEX, double place, char *text,
 				    struct lp_style_type grid));
@@ -102,8 +117,9 @@ static void ytick_callback __PROTO((AXIS_INDEX, double place, char *text,
 				    struct lp_style_type grid));
 static void ztick_callback __PROTO((AXIS_INDEX, double place, char *text,
 				    struct lp_style_type grid));
-static void setlinestyle __PROTO((struct lp_style_type style));
 
+static int find_maxl_cntr __PROTO((struct gnuplot_contours * contours, int *count));
+static int find_maxl_keys3d __PROTO((struct surface_points *plots, int count, int *kcnt));
 static void boundary3d __PROTO((TBOOLEAN scaling, struct surface_points * plots,
 				int count));
 
@@ -183,10 +199,14 @@ static double ceiling_z, base_z;
 
 transform_matrix trans_mat;
 
+/* x and y input range endpoints where the three axes are to be
+ * displayed (left, front-left, and front-right edges of the cube) */
 static double xaxis_y, yaxis_x, zaxis_x, zaxis_y;
 
-/* the co-ordinates of the back corner */
+/* ... and the same for the back, right, and front corners */
 static double back_x, back_y;
+static double right_x, right_y;
+static double front_x, front_y;
 
 #ifdef USE_MOUSE
 int axis3d_o_x, axis3d_o_y, axis3d_x_dx, axis3d_x_dy, axis3d_y_dx, axis3d_y_dy;
@@ -200,95 +220,67 @@ int axis3d_o_x, axis3d_o_y, axis3d_x_dx, axis3d_x_dy, axis3d_y_dx, axis3d_y_dy;
 /* unit vector (terminal coords) */
 static double tic_unitx, tic_unity;
 
-/* (DFK) Watch for cancellation error near zero on axes labels */
-#define CheckZero(x,tic) (fabs(x) < ((tic) * SIGNIF) ? 0.0 : (x))
-#define NearlyEqual(x,y,tic) (fabs((x)-(y)) < ((tic) * SIGNIF))
-
-/* Initialize the line style using the current device and set hidden styles
- * to it as well if hidden line removal is enabled */
-static void
-setlinestyle(style)
-struct lp_style_type style;
+/* calculate the number and max-width of the keys for an splot.
+ * Note that a blank line is issued after each set of contours
+ */
+static int
+find_maxl_keys3d(plots, count, kcnt)
+    struct surface_points *plots;
+    int count, *kcnt;
 {
-    term_apply_lp_properties(&style);
-}
+    int mlen, len, surf, cnt;
+    struct surface_points *this_plot;
 
-/* And the functions to map from user 3D space to terminal coordinates */
-static void
-map3d_xy(x, y, z, xt, yt)
-double x, y, z;
-unsigned int *xt, *yt;
-{
-    int i, j;
-    double v[4], res[4],	/* Homogeneous coords. vectors. */
-     w = trans_mat[3][3];
+    mlen = cnt = 0;
+    this_plot = plots;
+    for (surf = 0; surf < count; this_plot = this_plot->next_sp, surf++) {
 
-    v[0] = map_x3d(x);		/* Normalize object space to -1..1 */
-    v[1] = map_y3d(y);
-    v[2] = map_z3d(z);
-    v[3] = 1.0;
-
-    for (i = 0; i < 2; i++) {	/* Dont use the third axes (z). */
-	res[i] = trans_mat[3][i];	/* Initiate it with the weight factor */
-	for (j = 0; j < 3; j++)
-	    res[i] += v[j] * trans_mat[j][i];
+	/* we draw a main entry if there is one, and we are
+	 * drawing either surface, or unlabelled contours
+	 */
+	if (this_plot->title && *this_plot->title &&
+	    (draw_surface || (draw_contour && !label_contours))) {
+	    ++cnt;
+	    len = strlen(this_plot->title);
+	    if (len > mlen)
+		mlen = len;
+	}
+	if (draw_contour && label_contours && this_plot->contours != NULL) {
+	    len = find_maxl_cntr(this_plot->contours, &cnt);
+	    if (len > mlen)
+		mlen = len;
+	}
     }
 
-    for (i = 0; i < 3; i++)
-	w += v[i] * trans_mat[i][3];
-    if (w == 0)
-	w = 1e-5;
-
-    *xt = (unsigned int) ((res[0] * xscaler / w) + xmiddle);
-    *yt = (unsigned int) ((res[1] * yscaler / w) + ymiddle);
+    if (kcnt != NULL)
+	*kcnt = cnt;
+    return (mlen);
 }
 
-/* Two routines to emulate move/vector sequence using line drawing routine. */
-static unsigned int move_pos_x, move_pos_y;
-
-void
-clip_move(x, y)
-unsigned int x, y;
+static int
+find_maxl_cntr(contours, count)
+    struct gnuplot_contours *contours;
+    int *count;
 {
-    move_pos_x = x;
-    move_pos_y = y;
+    register int cnt;
+    register int mlen, len;
+    register struct gnuplot_contours *cntrs = contours;
+
+    mlen = cnt = 0;
+    while (cntrs) {
+	if (label_contours && cntrs->isNewLevel) {
+	    len = strlen(cntrs->label);
+	    if (len)
+		cnt++;
+	    if (len > mlen)
+		mlen = len;
+	}
+	cntrs = cntrs->next;
+    }
+    *count += cnt;
+    return (mlen);
 }
 
-void
-clip_vector(x, y)
-unsigned int x, y;
-{
-    draw_clip_line(move_pos_x, move_pos_y, x, y);
-    move_pos_x = x;
-    move_pos_y = y;
-}
-
-#if 0 /* HBB 990829: unused! --> commented out */
-/* And the functions to map from user 3D space to terminal z coordinate */
-int
-map3d_z(x, y, z)
-double x, y, z;
-{
-    int i, zt;
-    double v[4], res,		/* Homogeneous coords. vectors. */
-     w = trans_mat[3][3];
-
-    v[0] = map_x3d(x);		/* Normalize object space to -1..1 */
-    v[1] = map_y3d(y);
-    v[2] = map_z3d(z);
-    v[3] = 1.0;
-
-    res = trans_mat[3][2];	/* Initiate it with the weight factor. */
-    for (i = 0; i < 3; i++)
-	res += v[i] * trans_mat[i][2];
-    if (w == 0)
-	w = 1e-5;
-    for (i = 0; i < 3; i++)
-	w += v[i] * trans_mat[i][3];
-    zt = ((int) (res * 16384 / w));
-    return zt;
-}
-#endif /* commented out */
 
 /* borders of plotting area */
 /* computed once on every call to do_plot */
@@ -409,7 +401,6 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     int surface;
     struct surface_points *this_plot = NULL;
     unsigned int xl, yl;
-    int linetypeOffset = 0;
     /* double ztemp, temp; unused */
     struct text_label *this_label;
     struct arrow_def *this_arrow;
@@ -451,7 +442,8 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 
     /* If we are to draw the bottom grid make sure zmin is updated properly. */
     if (axis_tics[FIRST_X_AXIS] || axis_tics[FIRST_Y_AXIS] || grid_selection) {
-	base_z = min_array[FIRST_Z_AXIS] - (max_array[FIRST_Z_AXIS] - min_array[FIRST_Z_AXIS]) * ticslevel;
+	base_z = min_array[FIRST_Z_AXIS]
+	    - (max_array[FIRST_Z_AXIS] - min_array[FIRST_Z_AXIS]) * ticslevel;
 	if (ticslevel >= 0)
 	    floor_z = base_z;
 	else
@@ -514,6 +506,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 			(unsigned int) (ytop + (titlelin + title.yoffset) * (t->h_char)),
 			title.text, CENTRE, JUST_TOP, 0, title.font);
     }
+
     /* PLACE TIMEDATE */
     if (*timelabel.text) {
 	char str[MAX_LINE_LEN+1];
@@ -540,6 +533,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 		write_multiline(x, y, str, LEFT, JUST_TOP, 0, timelabel.font);
 	}
     }
+
     /* PLACE LABELS */
     if ((*t->pointsize)) {
 	(*t->pointsize)(pointsize);
@@ -584,7 +578,6 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     if (hidden3d && draw_surface && !quick) {
 	init_hidden_line_removal();
 	reset_hidden_line_removal();
-	hidden_active = TRUE;
     }
 #endif /* not LITE */
 
@@ -709,29 +702,29 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     key_count = 0;
     yl_ref = yl -= key_entry_height / 2;	/* centralise the keys */
 
-#define NEXT_KEY_LINE() \
- if ( ++key_count >= key_rows ) { \
-   yl = yl_ref; xl += key_col_wth; key_count = 0; \
- } else \
-   yl -= key_entry_height
+#define NEXT_KEY_LINE()					\
+    if ( ++key_count >= key_rows ) {			\
+	yl = yl_ref; xl += key_col_wth; key_count = 0;	\
+    } else						\
+	yl -= key_entry_height
 
     this_plot = plots;
-  if (!quick)
-    for (surface = 0;
-	 surface < pcount;
-	 this_plot = this_plot->next_sp, surface++) {
+    if (!quick)
+	for (surface = 0;
+	     surface < pcount;
+	     this_plot = this_plot->next_sp, surface++) {
 
 
-	if (draw_surface) {
-	    TBOOLEAN lkey = (key != 0 && this_plot->title && this_plot->title[0]);
-	    term_apply_lp_properties(&(this_plot->lp_properties));
+	    if (draw_surface) {
+		TBOOLEAN lkey = (key != 0 && this_plot->title && this_plot->title[0]);
+		term_apply_lp_properties(&(this_plot->lp_properties));
 
-	    if (lkey) {
-		key_text(xl, yl, this_plot->title);
-	    }
-	    switch (this_plot->plot_style) {
-	    case BOXES:	/* can't do boxes in 3d yet so use impulses */
-	    case IMPULSES:{
+		if (lkey) {
+		    key_text(xl, yl, this_plot->title);
+		}
+		switch (this_plot->plot_style) {
+		case BOXES:	/* can't do boxes in 3d yet so use impulses */
+		case IMPULSES:{
 		    if (lkey) {
 			key_sample_line(xl, yl);
 		    }
@@ -739,10 +732,10 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 			plot3d_impulses(this_plot);
 		    break;
 		}
-	    case STEPS:	/* HBB: I think these should be here */
-	    case FSTEPS:
-	    case HISTEPS:
-	    case LINES:{
+		case STEPS:	/* HBB: I think these should be here */
+		case FSTEPS:
+		case HISTEPS:
+		case LINES:{
 		    if (lkey) {
 			key_sample_line(xl, yl);
 		    }
@@ -750,192 +743,199 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 			plot3d_lines(this_plot);
 		    break;
 		}
-	    case YERRORLINES:	/* ignored; treat like points */
-	    case XERRORLINES:	/* ignored; treat like points */
-	    case XYERRORLINES:	/* ignored; treat like points */
-	    case YERRORBARS:	/* ignored; treat like points */
-	    case XERRORBARS:	/* ignored; treat like points */
-	    case XYERRORBARS:	/* ignored; treat like points */
-	    case BOXXYERROR:	/* HBB: ignore these as well */
-	    case BOXERROR:
-	    case CANDLESTICKS:	/* HBB: dito */
-	    case FINANCEBARS:
-	    case VECTOR:
-	    case POINTSTYLE:
-		if (lkey) {
-		    key_sample_point(xl, yl, this_plot->lp_properties.p_type);
-		}
-		if (!(hidden3d && draw_surface))
-		    plot3d_points(this_plot);
-		break;
-
-	    case LINESPOINTS:
-		/* put lines */
-		if (lkey)
-		    key_sample_line(xl, yl);
-
-		if (!(hidden3d && draw_surface))
-		    plot3d_lines(this_plot);
-
-		/* put points */
-		if (lkey)
-		    key_sample_point(xl, yl, this_plot->lp_properties.p_type);
-
-		if (!(hidden3d && draw_surface))
-		    plot3d_points(this_plot);
-
-		break;
-
-	    case DOTS:
-		if (lkey) {
-		    if (key == KEY_USER_PLACEMENT) {
-			if (!clip_point(xl + key_point_offset, yl))
-			    (*t->point) (xl + key_point_offset, yl, -1);
-		    } else {
-			(*t->point) (xl + key_point_offset, yl, -1);
-			/* (*t->point)(xl+2*(t->h_char),yl, -1); */
+		case YERRORLINES:	/* ignored; treat like points */
+		case XERRORLINES:	/* ignored; treat like points */
+		case XYERRORLINES:	/* ignored; treat like points */
+		case YERRORBARS:	/* ignored; treat like points */
+		case XERRORBARS:	/* ignored; treat like points */
+		case XYERRORBARS:	/* ignored; treat like points */
+		case BOXXYERROR:	/* HBB: ignore these as well */
+		case BOXERROR:
+		case CANDLESTICKS:	/* HBB: dito */
+		case FINANCEBARS:
+		case VECTOR:
+		case POINTSTYLE:
+		    if (lkey) {
+			key_sample_point(xl, yl, this_plot->lp_properties.p_type);
 		    }
-		}
-		if (!(hidden3d && draw_surface))
-		    plot3d_dots(this_plot);
-
-		break;
-
-
-	    }			/* switch(plot-style) */
-
-	    /* move key on a line */
-	    if (lkey) {
-		NEXT_KEY_LINE();
-	    }
-	}			/* draw_surface */
-
-	if (draw_contour && this_plot->contours != NULL) {
-	    struct gnuplot_contours *cntrs = this_plot->contours;
-
-	    term_apply_lp_properties(&(this_plot->lp_properties));
-	    (*t->linetype) (this_plot->lp_properties.l_type + (hidden3d ? 2 : 1));
-
-	    if (key != KEY_NONE && this_plot->title && this_plot->title[0]
-		&& !draw_surface && !label_contours) {
-		/* unlabelled contours but no surface : put key entry in now */
-		key_text(xl, yl, this_plot->title);
-
-		switch (this_plot->plot_style) {
-		case IMPULSES:
-		case LINES:
-		case BOXES:	/* HBB: I think these should be here... */
-		case STEPS:
-		case FSTEPS:
-		case HISTEPS:
-		    key_sample_line(xl, yl);
+		    if (!(hidden3d && draw_surface))
+			plot3d_points(this_plot);
 		    break;
-		case YERRORLINES:	/* ignored; treat like points */
-		case XERRORLINES:	/* ignored; treat like points */
-		case XYERRORLINES:	/* ignored; treat like points */
-		case YERRORBARS:	/* ignored; treat like points */
-		case XERRORBARS:	/* ignored; treat like points */
-		case XYERRORBARS:	/* ignored; treat like points */
-		case BOXERROR:	/* HBB: ignore these as well */
-		case BOXXYERROR:
-		case CANDLESTICKS:	/* HBB: dito */
-		case FINANCEBARS:
-		case VECTOR:
-		case POINTSTYLE:
-		    key_sample_point(xl, yl, this_plot->lp_properties.p_type);
-		    break;
+
 		case LINESPOINTS:
-		    key_sample_line(xl, yl);
+		    /* put lines */
+		    if (lkey)
+			key_sample_line(xl, yl);
+
+		    if (!(hidden3d && draw_surface))
+			plot3d_lines(this_plot);
+
+		    /* put points */
+		    if (lkey)
+			key_sample_point(xl, yl, this_plot->lp_properties.p_type);
+
+		    if (!(hidden3d && draw_surface))
+			plot3d_points(this_plot);
+
 		    break;
+
 		case DOTS:
-		    key_sample_point(xl, yl, -1);
+		    if (lkey) {
+			if (key == KEY_USER_PLACEMENT) {
+			    if (!clip_point(xl + key_point_offset, yl))
+				(*t->point) (xl + key_point_offset, yl, -1);
+			} else {
+			    (*t->point) (xl + key_point_offset, yl, -1);
+			    /* (*t->point)(xl+2*(t->h_char),yl, -1); */
+			}
+		    }
+		    if (!(hidden3d && draw_surface))
+			plot3d_dots(this_plot);
+
 		    break;
+
+
+		}			/* switch(plot-style) */
+
+		/* move key on a line */
+		if (lkey) {
+		    NEXT_KEY_LINE();
 		}
-		NEXT_KEY_LINE();
-	    }
-	    linetypeOffset = this_plot->lp_properties.l_type + (hidden3d ? 2 : 1);
-	    while (cntrs) {
-		if (label_contours && cntrs->isNewLevel) {
-		    (*t->linetype) (linetypeOffset++);
-		    if (key != KEY_NONE) {
+	    }			/* draw_surface */
 
-			key_text(xl, yl, cntrs->label);
+	    if (draw_contour && this_plot->contours != NULL) {
+		struct gnuplot_contours *cntrs = this_plot->contours;
+		struct lp_style_type thiscontour_lp_properties =
+		    this_plot->lp_properties;
 
-			switch (this_plot->plot_style) {
-			case IMPULSES:
-			case LINES:
-			case LINESPOINTS:
-			case BOXES:	/* HBB: these should be treated as well... */
-			case STEPS:
-			case FSTEPS:
-			case HISTEPS:
-			    key_sample_line(xl, yl);
-			    break;
-			case YERRORLINES:	/* ignored; treat like points */
-			case XERRORLINES:	/* ignored; treat like points */
-			case XYERRORLINES:	/* ignored; treat like points */
-			case YERRORBARS:	/* ignored; treat like points */
-			case XERRORBARS:	/* ignored; treat like points */
-			case XYERRORBARS:	/* ignored; treat like points */
-			case BOXERROR:		/* HBB: treat these likewise */
-			case BOXXYERROR:
-			case CANDLESTICKS:	/* HBB: dito */
-			case FINANCEBARS:
-			case VECTOR:
-			case POINTSTYLE:
-			    key_sample_point(xl, yl, this_plot->lp_properties.p_type);
-			    break;
-			case DOTS:
-			    key_sample_point(xl, yl, -1);
-			    break;
-			}	/* switch */
+		thiscontour_lp_properties.l_type += (hidden3d ? 2 : 1);
 
-			NEXT_KEY_LINE();
+		term_apply_lp_properties(&(thiscontour_lp_properties));
 
-		    }		/* key */
-		}		/* label_contours */
-		/* now draw the contour */
-		switch (this_plot->plot_style) {
-		case IMPULSES:
-		case BOXES:	/* HBB: this should also be treated somehow */
-		    cntr3d_impulses(cntrs, this_plot);
-		    break;
-		case LINES:
-		case STEPS:	/* HBB: these should also be handled, I think */
-		case FSTEPS:
-		case HISTEPS:
-		    cntr3d_lines(cntrs);
-		    break;
-		case YERRORLINES:	/* ignored; treat like points */
-		case XERRORLINES:	/* ignored; treat like points */
-		case XYERRORLINES:	/* ignored; treat like points */
-		case YERRORBARS:	/* ignored; treat like points */
-		case XERRORBARS:	/* ignored; treat like points */
-		case XYERRORBARS:	/* ignored; treat like points */
-		case BOXERROR:	/* HBB: ignore these too... */
-		case BOXXYERROR:
-		case CANDLESTICKS:	/* HBB: dito */
-		case FINANCEBARS:
-		case VECTOR:
-		case POINTSTYLE:
-		    cntr3d_points(cntrs, this_plot);
-		    break;
-		case LINESPOINTS:
-		    cntr3d_lines(cntrs);
-		    cntr3d_points(cntrs, this_plot);
-		    break;
-		case DOTS:
-		    cntr3d_dots(cntrs);
-		    break;
-		}		/*switch */
+		if (key != KEY_NONE && this_plot->title && this_plot->title[0]
+		    && !draw_surface && !label_contours) {
+		    /* unlabelled contours but no surface : put key entry in now */
+		    key_text(xl, yl, this_plot->title);
 
-		cntrs = cntrs->next;
-	    }			/* loop over contours */
-	}			/* draw contours */
-    }				/* loop over surfaces */
+		    switch (this_plot->plot_style) {
+		    case IMPULSES:
+		    case LINES:
+		    case BOXES:	/* HBB: I think these should be here... */
+		    case STEPS:
+		    case FSTEPS:
+		    case HISTEPS:
+			key_sample_line(xl, yl);
+			break;
+		    case YERRORLINES:	/* ignored; treat like points */
+		    case XERRORLINES:	/* ignored; treat like points */
+		    case XYERRORLINES:	/* ignored; treat like points */
+		    case YERRORBARS:	/* ignored; treat like points */
+		    case XERRORBARS:	/* ignored; treat like points */
+		    case XYERRORBARS:	/* ignored; treat like points */
+		    case BOXERROR:	/* HBB: ignore these as well */
+		    case BOXXYERROR:
+		    case CANDLESTICKS:	/* HBB: dito */
+		    case FINANCEBARS:
+		    case VECTOR:
+		    case POINTSTYLE:
+			key_sample_point(xl, yl, this_plot->lp_properties.p_type);
+			break;
+		    case LINESPOINTS:
+			key_sample_line(xl, yl);
+			break;
+		    case DOTS:
+			key_sample_point(xl, yl, -1);
+			break;
+		    }
+		    NEXT_KEY_LINE();
+		}
+		while (cntrs) {
+		    if (label_contours && cntrs->isNewLevel) {
+			(*t->linetype) (thiscontour_lp_properties.l_type++);
 
-    draw_bottom_grid(plots, pcount);
+			if (key != KEY_NONE) {
 
+			    key_text(xl, yl, cntrs->label);
+
+			    switch (this_plot->plot_style) {
+			    case IMPULSES:
+			    case LINES:
+			    case LINESPOINTS:
+			    case BOXES:	/* HBB: these should be treated as well... */
+			    case STEPS:
+			    case FSTEPS:
+			    case HISTEPS:
+				key_sample_line(xl, yl);
+				break;
+			    case YERRORLINES:	/* ignored; treat like points */
+			    case XERRORLINES:	/* ignored; treat like points */
+			    case XYERRORLINES:	/* ignored; treat like points */
+			    case YERRORBARS:	/* ignored; treat like points */
+			    case XERRORBARS:	/* ignored; treat like points */
+			    case XYERRORBARS:	/* ignored; treat like points */
+			    case BOXERROR:		/* HBB: treat these likewise */
+			    case BOXXYERROR:
+			    case CANDLESTICKS:	/* HBB: dito */
+			    case FINANCEBARS:
+			    case VECTOR:
+			    case POINTSTYLE:
+				key_sample_point(xl, yl, this_plot->lp_properties.p_type);
+				break;
+			    case DOTS:
+				key_sample_point(xl, yl, -1);
+				break;
+			    }	/* switch */
+
+			    NEXT_KEY_LINE();
+
+			}		/* key */
+		    }		/* label_contours */
+		    /* now draw the contour */
+		    switch (this_plot->plot_style) {
+		    case BOXES:
+			/* treat boxes like impulses: */
+		    case IMPULSES:
+			cntr3d_impulses(cntrs, &thiscontour_lp_properties);
+			break;
+		    case STEPS:	
+		    case FSTEPS:
+		    case HISTEPS:
+			/* treat all the above like 'lines' */
+		    case LINES:
+			cntr3d_lines(cntrs, &thiscontour_lp_properties);
+			break;
+		    case YERRORLINES:	
+		    case XERRORLINES:
+		    case XYERRORLINES:
+		    case YERRORBARS:
+		    case XERRORBARS:
+		    case XYERRORBARS:
+		    case BOXERROR:
+		    case BOXXYERROR:
+		    case CANDLESTICKS:
+		    case FINANCEBARS:
+		    case VECTOR:
+			/* treat all the above like points */
+		    case POINTSTYLE:
+			cntr3d_points(cntrs, &thiscontour_lp_properties);
+			break;
+		    case LINESPOINTS:
+			cntr3d_linespoints(cntrs, &thiscontour_lp_properties);
+			break;
+		    case DOTS:
+			cntr3d_dots(cntrs);
+			break;
+		    }		/*switch */
+
+		    cntrs = cntrs->next;
+		}			/* loop over contours */
+	    }			/* draw contours */
+	}				/* loop over surfaces */
+
+    setup_3d_box_corners();
+
+    draw_3d_graphbox(plots, pcount);
+    
     /* PLACE LABELS */
     if ((*t->pointsize)) {
 	(*t->pointsize)(pointsize);
@@ -997,7 +997,6 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 #ifndef LITE
     if (hidden3d && draw_surface) {
 	term_hidden_line_removal();
-	hidden_active = FALSE;
     }
 #endif /* not LITE */
 
@@ -1251,26 +1250,24 @@ struct surface_points *plot;
  * Plot a surface contour in IMPULSES style
  */
 static void
-cntr3d_impulses(cntr, plot)
-struct gnuplot_contours *cntr;
-struct surface_points *plot;
+cntr3d_impulses(cntr, lp)
+    struct gnuplot_contours *cntr;
+    struct lp_style_type *lp;
 {
     int i;				/* point index */
-    unsigned int x, y, xx0, yy0;	/* point in terminal coordinates */
+    vertex vertex_on_surface, vertex_on_base;
 
     if (draw_contour & CONTOUR_SRF) {
 	for (i = 0; i < cntr->num_pts; i++) {
-	    map3d_xy(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z,
-		     &x, &y);
-	    map3d_xy(cntr->coords[i].x, cntr->coords[i].y, base_z,
-		     &xx0, &yy0);
-
-	    clip_move(xx0, yy0);
-	    clip_vector(x, y);
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z,
+		      &vertex_on_surface);
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, base_z,
+		      &vertex_on_base);
+	    draw3d_line(&vertex_on_surface, &vertex_on_base, lp);
 	}
     } else {
 	/* Must be on base grid, so do points. */
-	cntr3d_points(cntr, plot);
+	cntr3d_points(cntr, lp);
     }
 }
 
@@ -1278,74 +1275,126 @@ struct surface_points *plot;
  * Plot a surface contour in LINES style
  */
 static void
-cntr3d_lines(cntr)
-struct gnuplot_contours *cntr;
+cntr3d_lines(cntr, lp)
+    struct gnuplot_contours *cntr;
+    struct lp_style_type *lp;
 {
     int i;			/* point index */
-    unsigned int x, y;		/* point in terminal coordinates */
+    vertex previous_vertex, this_vertex;
 
     if (draw_contour & CONTOUR_SRF) {
-	for (i = 0; i < cntr->num_pts; i++) {
-	    map3d_xy(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z,
-		     &x, &y);
+	map3d_xyz(cntr->coords[0].x, cntr->coords[0].y, cntr->coords[0].z,
+		  &previous_vertex);
+	/* move slightly frontward, to make sure the contours are
+	 * visible in front of the the triangles they're in, if this
+	 * is a hidden3d plot */
+	if (hidden3d && !VERTEX_IS_UNDEFINED(previous_vertex))
+	    previous_vertex.z += 1e-2;
 
-	    if (i > 0) {
-		clip_vector(x, y);
-		if (i == 1)
-		    suppressMove = TRUE;
-	    } else {
-		clip_move(x, y);
-	    }
+	for (i = 1; i < cntr->num_pts; i++) {
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z,
+		      &this_vertex);
+	    /* move slightly frontward, to make sure the contours are
+	     * visible in front of the the triangles they're in, if this
+	     * is a hidden3d plot */
+	    if (hidden3d && !VERTEX_IS_UNDEFINED(this_vertex))
+		this_vertex.z += 1e-2;
+	    draw3d_line(&previous_vertex, &this_vertex, lp);
+	    previous_vertex = this_vertex;
 	}
     }
-    /* beginning a new contour level, so moveto() required */
-    suppressMove = FALSE;
 
     if (draw_contour & CONTOUR_BASE) {
-	for (i = 0; i < cntr->num_pts; i++) {
-	    map3d_xy(cntr->coords[i].x, cntr->coords[i].y, base_z,
-		     &x, &y);
+	map3d_xyz(cntr->coords[0].x, cntr->coords[0].y, base_z,
+		  &previous_vertex);
 
-	    if (i > 0) {
-		clip_vector(x, y);
-		if (i == 1)
-		    suppressMove = TRUE;
-	    } else {
-		clip_move(x, y);
-	    }
+	for (i = 1; i < cntr->num_pts; i++) {
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, base_z,
+		      &this_vertex);
+	    draw3d_line(&previous_vertex, &this_vertex, lp);
+	    previous_vertex=this_vertex;
 	}
     }
-    /* beginning a new contour level, so moveto() required */
-    suppressMove = FALSE;
+}
+
+/* cntr3d_linespoints:
+ * Plot a surface contour in LINESPOINTS style
+ */
+static void
+cntr3d_linespoints(cntr, lp)
+    struct gnuplot_contours *cntr;
+    struct lp_style_type *lp;
+{
+    int i;			/* point index */
+    vertex previous_vertex, this_vertex;
+
+    if (draw_contour & CONTOUR_SRF) {
+	map3d_xyz(cntr->coords[0].x, cntr->coords[0].y, cntr->coords[0].z,
+		  &previous_vertex);
+	/* move slightly frontward, to make sure the contours are
+	 * visible in front of the the triangles they're in, if this
+	 * is a hidden3d plot */
+	if (hidden3d && !VERTEX_IS_UNDEFINED(previous_vertex))
+	    previous_vertex.z += 1e-2;
+	draw3d_point(&previous_vertex, lp);
+
+	for (i = 1; i < cntr->num_pts; i++) {
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z,
+		      &this_vertex);
+	    /* move slightly frontward, to make sure the contours are
+	     * visible in front of the the triangles they're in, if this
+	     * is a hidden3d plot */
+	    if (hidden3d && !VERTEX_IS_UNDEFINED(this_vertex))
+		this_vertex.z += 1e-2;
+	    draw3d_line(&previous_vertex, &this_vertex, lp);
+	    draw3d_point(&this_vertex, lp);
+	    previous_vertex = this_vertex;
+	}
+    }
+
+    if (draw_contour & CONTOUR_BASE) {
+	map3d_xyz(cntr->coords[0].x, cntr->coords[0].y, base_z,
+		  &previous_vertex);
+	draw3d_point(&previous_vertex, lp);
+
+	for (i = 1; i < cntr->num_pts; i++) {
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, base_z,
+		      &this_vertex);
+	    draw3d_line(&previous_vertex, &this_vertex, lp);
+	    draw3d_point(&this_vertex, lp);
+	    previous_vertex=this_vertex;
+	}
+    }
 }
 
 /* cntr3d_points:
  * Plot a surface contour in POINTSTYLE style
  */
 static void
-cntr3d_points(cntr, plot)
+cntr3d_points(cntr, lp)
 struct gnuplot_contours *cntr;
-struct surface_points *plot;
+struct lp_style_type *lp;
 {
     int i;
-    unsigned int x, y;
-    struct termentry *t = term;
+    vertex v;
 
     if (draw_contour & CONTOUR_SRF) {
 	for (i = 0; i < cntr->num_pts; i++) {
-	    map3d_xy(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z, &x, &y);
-
-	    if (!clip_point(x, y))
-		(*t->point) (x, y, plot->lp_properties.p_type);
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, cntr->coords[i].z,
+		      &v);
+	    /* move slightly frontward, to make sure the contours and
+	     * points are visible in front of the triangles they're
+	     * in, if this is a hidden3d plot */
+	    if (hidden3d && !VERTEX_IS_UNDEFINED(v))
+		v.z += 1e-2;
+	    draw3d_point(&v, lp);
 	}
     }
     if (draw_contour & CONTOUR_BASE) {
 	for (i = 0; i < cntr->num_pts; i++) {
-	    map3d_xy(cntr->coords[i].x, cntr->coords[i].y, base_z,
-		     &x, &y);
-
-	    if (!clip_point(x, y))
-		(*t->point) (x, y, plot->lp_properties.p_type);
+	    map3d_xyz(cntr->coords[i].x, cntr->coords[i].y, base_z,
+		     &v);
+	    draw3d_point(&v, lp);
 	}
     }
 }
@@ -1353,6 +1402,9 @@ struct surface_points *plot;
 /* cntr3d_dots:
  * Plot a surface contour in DOTS style
  */
+/* FIXME HBB 20000621: this is the only contour output routine left
+ * without hiddenlining. It should probably deleted altogether, and
+ * its call replaced by one of cntr3d_points */
 static void
 cntr3d_dots(cntr)
 struct gnuplot_contours *cntr;
@@ -1411,119 +1463,119 @@ double depth[2][2];
     }
 }
 
-/* Draw the bottom grid that hold the tic marks for 3d surface. */
+/* work out where the axes and tics are drawn */
 static void
-draw_bottom_grid(plot, plot_num)
-struct surface_points *plot;
-int plot_num;
+setup_3d_box_corners()
+{
+    int quadrant = surface_rot_z / 90;
+    if ((quadrant + 1) & 2) {
+	zaxis_x = max_array[FIRST_X_AXIS];
+	right_x = min_array[FIRST_X_AXIS];
+	back_y  = min_array[FIRST_Y_AXIS];
+	front_y  = max_array[FIRST_Y_AXIS];
+    } else {
+	zaxis_x = min_array[FIRST_X_AXIS];
+	right_x = max_array[FIRST_X_AXIS];
+	back_y  = max_array[FIRST_Y_AXIS];
+	front_y  = min_array[FIRST_Y_AXIS];
+    }
+
+    if (quadrant & 2) {
+	zaxis_y = max_array[FIRST_Y_AXIS];
+	right_y = min_array[FIRST_Y_AXIS];
+	back_x  = max_array[FIRST_X_AXIS];
+	front_x  = min_array[FIRST_X_AXIS];
+    } else {
+	zaxis_y = min_array[FIRST_Y_AXIS];
+	right_y = max_array[FIRST_Y_AXIS];
+	back_x  = min_array[FIRST_X_AXIS];
+	front_x  = max_array[FIRST_X_AXIS];
+    }
+
+    if (surface_rot_x > 90) {
+	/* labels on the back axes */
+	yaxis_x = back_x;
+	xaxis_y = back_y;
+    } else {
+	yaxis_x = front_x;
+	xaxis_y = front_y;
+    }
+}
+
+/* Draw all elements of the 3d graph box, including borders, zeroaxes,
+ * tics, gridlines, ticmarks, axis labels and the base plane. */
+static void
+draw_3d_graphbox(plot, plot_num)
+    struct surface_points *plot;
+    int plot_num;
 {
     unsigned int x, y;		/* point in terminal coordinates */
     struct termentry *t = term;
 
-    /* work out where the axes and tics are drawn */
-
-    {
-	int quadrant = surface_rot_z / 90;
-	if ((quadrant + 1) & 2) {
-	    zaxis_x = max_array[FIRST_X_AXIS];
-	    xaxis_y = max_array[FIRST_Y_AXIS];
-	} else {
-	    zaxis_x = min_array[FIRST_X_AXIS];
-	    xaxis_y = min_array[FIRST_Y_AXIS];
-	}
-
-	if (quadrant & 2) {
-	    zaxis_y = max_array[FIRST_Y_AXIS];
-	    yaxis_x = min_array[FIRST_X_AXIS];
-	} else {
-	    zaxis_y = min_array[FIRST_Y_AXIS];
-	    yaxis_x = max_array[FIRST_X_AXIS];
-	}
-
-	if (surface_rot_x > 90) {
-	    /* labels on the back axes */
-	    back_x = yaxis_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x;
-	    back_y = xaxis_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y;
-	} else {
-	    back_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x;
-	    back_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y;
-	}
-    }
-
     if (draw_border) {
-	unsigned int bl_x, bl_y;	/* bottom left */
-	unsigned int bb_x, bb_y;	/* bottom back */
-	unsigned int br_x, br_y;	/* bottom right */
-	unsigned int bf_x, bf_y;	/* bottom front */
+	/* the four corners of the base plane, in normalized view
+	 * coordinates (-1..1) * on all three axes: */
+	vertex bl, bb, br, bf;  
 
-	/* Here is the one and only call to this function. */
-	setlinestyle(border_lp);
+	/* map to normalized view coordinates the corners of the
+	 * baseplane: left, back, right and front, in that order: */
+	map3d_xyz(zaxis_x, zaxis_y, base_z, &bl);
+	map3d_xyz(back_x , back_y , base_z, &bb);
+	map3d_xyz(right_x, right_y, base_z, &br);
+	map3d_xyz(front_x, front_y, base_z, &bf);
 
-	map3d_xy(zaxis_x, zaxis_y, base_z, &bl_x, &bl_y);
-	map3d_xy(back_x, back_y, base_z, &bb_x, &bb_y);
-	map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - zaxis_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - zaxis_y, base_z, &br_x, &br_y);
-	map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - back_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - back_y, base_z, &bf_x, &bf_y);
-
-	/* border around base */
-	{
-	    int save = hidden_active;
-	    hidden_active = FALSE;	/* this is in front */
-	    if (draw_border & 4)
-		draw_clip_line(br_x, br_y, bf_x, bf_y);
-	    if (draw_border & 1)
-		draw_clip_line(bl_x, bl_y, bf_x, bf_y);
-	    hidden_active = save;
-	}
+	if (draw_border & 4)
+	    draw3d_line(&br, &bf, &border_lp);
+	if (draw_border & 1)
+	    draw3d_line(&bl, &bf, &border_lp);
 	if (draw_border & 2)
-	    draw_clip_line(bl_x, bl_y, bb_x, bb_y);
+	    draw3d_line(&bl, &bb, &border_lp);
 	if (draw_border & 8)
-	    draw_clip_line(br_x, br_y, bb_x, bb_y);
+	    draw3d_line(&br, &bb, &border_lp);
 
+	/* if surface is drawn, draw the rest of the graph box, too: */
 	if (draw_surface || (draw_contour & CONTOUR_SRF)) {
-	    int save = hidden_active;
-	    /* map the 8 corners to screen */
-	    unsigned int fl_x, fl_y;	/* floor left */
-	    unsigned int fb_x, fb_y;	/* floor back */
-	    unsigned int fr_x, fr_y;	/* floor right */
-	    unsigned int ff_x, ff_y;	/* floor front */
+	    vertex fl, fb, fr, ff; /* floor left/back/right/front corners */
+	    vertex tl, tb, tr, tf; /* top left/back/right/front corners */
+	    
+	    map3d_xyz(zaxis_x, zaxis_y, floor_z, &fl);
+	    map3d_xyz(back_x , back_y , floor_z, &fb);
+	    map3d_xyz(right_x, right_y, floor_z, &fr);
+	    map3d_xyz(front_x, front_y, floor_z, &ff);
 
-	    unsigned int tl_x, tl_y;	/* top left */
-	    unsigned int tb_x, tb_y;	/* top back */
-	    unsigned int tr_x, tr_y;	/* top right */
-	    unsigned int tf_x, tf_y;	/* top front */
+	    map3d_xyz(zaxis_x, zaxis_y, ceiling_z, &tl);
+	    map3d_xyz(back_x , back_y , ceiling_z, &tb);
+	    map3d_xyz(right_x, right_y, ceiling_z, &tr);
+	    map3d_xyz(front_x, front_y, ceiling_z, &tf);
 
-	    map3d_xy(zaxis_x, zaxis_y, floor_z, &fl_x, &fl_y);
-	    map3d_xy(back_x, back_y, floor_z, &fb_x, &fb_y);
-	    map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - zaxis_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - zaxis_y, floor_z, &fr_x, &fr_y);
-	    map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - back_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - back_y, floor_z, &ff_x, &ff_y);
-
-	    map3d_xy(zaxis_x, zaxis_y, ceiling_z, &tl_x, &tl_y);
-	    map3d_xy(back_x, back_y, ceiling_z, &tb_x, &tb_y);
-	    map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - zaxis_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - zaxis_y, ceiling_z, &tr_x, &tr_y);
-	    map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - back_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - back_y, ceiling_z, &tf_x, &tf_y);
-
-	    /* vertical lines, to surface or to very top */
 	    if ((draw_border & 0xf0) == 0xf0) {
-		/* all four verticals drawn - save some time */
-		draw_clip_line(fl_x, fl_y, tl_x, tl_y);
-		draw_clip_line(fb_x, fb_y, tb_x, tb_y);
-		draw_clip_line(fr_x, fr_y, tr_x, tr_y);
-		hidden_active = FALSE;	/* this is in front */
-		draw_clip_line(ff_x, ff_y, tf_x, tf_y);
-		hidden_active = save;
+		/* all four verticals are drawn - save some time by
+		 * drawing them to the full height, regardless of
+		 * where the surface lies */
+		draw3d_line(&fl, &tl, &border_lp);
+		draw3d_line(&fb, &tb, &border_lp);
+		draw3d_line(&fr, &tr, &border_lp);
+		draw3d_line(&ff, &tf, &border_lp);
 	    } else {
-		/* search surfaces for heights at corners */
+		/* find heights of surfaces at the corners of the xy
+		 * rectangle */
 		double height[2][2];
 		double depth[2][2];
 		unsigned int zaxis_i = MAP_HEIGHT_X(zaxis_x);
 		unsigned int zaxis_j = MAP_HEIGHT_Y(zaxis_y);
 		unsigned int back_i = MAP_HEIGHT_X(back_x);
-		/* HBB: why isn't back_j unsigned ??? */
-		int back_j = MAP_HEIGHT_Y(back_y);
+		unsigned int back_j = MAP_HEIGHT_Y(back_y);
 
-		height[0][0] = height[0][1] = height[1][0] = height[1][1] = base_z;
-		depth[0][0] = depth[0][1] = depth[1][0] = depth[1][1] = base_z;
+		height[0][0] = height[0][1]
+		    = height[1][0] = height[1][1] = base_z;
+		depth[0][0] = depth[0][1]
+		    = depth[1][0] = depth[1][1] = base_z;
 
+		/* FIXME HBB 20000617: this method contains the
+		 * assumption that the topological corners of the
+		 * surface mesh(es) are also the geometrical ones of
+		 * their xy projections. This is only true for
+		 * 'explicit' surface datasets, i.e. z(x,y) */
 		for (; --plot_num >= 0; plot = plot->next_sp) {
 		    struct iso_curve *curve = plot->iso_crvs;
 		    int count = curve->p_count;
@@ -1543,91 +1595,100 @@ int plot_num;
 		    check_corner_height(curve->points + count - 1, height, depth);
 		}
 
-#define VERTICAL(mask,x,y,i,j,bx,by,tx,ty) \
- if (draw_border&mask) \
-  draw_clip_line(bx,by,tx,ty);\
-else if (height[i][j] != depth[i][j]) \
-{ unsigned int a0,b0, a1, b1; \
-  map3d_xy(x,y,depth[i][j],&a0,&b0); \
-  map3d_xy(x,y,height[i][j],&a1,&b1); \
-  draw_clip_line(a0,b0,a1,b1); \
-}
+#define VERTICAL(mask,x,y,i,j,bottom,top)			\
+		if (draw_border&mask) {				\
+		    draw3d_line(bottom,top, &border_lp);	\
+		} else if (height[i][j] != depth[i][j]) {	\
+		    vertex a, b;				\
+		    map3d_xyz(x,y,depth[i][j],&a);		\
+		    map3d_xyz(x,y,height[i][j],&b);		\
+		    draw3d_line(&a, &b, &border_lp);		\
+		}
 
-		VERTICAL(16, zaxis_x, zaxis_y, zaxis_i, zaxis_j, fl_x, fl_y, tl_x, tl_y);
-		VERTICAL(32, back_x, back_y, back_i, back_j, fb_x, fb_y, tb_x, tb_y);
-		VERTICAL(64, min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - zaxis_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - zaxis_y, 1 -
-			 zaxis_i, 1 - zaxis_j, fr_x, fr_y, tr_x, tr_y);
-		hidden_active = FALSE;
-		VERTICAL(128, min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - back_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - back_y, 1 - back_i,
-			 1 - back_j, ff_x, ff_y, tf_x, tf_y);
-		hidden_active = save;
-	    }
+		VERTICAL(16, zaxis_x, zaxis_y, zaxis_i, zaxis_j, &fl, &tl);
+		VERTICAL(32, back_x, back_y, back_i, back_j, &fb, &tb);
+		VERTICAL(64, right_x, right_y, 1 - zaxis_i, 1 - zaxis_j,
+			 &fr, &tr);
+		VERTICAL(128, front_x, front_y, 1 - back_i, 1 - back_j,
+			 &ff, &tf);
+#undef VERTICAL
+	    } /* else (all 4 verticals drawn?) */
 
 	    /* now border lines on top */
 	    if (draw_border & 256)
-		draw_clip_line(tl_x, tl_y, tb_x, tb_y);
+		draw3d_line(&tl, &tb, &border_lp);
 	    if (draw_border & 512)
-		draw_clip_line(tr_x, tr_y, tb_x, tb_y);
-	    /* these lines are in front of surface (?) */
-	    hidden_active = FALSE;
+		draw3d_line(&tr, &tb, &border_lp);
 	    if (draw_border & 1024)
-		draw_clip_line(tl_x, tl_y, tf_x, tf_y);
+		draw3d_line(&tl, &tf, &border_lp);
 	    if (draw_border & 2048)
-		draw_clip_line(tr_x, tr_y, tf_x, tf_y);
-	    hidden_active = save;
-	}
-    }
+		draw3d_line(&tr, &tf, &border_lp);
+	} /* else (surface is drawn) */
+    } /* if (draw_border) */
+
+    /* Draw ticlabels and axis labels. x axis, first:*/
     if (axis_tics[FIRST_X_AXIS] || *axis_label[FIRST_X_AXIS].text) {
-	unsigned int x0, y0, x1, y1;
-	double mid_x = (max_array[FIRST_X_AXIS] + min_array[FIRST_X_AXIS]) / 2;
-	double len;
-	map3d_xy(mid_x, xaxis_y, base_z, &x0, &y0);
-	map3d_xy(mid_x, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y, base_z, &x1, &y1);
-	{			/* take care over unsigned quantities */
-	    int dx = x1 - x0;
-	    int dy = y1 - y0;
-	    /* HBB 980309: 16bit strikes back: */
-	    len = sqrt(((double) dx) * dx + ((double) dy) * dy);
+	vertex v0, v1;
+	double other_end =
+	    min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y;
+	double mid_x =
+	    (max_array[FIRST_X_AXIS] + min_array[FIRST_X_AXIS]) / 2;
+
+	map3d_xyz(mid_x, xaxis_y, base_z, &v0);
+	map3d_xyz(mid_x, other_end, base_z, &v1);
+	{	
+	    double dx = v1.x - v0.x;
+	    double dy = v1.y - v0.y;
+	    double len = sqrt(dx * dx + dy * dy);
+
 	    if (len != 0) {
-		tic_unitx = dx / len;
-		tic_unity = dy / len;
+		tic_unitx = dx / len / xscaler;
+		tic_unity = dy / len / yscaler;
 	    } else {
 		tic_unitx = tic_unity = 0;
 	    }
 	}
-
 	if (axis_tics[FIRST_X_AXIS]) {
 	    gen_tics(FIRST_X_AXIS, grid_selection & (GRID_X | GRID_MX),
 		     xtick_callback);
 	}
+
 	if (*axis_label[FIRST_X_AXIS].text) {
 	    /* label at xaxis_y + 1/4 of (xaxis_y-other_y) */
-	    double step = (2 * xaxis_y - max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS]) / 4;
-	    map3d_xy(mid_x, xaxis_y + step, base_z, &x1, &y1);
+	    double step = (xaxis_y - other_end) / 4;
+	    unsigned int x1, y1;
+
+	    map3d_xyz(mid_x, xaxis_y + step, base_z, &v1);
+	    if (!tic_in) {
+		v1.x -= tic_unitx * ticscale * (t->h_tic);
+		v1.y -= tic_unity * ticscale * (t->v_tic);
+	    }
+	    TERMCOORD(&v1, x1, y1);
 	    x1 += axis_label[FIRST_X_AXIS].xoffset * t->h_char;
 	    y1 += axis_label[FIRST_X_AXIS].yoffset * t->v_char;
-	    if (!tic_in) {
-		x1 -= tic_unitx * ticscale * (t->h_tic);
-		y1 -= tic_unity * ticscale * (t->v_tic);
-	    }
 	    /* write_multiline mods it */
 	    write_multiline(x1, y1, axis_label[FIRST_X_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[FIRST_X_AXIS].font);
 	}
     }
+
+    /* y axis: */
     if (axis_tics[FIRST_Y_AXIS] || *axis_label[FIRST_Y_AXIS].text) {
-	unsigned int x0, y0, x1, y1;
-	double mid_y = (max_array[FIRST_Y_AXIS] + min_array[FIRST_Y_AXIS]) / 2;
-	double len;
-	map3d_xy(yaxis_x, mid_y, base_z, &x0, &y0);
-	map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x, mid_y, base_z, &x1, &y1);
+	vertex v0, v1;
+	double other_end =
+	    min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x;
+	double mid_y =
+	    (max_array[FIRST_Y_AXIS] + min_array[FIRST_Y_AXIS]) / 2;
+
+	map3d_xyz(yaxis_x, mid_y, base_z, &v0);
+	map3d_xyz(other_end, mid_y, base_z, &v1);
 	{			/* take care over unsigned quantities */
-	    int dx = x1 - x0;
-	    int dy = y1 - y0;
-	    /* HBB 980309: 16 Bits strike again: */
-	    len = sqrt(((double) dx) * dx + ((double) dy) * dy);
+	    double dx = v1.x - v0.x;
+	    double dy = v1.y - v0.y;
+	    double len = sqrt(dx * dx + dy * dy);
+	    
 	    if (len != 0) {
-		tic_unitx = dx / len;
-		tic_unity = dy / len;
+		tic_unitx = dx / len / xscaler;
+		tic_unity = dy / len / yscaler;
 	    } else {
 		tic_unitx = tic_unity = 0;
 	    }
@@ -1637,42 +1698,59 @@ else if (height[i][j] != depth[i][j]) \
 		     ytick_callback);
 	}
 	if (*axis_label[FIRST_Y_AXIS].text) {
-	    double step = (max_array[FIRST_X_AXIS] + min_array[FIRST_X_AXIS] - 2 * yaxis_x) / 4;
-	    map3d_xy(yaxis_x - step, mid_y, base_z, &x1, &y1);
+	    double step = (other_end - yaxis_x) / 4;
+	    unsigned int x1, y1;
+
+	    map3d_xyz(yaxis_x - step, mid_y, base_z, &v1);
+	    if (!tic_in) {
+		v1.x -= tic_unitx * ticscale * (t->h_tic);
+		v1.y -= tic_unity * ticscale * (t->v_tic);
+	    }
+	    TERMCOORD(&v1, x1, y1);
 	    x1 += axis_label[FIRST_Y_AXIS].xoffset * t->h_char;
 	    y1 += axis_label[FIRST_Y_AXIS].yoffset * t->v_char;
-	    if (!tic_in) {
-		x1 -= tic_unitx * ticscale * (t->h_tic);
-		y1 -= tic_unity * ticscale * (t->v_tic);
-	    }
 	    /* write_multiline mods it */
 	    write_multiline(x1, y1, axis_label[FIRST_Y_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[FIRST_Y_AXIS].font);
 	}
     }
-    /* do z tics */
 
+    /* do z tics */
     if (axis_tics[FIRST_Z_AXIS]
 	&& (draw_surface || (draw_contour & CONTOUR_SRF))) {
 	gen_tics(FIRST_Z_AXIS, grid_selection & (GRID_Z | GRID_MZ),
 		 ztick_callback);
     }
-    if ((axis_zeroaxis[FIRST_Y_AXIS].l_type >= -2) && !log_array[FIRST_X_AXIS] && inrange(0, min_array[FIRST_X_AXIS], max_array[FIRST_X_AXIS])) {
-	unsigned int x, y, x1, y1;
-	term_apply_lp_properties(&axis_zeroaxis[FIRST_Y_AXIS]);
-	map3d_xy(0.0, min_array[FIRST_Y_AXIS], base_z, &x, &y);		/* line through x=0 */
-	map3d_xy(0.0, max_array[FIRST_Y_AXIS], base_z, &x1, &y1);
-	draw_clip_line(x, y, x1, y1);
+    if ((axis_zeroaxis[FIRST_Y_AXIS].l_type >= -2)
+	&& !log_array[FIRST_X_AXIS]
+	&& inrange(0, min_array[FIRST_X_AXIS], max_array[FIRST_X_AXIS])
+	) {
+	vertex v1, v2;
+
+	/* line through x=0 */
+	map3d_xyz(0.0, min_array[FIRST_Y_AXIS], base_z, &v1);
+	map3d_xyz(0.0, max_array[FIRST_Y_AXIS], base_z, &v2);
+	draw3d_line(&v1, &v2, &axis_zeroaxis[FIRST_Y_AXIS]);
     }
-    if ((axis_zeroaxis[FIRST_X_AXIS].l_type >= -2) && !log_array[FIRST_Y_AXIS] && inrange(0, min_array[FIRST_Y_AXIS], max_array[FIRST_Y_AXIS])) {
-	unsigned int x, y, x1, y1;
+    if ((axis_zeroaxis[FIRST_X_AXIS].l_type >= -2)
+	&& !log_array[FIRST_Y_AXIS]
+	&& inrange(0, min_array[FIRST_Y_AXIS], max_array[FIRST_Y_AXIS])
+	) {
+	vertex v1, v2;
+
 	term_apply_lp_properties(&axis_zeroaxis[FIRST_X_AXIS]);
-	map3d_xy(min_array[FIRST_X_AXIS], 0.0, base_z, &x, &y);		/* line through y=0 */
-	map3d_xy(max_array[FIRST_X_AXIS], 0.0, base_z, &x1, &y1);
-	draw_clip_line(x, y, x1, y1);
+	/* line through y=0 */
+	map3d_xyz(min_array[FIRST_X_AXIS], 0.0, base_z, &v1);
+	map3d_xyz(max_array[FIRST_X_AXIS], 0.0, base_z, &v2);
+	draw3d_line(&v1, &v2, &axis_zeroaxis[FIRST_X_AXIS]);
     }
     /* PLACE ZLABEL - along the middle grid Z axis - eh ? */
-    if (*axis_label[FIRST_Z_AXIS].text && (draw_surface || (draw_contour & CONTOUR_SRF))) {
-	map3d_xy(zaxis_x, zaxis_y, max_array[FIRST_Z_AXIS] + (max_array[FIRST_Z_AXIS] - base_z) / 4, &x, &y);
+    if (*axis_label[FIRST_Z_AXIS].text
+	&& (draw_surface || (draw_contour & CONTOUR_SRF))
+	) {
+	map3d_xy(zaxis_x, zaxis_y,
+		 max_array[FIRST_Z_AXIS]
+		 + (max_array[FIRST_Z_AXIS] - base_z) / 4,
+		 &x, &y);
 
 	x += axis_label[FIRST_Z_AXIS].xoffset * t->h_char;
 	y += axis_label[FIRST_Z_AXIS].yoffset * t->v_char;
@@ -1680,7 +1758,6 @@ else if (height[i][j] != depth[i][j]) \
 	write_multiline(x, y, axis_label[FIRST_Z_AXIS].text,
 			CENTRE, CENTRE, 0,
 			axis_label[FIRST_Z_AXIS].font);
-
     }
 }
 
@@ -1691,53 +1768,59 @@ double place;
 char *text;
 struct lp_style_type grid;	/* linetype or -2 for none */
 {
-    unsigned int x, y, x1, y1;
+    vertex v1, v2;
     double scale = (text ? ticscale : miniticscale);
+    double other_end =
+	min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y;
     int dirn = tic_in ? 1 : -1;
     register struct termentry *t = term;
 
-    map3d_xy(place, xaxis_y, base_z, &x, &y);
+    map3d_xyz(place, xaxis_y, base_z, &v1);
     if (grid.l_type > -2) {
-	term_apply_lp_properties(&grid);
 	/* to save mapping twice, map non-axis y */
-	map3d_xy(place, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y, base_z, &x1, &y1);
-	draw_clip_line(x, y, x1, y1);
-	term_apply_lp_properties(&border_lp);
+	map3d_xyz(place, other_end, base_z, &v2);
+	draw3d_line(&v1, &v2, &grid);
     }
-    if (axis_tics[FIRST_X_AXIS] & TICS_ON_AXIS) {
-	map3d_xy(place, (min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS]) / 2, base_z, &x, &y);
+    if ((axis_tics[FIRST_X_AXIS] & TICS_ON_AXIS)
+	&& !log_array[FIRST_Y_AXIS]
+	&& inrange (0.0, min_array[FIRST_Y_AXIS], max_array[FIRST_Y_AXIS])
+	) {
+	map3d_xyz(place, 0.0, base_z, &v1);
     }
-    x1 = x + tic_unitx * scale * (t->h_tic) * dirn;
-    y1 = y + tic_unity * scale * (t->v_tic) * dirn;
-    draw_clip_line(x, y, x1, y1);
+    v2.x = v1.x + tic_unitx * scale * (t->h_tic) * dirn;
+    v2.y = v1.y + tic_unity * scale * (t->v_tic) * dirn;
+    /* FIXME HBB 20000617: I have no real idea whether this z value is
+     * correct... */
+    v2.z = v1.z;
+    draw3d_line(&v1, &v2, &border_lp);
+    term_apply_lp_properties(&border_lp);
+	
     if (text) {
 	int just;
-	if (tic_unitx < -0.9)
+	unsigned int x2, y2;
+
+	if (tic_unitx * xscaler < -0.9)
 	    just = LEFT;
-	else if (tic_unitx < 0.9)
+	else if (tic_unitx * xscaler < 0.9)
 	    just = CENTRE;
 	else
 	    just = RIGHT;
-#if 1
-/* HBB 970729: let's see if the 'tic labels collide with axes' problem
- * may be fixed this way: */
-	x1 = x - tic_unitx * (t->h_char) * 1;
-	y1 = y - tic_unity * (t->v_char) * 1;
-#else
-	x1 = x - tic_unitx * (t->h_tic) * 2;
-	y1 = y - tic_unity * (t->v_tic) * 2;
-#endif
+	v2.x = v1.x - tic_unitx * (t->h_char) * 1;
+	v2.y = v1.y - tic_unity * (t->v_char) * 1;
 	if (!tic_in) {
-	    x1 -= tic_unitx * (t->h_tic) * ticscale;
-	    y1 -= tic_unity * (t->v_tic) * ticscale;
+	    v2.x -= tic_unitx * (t->h_tic) * ticscale;
+	    v2.y -= tic_unity * (t->v_tic) * ticscale;
 	}
-	clip_put_text_just(x1, y1, text, just);
+	TERMCOORD(&v2, x2, y2);
+	clip_put_text_just(x2, y2, text, just);
     }
+
     if (axis_tics[FIRST_X_AXIS] & TICS_MIRROR) {
-	map3d_xy(place, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y, base_z, &x, &y);
-	x1 = x - tic_unitx * scale * (t->h_tic) * dirn;
-	y1 = y - tic_unity * scale * (t->v_tic) * dirn;
-	draw_clip_line(x, y, x1, y1);
+	map3d_xyz(place, other_end, base_z, &v1);
+	v2.x = v1.x - tic_unitx * scale * (t->h_tic) * dirn;
+	v2.y = v1.y - tic_unity * scale * (t->v_tic) * dirn;
+	v2.z = v1.z;
+	draw3d_line(&v1, &v2, &border_lp);
     }
 }
 
@@ -1748,51 +1831,57 @@ double place;
 char *text;
 struct lp_style_type grid;
 {
-    unsigned int x, y, x1, y1;
+    vertex v1, v2;
     double scale = (text ? ticscale : miniticscale);
+    double other_end =
+	min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x;
     int dirn = tic_in ? 1 : -1;
     register struct termentry *t = term;
 
-    map3d_xy(yaxis_x, place, base_z, &x, &y);
+    map3d_xyz(yaxis_x, place, base_z, &v1);
     if (grid.l_type > -2) {
-	term_apply_lp_properties(&grid);
-	map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x, place, base_z, &x1, &y1);
-	draw_clip_line(x, y, x1, y1);
-	term_apply_lp_properties(&border_lp);
+	map3d_xyz(other_end, place, base_z, &v2);
+	draw3d_line(&v1, &v2, &grid);
     }
-    if (axis_tics[FIRST_Y_AXIS] & TICS_ON_AXIS) {
-	map3d_xy((min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS]) / 2, place, base_z, &x, &y);
+    if (axis_tics[FIRST_Y_AXIS] & TICS_ON_AXIS
+	&& !log_array[FIRST_X_AXIS]
+	&& inrange (0.0, min_array[FIRST_X_AXIS], max_array[FIRST_Y_AXIS])
+	) {
+	map3d_xyz(0.0, place, base_z, &v1);
     }
-    x1 = x + tic_unitx * scale * dirn * (t->h_tic);
-    y1 = y + tic_unity * scale * dirn * (t->v_tic);
-    draw_clip_line(x, y, x1, y1);
+    
+    v2.x = v1.x + tic_unitx * scale * dirn * (t->h_tic);
+    v2.y = v1.y + tic_unity * scale * dirn * (t->v_tic);
+    /* FIXME HBB 20000716: (see xtick_callback()) */
+    v2.z = v1.z;
+    draw3d_line(&v1, &v2, &border_lp);
+
     if (text) {
 	int just;
-	if (tic_unitx < -0.9)
+	unsigned int x2, y2;
+
+	if (tic_unitx * xscaler < -0.9)
 	    just = LEFT;
-	else if (tic_unitx < 0.9)
+	else if (tic_unitx * xscaler < 0.9)
 	    just = CENTRE;
 	else
 	    just = RIGHT;
-#if 1
-	/* HBB 970729: same as above in xtics_callback */
-	x1 = x - tic_unitx * (t->h_char) * 1;
-	y1 = y - tic_unity * (t->v_char) * 1;
-#else
-	x1 = x - tic_unitx * (t->h_tic) * 2;
-	y1 = y - tic_unity * (t->v_tic) * 2;
-#endif
+	v2.x = v1.x - tic_unitx * (t->h_char) * 1;
+	v2.y = v1.y - tic_unity * (t->v_char) * 1;
 	if (!tic_in) {
-	    x1 -= tic_unitx * (t->h_tic) * ticscale;
-	    y1 -= tic_unity * (t->v_tic) * ticscale;
+	    v2.x -= tic_unitx * (t->h_tic) * ticscale;
+	    v2.y -= tic_unity * (t->v_tic) * ticscale;
 	}
-	clip_put_text_just(x1, y1, text, just);
+	TERMCOORD(&v2, x2, y2);
+	clip_put_text_just(x2, y2, text, just);
     }
+
     if (axis_tics[FIRST_Y_AXIS] & TICS_MIRROR) {
-	map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x, place, base_z, &x, &y);
-	x1 = x - tic_unitx * scale * (t->h_tic) * dirn;
-	y1 = y - tic_unity * scale * (t->v_tic) * dirn;
-	draw_clip_line(x, y, x1, y1);
+	map3d_xyz(other_end, place, base_z, &v1);
+	v2.x = v1.x - tic_unitx * scale * (t->h_tic) * dirn;
+	v2.y = v1.y - tic_unity * scale * (t->v_tic) * dirn;
+	v2.z = v1.z;
+	draw3d_line(&v1, &v2, &border_lp);
     }
 }
 
@@ -1804,38 +1893,38 @@ char *text;
 struct lp_style_type grid;
 {
 /* HBB: inserted some ()'s to shut up gcc -Wall, here and below */
-    int len = (text ? ticscale : miniticscale) * (tic_in ? 1 : -1) * (term->h_tic);
-    unsigned int x, y;
+    int len = (text ? ticscale : miniticscale)
+	* (tic_in ? 1 : -1) * (term->h_tic);
+    vertex v1, v2, v3;
 
+    map3d_xyz(zaxis_x, zaxis_y, place, &v1);
     if (grid.l_type > -2) {
-	unsigned int x1, y1, x2, y2, x3, y3;
-	double other_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS]
-	    - zaxis_x;
-	double other_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS]
-	    - zaxis_y;
-	term_apply_lp_properties(&grid);
-	map3d_xy(zaxis_x, zaxis_y, place, &x1, &y1);
-	map3d_xy(back_x, back_y, place, &x2, &y2);
-	map3d_xy(other_x, other_y, place, &x3, &y3);
-	draw_clip_line(x1, y1, x2, y2);
-	draw_clip_line(x2, y2, x3, y3);
-	term_apply_lp_properties(&border_lp);
+	map3d_xyz(back_x, back_y, place, &v2);
+	map3d_xyz(right_x, right_y, place, &v3);
+	draw3d_line(&v1, &v2, &grid);
+	draw3d_line(&v2, &v3, &grid);
     }
-    map3d_xy(zaxis_x, zaxis_y, place, &x, &y);
-    draw_clip_line(x, y, x + len, y);
+    v2.x = v1.x + len / xscaler;
+    v2.y = v1.y;
+    v2.z = v1.z;
+    draw3d_line(&v1, &v2, &border_lp);
+
     if (text) {
-	int x1 = x - (term->h_tic) * 2;
+	unsigned int x1, y1;
+	
+	TERMCOORD(&v1, x1, y1);
+	x1 -= (term->h_tic) * 2;
 	if (!tic_in)
 	    x1 -= (term->h_tic) * ticscale;
-	clip_put_text_just(x1, y, text, RIGHT);
+	clip_put_text_just(x1, y1, text, RIGHT);
     }
+
     if (axis_tics[FIRST_Z_AXIS] & TICS_MIRROR) {
-	double other_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS]
-	    - zaxis_x;
-	double other_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS]
-	    - zaxis_y;
-	map3d_xy(other_x, other_y, place, &x, &y);
-	draw_clip_line(x, y, x - len, y);
+	map3d_xyz(right_x, right_y, place, &v1);
+	v2.x = v1.x - len / xscaler;
+	v2.y = v1.y;
+	v2.z = v1.z;
+	draw3d_line(&v1, &v2, &border_lp);
     }
 }
 
@@ -1896,7 +1985,8 @@ const char *what;
     }
     if (screens != 3) {
 	graph_error("Cannot mix screen co-ordinates with other types");
-    } {
+    } 
+    {
 	register struct termentry *t = term;
 	*x = pos->x * (t->xmax) + 0.5;
 	*y = pos->y * (t->ymax) + 0.5;
@@ -1944,14 +2034,8 @@ int xl, yl;
 	(*term->move) (xl + key_sample_left, yl);
 	(*term->vector) (xl + key_sample_right, yl);
     } else {
-	/* HBB 981118: avoid crash if hidden3d sees a manually placed key:
-	 * simply turn off hidden-lining while we're drawing the key line: */
-	int save_hidden_active = hidden_active;
-	hidden_active = FALSE;
-
 	clip_move(xl + key_sample_left, yl);
 	clip_vector(xl + key_sample_right, yl);
-	hidden_active = save_hidden_active;
     }
 }
 

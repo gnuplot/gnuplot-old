@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.26.2.2 2000/05/09 19:04:06 broeker Exp $
+ * $Id: setshow.h,v 1.26.2.3 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -38,144 +38,21 @@
 #ifndef GNUPLOT_SETSHOW_H
 # define GNUPLOT_SETSHOW_H
 
-#include "axis.h"
-#include "variable.h"
+#include "stdfn.h"
+
+#include "gadgets.h"
+#include "term_api.h"
+
+#define PROGRAM "G N U P L O T"
 
 /* activate backwards compatible syntax */
 #define BACKWARDS_COMPATIBLE
 
 
-#ifndef DEFAULT_TIMESTAMP_FORMAT
-/* asctime() format */
-# define DEFAULT_TIMESTAMP_FORMAT "%a %b %d %H:%M:%S %Y"
-#endif
-
-#define SET_DEFFORMAT(axis, flag_array)				\
-	if (flag_array[axis]) {					\
-	    (void) strcpy(axis_formatstring[axis],DEF_FORMAT);	\
-	    format_is_numeric[axis] = 1;			\
-	}
-
-/* less than one hundredth of a tic mark */
-#define SIGNIF (0.01)
-
-/*
- * global variables to hold status of 'set' options
- *
- */
-
-extern int angles_format;
-extern double ang2rad; /* 1 or pi/180 */
-extern struct arrow_def *first_arrow;
-extern double bar_size;
-
-extern struct lp_style_type     border_lp;
-extern int			draw_border;
-#define SOUTH			1 /* 0th bit */
-#define WEST			2 /* 1th bit */
-#define NORTH			4 /* 2th bit */
-#define EAST			8 /* 3th bit */
-#define border_east		(draw_border & EAST)
-#define border_west		(draw_border & WEST)
-#define border_south		(draw_border & SOUTH)
-#define border_north		(draw_border & NORTH)
-
-extern TBOOLEAN                 multiplot;
-
-extern double			boxwidth;
-extern TBOOLEAN			clip_points;
-extern TBOOLEAN			clip_lines1;
-extern TBOOLEAN			clip_lines2;
-extern TBOOLEAN			draw_surface;
-extern char			dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1];
-
-extern char			key_title[];
-extern enum PLOT_STYLE data_style, func_style;
-
-extern int 			grid_selection;
-extern const struct lp_style_type default_grid_lp;
-extern struct lp_style_type     grid_lp, mgrid_lp;
-extern double     polar_grid_angle; /* angle step in polar grid in radians */
-
-typedef enum key_type {
-    KEY_NONE,
-    KEY_USER_PLACEMENT,
-    KEY_AUTO_PLACEMENT
-} t_key_flag;
-extern t_key_flag		key;
-
-extern struct position key_user_pos; /* user specified position for key */
-extern int 			key_vpos, key_hpos, key_just;
-extern double       key_swidth, key_vert_factor; /* user specified vertical spacing multiplier */
-extern double                   key_width_fix; /* user specified additional (+/-) width of key titles */
-extern TBOOLEAN			key_reverse;  /* key back to front */
-extern const struct lp_style_type default_keybox_lp;
-extern struct lp_style_type 	key_box;  /* linetype of box around keyx */
-extern char			*outstr;
-extern TBOOLEAN			parametric;
-extern double			pointsize;
-extern TBOOLEAN			polar;
-extern TBOOLEAN			hidden3d;
-extern int			mapping3d;
-extern int			samples;
-extern int			samples_1;
-extern int			samples_2;
-extern int			iso_samples_1;
-extern int			iso_samples_2;
-extern float			xsize; /* scale factor for size */
-extern float                    xoffset;
-extern float                    yoffset;
-extern float			ysize; /* scale factor for size */
-extern float			zsize; /* scale factor for size */
-extern float			aspect_ratio; /* 1.0 for square */
-extern float			surface_rot_z;
-extern float			surface_rot_x;
-extern float			surface_scale;
-extern float			surface_zscale;
-extern char			term_options[];
-
-extern label_struct title, timelabel;
-
-extern int			timelabel_rotate;
-extern int			timelabel_bottom;
-extern double			loff, roff, toff, boff;
-extern int			draw_contour;
-extern TBOOLEAN      label_contours;
-extern char			contour_format[];
-extern int			contour_pts;
-extern int			contour_kind;
-extern int			contour_order;
-extern int			contour_levels;
-extern double			zero; /* zero threshold, not 0! */
-extern int			levels_kind;
-extern double			*levels_list;
-
-extern int			dgrid3d_row_fineness;
-extern int			dgrid3d_col_fineness;
-extern int			dgrid3d_norm_value;
-extern TBOOLEAN			dgrid3d;
-
-extern int			encoding;
-extern const char		*encoding_names[];
-
-extern float ticslevel;
-extern double ticscale; /* scale factor for tic marks (was (0..1])*/
-extern double miniticscale; /* and for minitics */
-
-extern TBOOLEAN			tic_in;
-
-extern struct text_label *first_label;
-extern struct linestyle_def *first_linestyle;
-
-extern int lmargin, bmargin,rmargin,tmargin; /* plot border in characters */
-
-/* string representing missing values, ascii datafiles */
-extern char *missing_val;
-
 #define SAVE_NUM_OR_TIME(fp, x, axis)			\
 do{							\
     if (axis_is_timedata[axis]) {			\
-	char s[80]; char *p;				\
+	char s[80];					\
 							\
 	putc('"', fp);					\
 	gstrftime(s,80,timefmt[axis],(double)(x));	\
@@ -187,20 +64,14 @@ do{							\
 } while(0)
 
 
-/* HBB 19991108 FIXME: this is way off. There is no setshow.c, and
- * these functions ought to be prototyped in their own .h files, each!
- * On a related note, all the status variables don't really belong in
- * here, I think... */
 /* The set and show commands, in setshow.c */
 void set_command __PROTO((void));
 void unset_command __PROTO((void));
 void reset_command __PROTO((void));
 void show_command __PROTO((void));
 /* and some accessible support functions */
-enum PLOT_STYLE get_style __PROTO((void));
 void show_version __PROTO((FILE *fp));
 char *conv_text __PROTO((const char *s));
-void lp_parse __PROTO((struct lp_style_type *, int, int, int, int));
 void delete_linestyle __PROTO((struct linestyle_def *, struct linestyle_def *));
 int set_label_tag __PROTO((void));
 void set_lp_properties __PROTO((struct lp_style_type *, int, int, int, double, double));

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.32 2000/05/02 18:19:57 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.32.2.1 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -43,10 +43,15 @@ static char *RCSid() { return RCSid("$Id: plot.c,v 1.32 2000/05/02 18:19:57 lhec
 #include "command.h"
 #include "eval.h"
 #include "fit.h"
+#include "gp_hist.h"
 #include "misc.h"
+#include "readline.h"
 #include "setshow.h"
 #include "term_api.h"
 #include "util.h"
+#include "variable.h"
+#include "version.h"
+
 #ifdef USE_MOUSE
 #   ifndef OS2
 #       include "ipc.h"   /* for isatty_state */
@@ -91,8 +96,6 @@ extern smg$create_key_table();
  * so I don't put this into a header file. -lh
  */
 #ifdef HAVE_LIBREADLINE
-# include <readline/readline.h>
-# include <readline/history.h>
 extern int rl_complete_with_tilde_expansion;
 
 /* enable gnuplot history with readline */

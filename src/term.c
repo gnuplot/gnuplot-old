@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -84,9 +84,12 @@ static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.2 2000/05/09 19:04:06 
 #include "graphics.h"
 #include "help.h"
 #include "parse.h"
-#include "setshow.h"
+#include "plot.h"
+/*  #include "setshow.h" */
 #include "tables.h"
+#include "term.h"
 #include "util.h"
+#include "version.h"
 
 #ifdef USE_MOUSE
 #include "mouse.h"
@@ -103,12 +106,41 @@ void close_printer __PROTO((FILE * outfile));
 # endif				/* MSC */
 #endif /* _Windows */
 
-/* the 'output' file handle */
+/* Externally visible variables */
+/* the central instance: the current terminal's interface structure */
+struct termentry *term = NULL;	/* unknown */
+
+/* ... and its options string */
+char term_options[MAX_LINE_LEN+1] = "";
+
+/* the 'output' file name and handle */
+char *outstr = NULL;		/* means "STDOUT" */
 FILE *gpoutfile;
 
 /* true if terminal has been initialized */
 TBOOLEAN term_initialised;
 
+/* true if in multiplot mode */
+TBOOLEAN multiplot = FALSE;
+
+/* text output encoding, for terminals that support it */
+enum set_encoding_id encoding;
+/* table of encoding names, for output of the setting */
+const char *encoding_names[] = {
+    "default", "iso_8859_1", "cp437", "cp850", NULL };
+/* 'set encoding' options */
+struct gen_table set_encoding_tbl[] =
+{
+    { "def$ault", S_ENC_DEFAULT },
+    { "iso$_8859_1", S_ENC_ISO8859_1 },
+    { "cp4$37", S_ENC_CP437 },
+    { "cp8$50", S_ENC_CP850 },
+    { NULL, S_ENC_INVALID }
+};
+
+
+
+/* Internal variables */
 /* true if terminal is in graphics mode */
 static TBOOLEAN term_graphics = FALSE;
 
@@ -566,6 +598,73 @@ TBOOLEAN f_interactive;
     else
 	int_error(NO_CARET, "Must set output to a file or put all multiplot commands on one input line");
 }
+
+
+void
+write_multiline(x, y, text, hor, vert, angle, font)
+    unsigned int x, y;
+    char *text;
+    JUSTIFY hor;		/* horizontal ... */
+    VERT_JUSTIFY vert;		/* ... and vertical just - text in hor direction despite angle */
+    int angle;			/* assume term has already been set for this */
+    const char *font;		/* NULL or "" means use default */
+{
+    register struct termentry *t = term;
+    char *p = text;
+
+    if (!p)
+	return;
+
+    if (vert != JUST_TOP) {
+	/* count lines and adjust y */
+	int lines = 0;		/* number of linefeeds - one fewer than lines */
+	while (*p++) {
+	    if (*p == '\n')
+		++lines;
+	}
+	if (angle)
+	    x -= (vert * lines * t->v_char) / 2;
+	else
+	    y += (vert * lines * t->v_char) / 2;
+    }
+    if (font && *font)
+	(*t->set_font) (font);
+
+
+    for (;;) {			/* we will explicitly break out */
+
+	if ((text != NULL) && (p = strchr(text, '\n')) != NULL)
+	    *p = 0;		/* terminate the string */
+
+	if ((*t->justify_text) (hor)) {
+	    (*t->put_text) (x, y, text);
+	} else {
+	    int fix = hor * (t->h_char) * strlen(text) / 2;
+	    if (angle)
+		(*t->put_text) (x, y - fix, text);
+	    else
+		(*t->put_text) (x - fix, y, text);
+	}
+	if (angle)
+	    x += t->v_char;
+	else
+	    y -= t->v_char;
+
+	if (!p)
+	    break;
+	else {
+	    /* put it back */
+	    *p = '\n';
+	}
+
+	text = p + 1;
+    }				/* unconditional branch back to the for(;;) - just a goto ! */
+
+    if (font && *font)
+	(*t->set_font) (default_font);
+
+}
+
 
 static void
 do_point(x, y, number)

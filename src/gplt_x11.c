@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.13.2.1 2000/05/09 19:04:05 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.13.2.2 2000/06/22 12:57:38 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -98,7 +98,9 @@ static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.13.2.1 2000/05/09 19:04
  */
 
 #include "syscfg.h"
-#include <stdlib.h>
+#include "stdfn.h"
+#include "gp_types.h"
+#include "term_api.h"
 
 #ifdef USE_MOUSE
 #define USE_NONBLOCKING_STDOUT
@@ -161,8 +163,6 @@ Error. Incompatible options.
 # define FD_ISSET(n, p)  ((p)->fds_bits[0] & (1 << ((n) % 32)))
 # define FD_ZERO(p)      memset((char *)(p),'\0',sizeof(*(p)))
 #endif /* not FD_SET */
-
-#include "plot.h"
 
 #if defined(HAVE_SYS_SYSTEMINFO_H) && defined(HAVE_SYSINFO)
 # include <sys/systeminfo.h>

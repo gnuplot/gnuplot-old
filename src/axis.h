@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.2.2.2 2000/05/09 19:04:05 broeker Exp $
+ * $Id: axis.h,v 1.2.2.3 2000/06/22 12:57:38 broeker Exp $
  *
  */
 
@@ -37,11 +37,17 @@
 #define GNUPLOT_AXIS_H
 
 #include "gp_types.h"		/* for TBOOLEAN */
+
+#include "gadgets.h"
 #include "parse.h"		/* for const_express() */
 #include "tables.h"		/* for the axis name parse table */
+#include "term_api.h"		/* for lp_style_type */
 #include "util.h"		/* for int_error() */
 
 /* typedefs / #defines */
+
+/* double true, used in autoscale: 1=autoscale ?min, 2=autoscale ?max */
+#define DTRUE 3
 
 /* give some names to some array elements used in command.c and grap*.c
  * maybe one day the relevant items in setshow will also be stored
@@ -67,10 +73,94 @@ typedef enum AXIS_INDEX {
 #define AXIS_ARRAY_SIZE 10
 } AXIS_INDEX;
 
+/* What kind of ticmarking is wanted? */
+typedef enum en_ticseries_type {
+    TIC_COMPUTED=1, 		/* default; gnuplot figures them */
+    TIC_SERIES,			/* user-defined series */
+    TIC_USER,			/* user-defined points */
+    TIC_MONTH,   		/* print out month names ((mo-1)%12)+1 */
+    TIC_DAY,      		/* print out day of week */
+} t_ticseries_type;
+
+/* Defines one ticmark for TIC_USER style.
+ * If label==NULL, the value is printed with the usual format string.
+ * else, it is used as the format string (note that it may be a constant
+ * string, like "high" or "low").
+ */
+typedef struct ticmark {
+    double position;		/* where on axis is this */
+    char *label;		/* optional (format) string label */
+    struct ticmark *next;	/* linked list */
+} ticmark;
+
+/* Tic-mark labelling definition; see set xtics */
+typedef struct ticdef {
+    t_ticseries_type type;	
+    union {
+	   struct ticmark *user;	/* for TIC_USER */
+	   struct {			/* for TIC_SERIES */
+		  double start, incr;
+		  double end;		/* ymax, if VERYLARGE */
+	   } series;
+    } def;
+} t_ticdef;
+
+/* we want two auto modes for minitics - default where minitics are
+ * auto for log/time and off for linear, and auto where auto for all
+ * graphs I've done them in this order so that logscale-mode can
+ * simply test bit 0 to see if it must do the minitics automatically.
+ * similarly, conventional plot can test bit 1 to see if minitics are
+ * required */
+enum en_minitics_status {
+    MINI_OFF,
+    MINI_DEFAULT,
+    MINI_USER,
+    MINI_AUTO,
+};
+
+/* Function pointer type for callback functions doing operations for a
+ * single ticmark */
 typedef void (*tic_callback) __PROTO((AXIS_INDEX, double, char *, struct lp_style_type ));
+
+/* Values to put in the axis_tics[] variables that decides where the
+ * ticmarks should be drawn: not at all, on one or both plot borders,
+ * or the zeroaxes. These look like a series of values, but TICS_MASK
+ * shows that they're actually bit masks --> don't turn into an enum
+ * */
+#define NO_TICS        0
+#define TICS_ON_BORDER 1
+#define TICS_ON_AXIS   2
+#define TICS_MASK      3
+#define TICS_MIRROR    4
+
+/* bit masks for range_flags[]: */
+/* write auto-ed ranges back to variables for autoscale */
+#define RANGE_WRITEBACK 1	
+/* allow auto and reversed ranges */
+#define RANGE_REVERSE   2	
+
+/* Need to allow user to choose grid at first and/or second axes tics.
+ * Also want to let user choose circles at x or y tics for polar grid.
+ * Also want to allow user rectangular grid for polar plot or polar
+ * grid for parametric plot. So just go for full configurability.
+ * These are bitmasks
+ */
+#define GRID_OFF    0
+#define GRID_X      (1<<0)
+#define GRID_Y      (1<<1)
+#define GRID_Z      (1<<2)
+#define GRID_X2     (1<<3)
+#define GRID_Y2     (1<<4)
+#define GRID_MX     (1<<5)
+#define GRID_MY     (1<<6)
+#define GRID_MZ     (1<<7)
+#define GRID_MX2    (1<<8)
+#define GRID_MY2    (1<<9)
 
 /* global variables in axis.c */
 
+/* The names of the axes, and a parsing table for reading them. For
+ * use by the set/show machinery, mainly */
 extern const char *axisname_array[AXIS_ARRAY_SIZE];
 extern struct gen_table axisname_tbl[AXIS_ARRAY_SIZE+1];
 
@@ -120,6 +210,10 @@ extern double axis_mtic_freq[AXIS_ARRAY_SIZE];
 extern TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE];
 extern const struct ticdef default_axis_ticdef;
 extern struct ticdef axis_ticdef[AXIS_ARRAY_SIZE];
+extern double ticscale;		/* scale factor for tic marks (was (0..1])*/
+extern double miniticscale;	/* and for minitics */
+extern TBOOLEAN	tic_in;		/* tics to be drawn inward?  */
+
 
 /* output format strings (numberic or timedata) for tic labels and similar
  * uses */
@@ -144,16 +238,17 @@ extern label_struct axis_label[AXIS_ARRAY_SIZE];
 extern const lp_style_type default_axis_zeroaxis;
 extern lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE];
 
+/* grid drawing control variables */
+extern int grid_selection;
+extern const struct lp_style_type default_grid_lp; /* default for 'unset' */
+extern struct lp_style_type grid_lp; /* linestyle for major grid lines */
+extern struct lp_style_type mgrid_lp; /* linestyle for minor grid lines */
+extern double polar_grid_angle; /* angle step in polar grid in radians */
 
-
+/* global variables for communication with the tic callback functions */
 
 extern int tic_start, tic_direction, tic_text,
     rotate_tics, tic_hjust, tic_vjust, tic_mirror;
-
-
-extern int xleft, xright, ybot, ytop;
-
-
 
 /* -------- macros using these variables: */
 
@@ -321,45 +416,45 @@ do {							\
  * VALUE must not be same as STORE
  */
 
-#define STORE_WITH_LOG_AND_UPDATE_RANGE(STORE, VALUE, TYPE, AXIS,	\
-				       OUT_ACTION, UNDEF_ACTION)	\
-do {									\
-    if (log_array[AXIS]) {						\
-	if (VALUE<0.0) {						\
-	    TYPE = UNDEFINED;						\
-	    UNDEF_ACTION;						\
-	    break;							\
-	} else if (VALUE == 0.0) {					\
-	    STORE = -VERYLARGE;						\
-	    TYPE = OUTRANGE;						\
-	    OUT_ACTION;							\
-	    break;							\
-	} else {							\
-	    STORE = AXIS_DO_LOG(AXIS,VALUE);				\
-	}								\
-    } else								\
-	STORE = VALUE;							\
-    if (TYPE != INRANGE)						\
-	break;  /* dont set y range if x is outrange, for example */	\
-    if (AXIS < 0)							  \
+#define STORE_WITH_LOG_AND_UPDATE_RANGE(STORE, VALUE, TYPE, AXIS,	  \
+				       OUT_ACTION, UNDEF_ACTION)	  \
+do {									  \
+    if (log_array[AXIS]) {						  \
+	if (VALUE<0.0) {						  \
+	    TYPE = UNDEFINED;						  \
+	    UNDEF_ACTION;						  \
+	    break;							  \
+	} else if (VALUE == 0.0) {					  \
+	    STORE = -VERYLARGE;						  \
+	    TYPE = OUTRANGE;						  \
+	    OUT_ACTION;							  \
+	    break;							  \
+	} else {							  \
+	    STORE = AXIS_DO_LOG(AXIS,VALUE);				  \
+	}								  \
+    } else								  \
+	STORE = VALUE;							  \
+    if (TYPE != INRANGE)						  \
+	break;  /* don't set y range if x is outrange, for example */	  \
+    if ((int)AXIS < 0)							  \
 	break;	/* HBB 20000507: don't check range if not a coordinate */ \
-    if ( VALUE<min_array[AXIS] ) {					\
-	if (auto_array[AXIS] & 1)					\
-	    min_array[AXIS] = VALUE;					\
-	else {								\
-	    TYPE = OUTRANGE;						\
-	    OUT_ACTION;							\
-	    break;							\
-	}								\
-    }									\
-    if ( VALUE>max_array[AXIS] ) {					\
-	if (auto_array[AXIS] & 2)					\
-	    max_array[AXIS] = VALUE;					\
-	else {								\
-	    TYPE = OUTRANGE;						\
-	    OUT_ACTION;							\
-	}								\
-    }									\
+    if ( VALUE < min_array[AXIS] ) {					  \
+	if (auto_array[AXIS] & 1)					  \
+	    min_array[AXIS] = VALUE;					  \
+	else {								  \
+	    TYPE = OUTRANGE;						  \
+	    OUT_ACTION;							  \
+	    break;							  \
+	}								  \
+    }									  \
+    if ( VALUE>max_array[AXIS] ) {					  \
+	if (auto_array[AXIS] & 2)					  \
+	    max_array[AXIS] = VALUE;					  \
+	else {								  \
+	    TYPE = OUTRANGE;						  \
+	    OUT_ACTION;							  \
+	}								  \
+    }									  \
 } while(0)
 
 /* use this instead empty macro arguments to work around NeXT cpp bug */
@@ -380,6 +475,23 @@ do {						\
 #define AXIS_ARRAY_INITIALIZER(value) 					 \
 { value, value, value, value, value, value, value, value, value, value }
 
+
+/* used by set.c */
+#define SET_DEFFORMAT(axis, flag_array)				\
+	if (flag_array[axis]) {					\
+	    (void) strcpy(axis_formatstring[axis],DEF_FORMAT);	\
+	    format_is_numeric[axis] = 1;			\
+	}
+
+
+/* 'roundoff' check tolerance: less than one hundredth of a tic mark */
+#define SIGNIF (0.01)
+/* (DFK) Watch for cancellation error near zero on axes labels */
+/* FIXME HBB 20000521: these seem not to be used much, anywhere... */
+#define CheckZero(x,tic) (fabs(x) < ((tic) * SIGNIF) ? 0.0 : (x))
+#define NearlyEqual(x,y,tic) (fabs((x)-(y)) < ((tic) * SIGNIF))
+
+
 	
 /* ------------ functions exported by axis.c */
 extern TBOOLEAN load_range __PROTO((AXIS_INDEX, double *a, double *b, TBOOLEAN autosc));
@@ -394,6 +506,7 @@ extern void gen_tics __PROTO((AXIS_INDEX, int, tic_callback));
 extern void axis_output_tics __PROTO((AXIS_INDEX, int *, AXIS_INDEX, int, tic_callback));
 extern void axis_set_graphical_range __PROTO((AXIS_INDEX, unsigned int lower, unsigned int upper));
 extern TBOOLEAN axis_position_zeroaxis __PROTO((AXIS_INDEX));
+void axis_draw_2d_zeroaxis __PROTO((AXIS_INDEX, AXIS_INDEX));
 
 double get_writeback_min __PROTO((AXIS_INDEX));
 double get_writeback_max __PROTO((AXIS_INDEX));

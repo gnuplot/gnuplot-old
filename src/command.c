@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.39 2000/05/02 17:44:48 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.39.2.1 2000/06/22 12:57:38 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -63,16 +63,18 @@ static char *RCSid() { return RCSid("$Id: command.c,v 1.39 2000/05/02 17:44:48 l
  *
  */
 
-#include "plot.h"
-#include "alloc.h"
 #include "command.h"
+
+#include "alloc.h"
 #include "eval.h"
 #include "fit.h"
 #include "binary.h"
+#include "datafile.h"
 #include "gp_hist.h"
 #include "gp_time.h"
 #include "misc.h"
 #include "parse.h"
+#include "plot.h"
 #include "plot2d.h"
 #include "plot3d.h"
 #include "readline.h"
@@ -85,15 +87,6 @@ static char *RCSid() { return RCSid("$Id: command.c,v 1.39 2000/05/02 17:44:48 l
 
 #ifdef USE_MOUSE
 # include "mouse.h"
-#endif
-
-/* GNU readline
- * Only required by two files directly,
- * so I don't put this into a header file. -lh
- */
-#ifdef HAVE_LIBREADLINE
-# include <readline/readline.h>
-# include <readline/history.h>
 #endif
 
 #if (defined(MSDOS) || defined(DOS386)) && defined(__TURBOC__) && !defined(_Windows)
@@ -147,6 +140,7 @@ int vms_vkid;			/* Virtual keyboard id */
 int vms_ktid;			/* key table id, for translating keystrokes */
 #endif /* VMS */
 
+
 /* static prototypes */
 static void command __PROTO((void));
 static int changedir __PROTO((char *path));
@@ -169,12 +163,13 @@ int inline_num;			/* input line number */
 
 struct udft_entry *dummy_func;
 
-/* current dummy vars */
-char c_dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1];
-
 /* support for replot command */
 char *replot_line;
 int plot_token;			/* start of 'plot' command */
+
+/* flag to disable `replot` when some data are sent through stdin;
+ * used by mouse/hotkey capable terminals */
+TBOOLEAN replot_disabled = FALSE;
 
 /* If last plot was a 3d one. */
 TBOOLEAN is_3d_plot = FALSE;
@@ -217,6 +212,8 @@ extend_input_line()
     }
 }
 
+/* constant by which token table grows */
+#define MAX_TOKENS 400
 
 void
 extend_token_table()
@@ -413,6 +410,24 @@ char *s;
     strcpy(buf,s);
     do_line();
     input_line=orig_input_line;
+}
+
+void
+do_string_replot(s)
+char *s;
+{
+    char *orig_input_line;
+    static char buf[256];
+
+    orig_input_line = input_line;
+    input_line = buf;
+    strcpy(buf,s);
+    if (!replot_disabled)
+	strcat(buf,"; replot");
+    if (display_ipc_commands())
+	fprintf(stderr, "%s\n", buf);
+    do_line();
+    input_line = orig_input_line;
 }
 
 void
@@ -959,6 +974,7 @@ void
 plot_command()
 {
     plot_token = c_token++;
+    plotted_data_from_stdin = FALSE;
     SET_CURSOR_WAIT;
 #ifdef USE_MOUSE
     plot_mode(MODE_PLOT);
@@ -1023,6 +1039,18 @@ replot_command()
 {
     if (!*replot_line)
 	int_error(c_token, "no previous plot");
+    /* Disable replot for some reason; currently used by the mouse/hotkey 
+       capable terminals to avoid replotting when some data come from stdin, 
+       i.e. when  plotted_data_from_stdin==1  after plot "-".
+    */
+    if (replot_disabled) {
+	replot_disabled = FALSE;
+#if 1
+	bail_to_command_line(); /* be silent --- don't mess the screen */
+#else
+	int_error(c_token, "cannot replot data coming from stdin");
+#endif
+    }
     c_token++;
     SET_CURSOR_WAIT;
     replotrequest();
@@ -1127,6 +1155,7 @@ void
 splot_command()
 {
     plot_token = c_token++;
+    plotted_data_from_stdin = FALSE;
     SET_CURSOR_WAIT;
 #ifdef USE_MOUSE
     plot_mode(MODE_SPLOT);

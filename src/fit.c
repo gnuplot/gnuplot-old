@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.2 2000/05/09 19:04:05 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.3 2000/06/22 12:57:38 broeker Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -67,10 +67,12 @@ static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.2 2000/05/09 19:04:05 b
 #include "command.h"
 #include "datafile.h"
 #include "eval.h"
+#include "internal.h"
 #include "matrix.h"
+#include "plot.h"
 #include "misc.h"
 #include "parse.h"
-#include "setshow.h"	     
+/*  #include "setshow.h" */
 #include "util.h"
 
 /* Just temporary */
@@ -1006,6 +1008,9 @@ char *f;
 }
 
 
+/* argument: char *fn */
+#define VALID_FILENAME(fn) ((fn) != NULL && (*fn) != '\0')
+
 /*****************************************************************
     write the actual parameters to start parameter file
 *****************************************************************/
@@ -1224,12 +1229,12 @@ fit_command()
     if (dummy_x >= 0)
 	copy_str(c_dummy_var[0], dummy_x, MAX_ID_LEN);
     else
-	strcpy(c_dummy_var[0], dummy_var[0]);
+	strcpy(c_dummy_var[0], set_dummy_var[0]);
 
     if (dummy_y >= 0)
 	copy_str(c_dummy_var[0], dummy_y, MAX_ID_LEN);
     else
-	strcpy(c_dummy_var[1], dummy_var[1]);
+	strcpy(c_dummy_var[1], set_dummy_var[1]);
 
     func.at = perm_at();
     dummy_func = NULL;

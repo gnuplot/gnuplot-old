@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.2 2000/05/09 19:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.3 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -45,9 +45,10 @@ static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.2 2000/05/09 19:04:0
 #include "graphics.h"
 #include "fit.h"
 #include "interpol.h"
+#include "internal.h"
 #include "misc.h"
 #include "parse.h"
-#include "setshow.h"
+/*  #include "setshow.h" */
 #include "tables.h"
 #include "term_api.h"
 #include "util.h"
@@ -56,10 +57,12 @@ static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.2 2000/05/09 19:04:0
 # include "help.h"
 #endif
 
+/* minimum size of points[] in curve_points */
+#define MIN_CRV_POINTS 100
+
 /* static prototypes */
 
-void plot3drequest __PROTO((void));
-void define __PROTO((void));
+static struct curve_points * cp_alloc __PROTO((int num));
 static int get_data __PROTO((struct curve_points *));
 static void store2d_point __PROTO((struct curve_points *, int i, double x, double y, double xlow, double xhigh, double ylow, double yhigh, double width));
 static void print_table __PROTO((struct curve_points * first_plot, int plot_num));
@@ -67,25 +70,106 @@ static void eval_plots __PROTO((void));
 static void parametric_fixup __PROTO((struct curve_points * start_plot, int *plot_num));
 
 
+/* internal and external variables */
+
 /* the curves/surfaces of the plot */
 struct curve_points *first_plot = NULL;
 static struct udft_entry plot_func;
 
-/* in order to support multiple axes, and to
- * simplify ranging in parametric plots, we use
- * arrays to store some things.
- * Elements are z = 0, y1 = 1, x1 = 2, [z2 =4 ], y2 = 5, x2 = 6
- * these are given symbolic names in plot.h
+double boxwidth = -1.0;		/* box width (automatic) */
+
+
+
+/* function implementations */
+
+/* HBB 20000508: moved cp_alloc() &friends to the main module using them, and 
+ * made cp_alloc 'static'.
  */
+/*
+ * cp_alloc() allocates a curve_points structure that can hold 'num'
+ * points.
+ */
+static struct curve_points *
+cp_alloc(num)
+int num;
+{
+    struct curve_points *cp;
+
+    cp = (struct curve_points *) gp_alloc(sizeof(struct curve_points), "curve");
+    cp->p_max = (num >= 0 ? num : 0);
+
+    if (num > 0) {
+	cp->points = (struct coordinate GPHUGE *)
+	    gp_alloc(num * sizeof(struct coordinate), "curve points");
+    } else
+	cp->points = (struct coordinate GPHUGE *) NULL;
+    cp->next = NULL;
+    cp->title = NULL;
+    return (cp);
+}
+
 
 /*
- * IMHO, code is getting too cluttered with repeated chunks of
- * code. Some macros to simplify, I hope.
- *
- * do { } while(0) is comp.lang.c recommendation for complex macros
- * also means that break can be specified as an action, and it will
- * 
+ * cp_extend() reallocates a curve_points structure to hold "num"
+ * points. This will either expand or shrink the storage.
  */
+void
+cp_extend(cp, num)
+struct curve_points *cp;
+int num;
+{
+
+#if defined(DOS16) || defined(WIN16)
+    /* Make sure we do not allocate more than 64k points in msdos since 
+     * indexing is done with 16-bit int
+     * Leave some bytes for malloc maintainance.
+     */
+    if (num > 32700)
+	int_error(NO_CARET, "Array index must be less than 32k in msdos");
+#endif /* MSDOS */
+
+    if (num == cp->p_max)
+	return;
+
+    if (num > 0) {
+	if (cp->points == NULL) {
+	    cp->points = (struct coordinate GPHUGE *)
+		gp_alloc(num * sizeof(struct coordinate), "curve points");
+	} else {
+	    cp->points = (struct coordinate GPHUGE *)
+		gp_realloc(cp->points, num * sizeof(struct coordinate), "expanding curve points");
+	}
+	cp->p_max = num;
+    } else {
+	if (cp->points != (struct coordinate GPHUGE *) NULL)
+	    free(cp->points);
+	cp->points = (struct coordinate GPHUGE *) NULL;
+	cp->p_max = 0;
+    }
+}
+
+/*
+ * cp_free() releases any memory which was previously malloc()'d to hold
+ *   curve points (and recursively down the linked list).
+ */
+/* HBB 20000506: instead of risking stack havoc by recursion, operate
+ * iteratively */
+void
+cp_free(cp)
+struct curve_points *cp;
+{
+    while (cp) {
+	struct curve_points *next = cp->next;
+
+	if (cp->title)
+	    free(cp->title);
+	if (cp->points)
+	    free(cp->points);
+	free((char *) cp);
+	cp = next;
+    }
+}
+
 
 /* use this instead empty macro arguments to work around NeXT cpp bug */
 /* if this fails on any system, we might use ((void)0) */
@@ -109,8 +193,8 @@ plotrequest()
 
     is_3d_plot = FALSE;
 
-    if (parametric && strcmp(dummy_var[0], "u") == 0)
-	strcpy(dummy_var[0], "t");
+    if (parametric && strcmp(set_dummy_var[0], "u") == 0)
+	strcpy(set_dummy_var[0], "t");
 
     /* initialise the arrays from the 'set' scalars */
 
@@ -141,7 +225,7 @@ plotrequest()
     if (dummy_token >= 0)
 	copy_str(c_dummy_var[0], dummy_token, MAX_ID_LEN);
     else
-	(void) strcpy(c_dummy_var[0], dummy_var[0]);
+	(void) strcpy(c_dummy_var[0], set_dummy_var[0]);
 
     eval_plots();
 }
@@ -761,9 +845,9 @@ eval_plots()
 		    xparam = 1 - xparam;
 		if (*tp_ptr) {
 		    this_plot = *tp_ptr;
-		    cp_extend(this_plot, samples + 1);
+		    cp_extend(this_plot, samples_1 + 1);
 		} else {	/* no memory malloc()'d there yet */
-		    this_plot = cp_alloc(samples + 1);
+		    this_plot = cp_alloc(samples_1 + 1);
 		    *tp_ptr = this_plot;
 		}
 		this_plot->plot_type = FUNC;
@@ -1041,7 +1125,7 @@ eval_plots()
 	if (parametric || polar) {
 	    t_min = min_array[T_AXIS];
 	    t_max = max_array[T_AXIS];
-	    t_step = (t_max - t_min) / (samples - 1);
+	    t_step = (t_max - t_min) / (samples_1 - 1);
 	}
 	/* else we'll do it on each plot (see below) */
 
@@ -1070,9 +1154,9 @@ eval_plots()
 			t_min = min_array[x_axis];
 			t_max = max_array[x_axis];
 			axis_unlog_interval(x_axis, &t_min, &t_max, 1);
-			t_step = (t_max - t_min) / (samples - 1);
+			t_step = (t_max - t_min) / (samples_1 - 1);
 		    }
-		    for (i = 0; i < samples; i++) {
+		    for (i = 0; i < samples_1; i++) {
 			double temp;
 			struct value a;
 			double t = t_min + i * t_step;
@@ -1126,8 +1210,8 @@ eval_plots()
 			    ;	/* ansi requires a statement after a label */
 			}
 
-		    }	/* loop over samples */
-		    this_plot->p_count = i;	/* samples */
+		    }	/* loop over samples_1 */
+		    this_plot->p_count = i;	/* samples_1 */
 		}
 		/* skip all modifers func / whole of data plots */
 		c_token = this_plot->token;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: interpol.c,v 1.16.2.1 2000/05/02 21:26:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: interpol.c,v 1.16.2.2 2000/06/22 12:57:39 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - interpol.c */
@@ -106,7 +106,7 @@ static char *RCSid() { return RCSid("$Id: interpol.c,v 1.16.2.1 2000/05/02 21:26
  *      user co-ordinates. 
  *      Work with min and max of internal co-ords, and
  *      check at the end whether external min and max need to
- *      be increased. (since samples is typically 100 ; we
+ *      be increased. (since samples_1 is typically 100 ; we
  *      dont want to take more logs than necessary)
  *      Also, need to take into account which axes are active
  *
@@ -121,7 +121,8 @@ static char *RCSid() { return RCSid("$Id: interpol.c,v 1.16.2.1 2000/05/02 21:26
 #include "contour.h"
 #include "graphics.h"
 #include "misc.h"
-#include "setshow.h"
+#include "plot2d.h"
+/*  #include "setshow.h" */
 #include "util.h"
 
 
@@ -373,8 +374,8 @@ struct coordinate *dest;	/* where to put the interpolated data */
     iymin = symin = AXIS_LOG_VALUE(yaxis, min_array[yaxis]);
     iymax = symax = AXIS_LOG_VALUE(yaxis, max_array[yaxis]);
 
-    for (i = 0; i < samples; i++) {
-	eval_bezier(cp, first_point, num_points, (double) i / (double) (samples - 1), &x, &y, bc);
+    for (i = 0; i < samples_1; i++) {
+	eval_bezier(cp, first_point, num_points, (double) i / (double) (samples_1 - 1), &x, &y, bc);
 
 	/* now we have to store the points and adjust the ranges */
 
@@ -760,9 +761,9 @@ struct coordinate *dest;	/* where to put the interpolated data */
 
     l = 0;
 
-    xdiff = (this_points[num_points - 1].x - this_points[0].x) / (samples - 1);
+    xdiff = (this_points[num_points - 1].x - this_points[0].x) / (samples_1 - 1);
 
-    for (i = 0; i < samples; i++) {
+    for (i = 0; i < samples_1; i++) {
 	x = this_points[0].x + i * xdiff;
 
 	while ((x >= this_points[l + 1].x) && (l < num_points - 2))
@@ -821,7 +822,7 @@ struct curve_points *plot;
     int first_point, num_points;
 
     curves = num_curves(plot);
-    new_points = (struct coordinate *) gp_alloc((samples + 1) * curves * sizeof(struct coordinate), "interpolation table");
+    new_points = (struct coordinate *) gp_alloc((samples_1 + 1) * curves * sizeof(struct coordinate), "interpolation table");
 
     first_point = 0;
     for (i = 0; i < curves; i++) {
@@ -830,13 +831,13 @@ struct curve_points *plot;
 	case SMOOTH_CSPLINES:
 	    sc = cp_tridiag(plot, first_point, num_points);
 	    do_cubic(plot, sc, first_point, num_points,
-		     new_points + i * (samples + 1));
+		     new_points + i * (samples_1 + 1));
 	    free(sc);
 	    break;
 	case SMOOTH_ACSPLINES:
 	    sc = cp_approx_spline(plot, first_point, num_points);
 	    do_cubic(plot, sc, first_point, num_points,
-		     new_points + i * (samples + 1));
+		     new_points + i * (samples_1 + 1));
 	    free(sc);
 	    break;
 
@@ -844,19 +845,19 @@ struct curve_points *plot;
 	case SMOOTH_SBEZIER:
 	    bc = cp_binomial(num_points);
 	    do_bezier(plot, bc, first_point, num_points,
-		      new_points + i * (samples + 1));
+		      new_points + i * (samples_1 + 1));
 	    free((char *) bc);
 	    break;
 	default:		/* keep gcc -Wall quiet */
 	    ;
 	}
-	new_points[(i + 1) * (samples + 1) - 1].type = UNDEFINED;
+	new_points[(i + 1) * (samples_1 + 1) - 1].type = UNDEFINED;
 	first_point += num_points;
     }
 
     free(plot->points);
     plot->points = new_points;
-    plot->p_max = curves * (samples + 1);
+    plot->p_max = curves * (samples_1 + 1);
     plot->p_count = plot->p_max - 1;
 
     return;
@@ -917,7 +918,7 @@ struct curve_points *cp;
     double x = 0., y = 0., sux = 0., slx = 0., suy = 0., sly = 0.;
     int xaxis = cp->x_axis;                                                   
     int yaxis = cp->y_axis;                                                   
-    TBOOLEAN all_inrange; /* HBB 20000401: use the right type for this flag */
+    TBOOLEAN all_inrange = FALSE;
 
     j = 0;
     first_point = 0;

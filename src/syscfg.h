@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.11.2.1 2000/05/02 21:26:21 broeker Exp $
+ * $Id: syscfg.h,v 1.11.2.2 2000/06/22 12:57:39 broeker Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -559,5 +559,28 @@ typedef int (*sortfunc) __PROTO((SORTFUNC_ARGS, SORTFUNC_ARGS));
 #  define GP_INLINE /*nothing*/
 # endif
 #endif
+
+/* avoid precompiled header conflict with redefinition */
+#ifdef NEXT
+# include <mach/boolean.h>
+#else
+/* Sheer, raging paranoia */
+# ifdef TRUE
+#  undef TRUE
+# endif
+# ifdef FALSE
+#  undef FALSE
+# endif
+# define TRUE 1
+# define FALSE 0
+#endif
+
+#ifndef __cplusplus
+#undef bool
+typedef unsigned int bool;
+#endif
+
+/* TRUE or FALSE */
+#define TBOOLEAN bool
 
 #endif /* !SYSCFG_H */

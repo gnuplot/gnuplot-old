@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.2 2000/05/09 19:04:05 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.3 2000/06/22 12:57:38 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -150,11 +150,16 @@ static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.2 2000/05/09 19:04
 #include "internal.h"
 #include "misc.h"
 #include "parse.h"
-#include "setshow.h"
+#include "plot.h"
+/*  #include "setshow.h" */
 #include "util.h"
 
 /* if you change this, change the scanf in readline */
 #define NCOL   7		/* max using specs     */
+
+/* test to see if the end of an inline datafile is reached */
+#define is_EOF(c) ((c) == 'e' || (c) == 'E')
+
 
 /*{{{  static fns */
 #if 0				/* not used */
@@ -193,6 +198,11 @@ TBOOLEAN df_binary = FALSE;	/* this is a binary file */
 /* HBB 990829: moved this here, from command.c */
 struct udft_entry ydata_func;
 
+/* string representing missing values in ascii datafiles */
+char *missing_val = NULL;
+
+/* If any 'inline data' are in use for the current plot, flag this */
+TBOOLEAN plotted_data_from_stdin = FALSE;
 
 /* private variables */
 
@@ -263,6 +273,14 @@ static char *
 df_gets()
 {
     int len = 0;
+
+    /* HBB 20000526: prompt user for inline data, if in interactive mode */
+    if (mixed_data_fp && interactive)
+	fputs("input data ('e' ends) > ", stderr);
+
+    /* HBB 20000526: prompt user for inline data, if in interactive mode */
+    if (mixed_data_fp && interactive)
+	fputs("input data ('e' ends) > ", stderr);
 
     if (!fgets(line, max_line_len, data_fp))
 	return NULL;
@@ -631,6 +649,7 @@ int max_using;
 #endif /* PIPES */
 	/* I don't want to call strcmp(). Does it make a difference? */
     if (*filename == '-' && strlen(filename) == 1) {
+	plotted_data_from_stdin = TRUE;
 	data_fp = lf_top();
 	if (!data_fp)
 	    data_fp = stdin;
@@ -772,7 +791,7 @@ static void
 plot_option_thru()
 {
     c_token++;
-    strcpy(c_dummy_var[0], dummy_var[0]);
+    strcpy(c_dummy_var[0], set_dummy_var[0]);
     /* allow y also as a dummy variable.
      * during plot, c_dummy_var[0] and [1] are 'sacred'
      * ie may be set by  splot [u=1:2] [v=1:2], and these
