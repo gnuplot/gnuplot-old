@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.13 1998/10/28 21:08:50 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.14 1998/11/03 12:46:34 lhecking Exp $";
 #endif
 
 /*
@@ -854,7 +854,7 @@ static TBOOLEAN is_variable(s)
 char *s;
 {
     while (*s != '\0') {
-	if (!isalnum(*s) && *s != '_')
+	if (!isalnum((int)*s) && *s != '_')
 	    return FALSE;
 	s++;
     }
