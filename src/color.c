@@ -47,7 +47,7 @@ void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned 
 /* COLOUR MODES - GLOBAL VARIABLES */
 
 t_sm_palette sm_palette = {
-    34, /* colorFormulae---must be changed if changed GetColorValueFromFormula() */
+    37, /* colorFormulae---must be changed if changed GetColorValueFromFormula() */
     SMPAL_COLOR_MODE_RGB, /* colorMode */
     7, 5, 15, /* formulaR, formulaG, formulaB */
     SMPAL_POSITIVE, /* positive */

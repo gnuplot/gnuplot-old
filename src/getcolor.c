@@ -66,7 +66,9 @@ switch (formula) {
 	     else x = (x <= 0.92) ? -2*x+1.84 : x/0.08-11.5;
 	   break;
   case 33: x = fabs( 2*x - 0.5 ); break;
-	   break;
+  case 34: x = 2*x; break;
+  case 35: x = 2*x - 0.5; break;
+  case 36: x = 2*x - 1; break;
   /*
   IMPORTANT: if any new formula is added here, then:
 	(1) its postscript counterpart must be added into term/post.trm,
