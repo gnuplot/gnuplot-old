@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.24 1999/05/04 19:58:41 lhecking Exp $
+ * $Id: post.trm,v 1.25 1999/05/12 13:53:19 lhecking Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -621,7 +621,6 @@ TERM_PUBLIC void PS_options()
 			c_token++;
                         ps_dash_length = real(const_express(&a));
                         if (ps_dash_length <= 0.0) ps_dash_length = 1.0;
-			c_token++;
 		}
 	}
 
@@ -632,7 +631,6 @@ TERM_PUBLIC void PS_options()
 			c_token++;
                         ps_linewidth_factor = real(const_express(&a));
                         if (ps_linewidth_factor <= 0.0) ps_linewidth_factor = 1.0;
-			c_token++;
 		}
 	}
 
