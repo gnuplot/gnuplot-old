@@ -235,7 +235,11 @@ static void filled_polygon ( int points, gpdPoint *corners );
 /*
    The routine above for 4 points explicitly
 */
-void filled_quadrangle ( gpdPoint *corners );
+void filled_quadrangle(gpdPoint *corners
+#ifdef EXTENDED_COLOR_SPECS
+    , gpiPoint* icorners
+#endif
+    );
 
 /*
    Makes mapping from real 3D coordinates, passed as coords array,

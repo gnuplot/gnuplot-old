@@ -206,29 +206,21 @@ static void filled_polygon ( int points, gpdPoint *corners )
  * This is the only routine which supportes extended
  * color specs currently.
  */
-void filled_quadrangle ( gpdPoint *corners )
+void
+filled_quadrangle(gpdPoint *corners
+#ifdef EXTENDED_COLOR_SPECS
+    , gpiPoint* icorners
+#endif
+		 )
 {
     int i;
+#ifndef EXTENDED_COLOR_SPECS
     gpiPoint icorners[4];
-#ifdef EXTENDED_COLOR_SPECS
-    extern double z2gray(double z);
-
-    if (supply_extended_color_specs) {
-	for (i = 0; i < 4; i++) {
-	    map3d_xy(corners[i].x, corners[i].y, corners[i].z,
-		&icorners[i].x, &icorners[i].y);
-	    icorners[i].z = corners[i].z;
-	    icorners[i].spec.gray = z2gray(corners[i].z);
-	}
-    } else {
 #endif
-	for (i = 0; i < 4; i++) {
-	    map3d_xy(corners[i].x, corners[i].y, corners[i].z,
-		&icorners[i].x, &icorners[i].y);
-	}
-#ifdef EXTENDED_COLOR_SPECS
+    for (i = 0; i < 4; i++) {
+	map3d_xy(corners[i].x, corners[i].y, corners[i].z,
+	    &icorners[i].x, &icorners[i].y);
     }
-#endif
 
     term->filled_polygon(4, icorners);
 

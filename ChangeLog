@@ -1,4 +1,10 @@
 
+2000-10-25  Johannes Zellner <johannes@zellner.org>
+
+	* src/pm3d.c, src/color.[ch]:
+	repaired supplying of extended color specs in pm3d
+	(make it working in vgagl.trm)
+
 2000-10-24  Petr Mikulik <mikulik@physics.muni.cz>
 
 	* trm/post.trm: "g" makes stroke + set(gray/rgb), "G" and "H" removed;

@@ -235,6 +235,9 @@ pm3d_plot(struct surface_points* this_plot, char at_which_z)
     double avgZ, gray;
     gpdPoint corners[4];
     extern double base_z, ceiling_z; /* defined in graph3d.c */
+#ifdef EXTENDED_COLOR_SPECS
+    gpiPoint icorners[4];
+#endif
 
     if (this_plot == NULL)
 	return;
@@ -367,11 +370,8 @@ point indices `i' by `up_to-i' and `i+1' by `up_to-i-1'.
 	    corners[1].x = pointsB[ii].x;   corners[1].y = pointsB[ii].y;
 	    corners[2].x = pointsB[ii+1].x; corners[2].y = pointsB[ii+1].y;
 	    corners[3].x = pointsA[i+1].x;  corners[3].y = pointsA[i+1].y;
-	    if (at_which_z == PM3D_AT_SURFACE
-#ifdef EXTENDED_COLOR_SPECS
-	    || supply_extended_color_specs
-#endif
-		) {
+
+	    if (at_which_z == PM3D_AT_SURFACE) {
 		/* always supply the z value if
 		 * EXTENDED_COLOR_SPECS is defined
 		 */
@@ -381,8 +381,22 @@ point indices `i' by `up_to-i' and `i+1' by `up_to-i-1'.
 		corners[3].z = pointsA[i+1].z;
 	    }
 
+#ifdef EXTENDED_COLOR_SPECS
+	    if (supply_extended_color_specs) {
+		/* the target wants z and gray value */
+		icorners[0].z = pointsA[i].z;
+		icorners[1].z = pointsB[ii].z;
+		icorners[2].z = pointsB[ii+1].z;
+		icorners[3].z = pointsA[i+1].z;
+		for (i = 0; i < 4; i++) {
+		    icorners[i].spec.gray = z2gray(icorners[i].z);
+		}
+	    }
+	    filled_quadrangle(corners, icorners);
+#else
 	    /* filled_polygon( 4, corners ); */
 	    filled_quadrangle( corners );
+#endif
 	} /* loop over points of two subsequent scans */
     } /* loop over scans */
     /* printf("\n"); */
