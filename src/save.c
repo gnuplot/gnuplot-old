@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.9 1999/12/10 16:53:26 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.10 2000/01/22 16:49:56 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -693,7 +693,7 @@ set ticscale %g %g\n",
     if (strlen(timefmt)) {
 	fprintf(fp, "set timefmt \"%s\"\n", conv_text(timefmt));
     }
-    save_range(fp, FIRST_X_AXIS, xmin, xmax, autoscale_x2, "x");
+    save_range(fp, FIRST_X_AXIS, xmin, xmax, autoscale_x, "x");
     save_range(fp, SECOND_X_AXIS, x2min, x2max, autoscale_x2, "x2");
 
     SAVE_XYZLABEL("ylabel", ylabel);
