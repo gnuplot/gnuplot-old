@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: pdf.trm,v 1.33 2004/07/04 23:58:47 sfeam Exp $
+ * $Id: pdf.trm,v 1.31.2.1 2004/07/08 12:47:15 broeker Exp $
  */
 
 /*------------------------------
@@ -58,11 +58,8 @@ TERM_PUBLIC void PDF_linewidth __PROTO ((double linewidth));
 TERM_PUBLIC int PDF_make_palette __PROTO((t_sm_palette *));
 TERM_PUBLIC void PDF_previous_palette __PROTO((void));
 TERM_PUBLIC void PDF_set_color __PROTO((double));
-#endif /* PM3D */
-
-#if defined(PM3D) || defined(USE_ULIG_FILLEDBOXES)
 TERM_PUBLIC void PDF_filled_polygon __PROTO((int, gpiPoint *));
-#endif
+#endif /* PM3D */
 
 /* To support "set term png enhanced" */
 TERM_PUBLIC void ENHPDF_put_text __PROTO((unsigned int x, unsigned int y, const char *str));
@@ -345,7 +342,9 @@ PDF_init ()
 	myPDF = PDF_new();
 
     /*open new PDF file */
-    if (PDF_open_fp(myPDF, gpoutfile) == -1)
+    /* HBB FIXME 20040708: PDF_open_file is deprecated, will have to
+     * be re-done again soon. */
+    if (PDF_open_file(myPDF, outstr) == -1)
 	int_error(NO_CARET, "Error:cannot open PDF file .\n");
 
 #ifdef PDF_DONT_COMPRESS
@@ -1043,35 +1042,27 @@ TERM_PUBLIC void
 PDF_boxfill(int style, unsigned int x1, unsigned int y1,
 	    unsigned int width, unsigned int height)
 {
-    gpiPoint corner[4];
+#if USE_ULIG_FILLEDBOXES
+    /* fillpar:
+     * - solid   : 0 - 100
+     * - pattern : 0 - 100
+     */
+    int fillpar = style >> 4;
 
-	corner[0].x = x1;        corner[0].y = y1;
-	corner[1].x = x1+width;  corner[1].y = y1;
-	corner[2].x = x1+width;  corner[2].y = y1+height;
-	corner[3].x = x1;        corner[3].y = y1+height;
-
-	corner->style = style;
-	PDF_filled_polygon(4, corner);
-}
-
-#if defined(USE_ULIG_FILLEDBOXES) || defined(PM3D)
-
-TERM_PUBLIC void
-PDF_filled_polygon(int points, gpiPoint* corners)
-{
-    int i;
-    int fillpar = corners->style >> 4;
-    int style = corners->style &= 0xf;
+    style &= 0xf;
+#else
+    (void) style;		/* unused */
+#endif
 
     PDF_PathClose();
     PDF_save(myPDF);
 
-    /* If PM3D code has already set the color, then use it. */
-    /* Otherwise find it using the requested style parameter. */
-    if (PDF_LineType != LT_UNDEFINED)
+#if USE_ULIG_FILLEDBOXES
     switch (style) {
 	case FS_EMPTY: /* fill with white */
+#endif
 	    PDF_setgray(myPDF, 1);
+#if USE_ULIG_FILLEDBOXES
 	    break;
 	case FS_SOLID:
 	    {
@@ -1087,7 +1078,7 @@ PDF_filled_polygon(int points, gpiPoint* corners)
 		PDF_setrgbcolor_fill(myPDF, red, green, blue);
 	    }
 	    break;
-#if USE_ULIG_FILLEDBOXES && !HAVE_OLD_LIBPDF
+#ifndef HAVE_OLD_LIBPDF
 	case FS_PATTERN:
 	    fillpar = fillpar % (PDF_patterns + 1) /* 0 == white */;
 	    switch (fillpar) {
@@ -1096,6 +1087,12 @@ PDF_filled_polygon(int points, gpiPoint* corners)
 		    PDF_setcolor(myPDF, "fill", "rgb", 1, 1, 1, 0 /* unused */);
 		    break;
 		default:
+		    /* fill with solid white then overlay pattern */
+		    PDF_save(myPDF);
+		    PDF_setcolor(myPDF, "fill", "rgb", 1, 1, 1, 0 /* unused */);
+		    PDF_rect(myPDF, x1, y1, width, height);
+		    PDF_fill(myPDF);
+		    PDF_restore(myPDF);
 		    PDF_setcolor(myPDF, "fill", "pattern", PDF_patternHandles[fillpar - 1], 0, 0, 0);
 	    }
 	    break;
@@ -1103,16 +1100,12 @@ PDF_filled_polygon(int points, gpiPoint* corners)
 	default:
 	    break;
     }
+#endif
 
-    PDF_moveto(myPDF, corners[0].x, corners[0].y);
-    for (i=1; i<points; i++)
-	PDF_lineto(myPDF, corners[i].x, corners[i].y);
-    PDF_lineto(myPDF, corners[0].x, corners[0].y);
+    PDF_rect(myPDF, x1, y1, width, height);
     PDF_fill(myPDF);
     PDF_restore(myPDF);
 }
-
-#endif
 
 #ifdef PM3D
 
@@ -1142,6 +1135,19 @@ PDF_set_color(double gray)
     /* mark linetype invalid so that the color will be
      * set, when PDF_linetype() is called */
     PDF_LineType = LT_UNDEFINED;
+}
+
+
+TERM_PUBLIC void
+PDF_filled_polygon(int points, gpiPoint* corners)
+{
+    int i;
+    PDF_PathClose();
+    PDF_moveto(myPDF, corners[0].x, corners[0].y);
+    for (i=1; i<points; i++)
+	PDF_lineto(myPDF, corners[i].x, corners[i].y);
+    PDF_lineto(myPDF, corners[0].x, corners[0].y);
+    PDF_fill(myPDF);
 }
 
 TERM_PUBLIC void
