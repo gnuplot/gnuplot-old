@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.2 1999/05/19 11:01:42 lhecking Exp $
+ * $Id: term.h,v 1.3 1999/05/27 21:00:14 lhecking Exp $
  *
  */
 
@@ -137,6 +137,10 @@
 # include "next.trm"
 #endif
 
+/* Apple MacOs X Server (Openstep Unix) */
+#if defined(__APPLE__) && defined(__MACH__)
+# include "openstep.trm"
+#endif 
 
 /* OS/2 */
 #ifdef OS2
