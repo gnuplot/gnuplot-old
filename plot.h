@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.4 1998/08/18 16:27:20 lhecking Exp $
+ * $Id: plot.h,v 1.5 1998/09/16 11:30:32 lhecking Exp $
  *
  */
 
@@ -164,6 +164,12 @@
 #define SAMPLES 100		/* default number of samples for a plot */
 #define ISO_SAMPLES 10		/* default number of isolines per splot */
 #define ZERO	1e-8		/* default for 'zero' set option */
+
+#ifndef X_DISPLAY_MISSING
+# ifndef X11
+#  define X11
+# endif
+#endif
 
 #ifndef TERM
 /* default terminal is "unknown"; but see init_terminal */
