@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2tex.c,v 1.17 2004/07/01 17:10:03 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2tex.c,v 1.18 2005/04/01 22:16:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - doc2tex.c */
@@ -322,10 +322,10 @@ section(char *line, FILE *b)
 	(void) fprintf(b, "\\subsubsection{");
 	break;
     case 5:
-	(void) fprintf(b, "\\subsubsubsection{");
+	(void) fprintf(b, "\\paragraph{");
 	break;
     case 6:
-	(void) fprintf(b, "\\paragraph{");
+	(void) fprintf(b, "\\subparagraph{");
 	break;
     default:
         break;
