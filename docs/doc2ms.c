@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2ms.c,v 1.6 1998/10/09 14:24:43 lhecking Exp $";
+static char *RCSid = "$Id: doc2ms.c,v 1.7 1998/10/12 20:21:11 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2ms.c */
@@ -285,7 +285,7 @@ FILE *file;
 {
     static boolean inquote = FALSE;
 
-    while (*s != '\0') {
+    while (*s != NUL) {
 	switch (*s) {
 	case '`':{		/* backquote -> boldface */
 		if (inquote) {
