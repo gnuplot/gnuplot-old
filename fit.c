@@ -1,6 +1,18 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.23 1999/01/06 15:50:16 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.24 1999/02/14 18:16:28 lhecking Exp $";
 #endif
+
+/*  NOTICE: Change of Copyright Status
+ *
+ *  The author of this module, Carsten Grammes, has expressed in
+ *  personal email that he has no more interest in this code, and
+ *  doesn't claim any copyright. He suggests to put this code
+ *  under GPL. This is not compatible with the current gnuplot
+ *  copyright. But there is no problem to use this code in a
+ *  different project under different copyright conditions.
+ *
+ *  Lars Hecking  11-02-1999
+ */
 
 /*
  *    Nonlinear least squares fit according to the

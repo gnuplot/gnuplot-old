@@ -1,4 +1,16 @@
-/* $Id: matrix.h,v 1.8 1998/06/30 16:42:24 lhecking Exp $ */
+/* $Id: matrix.h,v 1.9 1999/02/14 18:16:39 lhecking Exp $ */
+
+/*  NOTICE: Change of Copyright Status
+ *
+ *  The author of this module, Carsten Grammes, has expressed in
+ *  personal email that he has no more interest in this code, and
+ *  doesn't claim any copyright. He suggests to put this code
+ *  under GPL. This is not compatible with the current gnuplot
+ *  copyright. But there is no problem to use this code in a
+ *  different project under different copyright conditions.
+ *
+ *  Lars Hecking  11-02-1999
+ */
 
 /*
  *	Header file: public functions in matrix.c

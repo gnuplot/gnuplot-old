@@ -1,4 +1,16 @@
-/* $Id: fit.h,v 1.9 1998/10/28 21:08:54 lhecking Exp $ */
+/* $Id: fit.h,v 1.10 1999/02/14 18:16:31 lhecking Exp $ */
+
+/*  NOTICE: Change of Copyright Status
+ *
+ *  The author of this module, Carsten Grammes, has expressed in
+ *  personal email that he has no more interest in this code, and
+ *  doesn't claim any copyright. He suggests to put this code
+ *  under GPL. This is not compatible with the current gnuplot
+ *  copyright. But there is no problem to use this code in a
+ *  different project under different copyright conditions.
+ *
+ *  Lars Hecking  11-02-1999
+ */
 
 /*
  *	Header file: public functions in fit.c
