@@ -1,5 +1,5 @@
 /*
- * $Id: amiga.trm,v 1.5 1998/10/03 20:11:17 lhecking Exp $
+ * $Id: amiga.trm,v 1.6 1998/10/28 21:01:02 lhecking Exp $
  *
  */
 
@@ -651,7 +651,7 @@ char *font;
     {
       sep = strcspn(font,",");
       strncpy(name,font,sep);
-      name[sep] = '\0';
+      name[sep] = NUL;
       size = AMIGA_FontSize;
       sscanf(&(font[sep+1]),"%d",&size);
 
