@@ -1,5 +1,5 @@
 /*
- * $Id: apollo.trm,v 1.8 1998/12/14 18:38:08 lhecking Exp $
+ * $Id: apollo.trm,v 1.9 1999/01/14 19:34:40 lhecking Exp $
  *
  */
 
@@ -19,6 +19,10 @@
     4 October 1989	file created for gnuplot 1.1
     26 March 1990	updated for gnuplot 2.0
     30 October 1991	fixed minor problem in apollo_tic_sizes
+
+    As of 13 January 1999, this file has been placed in the
+    public domain by Ray Lischner.
+
 */
 
 /*
