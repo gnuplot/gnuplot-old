@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.4 1998/10/20 19:43:48 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.5 1998/10/28 21:11:33 lhecking Exp $";
 #endif
 
 
@@ -369,4 +369,23 @@ int n;
 }
 # endif /* !HAVE_STRNCASECMP */
 #endif /* !HAVE_STRNICMP */
+
+
+/* Safe, '\0'-terminated version of strncpy()
+ * safe_strncpy(dest, src, n), where n = sizeof(dest)
+ * This is basically the old fit.c(copy_max) function
+ */
+
+char *safe_strncpy(d, s, n)
+char *d, *s;
+size_t n;
+{
+    char *ret;
+
+    ret = strncpy(d, s, n);
+    if (strlen(s) >= n)
+	d[n-1] = NUL;
+
+    return ret;
+}
 
