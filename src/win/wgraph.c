@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgraph.c,v 1.6 2000/11/09 16:14:38 broeker Exp $";
+static char *RCSid = "$Id: wgraph.c,v 1.7 2000/12/05 18:00:19 broeker Exp $";
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -64,6 +64,7 @@ static char *RCSid = "$Id: wgraph.c,v 1.6 2000/11/09 16:14:38 broeker Exp $";
 #include "term_api.h"         /* for enum JUSTIFY */
 #ifdef PM3D
 #include "color.h"
+#include "getcolor.h"         /* HBB 20001204: use new header */
 #endif
 
 LRESULT CALLBACK WINEXPORT WndGraphProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
