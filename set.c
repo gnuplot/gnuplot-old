@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.25 1999/03/12 21:46:56 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.26 1999/03/26 15:16:09 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -1178,6 +1178,7 @@ set_two()
 	    /* on int_error, we'd like to remember that this is allocated */
 	    static char *testfile = NULL;
 	    m_quote_capture(&testfile,c_token, c_token); /* reallocs store */
+	    gp_expand_tilde(&testfile,strlen(testfile));
 	    /* Skip leading whitespace */
 	    while (isspace((int)*testfile))
 		testfile++;
