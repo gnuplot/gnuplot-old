@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.22 2004/02/23 13:59:37 broeker Exp $
+ * $Id: term.h,v 1.23 2004/03/29 10:30:18 persquare Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -144,15 +144,22 @@
 # include "next.trm"
 #endif
 
-/* Apple MacOs X Server (Openstep Unix) */
+/* Apple Mac OS X Server 1.0 (Openstep Unix) */
 /* Apparently, Openstep code won't work on newer versions of
  * MacOS X. If someone can fix this, and provide a proper
  * configure test, let us know.
  */
-#if defined(__APPLE__) && defined(__MACH__)
-/* # include "openstep.trm" */
+/*
+ * #if defined(__APPLE__) && defined(__MACH__)
+ * # include "openstep.trm"
+ * #endif 
+*/
+
+/* Apple Mac OS X */
+#ifdef HAVE_LIBAQUATERM
+/* support for AquaTerm.app */
 # include "aquaterm.trm"
-#endif 
+#endif
 
 /* OS/2 */
 #ifdef OS2
