@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.12 1998/09/21 21:04:23 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.13 1998/10/03 20:17:11 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -127,7 +127,7 @@ double			log_base_log_y	= 0.0;
 double			log_base_log_z	= 0.0;
 double			log_base_log_x2	= 0.0;
 double			log_base_log_y2	= 0.0;
-FILE*			outfile;
+FILE*			gpoutfile;
 char			*outstr = NULL; /* means "STDOUT" */
 TBOOLEAN		parametric	= FALSE;
 double			pointsize	= 1.0;
