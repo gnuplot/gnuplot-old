@@ -1,5 +1,5 @@
 /*
- * $Id: pslatex.trm,v 1.8 1998/10/28 21:02:13 lhecking Exp $
+ * $Id: pslatex.trm,v 1.9 1998/11/19 10:44:18 lhecking Exp $
  */
 
 /* GNUPLOT - pslatex.trm */
@@ -115,7 +115,8 @@ TERM_PUBLIC void PSLATEX_options()
     }
 
     if (!END_OF_COMMAND) {
-	if (almost_equals(c_token, "c$olor")) {
+	if (almost_equals(c_token, "c$olor")
+	    || almost_equals(c_token, "c$olour")) {
 	    ps_color = TRUE;
 	    c_token++;
 	}

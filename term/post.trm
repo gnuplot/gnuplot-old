@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.15 1998/10/28 21:01:28 lhecking Exp $
+ * $Id: post.trm,v 1.16 1998/11/19 10:44:13 lhecking Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -579,7 +579,8 @@ TERM_PUBLIC void PS_options()
 			ps_color=FALSE;
 			c_token++;
 		}
-		else if (almost_equals(c_token,"c$olor")) {
+		else if (almost_equals(c_token,"c$olor")
+			 || almost_equals(c_token,"c$olour")) {
 			ps_color=TRUE;
 			c_token++;
 		}

@@ -1,5 +1,5 @@
 /*
- * $Id: ai.trm,v 1.4 1998/10/03 20:11:16 lhecking Exp $
+ * $Id: ai.trm,v 1.5 1998/11/19 10:42:49 lhecking Exp $
  *
  */
 
@@ -140,7 +140,8 @@ TERM_PUBLIC void AI_options()
 			ai_color=FALSE;
 			c_token++;
 		}
-		else if (almost_equals(c_token,"c$olor")) {
+		else if (almost_equals(c_token,"c$olor")
+			 || almost_equals(c_token,"c$olour")) {
 			ai_color=TRUE;
 			c_token++;
 		}
