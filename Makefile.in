@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.30 1998/11/16 13:46:01 lhecking Exp $
+# $Id: Makefile.in,v 1.31 1998/11/17 20:59:29 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -165,7 +165,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.30 1998/11/16 13:46:01 lhecking Exp $
+# $Id: Makefile.in,v 1.31 1998/11/17 20:59:29 lhecking Exp $
 #
 ########################################################
 #
@@ -405,7 +405,7 @@ show.o: show.c plot.h setshow.h
 	$(COMPILE) -DHELPFILE=\"$(HELPFILE)\" -DGNUPLOT_BINDIR=\"$(bindir)\" -c $<
 
 term.o: term.c term.h $(CORETERM)
-	$(COMPILE) -I./term -I$(top_srcdir)/term -c $<
+	$(COMPILE) -I$(top_srcdir)/term -c $<
 
 version.o: version.c
 	$(COMPILE) -DCONTACT=\"$(EMAIL)\" -c $<
