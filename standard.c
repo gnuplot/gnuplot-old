@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: standard.c,v 1.1.1.3 1998/04/22 13:38:19 lhecking Exp $";
+static char *RCSid = "$Id: standard.c,v 1.5.2.1 2000/05/07 16:44:57 lhecking Exp $";
 #endif
 
 /* GNUPLOT - standard.c */
@@ -69,7 +69,7 @@ static double ry1 __PROTO((double x));
  * These bessel functions are accurate to about 1e-13
  */
 
-#if (defined (ATARI) && defined(__PUREC__)) || (defined (MTOS) && defined(__PUREC__))
+#if (defined (ATARI) || defined (MTOS)) && defined(__PUREC__)
 /* Sorry. But PUREC bugs here.
  * These bessel functions are NOT accurate to about 1e-13
  */
@@ -480,7 +480,7 @@ static double GPFAR qyone[] = {
 	0.1e+1
 };
 
-#endif /* ATARI && __PUREC__  ||  MTOS && __PUREC__*/
+#endif /* (ATARI || MTOS) && __PUREC__ */
 
 void f_real()
 {
@@ -572,13 +572,16 @@ register double x, y;
 			/* real result */
 			push( Gcomplex(&a,acos(x)/ang2rad,0.0) );
 	} else { 
-		double alpha = sqrt((x + 1)*(x + 1) + y*y)/2 + sqrt((x - 1)*(x - 1) + y*y)/2;
-		double beta  = sqrt((x + 1)*(x + 1) + y*y)/2 - sqrt((x - 1)*(x - 1) + y*y)/2;
+		double alpha = sqrt((x + 1) * (x + 1) + y * y) / 2 
+				+ sqrt((x - 1) * (x - 1) + y * y) / 2;
+		double beta = sqrt((x + 1) * (x + 1) + y * y) / 2 
+				- sqrt((x - 1) * (x - 1) + y * y) / 2;
 		if (beta > 1)
 			beta = 1;	/* Avoid rounding error problems */
 		else if (beta < -1)
 			beta = -1;
-		push( Gcomplex(&a,acos(beta)/ang2rad, log(alpha + sqrt(alpha*alpha-1))/ang2rad));
+		push( Gcomplex(&a, (y > 0? -1: 1)*acos(beta) / ang2rad,
+				log(alpha + sqrt(alpha*alpha-1)) / ang2rad));
 	}
 }
 
@@ -686,9 +689,11 @@ register double alpha, beta, x, y;        /* acosh(z) = I*acos(z) */
 	} else if (y == 0) {
 	        push( Gcomplex(&a, log(x+sqrt(x*x-1))/ang2rad, 0.0) );
 	} else {
-		alpha = sqrt((x + 1)*(x + 1) + y*y)/2 + sqrt((x - 1)*(x - 1) + y*y)/2;
-		beta  = sqrt((x + 1)*(x + 1) + y*y)/2 - sqrt((x - 1)*(x - 1) + y*y)/2;
-		push( Gcomplex(&a, log(alpha + sqrt(alpha*alpha-1))/ang2rad, acos(beta)/ang2rad));
+		alpha = sqrt((x + 1) * (x + 1) + y * y) / 2 
+			+ sqrt((x - 1) * (x - 1) + y * y) / 2;
+		beta = sqrt((x + 1) * (x + 1) + y * y) / 2 
+			- sqrt((x - 1) * (x - 1) + y * y) / 2;
+		push( Gcomplex(&a, log(alpha + sqrt(alpha * alpha - 1)) / ang2rad, (y<0 ? -1 : 1) * acos(beta) / ang2rad));
 	}
 }
 
@@ -794,10 +799,8 @@ register double mag, ang;
 void f_log10()
 {
 struct value a;
-register double l10;;
 	(void) pop(&a);
-	l10 = log(10.0);	/***** replace with a constant! ******/
-	push( Gcomplex(&a,log(magnitude(&a))/l10, angle(&a)/l10) );
+	push( Gcomplex(&a,log(magnitude(&a))/M_LN10, angle(&a)/M_LN10) );
 }
 
 
