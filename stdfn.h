@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.3 1998/04/22 18:57:04 lhecking Exp $
+ * $Id: stdfn.h,v 1.4 1998/06/23 13:41:36 lhecking Exp $
  *
  */
 
