@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.56 2005/03/14 13:02:08 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.57 2005/03/15 15:59:39 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -784,7 +784,9 @@ set_plot_with_palette(int plot_num, int plot_mode)
 
     /* Check 3D plots */
     if (plot_mode == MODE_SPLOT) {
-    /* Any surface 'with pm3d' or 'with line|dot palette'? */
+	if (this_3dplot->plot_style == IMAGE || this_3dplot->plot_style == RGBIMAGE)
+    	    return;
+	/* Any surface 'with pm3d' or 'with line|dot palette'? */
 	while (surface++ < plot_num) {
 	    if (this_3dplot->lp_properties.use_palette) {
 		if (this_3dplot->lp_properties.pm3d_color.type <= TC_RGB)
