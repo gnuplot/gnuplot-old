@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.28 1998/10/28 21:06:56 lhecking Exp $
+# $Id: Makefile.in,v 1.29 1998/11/06 22:11:50 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -164,7 +164,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.28 1998/10/28 21:06:56 lhecking Exp $
+# $Id: Makefile.in,v 1.29 1998/11/06 22:11:50 lhecking Exp $
 #
 ########################################################
 #
@@ -293,7 +293,7 @@ ETC =   00test 0BUGS 0FAQ 0INSTALL 0PORTING 0README ChangeLog CodeStyle \
 	makefile.g makefile.msc makefile.msw makefile.mto makefile.nt \
 	makefile.os2 makefile.os9 makefile.r makefile.st makefile.tc \
 	makefile.unx makefile.vms makefile.wc makefile.win makefile.ztc \
-	missing mkdist mkinstalldirs os9.c pcgraph.asm rgipgnu stamp-h.in \
+	missing mkinstalldirs os9.c pcgraph.asm rgipgnu stamp-h.in \
 	strftime.c upd_make.sh vms.c m4/msdos.m4 m4/next.m4 m4/search-hdr.m4 \
 	m4/search-lib.m4 m4/select-types.m4 m4/stringize.m4 $(T)README 
 
