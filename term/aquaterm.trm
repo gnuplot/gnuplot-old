@@ -1,5 +1,5 @@
 /* -*- objc -*-
- * $Id: aquaterm.trm,v 1.12 2004/12/31 06:12:56 sfeam Exp $
+ * $Id: aquaterm.trm,v 1.13 2005/02/14 10:19:08 mikulik Exp $
  *
  */
 
@@ -103,10 +103,6 @@ TERM_PUBLIC void ENHAQUA_writec __PROTO((int c));
 #import <Foundation/NSDictionary.h>
 #import <Foundation/NSAttributedString.h>
 #import <stdarg.h>
-
-#ifdef PM3D
-#include "getcolor.h"
-#endif
 
 /* Debugging extras */
 static inline void NOOP_(id x, ...) {;}

@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: vgagl.trm,v 1.12 2004/11/27 02:38:39 sfeam Exp $
+ * $Id: vgagl.trm,v 1.13 2005/02/14 10:19:17 mikulik Exp $
  */
 
 #if defined(USE_MOUSE) && defined(PM3D)
@@ -61,8 +61,6 @@
  */
 
 #define VGAGL_DEBUGGING
-#include "driver.h"
-#include "pm3d.h"
 
 #ifdef TERM_REGISTER
 register_term(vgagl)
@@ -93,7 +91,6 @@ TERM_PUBLIC void VGAGL_suspend __PROTO((void));
 TERM_PUBLIC void VGAGL_resume __PROTO((void));
 
 
-#include "mousecmn.h"
 void VGAGL_eventually_process_graphics_events __PROTO((void));
 TERM_PUBLIC void VGAGL_draw_cursor __PROTO((int x, int y));
 TERM_PUBLIC void VGAGL_set_ruler __PROTO((int, int));
