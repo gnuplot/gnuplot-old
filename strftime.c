@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid="$Id: strftime.c,v 1.4 1998/09/21 21:04:35 lhecking Exp $";
+static char *RCSid="$Id: strftime.c,v 1.5 1998/10/28 21:07:54 lhecking Exp $";
 #endif
 
 /* GNUPLOT - strftime.c */
@@ -62,7 +62,7 @@ static void fill(from, pto, pmaxsize)
      char **pto;
      size_t *pmaxsize;
 {
-  strncpy(*pto, from, *pmaxsize);
+  safe_strncpy(*pto, from, *pmaxsize);
   if(*pmaxsize<strlen(from)) {
     (*pto) += *pmaxsize;
     *pmaxsize = 0;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.7 1998/10/09 14:30:23 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.8 1998/10/28 21:07:49 lhecking Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -263,7 +263,7 @@ register long lval;
 	return(count);
 }
 
-#if defined(VMS) || defined(PIPES) || (defined(ATARI) && defined(__PUREC__)) || (defined(MTOS) && defined(__PUREC__))
+#if defined(VMS) || defined(PIPES) || (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
 
 /* this really ought to make use of the dynamic-growth of the
  * input line in 3.6.  And it definitely should not have
@@ -368,9 +368,10 @@ static $DESCRIPTOR(lognamedsc,MAILBOX);
 
 	if (i + strlen(last) > max)
 		int_error("substitution overflowed rest of line", t_num);
-	(void) strncpy(output+i,last,MAX_LINE_LEN-i);
-									/* tack on rest of line to output */
-	(void) strcpy(str,output);				/* now replace ` ` with output */
+	/* tack on rest of line to output */
+	safe_strncpy(output+i,last,MAX_LINE_LEN-i);
+	/* now replace ` ` with output */
+	(void) strcpy(str,output);
 	screen_ok = FALSE;
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: doc2info.c,v 1.7 1998/10/19 13:17:41 lhecking Exp $
+ * $Id: doc2info.c,v 1.8 1998/10/28 21:04:16 lhecking Exp $
  *
  */
 
@@ -119,18 +119,18 @@ char **argv;
 	    exit(EXIT_FAILURE);
 	}
     } else
-	strncpy(ifile, "gnuplot.doc", sizeof(ifile));	/* default value */
+	safe_strncpy(ifile, "gnuplot.doc", sizeof(ifile)); /* default value */
     if (argc == 3) {
-	strncpy(ofile, argv[2], sizeof(ofile));
+	safe_strncpy(ofile, argv[2], sizeof(ofile));
 	if ((outfile = fopen(argv[2], "w")) == (FILE *) NULL) {
 	    fprintf(stderr, "%s: Can't open %s for writing\n",
 		    argv[0], argv[2]);
 	    exit(EXIT_FAILURE);
 	}
     } else
-	strncpy(ofile, "gnuplot.info", sizeof(ofile));	/* default value */
+	safe_strncpy(ofile, "gnuplot.info", sizeof(ofile)); /* default value */
 
-    strncpy(title, ofile, sizeof(title));
+    safe_strncpy(title, ofile, sizeof(title));
     strtok(title, ".");		/* without type */
     convert(infile, outfile);
     exit(EXIT_SUCCESS);
