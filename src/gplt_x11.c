@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.3 2000/06/09 07:47:58 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.4 2000/06/23 13:28:24 joze Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -272,7 +272,9 @@ typedef struct plot_struct {
 
 #ifdef USE_MOUSE
 enum { NOT_AVAILABLE = -1 };
-static char selection[0xff] = "";
+
+#define SEL_LEN 0xff
+static char selection[SEL_LEN] = "";
 
 #ifndef OS2
 /* sunos 4 uses on_exit() in place of atexit(). If both are missing,
@@ -1231,8 +1233,14 @@ record()
 #ifdef EXPORT_SELECTION
 	    export_graph(plot);
 #endif
-	    XStoreBytes(dpy, buf + 1, strlen(buf + 1) - 1);
-	    XFlush(dpy);
+	    {
+		int len = strlen(buf + 1) - 1 /* discard newline '\n' */;
+		strncpy(selection, buf + 1, len < SEL_LEN ? len : SEL_LEN);
+		/* terminate */
+		selection[len + 1 < SEL_LEN ? len + 1 : SEL_LEN - 1] = '\0';
+		XStoreBytes(dpy, buf + 1, len);
+		XFlush(dpy);
+	    }
 	    return 1;
 #endif
 	default:
