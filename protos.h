@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.16 1999/02/25 15:34:52 lhecking Exp $
+ * $Id: protos.h,v 1.17 1999/03/10 21:22:42 lhecking Exp $
  *
  */
 
@@ -195,7 +195,7 @@ struct at_type * perm_at __PROTO((void));
 /* Prototypes from file "plot.c" */
 
 void interrupt_setup __PROTO((void));
-
+void gp_expand_tilde __PROTO((char *, size_t));
 
 /* prototypes from plot2d.c */
 
