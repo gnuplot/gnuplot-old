@@ -7,10 +7,10 @@ dnl a macro is the usual case : this saves having to update
 dnl countless makefiles when new tests are added. By usual case
 dnl I guess ansi compiler on posix system or something like that
 dnl
-dnl $Id: configure.in,v 1.8 1998/07/14 17:26:57 lhecking Exp $
+dnl $Id: configure.in,v 1.9 1998/07/15 15:26:24 lhecking Exp $
 dnl
 AC_PREREQ(2.1)
-AC_REVISION($Revision: 1.8 $)
+AC_REVISION($Revision: 1.9 $)
 AC_INIT(graphics.c)
 AC_CONFIG_HEADER(config.h:config.hin)
 
@@ -296,8 +296,8 @@ dnl Or is it really a server (run-time) problem?
 dnl FIXME AC_DEFINE(ULTRIX_KLUDGE)
 
 dnl Cached variables
-AC_CACHE_CHECK(for CPPFLAGS variable,gp_cv_prog_make_cppflags,gp_cv_prog_make_cppflags="$CPPFLAGS")
-AC_CACHE_CHECK(for TERMLIBS variable,gp_cv_prog_make_termlibs,gp_cv_prog_make_termlibs="$TERMLIBS")
+AC_CACHE_CHECK(CPPFLAGS variable,gp_cv_prog_make_cppflags,gp_cv_prog_make_cppflags="$CPPFLAGS")
+AC_CACHE_CHECK(TERMLIBS variable,gp_cv_prog_make_termlibs,gp_cv_prog_make_termlibs="$TERMLIBS")
 
 dnl Substitute variables
 AC_SUBST(LASERGNU)
