@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.14 1999/02/17 17:59:24 lhecking Exp $
+ * $Id: term.h,v 1.15 1999/02/23 17:27:01 lhecking Exp $
  *
  */
 
@@ -87,6 +87,12 @@
 /* Apple Macintosh */
 #ifdef _Macintosh
 # include "mac.trm"
+#endif
+
+
+/* BeOS */
+#ifdef __BEOS__
+# include "be.trm"
 #endif
 
 
