@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.20 2003/06/09 13:22:13 lhecking Exp $
+ * $Id: term.h,v 1.21 2003/11/17 22:48:52 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -255,8 +255,6 @@
 /* a Tek 4010 and others including VT-style */
 # include "tek.trm"
 
-/* inboard terminal driver for X11 (dumps gnuplot_x11 commands) */
-# include "xlib.trm"
 
 #endif /* !MSDOS && !_Windows && !_ATARI && !_MTOS && !AMIGA */
 /****************************************************************************/
@@ -267,6 +265,7 @@
 
 #ifdef X11
 # include "x11.trm"		/* X Window System */
+# include "xlib.trm"		/* dumps x11 commands to gpoutfile */
 #endif
 
 /* Adobe Illustrator Format */
