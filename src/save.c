@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.60 2003/01/07 22:29:30 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.61 2003/02/05 00:01:01 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -563,6 +563,10 @@ set isosamples %d, %d\n\
 
     if (missing_val != NULL)
 	fprintf(fp, "set datafile missing '%s'\n", missing_val);
+    if (df_separator != '\0')
+	fprintf(fp, "set datafile separator \"%c\"\n",df_separator);
+    else
+	fprintf(fp, "set datafile separator whitespace\n");
 
     save_hidden3doptions(fp);
     fprintf(fp, "set cntrparam order %d\n", contour_order);
