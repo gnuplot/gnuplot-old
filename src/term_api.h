@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.5 2000/11/01 18:57:33 broeker Exp $
+ * $Id: term_api.h,v 1.6 2000/11/02 15:13:38 broeker Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -60,7 +60,7 @@ typedef enum JUSTIFY {
 typedef enum VERT_JUSTIFY {
     JUST_TOP,
     JUST_CENTRE,
-    JUST_BOT,
+    JUST_BOT
 } VERT_JUSTIFY;
 
 typedef struct lp_style_type {	/* contains all Line and Point properties */
