@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.80 2004/07/05 03:49:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.77.2.1 2004/08/14 03:21:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -358,16 +358,13 @@ set y2data%s\n",
 	    save_position(fp, &key->user_pos);
 	    break;
 	}
-	fprintf(fp, " %s %sreverse %sinvert %senhanced box linetype %d linewidth %.3f samplen %g spacing %g width %g height %g %s\n",
+	fprintf(fp, " %s %sreverse %senhanced box linetype %d linewidth %.3f samplen %g spacing %g width %g height %g %sautotitles\n",
 		key->just == JLEFT ? "Left" : "Right",
 		key->reverse ? "" : "no",
-		key->invert ? "" : "no",
 		key->enhanced ? "" : "no",
 		key->box.l_type + 1, key->box.l_width,
 		key->swidth, key->vert_factor, key->width_fix, key->height_fix,
-		key->auto_titles == COLUMNHEAD_KEYTITLES ? "autotitles columnhead"
-		: key->auto_titles == FILENAME_KEYTITLES ? "autotitles"
-		: "noautotitles" );
+		key->auto_titles ? "" : "no" );
     }
 
     fputs("unset label\n", fp);
@@ -470,23 +467,6 @@ set y2data%s\n",
 	}
 	fprintf(fp, "\n");
     }
-
-#ifdef EAM_HISTOGRAMS
-    fprintf(fp, "set style histogram ");
-    switch (histogram_opts.type) {
-	default:
-	case HT_CLUSTERED:
-	    fprintf(fp,"clustered gap %d ",histogram_opts.gap); break;
-	case HT_STACKED_IN_LAYERS:
-	    fprintf(fp,"rowstacked "); break;
-	case HT_STACKED_IN_TOWERS:
-	    fprintf(fp,"columnstacked "); break;
-    }
-    fprintf(fp,"title %g,%g ",histogram_opts.title.hoffset,histogram_opts.title.voffset);
-    save_textcolor(fp, &histogram_opts.title.textcolor);
-    fprintf(fp, "\n");
-#endif
-
     fputs("unset logscale\n", fp);
 #define SAVE_LOG(axis)							\
     if (axis_array[axis].log)						\
@@ -497,9 +477,7 @@ set y2data%s\n",
     SAVE_LOG(SECOND_X_AXIS);
     SAVE_LOG(SECOND_Y_AXIS);
     SAVE_LOG(FIRST_Z_AXIS );
-#ifdef PM3D
     SAVE_LOG(COLOR_AXIS );
-#endif
 #undef SAVE_LOG
 
     /* FIXME */
@@ -915,6 +893,8 @@ save_tics(FILE *fp, AXIS_INDEX axis)
 		if (t->label)
 		    fprintf(fp, "\"%s\" ", conv_text(t->label));
 		SAVE_NUM_OR_TIME(fp, (double) t->position, axis);
+		if (t->level)
+		    fprintf(fp, " %d", t->level);
 		if (t->next) {
 		    fputs(", ", fp);
 		}
@@ -1053,11 +1033,6 @@ save_data_func_style(FILE *fp, char *which, enum PLOT_STYLE style)
     case BOXES:
 	fputs("boxes\n", fp);
 	break;
-#ifdef EAM_HISTOGRAMS
-    case HISTOGRAMS:
-	fputs("histograms\n", fp);
-	break;
-#endif
 #ifdef PM3D
     case FILLEDCURVES:
 	fputs("filledcurves ", fp);
@@ -1095,11 +1070,6 @@ save_data_func_style(FILE *fp, char *which, enum PLOT_STYLE style)
 #ifdef PM3D
     case PM3DSURFACE:
 	fputs("pm3d\n", fp);
-	break;
-#endif
-#ifdef EAM_DATASTRINGS
-    case LABELPOINTS:
-	fputs("labels\n", fp);
 	break;
 #endif
     default:

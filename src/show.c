@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.130 2004/07/05 03:49:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.128.2.1 2004/08/14 03:21:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -128,9 +128,6 @@ static void show_isosamples __PROTO((void));
 static void show_view __PROTO((void));
 static void show_surface __PROTO((void));
 static void show_hidden3d __PROTO((void));
-#ifdef EAM_HISTOGRAMS
-static void show_histogram __PROTO((void));
-#endif
 #if defined(HAVE_LIBREADLINE) && defined(GNUPLOT_HISTORY)
 static void show_historysize __PROTO((void));
 #endif
@@ -1396,12 +1393,6 @@ show_style()
 	show_fillstyle();
 	c_token++;
 	break;
-#ifdef EAM_HISTOGRAMS
-    case SHOW_STYLE_HISTOGRAM:
-	show_histogram();
-	c_token++;
-	break;
-#endif
 #endif /* USE_ULIG_FILLEDBOXES */
     case SHOW_STYLE_ARROW:
 	c_token++;
@@ -1416,9 +1407,6 @@ show_style()
 #if USE_ULIG_FILLEDBOXES
 	show_fillstyle();
 #endif /* USE_ULIG_FILLEDBOXES */
-#ifdef EAM_HISTOGRAMS
-	show_histogram();
-#endif
 	show_arrowstyle(0);
 	break;
     }
@@ -1708,10 +1696,9 @@ show_key()
     }
 
 	fprintf(stderr, "\
-\tkey is %s justified, %sreversed, %sinverted, %senhanced and ",
+\tkey is %s justified, %sreversed, %senhanced and ",
 		key->just == JLEFT ? "left" : "right",
 		key->reverse ? "" : "not ",
-		key->invert ? "" : "not ",
 		key->enhanced ? "" : "not ");
 	if (key->box.l_type > L_TYPE_NODRAW)
 	    fprintf(stderr, "boxed\n\twith linetype %d, linewidth %.3f\n",
@@ -1723,15 +1710,13 @@ show_key()
 \tvertical spacing is %g characters\n\
 \twidth adjustment is %g characters\n\
 \theight adjustment is %g characters\n\
-\tcurves are%s automatically titled %s\n\
+\tcurves are%s automatically titled\n\
 \tkey title is \"%s\"\n",
 		    key->swidth,
 		    key->vert_factor,
 		    key->width_fix,
 		    key->height_fix,
                     key->auto_titles ? "" : " not",
-		    key->auto_titles == FILENAME_KEYTITLES ? "with filename" :
-		    key->auto_titles == COLUMNHEAD_KEYTITLES ? "with column header" : "",
 		    key->title);
 
 }
@@ -2391,24 +2376,6 @@ show_hidden3d()
 #endif /* LITE */
 }
 
-#ifdef EAM_HISTOGRAMS
-static void
-show_histogram()
-{
-    if (histogram_opts.type == HT_CLUSTERED)
-	fprintf(stderr, "\tHistogram style is clustered with gap %d ", 
-		histogram_opts.gap);
-    else if (histogram_opts.type == HT_STACKED_IN_LAYERS)
-	fprintf(stderr, "\tHistogram style is rowstacked ");
-    else if (histogram_opts.type == HT_STACKED_IN_TOWERS)
-	fprintf(stderr, "\tHistogram style is columnstacked ");
-    fprintf(stderr, " title offset %g,%g ",
-	histogram_opts.title.hoffset,histogram_opts.title.voffset);
-    if (histogram_opts.title.textcolor.type == TC_LT)
-	fprintf(stderr,"textcolor lt %d", histogram_opts.title.textcolor.lt+1); 
-    fprintf(stderr, "\n");
-}
-#endif
 
 #if defined(HAVE_LIBREADLINE) && defined(GNUPLOT_HISTORY)
 /* process 'show historysize' command */
@@ -2928,6 +2895,8 @@ show_ticdef(AXIS_INDEX axis)
 		if (t->label)
 		    fprintf(stderr, "\"%s\" ", conv_text(t->label));
 		SHOW_NUM_OR_TIME(t->position, axis);
+		if (t->level)
+		    fprintf(stderr," %d",t->level);
 		if (t->next)
 		    fputs(", ", stderr);
 	    }
