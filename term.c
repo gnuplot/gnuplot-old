@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.10 1998/11/03 12:51:33 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.11 1998/11/06 22:08:31 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -153,7 +153,7 @@ void fflush_binary();
 
 
 /* This is needed because the unixplot library only writes to stdout. */
-#ifdef UNIXPLOT
+#if defined(UNIXPLOT) || defined(GNUGRAPH)
 static FILE save_stdout;
 #endif
 static int unixplot = 0;
@@ -1102,7 +1102,7 @@ char *
    This is always defined so we don't have to have command.c know if it
    is there or not.
  */
-#ifndef UNIXPLOT
+#if !(defined(UNIXPLOT) || defined(GNUGRAPH))
 void UP_redirect(caller)
 int caller;
 {
@@ -1110,7 +1110,7 @@ int caller;
 				   * about caller not being used */
 }
 
-#else /* UNIXPLOT */
+#else /* UNIXPLOT || GNUGRAPH */
 void UP_redirect(caller)
 int caller;
 /*
@@ -1155,7 +1155,7 @@ int caller;
 	break;
     }
 }
-#endif /* UNIXPLOT */
+#endif /* UNIXPLOT || GNUGRAPH */
 
 
 /* test terminal by drawing border and text */
