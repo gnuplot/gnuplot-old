@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.14 1998/11/19 10:42:01 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.15 1998/11/20 12:14:40 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -1340,12 +1340,14 @@ void reopen_binary()
 
 #ifdef VMS
 /* these are needed to modify terminal characteristics */
+#ifndef VWS_XMAX	/* avoid duplicate warning; VWS includes these */
 #include <descrip.h>
+#include <ssdef.h>
+#endif
 #include <iodef.h>
 #include <ttdef.h>
 #include <tt2def.h>
 #include <dcdef.h>
-#include <ssdef.h>
 #include <stat.h>
 #include <fab.h>
 /* If you use WATCOM C, you may have to comment out the following branch */
