@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: bf_test.c,v 1.6 1998/11/04 14:52:28 lhecking Exp $";
+static char *RCSid = "$Id: bf_test.c,v 1.7 1998/11/19 10:38:13 lhecking Exp $";
 #endif
 
 
@@ -46,7 +46,7 @@ int dummy;
 }
 
 
-void FreeHelp(void)
+void FreeHelp()
 {
 }
 /*---- End of stubs ----*/
