@@ -1,5 +1,5 @@
 /*
- * $Id: latex.trm,v 1.8 1998/12/14 18:40:18 lhecking Exp $
+ * $Id: latex.trm,v 1.9 1998/12/15 20:21:36 lhecking Exp $
  *
  */
 
@@ -742,7 +742,7 @@ TERM_PUBLIC void EMTEX_init()
     LATEX_posx = LATEX_posy = 0;
     fprintf(gpoutfile, "\
 %% GNUPLOT: LaTeX picture with emtex specials\n\
-\\setlength{\\unitlength}{%fpt}\n
+\\setlength{\\unitlength}{%fpt}\n\
 \\ifx\\plotpoint\\undefined\\newsavebox{\\plotpoint}\\fi\n",
 	    LATEX_UNIT);
     LATEX_linetype(-1);

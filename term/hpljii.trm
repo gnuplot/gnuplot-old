@@ -1,5 +1,5 @@
 /*
- * $Id: hpljii.trm,v 1.8 1998/12/14 18:39:53 lhecking Exp $
+ * $Id: hpljii.trm,v 1.9 1998/12/15 20:22:41 lhecking Exp $
  *
  */
 
@@ -362,7 +362,7 @@ TERM_PUBLIC void HPDJtext()
     b_freebitmap();
 
 #ifndef VMS			/* most vms spoolers add a formfeed character */
-    putc("\f", gpoutfile);
+    putc('\f', gpoutfile);
 #endif /* !VMS */
 }
 

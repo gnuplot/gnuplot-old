@@ -1,6 +1,6 @@
 /* Hey Emacs this is -*- C -*-
  * 
- * $Id: pstricks.trm,v 1.10 1998/12/14 18:41:07 lhecking Exp $
+ * $Id: pstricks.trm,v 1.11 1998/12/15 20:21:56 lhecking Exp $
  */
 
 /* GNUPLOT - pstricks.trm */
@@ -256,7 +256,7 @@ TERM_PUBLIC void PSTRICKS_graphics()
     fputs("\
 \\pspicture(0,0)(1,1)\n\
 \\ifx\\nofigs\\undefined\n\
-"\\catcode`@=11\n\n", gpoutfile);
+\\catcode`@=11\n\n", gpoutfile);
 }
 
 

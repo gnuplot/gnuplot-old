@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.15 1998/12/09 15:23:41 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.16 1998/12/15 20:22:52 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -1215,7 +1215,7 @@ gnuplot: X11 aborted.\n", Argv[1]);
 
     dpy = XOpenDisplay(ldisplay);
     if (!dpy) {
-	fprintf(stderr, "\n
+	fprintf(stderr, "\n\
 gnuplot: unable to open display '%s'\n\
 gnuplot: X11 aborted.\n", ldisplay);
 	EXIT(1);
