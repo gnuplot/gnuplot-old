@@ -1,3 +1,6 @@
+#
+# $Id: pm3d.dem,v 1.9 2003/10/17 15:02:21 mikulik Exp $
+#
 # demo for pm3d splotting
 #
 # This demo can be directly used if your default terminal supports pm3d, 

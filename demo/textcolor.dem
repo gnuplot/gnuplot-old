@@ -1,4 +1,6 @@
 #
+# $Id: textcolor.dem,v 1.2 2003/10/17 15:02:21 mikulik Exp $
+#
 # Textcolor in 2D
 #
 reset
@@ -62,3 +64,6 @@ splot y
 #
 pause -1 "Hit return to continue"
 #
+
+reset
+

@@ -1,5 +1,5 @@
 #
-# $Id: bivariat.dem,v 1.2 1999/08/17 15:31:53 lhecking Exp $
+# $Id: bivariat.dem,v 1.3 2003/10/17 15:02:21 mikulik Exp $
 #
 # This demo is very slow and requires unusually large stack size.
 # Do not attempt to run this demo under MSDOS.
@@ -107,10 +107,5 @@ set title "Greatest Common Divisor (for integers only)"
 plot gcd(x, 60)
 pause -1 "Hit return to continue"
 
-set xrange [-10:10]
-set yrange [-10:10]
-set auto
-set isosamples 10
-set samples 100
-set title ""
+reset
 

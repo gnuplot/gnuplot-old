@@ -1,3 +1,6 @@
+#
+# $Id: animate.dem,v 1.5 2003/10/17 15:02:21 mikulik Exp $
+#
 # HBB: Demo animation, tumbling around 'glass.dat'
 # meant to replace the 'rotating whale' demo.
 set parametric
