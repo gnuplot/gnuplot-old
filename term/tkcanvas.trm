@@ -1,5 +1,5 @@
 /*
- * $Id: tkcanvas.trm,v 1.7 1999/03/26 22:20:39 lhecking Exp $
+ * $Id: tkcanvas.trm,v 1.8 1999/04/03 19:28:02 lhecking Exp $
  *
  */
 
@@ -159,14 +159,11 @@ unsigned int x, y;
 	extern TBOOLEAN is_3d_plot;
 	double xlocal[2][2], ylocal[2][2];
 
-#define \
-TK_REAL_VALUE(value,axis) \
+#define TK_REAL_VALUE(value,axis) \
 min_array[axis]+value*(max_array[axis]-min_array[axis])
-#define \
-TK_X_VALUE(value) \
+#define TK_X_VALUE(value) \
 (double)(value-xleft)/(double)(xright-xleft)
-#define \
-TK_Y_VALUE(value) \
+#define TK_Y_VALUE(value) \
 (double)(value-ybot)/(double)(ytop-ybot)
 
 	if (tk_interactive && !is_3d_plot) {
