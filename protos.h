@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.9 1998/12/03 22:22:49 lhecking Exp $
+ * $Id: protos.h,v 1.10 1998/12/06 21:54:45 lhecking Exp $
  *
  */
 
@@ -225,7 +225,7 @@ int scanner __PROTO((char expression[]));
 
 char *safe_strncpy __PROTO((char *, char *, size_t));
 #ifndef HAVE_SLEEP
-unsigned int sleep __PROTO((unsigned int)):
+unsigned int sleep __PROTO((unsigned int));
 #endif
 
 
