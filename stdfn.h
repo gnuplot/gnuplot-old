@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.7 1998/09/21 21:05:10 lhecking Exp $
+ * $Id: stdfn.h,v 1.8 1998/09/23 19:57:16 lhecking Exp $
  *
  */
 
@@ -248,9 +248,26 @@ int strnicmp __PROTO((char *, char *, int));
 #  endif
 #endif
 
+/* Argument types for select() */
+#ifdef SELECT_ARGTYPE_1
+# define gp_nfds_t SELECT_ARGTYPE_1
+#else
+# define gp_nfds_t int
+#endif
+#ifdef SELECT_ARGTYPE_234
+# define gp_fd_set_p SELECT_ARGTYPE_234
+#else
+# define gp_fd_set_p (int *)
+#endif
+#ifdef SELECT_ARGTYPE_5
+# define gp_timeval_p SELECT_ARGTYPE_5
+#else
+# define gp_timeval_p (struct timeval *)
+#endif
+
 #ifdef __WATCOMC__
-#include <direct.h>
-#define HAVE_GETCWD 1
+# include <direct.h>
+# define HAVE_GETCWD 1
 #endif
 
 #ifndef GP_GETCWD
