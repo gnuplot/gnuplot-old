@@ -1,5 +1,5 @@
 /*
- * $Id: win.trm,v 1.13.4.2 2000/10/20 15:37:09 broeker Exp $
+ * $Id: win.trm,v 1.13.4.3 2000/10/31 18:13:01 broeker Exp $
  */
 
 /* GNUPLOT - win.trm */
@@ -258,9 +258,9 @@ WIN_linetype(lt)
 int lt;
 {
     if (lt != WIN_last_linetype) {
-    GraphOp(&graphwin, W_line_type, lt, 0, NULL);
+    	GraphOp(&graphwin, W_line_type, lt, 0, NULL);
 	WIN_last_linetype = lt;
-}
+    }
 }
 
 TERM_PUBLIC void

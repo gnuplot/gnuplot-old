@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.5 2000/10/18 16:30:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.6 2000/10/31 18:13:00 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -386,7 +386,7 @@ set y2data%s\n",
     fputs("unset style line\n", fp);
     for (this_linestyle = first_linestyle; this_linestyle != NULL;
 	 this_linestyle = this_linestyle->next) {
-	fprintf(fp, "set linestyle %d ", this_linestyle->tag);
+	fprintf(fp, "set style line %d ", this_linestyle->tag);
 	fprintf(fp, "linetype %d linewidth %.3f pointtype %d pointsize %.3f\n",
 		this_linestyle->lp_properties.l_type + 1,
 		this_linestyle->lp_properties.l_width,

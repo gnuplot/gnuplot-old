@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: standard.c,v 1.9.4.1 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: standard.c,v 1.9.4.2 2000/10/31 18:13:00 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - standard.c */
@@ -830,7 +830,11 @@ f_log10()
 {
     struct value a;
     (void) pop(&a);
-    push(Gcomplex(&a, log(magnitude(&a)) / M_LN10, angle(&a) / M_LN10));
+    if (magnitude(&a) == 0.0) {
+        undefined = TRUE;
+	push(&a);
+    } else
+        push(Gcomplex(&a, log(magnitude(&a)) / M_LN10, angle(&a) / M_LN10));
 }
 
 
@@ -839,7 +843,11 @@ f_log()
 {
     struct value a;
     (void) pop(&a);
-    push(Gcomplex(&a, log(magnitude(&a)), angle(&a)));
+    if (magnitude(&a) == 0.0) {
+        undefined = TRUE;
+	push(&a);
+    } else
+        push(Gcomplex(&a, log(magnitude(&a)), angle(&a)));
 }
 
 
