@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.32 2002/09/11 22:58:06 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.33 2002/10/08 19:29:27 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -601,7 +601,8 @@ apply_zoom(struct t_zoom *z)
 	return;
     }
 
-    sprintf(s, "set xr[% #g:% #g]; set yr[% #g:% #g]", zoom_now->xmin, zoom_now->xmax, zoom_now->ymin, zoom_now->ymax);
+    sprintf(s, "set xr[%.12g:%.12g]; set yr[%.12g:%.12g]", 
+	       zoom_now->xmin, zoom_now->xmax, zoom_now->ymin, zoom_now->ymax);
 
     /* HBB 20011004: the final part of 'unzoom to autoscale mode'.
      * Optionally appends 'set autoscale' commands to the string to be
