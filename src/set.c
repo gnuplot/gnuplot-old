@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.171 2005/03/29 08:07:16 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.172 2005/03/30 17:18:31 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -193,7 +193,7 @@ set_command()
 \t'style', 'surface', 'terminal', tics', 'ticscale', 'ticslevel',\n\
 \t'timestamp', 'timefmt', 'title', 'view', '[xyz]{2}data',\n\
 \t'[xyz]{2}label', '[xyz]{2}range', '{no}{m}[xyz]{2}tics',\n\
-\t'[xyz]{2}[md]tics', '{[xyz]{2}}zeroaxis', 'zero'";
+\t'[xyz]{2}[md]tics', '{[xy]{2}}zeroaxis', 'zero'";
 
     c_token++;
 
