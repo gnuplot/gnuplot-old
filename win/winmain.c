@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: winmain.c,v 1.1.1.2 1998/04/15 19:23:50 lhecking Exp $";
+static char *RCSid = "$Id: winmain.c,v 1.3.2.1 1999/09/21 18:48:28 lhecking Exp $";
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -68,7 +68,9 @@ static char *RCSid = "$Id: winmain.c,v 1.1.1.2 1998/04/15 19:23:50 lhecking Exp 
 #ifdef __MSC__
 #include <malloc.h>
 #else
+# ifdef __TURBOC__ /* HBB 981201: MinGW32 doesn't have this */
 #include <alloc.h>
+#endif
 #endif
 #include <io.h>
 #include "plot.h"
@@ -89,7 +91,9 @@ LPSTR szModuleName;
 LPSTR winhelpname;
 LPSTR szMenuName;
 #define MENUNAME "wgnuplot.mnu"
+#ifndef HELPFILE /* HBB 981203: makefile.win predefines this... */
 #define HELPFILE "wgnuplot.hlp"
+#endif
 
 extern char version[];
 extern char patchlevel[];
@@ -126,7 +130,9 @@ WinExit(void)
 {
 	term_reset();
 
+#ifndef __MINGW32__ /* HBB 980809: FIXME: doesn't exist for MinGW32. So...? */
 	fcloseall();
+#endif
 	if (graphwin.hWndGraph && IsWindow(graphwin.hWndGraph))
 		GraphClose(&graphwin);
 	TextMessage();	/* process messages */
@@ -140,7 +146,13 @@ WinExit(void)
 int CALLBACK WINEXPORT
 ShutDown(void)
 {
+#if 0  /* HBB 19990505: try to avoid crash on clicking 'close' */
+       /* Problem was that WinExit was called *twice*, once directly,
+        * and again via 'atexit'. This caused problems by double-freeing
+        * of GlobalAlloc-ed memory inside TextClose() */
+       /* Caveat: relies on atexit() working properly */
 	WinExit();
+#endif
 	exit(0);
 	return 0;
 }
@@ -161,8 +173,6 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		_argv[++_argc] = _fstrtok( NULL, " ");
 #endif /* __MSC__ */
 
-  	szModuleName = (LPSTR)farmalloc(MAXSTR+1);
-  	CheckMemory(szModuleName);
 	szModuleName = (LPSTR)farmalloc(MAXSTR+1);
 	CheckMemory(szModuleName);
 
@@ -444,8 +454,6 @@ size_t MyFRead(void *ptr, size_t size, size_t n, FILE *file)
 #define MAX_PRT_LEN 256
 static char win_prntmp[MAX_PRT_LEN+1];
 
-extern GW graphwin;
- 
 FILE *
 open_printer()
 {
