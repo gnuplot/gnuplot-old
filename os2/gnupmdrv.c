@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gnupmdrv.c,v 1.2 1998/10/03 20:14:29 lhecking Exp $" ;
+static char RCSid[]="$Id: gnupmdrv.c,v 1.3 1999/03/11 13:01:37 lhecking Exp $" ;
 #endif
 
 /****************************************************************************
@@ -257,10 +257,10 @@ static HWND InitHelp( HAB hab, HWND hwnd )
                                  CMIC_HIDE_PANEL_ID,
                                  "gnupmdrv.hlp" } ;
     HWND hwndHelp ;
+    /* should be bigger or dynamic */
     static char helppath[256] ;
-    char *p ;
-    if( (p=getenv("GNUPLOT")) != NULL ) {
-        strcpy( helppath, p ) ;
+    if( user_homedir != NULL ) {
+        strcpy( helppath, user_homedir ) ;
         strcat( helppath, "/" ) ;
         strcat( helppath, helpinit.pszHelpLibraryName ) ;
         helpinit.pszHelpLibraryName = helppath ;
