@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.8 1998/10/16 16:10:32 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.9 1998/10/19 13:16:30 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -660,9 +660,6 @@ FILE *fp;
 
     if (missing_val != NULL)
 	fprintf(fp, "set missing %s\n", missing_val);
-
-    if (multiplot = TRUE)
-	fprintf(fp, "set multiplot\n);
 
     save_hidden3doptions(fp);
     fprintf(fp, "set cntrparam order %d\n", contour_order);
