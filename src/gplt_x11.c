@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.113 2004/09/13 17:31:28 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.114 2004/09/15 11:13:04 mikulik Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -5120,6 +5120,7 @@ char *fontname;
 		encoding == S_ENC_ISO8859_2 ? "iso8859-2" :
 		encoding == S_ENC_ISO8859_15 ? "iso8859-15" :
 		encoding == S_ENC_KOI8_R    ? "koi8-r" :
+		encoding == S_ENC_KOI8_U    ? "koi8-u" :
 		"*-*" ) ;
 
 	sprintf(fontspec, "-*-%s-%s-%c-*-*-%d-*-*-*-*-*-%s",
