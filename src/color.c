@@ -417,7 +417,10 @@ void draw_color_smooth_box ()
   extern FILE *PSLATEX_auxfile; /* defined in pslatex.trm */
   FILE *out = PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile;
   
-  if (color_box.where == SMCOLOR_BOX_NO) return;
+  if (color_box.where == SMCOLOR_BOX_NO)
+      return;
+  if (!term->filled_polygon)
+      return;
   
   /*
     firstly, choose some good position of the color box

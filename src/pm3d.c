@@ -22,6 +22,8 @@
 #include "setshow.h" /* for surface_rot_z */
 #include "term_api.h" /* for lp_use_properties() */
 
+#include "hidden3d.h" /* p_vertex & map3d_xyz() */
+
 
 /********************************************************************/
 
@@ -117,7 +119,181 @@ double z2gray ( double z )
     return z;
 }
 
+#if 0
+static void
+pm3d_rearrange_part(struct iso_curve* src, const int len, struct iso_curve*** dest, int* reverse)
+{
+    struct iso_curve* scanA;
+    struct iso_curve* scanB;
+    struct iso_curve **scan_array;
+    int i, scan;
+    int invert = 0;
 
+    double angle = fmod(surface_rot_z, 360.0);
+
+    scanA = src;
+
+    /* loop over scans in one surface
+       Scans are linked from this_plot->iso_crvs in the opposite order than
+       they are in the datafile.
+       Therefore it is necessary to make vector scan_array of iso_curves.
+       Scans are sorted in scan_array according to pm3d.direction (this can
+       be PM3D_SCANS_FORWARD or PM3D_SCANS_BACKWARD).
+     */
+    scan_array = *dest = malloc(len * sizeof(scanA));
+
+    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
+	/* check the y ordering between scans */
+	if (scanA && scanA->p_count) {
+	    scanB = scanA->next;
+	    if (scanB && scanB->p_count) {
+		if (scanB->points[0].y < scanA->points[0].y)
+		    invert = 1;
+		else
+		    invert = 0;
+	    }
+	}
+    }
+
+    for (scan = len, i=0; --scan>=0; ) {
+	if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
+	    switch (invert) {
+		case 1:
+		    if (angle > 90.0 && angle < 270.0) {
+			scan_array[scan] = scanA;
+		    } else {
+			scan_array[i++] = scanA;
+		    }
+		    break;
+		case 0:
+		default:
+		    if (angle > 90.0 && angle < 270.0) {
+			scan_array[i++] = scanA;
+		    } else {
+			scan_array[scan] = scanA;
+		    }
+		    break;
+	    }
+	}
+	else if (pm3d.direction == PM3D_SCANS_FORWARD)
+	    scan_array[scan] = scanA;
+	else /* PM3D_SCANS_BACKWARD: i counts scans */
+	    scan_array[ i++ ] = scanA;
+	scanA = scanA->next;
+    }
+
+    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
+	double angle = fmod(surface_rot_z, 360.0);
+	int rev = (range_flags[FIRST_X_AXIS] ^ range_flags[FIRST_Y_AXIS]) & RANGE_REVERSE;
+	if ((angle > 180.0 && !rev) || (angle < 180.0 && rev)) {
+	    *reverse = 1;
+	} else {
+	    *reverse = 0;
+	}
+    }
+}
+#else
+
+static void
+pm3d_rearrange_part(struct iso_curve* src, const int len, struct iso_curve*** dest, int* invert)
+{
+    struct iso_curve* scanA;
+    struct iso_curve* scanB;
+    struct iso_curve **scan_array;
+    int i, scan;
+    int invert_order = 0;
+
+    scanA = src;
+
+    /* loop over scans in one surface
+       Scans are linked from this_plot->iso_crvs in the opposite order than
+       they are in the datafile.
+       Therefore it is necessary to make vector scan_array of iso_curves.
+       Scans are sorted in scan_array according to pm3d.direction (this can
+       be PM3D_SCANS_FORWARD or PM3D_SCANS_BACKWARD).
+     */
+    scan_array = *dest = malloc(len * sizeof(scanA));
+
+    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
+	int cnt;
+	if (scanA && (cnt = scanA->p_count - 1) > 0) {
+
+	    vertex vA, vA2;
+
+	    /* ordering within one scan */
+	    map3d_xyz(scanA->points[0].x, scanA->points[0].y, scanA->points[0].z, &vA);
+	    map3d_xyz(scanA->points[cnt].x, scanA->points[cnt].y, scanA->points[cnt].z, &vA2);
+	    if (vA2.z > vA.z)
+		*invert = 0;
+	    else
+		*invert = 1;
+	    scanB = scanA->next;
+
+	    /* check the z ordering between scans */
+	    /* find last scan */
+	    for (scanB = scanA->next, i = len - 2; i; i--)
+		scanB = scanB->next;
+	    if (scanB && scanB->p_count) {
+		vertex vB;
+		map3d_xyz(scanB->points[0].x, scanB->points[0].y, scanB->points[0].z, &vB);
+		if (vB.z > vA.z)
+		    invert_order = 0;
+		else
+		    invert_order = 1;
+	    }
+	}
+    }
+
+    for (scan = len - 1, i = 0; scan >= 0; --scan, i++) {
+	if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
+	    switch (invert_order) {
+		case 1:
+		    scan_array[scan] = scanA;
+		    break;
+		case 0:
+		default:
+		    scan_array[i] = scanA;
+		    break;
+	    }
+	}
+	else if (pm3d.direction == PM3D_SCANS_FORWARD)
+	    scan_array[scan] = scanA;
+	else /* PM3D_SCANS_BACKWARD: i counts scans */
+	    scan_array[i] = scanA;
+	scanA = scanA->next;
+    }
+}
+#endif
+
+/* allocates *first_ptr (and eventually *second_ptr)
+ * which must be freed by the caller */
+void
+pm3d_rearrange_scan_array(struct surface_points* this_plot,
+    struct iso_curve*** first_ptr, int* first_n, int* first_invert,
+    struct iso_curve*** second_ptr, int* second_n, int* second_invert)
+{
+    if (first_ptr) {
+	pm3d_rearrange_part(this_plot->iso_crvs, this_plot->num_iso_read, first_ptr, first_invert);
+	*first_n = this_plot->num_iso_read;
+    }
+    if (second_ptr) {
+	struct iso_curve *icrvs = this_plot->iso_crvs;
+	struct iso_curve *icrvs2;
+	int i;
+	/* advance until second part */
+	for (i = 0; i < this_plot->num_iso_read; i++)
+	    icrvs = icrvs->next;
+	/* count the number of scans of second part */
+	for (i = 0, icrvs2 = icrvs; icrvs2; icrvs2 = icrvs2->next)
+	    i++;
+	if (i > 0) {
+	    *second_n = i;
+	    pm3d_rearrange_part(icrvs, i, second_ptr, second_invert);
+	} else {
+	    *second_ptr = (struct iso_curve**)0;
+	}
+    }
+}
 
 
 
@@ -132,6 +308,7 @@ pm3d_plot(struct surface_points* this_plot, char at_which_z)
     struct iso_curve *scanA, *scanB;
     struct coordinate GPHUGE *pointsA, *pointsB;
     struct iso_curve **scan_array;
+    int scan_array_n;
     double avgZ, gray;
     gpdPoint corners[4];
     extern double base_z, ceiling_z; /* defined in graph3d.c */
@@ -158,56 +335,10 @@ pm3d_plot(struct surface_points* this_plot, char at_which_z)
     scanA = this_plot->iso_crvs;
     curve = 0;
 
-    /* loop over scans in one surface
-       Scans are linked from this_plot->iso_crvs in the opposite order than
-       they are in the datafile.
-       Therefore it is necessary to make vector scan_array of iso_curves.
-       Scans are sorted in scan_array according to pm3d.direction (this can
-       be PM3D_SCANS_FORWARD or PM3D_SCANS_BACKWARD).
-     */
-    scan_array = malloc( this_plot->num_iso_read * sizeof(scanA) );
-    scanA = this_plot->iso_crvs;
-
-    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
-	/* check the y ordering between scans */
-	if (scanA && scanA->p_count) {
-	    scanB = scanA->next;
-	    if (scanB && scanB->p_count) {
-		if (scanB->points[0].y < scanA->points[0].y)
-		    invert = 1;
-		else
-		    invert = 0;
-	    }
-	}
-    }
-
-    for ( scan=this_plot->num_iso_read, i=0; --scan>=0; ) {
-	if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
-	    double angle = fmod(surface_rot_z, 360.0);
-	    switch (invert) {
-		case 1:
-		    if (angle > 90.0 && angle < 270.0) {
-			scan_array[scan] = scanA;
-		    } else {
-			scan_array[i++] = scanA;
-		    }
-		    break;
-		case 0:
-		default:
-		    if (angle > 90.0 && angle < 270.0) {
-			scan_array[i++] = scanA;
-		    } else {
-			scan_array[scan] = scanA;
-		    }
-		    break;
-	    }
-	}
-	else if (pm3d.direction == PM3D_SCANS_FORWARD)
-	    scan_array[scan] = scanA;
-	else /* PM3D_SCANS_BACKWARD: i counts scans */
-	    scan_array[ i++ ] = scanA;
-	scanA = scanA->next;
-    }
+    pm3d_rearrange_scan_array(this_plot,
+	&scan_array, &scan_array_n, &invert,
+	(struct iso_curve***)0, (int*)0, (int*)0);
+    /* pm3d_rearrange_scan_array(this_plot, (struct iso_curve***)0, (int*)0, &scan_array, &invert); */
 
 #if 0
     /* debugging: print scan_array */
@@ -238,15 +369,6 @@ pm3d_plot(struct surface_points* this_plot, char at_which_z)
 	term_apply_lp_properties(&lp);
     }
 
-    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
-	double angle = fmod(surface_rot_z, 360.0);
-	int rev = (range_flags[FIRST_X_AXIS] ^ range_flags[FIRST_Y_AXIS]) & RANGE_REVERSE;
-	if ((angle > 180.0 && !rev) || (angle < 180.0 && rev)) {
-	    invert = 1;
-	} else {
-	    invert = 0;
-	}
-    }
 
     /*
        this loop does the pm3d draw of joining two curves
@@ -460,9 +582,6 @@ void pm3d_draw_all(struct surface_points* plots, int pcount)
 	extern FILE *PSLATEX_auxfile;
 	fprintf(PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile,"%%pm3d_map_end\n");
     }
-
-    /* draw colour box */
-    draw_color_smooth_box();
 
     /* release the palette we have made use of (some terminals may need this)
        ...no, remove this, also remove it from plot.h !!!!

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.5 2000/10/22 13:50:51 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.6 2000/10/23 04:35:27 joze Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -99,7 +99,7 @@ static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.5 2000/10/22 13:50
 
 /* X11 support for Petr Mikulik's pm3d 
  * by Johannes Zellner <johannes@zellner.org>
- * (November 1999 - January 2000)
+ * (November 1999 - January 2000, Oct. 2000)
  */
 
 #ifdef HAVE_CONFIG_H
@@ -407,6 +407,7 @@ t_sm_palette sm_palette = {
     0,                           /* ps_allcF */
 };
 static GC gc_pm3d = (GC) 0;
+static GC* current_gc = (GC*) 0;
 static int have_pm3d = 1;
 static int num_colormaps = 0;
 unsigned int maximal_possible_colors = 0x100;
@@ -1334,7 +1335,7 @@ char *command;
     /*   X11_vector(x,y) - draw vector  */
     if (*buffer == 'V') {
 	sscanf(buffer, "V%4d%4d", &x, &y);
-	XDrawLine(dpy, plot->pixmap, gc, X(cx), Y(cy), X(x), Y(y));
+	XDrawLine(dpy, plot->pixmap, *current_gc, X(cx), Y(cy), X(x), Y(y));
 	cx = x;
 	cy = y;
     }
@@ -1402,6 +1403,7 @@ char *command;
 	}
 	XSetForeground(dpy, gc, plot->cmap->colors[plot->lt + 3]);
 	XSetLineAttributes(dpy, gc, plot->lwidth, plot->type, CapButt, JoinBevel);
+	current_gc = &gc;
     }
     /*   X11_point(number) - draw a point */
     else if (*buffer == 'P') {
@@ -1416,11 +1418,11 @@ char *command;
 	    plot->py = (int) (y * yscale * pointsize);
 	} else {
 	    if (plot->type != LineSolid || plot->lwidth != 0) {	/* select solid line */
-		XSetLineAttributes(dpy, gc, 0, LineSolid, CapButt, JoinBevel);
+		XSetLineAttributes(dpy, *current_gc, 0, LineSolid, CapButt, JoinBevel);
 	    }
 	    switch (point) {
 	    case 0:		/* dot */
-		XDrawPoint(dpy, plot->pixmap, gc, X(x), Y(y));
+		XDrawPoint(dpy, plot->pixmap, *current_gc, X(x), Y(y));
 		break;
 	    case 1:		/* do diamond */
 		Diamond[0].x = (short) X(x) - plot->px;
@@ -1437,8 +1439,8 @@ char *command;
 		/*
 		 * Should really do a check with XMaxRequestSize()
 		 */
-		XDrawLines(dpy, plot->pixmap, gc, Diamond, 5, CoordModePrevious);
-		XDrawPoint(dpy, plot->pixmap, gc, X(x), Y(y));
+		XDrawLines(dpy, plot->pixmap, *current_gc, Diamond, 5, CoordModePrevious);
+		XDrawPoint(dpy, plot->pixmap, *current_gc, X(x), Y(y));
 		break;
 	    case 2:		/* do plus */
 		Plus[0].x1 = (short) X(x) - plot->px;
@@ -1450,11 +1452,11 @@ char *command;
 		Plus[1].x2 = (short) X(x);
 		Plus[1].y2 = (short) Y(y) + plot->py;
 
-		XDrawSegments(dpy, plot->pixmap, gc, Plus, 2);
+		XDrawSegments(dpy, plot->pixmap, *current_gc, Plus, 2);
 		break;
 	    case 3:		/* do box */
-		    XDrawRectangle(dpy, plot->pixmap, gc, X(x) - plot->px, Y(y) - plot->py, (plot->px + plot->px), (plot->py + plot->py));
-		XDrawPoint(dpy, plot->pixmap, gc, X(x), Y(y));
+		    XDrawRectangle(dpy, plot->pixmap, *current_gc, X(x) - plot->px, Y(y) - plot->py, (plot->px + plot->px), (plot->py + plot->py));
+		XDrawPoint(dpy, plot->pixmap, *current_gc, X(x), Y(y));
 		break;
 	    case 4:		/* do X */
 		Cross[0].x1 = (short) X(x) - plot->px;
@@ -1466,7 +1468,7 @@ char *command;
 		Cross[1].x2 = (short) X(x) + plot->px;
 		Cross[1].y2 = (short) Y(y) - plot->py;
 
-		XDrawSegments(dpy, plot->pixmap, gc, Cross, 2);
+		XDrawSegments(dpy, plot->pixmap, *current_gc, Cross, 2);
 		break;
 	    case 5:		/* do triangle */
 		{
@@ -1484,8 +1486,8 @@ char *command;
 		    Triangle[3].x = (short) temp_x;
 		    Triangle[3].y = (short) -(2 * plot->py);
 
-		    XDrawLines(dpy, plot->pixmap, gc, Triangle, 4, CoordModePrevious);
-		    XDrawPoint(dpy, plot->pixmap, gc, X(x), Y(y));
+		    XDrawLines(dpy, plot->pixmap, *current_gc, Triangle, 4, CoordModePrevious);
+		    XDrawPoint(dpy, plot->pixmap, *current_gc, X(x), Y(y));
 		}
 		break;
 	    case 6:		/* do star */
@@ -1506,11 +1508,11 @@ char *command;
 		Star[3].x2 = (short) X(x) + plot->px;
 		Star[3].y2 = (short) Y(y) - plot->py;
 
-		XDrawSegments(dpy, plot->pixmap, gc, Star, 4);
+		XDrawSegments(dpy, plot->pixmap, *current_gc, Star, 4);
 		break;
 	    }
 	    if (plot->type != LineSolid || plot->lwidth != 0) {	/* select solid line */
-		XSetLineAttributes(dpy, gc, plot->lwidth, plot->type, CapButt, JoinBevel);
+		XSetLineAttributes(dpy, *current_gc, plot->lwidth, plot->type, CapButt, JoinBevel);
 	    }
 	}
     }
@@ -1520,6 +1522,7 @@ char *command;
 	    double gray;
 	    sscanf(buffer + 1, "%lf", &gray);
 	    PaletteSetColor(plot, gray);
+	    current_gc = &gc_pm3d;
 	}
     } else if (*buffer == GR_FILLED_POLYGON) { /* filled polygon */
 	if (have_pm3d) { /* ignore, if your X server is not supported */
@@ -1543,7 +1546,7 @@ char *command;
 		points[i].x = X(x);
 		points[i].y = Y(y);
 	    }
-	    XFillPolygon(dpy, plot->pixmap, gc_pm3d,
+	    XFillPolygon(dpy, plot->pixmap, *current_gc,
 		points, npoints, Nonconvex, CoordModeOrigin);
 	}
     }
@@ -3169,6 +3172,11 @@ char color_values[Ncolors][30] = {
     "red", "green", "blue", "magenta",
     "cyan", "sienna", "orange", "coral"
 };
+char color_values_rv[Ncolors][30] = {
+    "black", "white", "white", "white", "white",
+    "red", "green", "blue", "magenta",
+    "cyan", "sienna", "orange", "coral"
+};
 char gray_values[Ncolors][30] = {
     "black", "white", "white", "gray50", "gray50",
     "gray100", "gray60", "gray80", "gray40",
@@ -3215,7 +3223,8 @@ pr_color(cmap_t* cmap_ptr)
 	    if (n > 1)
 		strcat(option, ctype);
 	    v = pr_GetR(db, option)
-		? (char *) value.addr : ((Gray) ? gray_values[n] : color_values[n]);
+		? (char *) value.addr : ((Gray) ? gray_values[n]
+		    : (Rv ? color_values_rv[n] : color_values[n]));
 
 	    if (sscanf(v, "%30[^,],%lf", color, &intensity) == 2) {
 		if (intensity < 0 || intensity > 1) {

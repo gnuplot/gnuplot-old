@@ -113,6 +113,11 @@ void pm3d_plot __PROTO((struct surface_points * plot, char at_which_z));
 void filled_color_contour_plot __PROTO((struct surface_points *plot, int contours_where));
 void pm3d_reset __PROTO((void));
 void pm3d_draw_all __PROTO((struct surface_points* plots, int pcount));
+double z2gray(double z);
+void
+pm3d_rearrange_scan_array(struct surface_points* this_plot,
+    struct iso_curve*** first_ptr, int* first_n, int* first_invert,
+    struct iso_curve*** second_ptr, int* second_n, int* second_invert);
 
 
 #endif /* PM3D_H */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.17.2.3 2000/08/04 14:01:27 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.17.2.4 2000/10/23 04:35:28 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1181,6 +1181,9 @@ eval_3dplots()
 
 
 	    /*{{{  line types, widths, ... */
+#ifdef PM3D
+	    this_plot->lp_properties.use_palette = 0;
+#endif
 	    this_plot->lp_properties.l_type = line_num;
 	    this_plot->lp_properties.p_type = point_num;
 

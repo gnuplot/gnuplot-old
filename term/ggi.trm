@@ -1,5 +1,5 @@
 /*
- * $Id: ggi.trm,v 1.1.2.2 2000/10/22 14:02:04 joze Exp $
+ * $Id: ggi.trm,v 1.1.2.3 2000/10/23 04:35:28 joze Exp $
  */
 
 /* GNUPLOT - ggi.trm */
@@ -39,6 +39,7 @@
  *   Cesar Crusius <crusius@leland.stanford.edu>
  *   event / mouse processing & double-buffering
  *   by Johannes Zellner <johannes@zellner.org>
+ *   pm3d support by Johannes Zellner <johannes@zellner.org> (Oct. 2000)
  */
 
 #include "driver.h"
@@ -116,6 +117,15 @@ TERM_PUBLIC void GGI_draw_vline __PROTO((int y1, int y2, int x));
 TERM_PUBLIC void GGI_set_clipboard __PROTO((const char[]));
 #endif /* USE_MOUSE */
 
+#ifdef PM3D
+TERM_PUBLIC int GGI_make_palette __PROTO((t_sm_palette*));
+TERM_PUBLIC void GGI_previous_palette __PROTO((void));
+TERM_PUBLIC void GGI_set_color __PROTO((double));
+#if 0
+TERM_PUBLIC void GGI_filled_polygon __PROTO((int, gpiPoint*));
+#endif
+#endif
+
 #define GOT_GGI_PROTO
 #endif
 
@@ -148,6 +158,12 @@ static int GGI_saved_canvas = 0;
 static int GGI_saved_stl = 0;
 #endif
 
+#ifdef PM3D
+static t_sm_palette GGI_save_pal = {
+    -1, -1, -1, -1, -1, -1, -1, -1,
+    (rgb_color*) 0, -1, -1
+};
+#endif
 
 /* First to some global variables
  *
@@ -164,7 +180,11 @@ static ggi_pixel GGIborderColor;
 static ggi_pixel GGIaxisColor;
 static ggi_pixel GGIblack;
 static ggi_pixel GGIcolors[7];
-static ggi_color GGImap;
+#ifdef PM3D
+#define GGI_PM3D_COLORS 240
+static const int ggi_pm3d_colors = GGI_PM3D_COLORS;
+static ggi_pixel GGI_smooth_colors[GGI_PM3D_COLORS];
+#endif
 static unsigned int GGIx,GGIy;
 static unsigned int GGIwidth, GGIheight, GGIymax;
 static unsigned int Xenv;
@@ -193,6 +213,7 @@ static void init_ggi_driver()
 {
     ggi_pixel GGIwhite,GGIred,GGIgreen,GGIblue,GGIcyan,GGImagenta,GGIgray;
     ggi_pixel GGIyellow;
+    ggi_color color;
     if(GGIvisual==NULL)
     {
 	if(ggiInit()) {}
@@ -202,15 +223,15 @@ static void init_ggi_driver()
 	    ggiExit();
     }
     ggiAddFlags(GGIvisual, GGIFLAG_ASYNC);
-    GGImap.r=0xFFFF; GGImap.g=0xFFFF; GGImap.b=0xFFFF; GGIwhite=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0x0000; GGImap.g=0x0000; GGImap.b=0x0000; GGIblack=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0xFFFF; GGImap.g=0x0000; GGImap.b=0x0000; GGIred=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0x0000; GGImap.g=0xFFFF; GGImap.b=0x0000; GGIgreen=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0x0000; GGImap.g=0x0000; GGImap.b=0xFFFF; GGIblue=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0x0000; GGImap.g=0xFFFF; GGImap.b=0xFFFF; GGIcyan=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0xFFFF; GGImap.g=0x0000; GGImap.b=0xFFFF; GGImagenta=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0xFFFF; GGImap.g=0xFFFF; GGImap.b=0x0000; GGIyellow=ggiMapColor(GGIvisual,&GGImap);
-    GGImap.r=0x8888; GGImap.g=0x8888; GGImap.b=0x8888; GGIgray=ggiMapColor(GGIvisual,&GGImap);
+    color.r=0xFFFF; color.g=0xFFFF; color.b=0xFFFF; GGIwhite=ggiMapColor(GGIvisual,&color);
+    color.r=0x0000; color.g=0x0000; color.b=0x0000; GGIblack=ggiMapColor(GGIvisual,&color);
+    color.r=0xFFFF; color.g=0x0000; color.b=0x0000; GGIred=ggiMapColor(GGIvisual,&color);
+    color.r=0x0000; color.g=0xFFFF; color.b=0x0000; GGIgreen=ggiMapColor(GGIvisual,&color);
+    color.r=0x0000; color.g=0x0000; color.b=0xFFFF; GGIblue=ggiMapColor(GGIvisual,&color);
+    color.r=0x0000; color.g=0xFFFF; color.b=0xFFFF; GGIcyan=ggiMapColor(GGIvisual,&color);
+    color.r=0xFFFF; color.g=0x0000; color.b=0xFFFF; GGImagenta=ggiMapColor(GGIvisual,&color);
+    color.r=0xFFFF; color.g=0xFFFF; color.b=0x0000; GGIyellow=ggiMapColor(GGIvisual,&color);
+    color.r=0x8888; color.g=0x8888; color.b=0x8888; GGIgray=ggiMapColor(GGIvisual,&color);
     GGIborderColor=GGIwhite;
     GGIaxisColor=GGIgray;
     GGIcolors[0]=GGIred;
@@ -424,6 +445,9 @@ TERM_PUBLIC void GGI_reset()
 	ggiExit();
 	GGIvisual=NULL;
     }
+#ifdef PM3D
+    GGI_save_pal.colorFormulae = -1; /* force later reallocation of palette */
+#endif
 }
 
 TERM_PUBLIC void GGI_put_text(x,y,str)
@@ -1198,6 +1222,66 @@ GGI_set_clipboard(s)
 }
 #endif
 
+#ifdef PM3D
+TERM_PUBLIC int
+GGI_make_palette(palette)
+    t_sm_palette *palette;
+{
+    /* reallocate only, if it has changed */
+    if (palette && (GGI_save_pal.colorFormulae < 0
+	    || palette->colorFormulae != GGI_save_pal.colorFormulae
+	    || palette->colorMode != GGI_save_pal.colorMode
+	    || palette->formulaR != GGI_save_pal.formulaR
+	    || palette->formulaG != GGI_save_pal.formulaG
+	    || palette->formulaB != GGI_save_pal.formulaB
+	    || palette->positive != GGI_save_pal.positive)) {
+	int i;
+	ggi_color color;
+	for (i = 0; i < ggi_pm3d_colors; i++) {
+	    color.r = (short)floor(palette->color[i].r * 0xffff),
+	    color.g = (short)floor(palette->color[i].g * 0xffff),
+	    color.b = (short)floor(palette->color[i].b * 0xffff),
+	    GGI_smooth_colors[i] = ggiMapColor(GGIvisual, &color);
+	}
+	GGI_save_pal = *palette;
+    } else {
+	return ggi_pm3d_colors;
+    }
+    return 0;
+}
+
+TERM_PUBLIC void
+GGI_previous_palette()
+{
+    fprintf(stderr, "(GGI_previous_palette) \n");
+}
+
+TERM_PUBLIC void
+GGI_set_color(gray)
+    double gray;
+{
+    if (GGIvisual) {
+	int idx = gray * ggi_pm3d_colors;
+	if (idx < 0)
+	    idx = 0;
+	else if (idx >= ggi_pm3d_colors)
+	    idx = ggi_pm3d_colors - 1;
+	ggiSetGCForeground(GGIvisual, GGI_smooth_colors[idx]);
+    }
+}
+
+#if 0
+TERM_PUBLIC void
+GGI_filled_polygon(points, corners)
+    int points;
+    gpiPoint *corners;
+{
+    /* not implemented */
+}
+#endif
+
+#endif /* PM3D */
+
 #endif /* TERM_BODY */
 
 #ifdef TERM_TABLE
@@ -1221,6 +1305,12 @@ TERM_TABLE_START(ggi_driver)
     0 /* linewidth */
 #ifdef USE_MOUSE
     , GGI_waitforinput, GGI_put_tmptext, GGI_set_ruler, GGI_set_cursor, GGI_set_clipboard
+#endif
+#ifdef PM3D
+    , GGI_make_palette,
+    GGI_previous_palette,
+    GGI_set_color,
+    0 /* GGI_filled_polygon */
 #endif
 TERM_TABLE_END(ggi_driver)
 

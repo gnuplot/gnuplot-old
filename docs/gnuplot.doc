@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.40.2.11 2000/10/06 04:14:49 joze Exp $
+C RCS $Id: gnuplot.doc,v 1.40.2.12 2000/10/23 04:35:27 joze Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -4644,6 +4644,12 @@ C ... and restart the table:
  but not by other commands that allow the default index to be used, such as
  'set grid'.
 
+ If gnuplot was built with pm3d support, the special keyword `palette` is
+ allowed as `linetype` for splots (the 2d `plot` command ignores `palette`).
+ In this case the line color is choosen from a smooth palette which was
+ set previously with the command `set palette`.  The color value corresponds
+ to the z-Value (elevation) of the splot.
+
  Example:
  Suppose that the default lines for indices 1, 2, and 3 are red, green, and
  blue, respectively, and the default point shapes for the same indices are a
@@ -4665,6 +4671,14 @@ C ... and restart the table:
 
  will create a plot of f(x) using the default triangles connected by a red
  line and q(x) using small triangles connected by a green line.
+
+       splot sin(sqrt(x*x+y*y))/sqrt(x*x+y*y) w l lt pal
+
+ creates a surface plot using smooth colors according `palette`. Note, that
+ this works only on few terminals.
+
+ see also `help palette`, `help pm3d`
+
 3 lmargin
 ?commands set lmargin
 ?set lmargin
@@ -5407,7 +5421,7 @@ C ... and restart the table:
 
  Colour palettes, or requires terminal entries for filled colour 
  polygons and palettes of smooth colours, are currently available for
-    `***  fig, gif, pm, postscript, pslatex, pstex, linux vgagl and x11  ***`
+ `***  fig, gif, pm, postscript, pslatex, pstex, linux vgagl, ggi and x11  ***`
  terminals. You are welcome to implement it for other terminals, e.g. png.
 
 
@@ -5517,7 +5531,7 @@ C ... and restart the table:
  box, if the box is at the top of the graph. If someone does not like this,
  he/she could yet add more options for controlling how the box is drawn!
 
- see also `help pm3d`, `help x11 pm3d`, `help vgagl`
+ see also `help pm3d`, `help x11 pm3d`, `help vgagl`, `help set style line`
   
 3 pointsize
 ?commands set pointsize

@@ -1,5 +1,5 @@
 /*
- * $Id: gif.trm,v 1.26.2.2 2000/10/22 13:50:51 joze Exp $
+ * $Id: gif.trm,v 1.26.2.3 2000/10/23 04:35:28 joze Exp $
  */
 
 /* GNUPLOT -- gif.trm */
@@ -419,14 +419,12 @@ TERM_PUBLIC int GIF_make_palette (t_sm_palette *palette)
     return 0;
 }
 
-int gif_color;
-  /* keep here the last set color */
 
 TERM_PUBLIC void GIF_set_color (double gray)
 {
-    gif_color = (int)( gray * (sm_palette.colors-1) + 0.5 );
+    int gif_color = (int)( gray * (sm_palette.colors-1) + 0.5 );
     /* map [0;1] to interval [0;gif_smooth_colors-1] */
-    gif_color = gif_smooth_color[ gif_color ]; /* index to the palette */
+    gif_state.color = gif_smooth_color[ gif_color ]; /* index to the palette */
     /*fprintf(stderr,"GIF terminal sets color gif_color=%i\n",gif_color); */
 }
 
@@ -450,7 +448,7 @@ void GIF_filled_polygon(int points, gpiPoint *corners)
 	gd_corners[i].x = corners[i].x;
 	gd_corners[i].y = gif_state.height - corners[i].y;
     }
-    gdImageFilledPolygon(gif_state.image, gd_corners, points, gif_color);
+    gdImageFilledPolygon(gif_state.image, gd_corners, points, gif_state.color);
     /* easy, since gdPointPtr is the same as (gdiPoint*) */
     /* if someone someday needs this routine to be NON-DESTRUCTIVE, then change
        the following line to #if 1 */

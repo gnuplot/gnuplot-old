@@ -1,5 +1,5 @@
 /*
- * $Id: fig.trm,v 1.19.2.3 2000/08/04 14:01:29 joze Exp $
+ * $Id: fig.trm,v 1.19.2.4 2000/10/23 04:35:28 joze Exp $
  */
 
 /* GNUPLOT - fig.trm */
@@ -189,7 +189,6 @@ static int FIG_palette_set = FALSE;	/* PM3D Palette Set ? */
 static int FIG_palette_size = 128;	/* Number of colours in palette */
 static int FIG_palette_offst = 32;	/* Offset from zero for user colours */
 static int FIG_fill_style = 20;		/* Full saturation */
-static int FIG_fill_color;		/* Current PM3D fill colour */
 #endif /* PM3D */
 
 static void FIG_poly_clean __PROTO((enum FIG_poly_stat fig_stat));
@@ -929,11 +928,15 @@ TERM_PUBLIC void FIG_previous_palette()
 
 TERM_PUBLIC void FIG_set_color(double gray)
 {
+    int new_color;
     if (FIG_palette_set == FALSE) {
 	fprintf(stderr,"Palette used before set\n"); /* Error condition */
     }
-    FIG_fill_color = (int)((gray*(FIG_palette_size-1)) + 0.5)
-	+ FIG_palette_offst;
+    new_color = (int)((gray*(FIG_palette_size-1)) + 0.5) + FIG_palette_offst;
+    if (FIG_color != new_color) {
+	FIG_poly_clean(FIG_polyvec_stat);
+	FIG_color = new_color;
+    }
 }
 
 TERM_PUBLIC void FIG_filled_polygon(int points, gpiPoint *corners)
@@ -949,7 +952,7 @@ TERM_PUBLIC void FIG_filled_polygon(int points, gpiPoint *corners)
     fprintf(gpoutfile, "%d %d %d %d %d %d %d %d %d %9.3f %d %d %d %d %d %ld\n\t"
 ,
 	O_POLYLINE, T_POLYGON, FIG_line.style, 0,
-	FIG_fill_color, FIG_fill_color, FIG_line.depth,
+	FIG_color, FIG_color, FIG_line.depth,
 	FIG_line.pen_style, FIG_fill_style, FIG_line.style_val,
 	FIG_line.join_style, FIG_line.cap_style, FIG_line.radius,
 	0, 0, (long)(points+1));

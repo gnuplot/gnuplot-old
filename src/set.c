@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.9 2000/10/22 13:50:51 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.10 2000/10/23 04:35:28 joze Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -100,7 +100,11 @@ TBOOLEAN autoscale_lz = DTRUE;
 double bar_size = 1.0;
 
 /* set border */
+#ifdef PM3D
+struct lp_style_type border_lp = { 0, -2, 0, 1.0, 1.0, 0 };
+#else
 struct lp_style_type border_lp = { 0, -2, 0, 1.0, 1.0 };
+#endif
 int draw_border = 31;
 
 TBOOLEAN multiplot = FALSE;
@@ -130,14 +134,21 @@ int format_is_numeric[AXIS_ARRAY_SIZE] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 };
 enum PLOT_STYLE data_style = POINTSTYLE;
 enum PLOT_STYLE func_style = LINES;
 
+#ifdef PM3D
+struct lp_style_type work_grid = { 0, GRID_OFF, 0, 1.0, 1.0, 0 };
+struct lp_style_type grid_lp   = { 0, -1, 0, 1.0, 1.0, 0 };
+struct lp_style_type mgrid_lp  = { 0, -1, 0, 1.0, 1.0, 0 };
+struct lp_style_type key_box = { 0, -3, 0, 1.0, 1.0, 0 };
+#else
 struct lp_style_type work_grid = { 0, GRID_OFF, 0, 1.0, 1.0 };
 struct lp_style_type grid_lp   = { 0, -1, 0, 1.0, 1.0 };
 struct lp_style_type mgrid_lp  = { 0, -1, 0, 1.0, 1.0 };
+struct lp_style_type key_box = { 0, -3, 0, 1.0, 1.0 };		/* -3 = no linetype */
+#endif
 double polar_grid_angle = 0;	/* nonzero means a polar grid */
 int key = -1;			/* default position */
 struct position key_user_pos;	/* user specified position for key */
 TBOOLEAN key_reverse = FALSE;	/* reverse text & sample ? */
-struct lp_style_type key_box = { 0, -3, 0, 1.0, 1.0 };		/* -3 = no linetype */
 double key_swidth = 4.0;
 double key_vert_factor = 1.0;
 double key_width_fix = 0.0;
@@ -235,10 +246,17 @@ int dgrid3d_col_fineness = 10;
 int dgrid3d_norm_value = 1;
 TBOOLEAN dgrid3d = FALSE;
 
+#ifdef PM3D
+struct lp_style_type xzeroaxis = { 0, -3, 0, 1.0, 1.0, 0 };
+struct lp_style_type yzeroaxis = { 0, -3, 0, 1.0, 1.0, 0 };
+struct lp_style_type x2zeroaxis = { 0, -3, 0, 1.0, 1.0, 0 };
+struct lp_style_type y2zeroaxis = { 0, -3, 0, 1.0, 1.0, 0 };
+#else
 struct lp_style_type xzeroaxis = { 0, -3, 0, 1.0, 1.0 };
 struct lp_style_type yzeroaxis = { 0, -3, 0, 1.0, 1.0 };
 struct lp_style_type x2zeroaxis = { 0, -3, 0, 1.0, 1.0 };
 struct lp_style_type y2zeroaxis = { 0, -3, 0, 1.0, 1.0 };
+#endif
 
 /* perhaps make these into an array one day */
 
@@ -4377,6 +4395,9 @@ struct lp_style_type *arg;
     /* See plot.h for struct lp_style_type */
     arg->pointflag = arg->l_type = arg->p_type = 0;
     arg->l_width = arg->p_size = 1.0;
+#ifdef PM3D
+    arg->use_palette = 0;
+#endif
 }
 
 
@@ -4395,7 +4416,18 @@ int allow_ls, allow_point, def_line, def_point;
     } else {
 	if (almost_equals(c_token, "linet$ype") || equals(c_token, "lt" )) {
 	    c_token++;
-	    lp->l_type = (int) real(const_express(&t))-1;
+#ifdef PM3D
+	    if (almost_equals(c_token, "pal$ette")) {
+		lp->use_palette = 1;
+		lp->l_type = def_line;
+		++c_token;
+	    } else {
+		lp->use_palette = 0;
+#endif
+		lp->l_type = (int) real(const_express(&t))-1;
+#ifdef PM3D
+	    }
+#endif
 	} else lp->l_type = def_line;
 	if (almost_equals(c_token, "linew$idth") || equals(c_token, "lw" )) {
 	    c_token++;

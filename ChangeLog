@@ -1,3 +1,40 @@
+2000-10-23  Johannes Zellner <johannes@zellner.org>
+
+	* `linetype palette' linetype, e.g.:
+	  - set style line 1 lt pal
+	  - splot sin(sqrt(x*x+y*y))/sqrt(x*x+y*y) w l lt pal
+	draws lines using a smooth palette which is set with the
+	command `set palette'. This works only for splots and
+	lines / points / dots (not impulses). It works also
+	for contours. For normal surface plots, the scans are
+	scan-wise depth-ordered. This is not perfect, but it's
+	better than nothing and it's still pretty fast. If speed
+	is not an issue, hidden3d can be used. Currently, the
+	following terminals are supported:
+	  - X11, gif, fig, vgagl, ggi
+
+2000-10-22  Johannes Zellner <johannes@zellner.org>
+
+	* repaired `gnuplot -rv' (src/gplt_x11.c) so that it takes
+	white as foreground for border / text ...
+
+	* `linetype palette' option: uses the smooth palette as
+	specified by `set pal' (only possible for pm3d enhanced
+	terminals). Works for splots:
+
+	    lines
+	    points
+	    dots
+
+	/not/ for impulses (would this make sense ?)
+	Currently only implemented in the following terminals:
+
+	    X11
+	    gif
+	    fig
+	    vgagl
+	    ggi
+
 2000-10-22  Johannes Zellner <johannes@zellner.org>
 
 	* ggi driver:

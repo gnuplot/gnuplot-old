@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29.2.6 2000/09/20 01:25:58 joze Exp $
+ * $Id: plot.h,v 1.29.2.7 2000/10/23 04:35:27 joze Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -545,6 +545,9 @@ struct lp_style_type {          /* contains all Line and Point properties */
 	double  l_width,
 	        p_size;
 	                        /* more to come ? */
+#ifdef PM3D
+	TBOOLEAN use_palette;
+#endif
 };
 
 /* Now unused; replaced with set.c(reset_lp_properties) */
@@ -574,6 +577,9 @@ struct gnuplot_contours {
  	char isNewLevel;
  	char label[32];
 	int num_pts;
+#ifdef PM3D
+	double z;
+#endif
 };
 
 struct iso_curve {
