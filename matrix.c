@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: matrix.c,v 1.1 1998/04/15 19:16:33 lhecking Exp $";
+static char *RCSid = "$Id: matrix.c,v 1.2 1998/04/15 19:41:23 lhecking Exp $";
 #endif
 
 /*
@@ -27,8 +27,6 @@ static char *RCSid = "$Id: matrix.c,v 1.1 1998/04/15 19:16:33 lhecking Exp $";
 
 
 #define MATRIX_MAIN
-
-#include <math.h>
 
 #include "type.h"
 #include "fit.h"
