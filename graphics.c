@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.24.2.14 2002/04/26 16:45:29 broeker Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.24.2.15 2002/09/19 15:19:41 broeker Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -709,6 +709,10 @@ static void boundary(scaling, plots, count)
 	key_entry_height = p_height * 1.25 * key_vert_factor;
 	if (key_entry_height < (t->v_char))
 	    key_entry_height = (t->v_char) * key_vert_factor;
+
+	/* HBB 20020122: safeguard to prevent division by zero later */
+        if (key_entry_height == 0)
+	    key_entry_height = 1;
 
 	/* count max_len key and number keys with len > 0 */
 	max_ptitl_len = find_maxl_keys(plots, count, &ptitl_cnt);
