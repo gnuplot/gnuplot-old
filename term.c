@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.11 1998/11/06 22:08:31 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.12 1998/11/12 17:09:02 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -233,11 +233,11 @@ char *dest;
 
 #if defined(PIPES)
 	if (*dest == '|') {
-#ifdef OS2
+# ifdef OS2
 	    if ((f = popen(dest + 1, "wb")) == (FILE *) NULL)
-#else
+# else
 	    if ((f = popen(dest + 1, "w")) == (FILE *) NULL)
-#endif
+# endif
 		os_error("cannot create pipe; output not changed", c_token);
 	    else
 		pipe_open = TRUE;
