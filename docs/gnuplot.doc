@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.10 1998/10/03 20:14:55 lhecking Exp $
+C RCS $Id: gnuplot.doc,v 1.11 1998/10/05 12:39:58 lhecking Exp $
 C 8 May 1998
 C Copyright (C) 1986 - 1993, 1997   Thomas Williams, Colin Kelley
 C
@@ -5784,8 +5784,11 @@ C ... and restart the table:
        show zero
 
  `gnuplot` will not plot a point if its imaginary part is greater in magnitude
- than the `zero` threshold.  Axis ranges cannot be less than `zero`.  The
- default `zero` value is 1e-8.
+ than the `zero` threshold.  This threshold is also used in various other parts
+ of gnuplot as a (crude) numerical-error threshold.  The default `zero` value
+ is 1e-8.  `zero` values larger than 1e-3 (the reciprocal of the number of
+ pixels in a typical bitmap display) should probably be avoided, but it is not
+ unreasonable to set `zero` to 0.0.
 3 zeroaxis
 ?set zeroaxis
 ?set nozeroaxis
