@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.3 1998/08/24 16:36:10 lhecking Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.4 1998/09/21 20:59:38 lhecking Exp $" ;
 #endif
 
 /****************************************************************************
@@ -2049,7 +2049,7 @@ static int iPatt[8][9]
     { 500, 200, 150, 200,  -1,   0,   0,   0,  0 }
     } ;
 
-int LMove( HPS hps, POINTL *p )
+void LMove( HPS hps, POINTL *p )
     {
     double ds, dx, dy ;
     if( iLinebegin ) {
