@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.106 2004/06/21 05:51:08 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.105 2004/06/21 05:46:30 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -2745,6 +2745,7 @@ struct curve_points *plot;
     unsigned int xM, ylowM, yhighM;	/* the mapped version of above */
     TBOOLEAN low_inrange, high_inrange;
     int tic = GPMAX(ERRORBARTIC/2,1);
+    fprintf(stderr,"plot_f_bars: tic = %d\n",tic);
 
     for (i = 0; i < plot->p_count; i++) {
 	/* undefined points don't count */
