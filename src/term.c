@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.104 2005/03/25 00:34:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.105 2005/03/25 05:01:11 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1315,12 +1315,7 @@ static struct termentry term_tbl[] =
      1, 1, options_null, UNKNOWN_null, UNKNOWN_null,
      UNKNOWN_null, null_scale, UNKNOWN_null, MOVE_null, MOVE_null,
      LINETYPE_null, PUTTEXT_null}
-    ,
-    {"table", "Dump ASCII table of X Y [Z] values to output",
-     100, 100, 1, 1,
-     1, 1, options_null, UNKNOWN_null, UNKNOWN_null,
-     UNKNOWN_null, null_scale, UNKNOWN_null, MOVE_null, MOVE_null,
-     LINETYPE_null, PUTTEXT_null}
+
 #include "term.h"
 
 };
