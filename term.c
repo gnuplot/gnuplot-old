@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.13 1998/11/17 20:52:47 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.14 1998/11/19 10:42:01 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -827,7 +827,7 @@ struct termentry term_tbl[] =
 /* also make this be a function so we can get the number of
  *  terminals in help.c   DBT 10-7-98
  */
-int term_count(void)
+int term_count()
 {
     return TERMCOUNT;
 }
