@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.20 1999/02/22 15:22:02 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.21 1999/02/25 15:53:30 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -140,6 +140,10 @@ Error. Incompatible options.
 # define FD_ISSET(n, p)  ((p)->fds_bits[0] & (1 << ((n) % 32)))
 # define FD_ZERO(p)      memset((char *)(p),'\0',sizeof(*(p)))
 #endif /* not FD_SET */
+
+#ifdef HAVE_POLL_H
+# include <poll.h>
+#endif
 
 #include "plot.h"
 
@@ -340,7 +344,22 @@ char *argv[];
 
 void mainloop()
 {
-    fd_set_size_t nf, nfds, cn = ConnectionNumber(dpy), in;
+#if defined(HAVE_POLL) && defined(HAVE_POLL_H) && !defined(HAVE_SELECT)
+    int cn, in, retval, timeout;
+    struct pollfd poll_list[2];
+
+    cn = ConnectionNumber (dpy);
+    X11_ipc = stdin;
+    in = fileno (X11_ipc);
+
+    poll_list[0].fd = cn;
+    poll_list[1].fd = in;
+    poll_list[0].events = POLLIN|POLLOUT;
+    poll_list[1].events = POLLIN|POLLOUT;
+/* FIXME */
+#else
+    int nf, cn = ConnectionNumber(dpy), in;
+    fd_set_size_t nfds;
     struct timeval *timer = (struct timeval *) 0;
 #ifdef ISC22
     struct timeval timeout;
@@ -408,12 +427,11 @@ void mainloop()
 		return;
 	}
     }
+#endif /* !(HAVE_POLL && HAVE_POLL_H && !HAVE_SELECT) */
 }
 
-#endif
 
-
-#ifdef CRIPPLED_SELECT
+#elif defined(CRIPPLED_SELECT)
 /*-----------------------------------------------------------------------------
  *    CRIPPLED_SELECT mainloop
  *---------------------------------------------------------------------------*/
@@ -458,10 +476,9 @@ void mainloop()
 	}
     }
 }
-#endif /* CRIPPLED_SELECT */
 
 
-#ifdef VMS
+#elif defined(VMS)
 /*-----------------------------------------------------------------------------
  *    VMS mainloop - Yehavi Bourvine - YEHAVI@VMS.HUJI.AC.IL
  *---------------------------------------------------------------------------*/
@@ -525,8 +542,9 @@ void mainloop()
 	process_event(&xe);
     }
 }
-
-#endif /* VMS */
+#else /* !(DEFAULT_X11 || CRIPPLED_SELECT || VMS */
+You lose. No mainloop.
+#endif /* !(DEFAULT_X11 || CRIPPLED_SELECT || VMS */
 
 /* delete a window / plot */
 
