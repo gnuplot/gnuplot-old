@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.18 1998/12/09 15:24:14 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.19 1999/01/26 13:48:45 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -330,6 +330,7 @@ char **argv;
 #endif
 
 #ifdef GNU_READLINE
+    using_history();
     rl_readline_name = argv[0];
     rl_complete_with_tilde_expansion = 1;
 #endif

@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.9 1998/12/17 22:08:50 lhecking Exp $
+ * $Id: syscfg.h,v 1.10 1999/01/26 13:50:08 lhecking Exp $
  *
  */
 
@@ -399,5 +399,11 @@
 
 #endif /* HAVE_CONFIG_H */
 /* End autoconf related stuff */
+
+/* GNU readline stuff */
+#ifdef GNU_READLINE
+# include <readline/readline.h>
+# include <readline/history.h>
+#endif
 
 #endif /* !SYSCFG_H */

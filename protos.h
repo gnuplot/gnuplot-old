@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.13 1999/01/06 15:50:29 lhecking Exp $
+ * $Id: protos.h,v 1.14 1999/01/26 13:50:03 lhecking Exp $
  *
  */
 
@@ -212,9 +212,6 @@ void plot3drequest __PROTO((void));
 #ifndef GNU_READLINE
 char *readline __PROTO((char *prompt));
 void add_history __PROTO((char *line));
-#else
-extern char *readline();
-extern void add_history();
 #endif /* GNU_READLINE */
 
 #if defined(ATARI) || defined(MTOS)
