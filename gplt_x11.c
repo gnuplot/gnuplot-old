@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.4 1998/07/08 20:48:25 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.5 1998/08/24 16:36:08 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -129,10 +129,15 @@ Error. Incompatible options.
 #include <sys/bsdtypes.h>
 #endif /* HAVE_SYS_BSDTYPES_H */
 
-#if defined(HAVE_SYS_SELECT_H) && !defined(VMS) && !defined(FD_SET)
-#include <sys/select.h>
-#endif /* HAVE_SYS_SELECT_H && !VMS && !FD_SET */
- 
+#ifdef __EMX__
+# include <sys/select.h>
+# include <netdb.h>
+#else /* not __EMX__ */
+# if defined(HAVE_SYS_SELECT_H) && !defined(VMS) && !defined(FD_SET)
+#  include <sys/select.h>
+# endif /* HAVE_SYS_SELECT_H && !VMS && !FD_SET */
+#endif /* not __EMX__ */
+
 #ifndef FD_SET
 
 #define FD_SET(n, p)    ((p)->fds_bits[0] |= (1 << ((n) % 32)))
