@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.1 2000/05/02 21:26:20 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.2 2000/05/09 19:04:05 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -40,10 +40,12 @@ static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.1 2000/05/02 21:26
 #include "axis.h"
 #include "command.h"
 #include "gp_time.h"
+#include "graph3d.h"		/* HBB 2000506: back in, for clip_vector() */
 #include "misc.h"
 #include "setshow.h"
 #include "term_api.h"
 #include "util.h"
+#include "util3d.h"		/* HBB 20000506: back in, for clip_line() */
 
 /* key placement is calculated in boundary, so we need file-wide variables
  * To simplify adjustments to the key, we set all these once [depends on
@@ -174,7 +176,7 @@ f_min(double a, double b)
  * goes wrong, we can switch it off temporarily
  */
 
-static int lkey;
+static t_key_flag lkey;
 
 /* First attempt at double axes...
  * put the scale factors into a similar array
@@ -242,6 +244,11 @@ int count;
 
     register struct termentry *t = term;
     int key_h, key_w;
+    /* FIXME HBB 20000506: this line is the reason for the 'D0,1;D1,0'
+     * bug in the HPGL terminal: we actually carry out the switch of
+     * text orientation, just for finding out if the terminal can do
+     * that. *But* we're not in graphical mode, yet, so this call
+     * yields undesirable results */
     int can_rotate = (*t->text_angle) (1);
 
     int xtic_textheight;	/* height of xtic labels */
@@ -266,10 +273,10 @@ int count;
     /* figure out which rotatable items are to be rotated
      * (ylabel and y2label are rotated if possible) */
     int vertical_timelabel = can_rotate && timelabel_rotate;
-    int vertical_xtics = can_rotate && rotate_xtics;
-    int vertical_x2tics = can_rotate && rotate_x2tics;
-    int vertical_ytics = can_rotate && rotate_ytics;
-    int vertical_y2tics = can_rotate && rotate_y2tics;
+    int vertical_xtics = can_rotate && axis_tic_rotate[FIRST_X_AXIS];
+    int vertical_x2tics = can_rotate && axis_tic_rotate[SECOND_X_AXIS];
+    int vertical_ytics = can_rotate && axis_tic_rotate[FIRST_Y_AXIS];
+    int vertical_y2tics = can_rotate && axis_tic_rotate[SECOND_Y_AXIS];
 
     lkey = key;			/* but we may have to disable it later */
 
@@ -278,22 +285,22 @@ int count;
     /*{{{  count lines in labels and tics */
     if (*title.text)
 	label_width(title.text, &titlelin);
-    if (*xlabel.text)
-	label_width(xlabel.text, &xlablin);
-    if (*x2label.text)
-	label_width(x2label.text, &x2lablin);
-    if (*ylabel.text)
-	label_width(ylabel.text, &ylablin);
-    if (*y2label.text)
-	label_width(y2label.text, &y2lablin);
-    if (xtics)
-	label_width(xformat, &xticlin);
-    if (x2tics)
-	label_width(x2format, &x2ticlin);
-    if (ytics)
-	label_width(yformat, &yticlin);
-    if (y2tics)
-	label_width(y2format, &y2ticlin);
+    if (*axis_label[FIRST_X_AXIS].text)
+	label_width(axis_label[FIRST_X_AXIS].text, &xlablin);
+    if (*axis_label[SECOND_X_AXIS].text)
+	label_width(axis_label[SECOND_X_AXIS].text, &x2lablin);
+    if (*axis_label[FIRST_Y_AXIS].text)
+	label_width(axis_label[FIRST_Y_AXIS].text, &ylablin);
+    if (*axis_label[SECOND_Y_AXIS].text)
+	label_width(axis_label[SECOND_Y_AXIS].text, &y2lablin);
+    if (axis_tics[FIRST_X_AXIS])
+	label_width(axis_formatstring[FIRST_X_AXIS], &xticlin);
+    if (axis_tics[SECOND_X_AXIS])
+	label_width(axis_formatstring[SECOND_X_AXIS], &x2ticlin);
+    if (axis_tics[FIRST_Y_AXIS])
+	label_width(axis_formatstring[FIRST_Y_AXIS], &yticlin);
+    if (axis_tics[SECOND_Y_AXIS])
+	label_width(axis_formatstring[SECOND_Y_AXIS], &y2ticlin);
     if (*timelabel.text)
 	label_width(timelabel.text, &timelin);
     /*}}} */
@@ -310,14 +317,14 @@ int count;
 
     /* x2label */
     if (x2lablin) {
-	x2label_textheight = (int) ((x2lablin + x2label.yoffset) * (t->v_char));
-	if (!x2tics)
+	x2label_textheight = (int) ((x2lablin + axis_label[SECOND_X_AXIS].yoffset) * (t->v_char));
+	if (!axis_tics[SECOND_X_AXIS])
 	    x2label_textheight += 0.5 * t->v_char;
     } else
 	x2label_textheight = 0;
 
     /* tic labels */
-    if (x2tics & TICS_ON_BORDER) {
+    if (axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER) {
 	/* ought to consider tics on axes if axis near border */
 	if (vertical_x2tics) {
 	    /* guess at tic length, since we don't know it yet
@@ -329,7 +336,7 @@ int count;
 	x2tic_textheight = 0;
 
     /* tics */
-    if (!tic_in && ((x2tics & TICS_ON_BORDER) || ((xtics & TICS_MIRROR) && (xtics & TICS_ON_BORDER))))
+    if (!tic_in && ((axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER) || ((axis_tics[FIRST_X_AXIS] & TICS_MIRROR) && (axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER))))
 	x2tic_height = (int) ((t->v_tic) * ticscale);
     else
 	x2tic_height = 0;
@@ -341,14 +348,14 @@ int count;
 	timetop_textheight = 0;
 
     /* horizontal ylabel */
-    if (*ylabel.text && !can_rotate)
-	ylabel_textheight = (int) ((ylablin + ylabel.yoffset) * (t->v_char));
+    if (*axis_label[FIRST_Y_AXIS].text && !can_rotate)
+	ylabel_textheight = (int) ((ylablin + axis_label[FIRST_Y_AXIS].yoffset) * (t->v_char));
     else
 	ylabel_textheight = 0;
 
     /* horizontal y2label */
-    if (*y2label.text && !can_rotate)
-	y2label_textheight = (int) ((y2lablin + y2label.yoffset) * (t->v_char));
+    if (*axis_label[SECOND_Y_AXIS].text && !can_rotate)
+	y2label_textheight = (int) ((y2lablin + axis_label[SECOND_Y_AXIS].yoffset) * (t->v_char));
     else
 	y2label_textheight = 0;
 
@@ -402,7 +409,7 @@ int count;
      *     first compute heights of labels and tics */
 
     /* tic labels */
-    if (xtics & TICS_ON_BORDER) {
+    if (axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER) {
 	/* ought to consider tics on axes if axis near border */
 	if (vertical_xtics) {
 	    /* guess at tic length, since we don't know it yet */
@@ -413,7 +420,7 @@ int count;
 	xtic_textheight = 0;
 
     /* tics */
-    if (!tic_in && ((xtics & TICS_ON_BORDER) || ((x2tics & TICS_MIRROR) && (x2tics & TICS_ON_BORDER))))
+    if (!tic_in && ((axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER) || ((axis_tics[SECOND_X_AXIS] & TICS_MIRROR) && (axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER))))
 	xtic_height = (int) ((t->v_tic) * ticscale);
     else
 	xtic_height = 0;
@@ -421,8 +428,9 @@ int count;
     /* xlabel */
     if (xlablin) {
 	/* offset is subtracted because if > 0, the margin is smaller */
-	xlabel_textheight = (int) ((xlablin - xlabel.yoffset) * (t->v_char));
-	if (!xtics)
+	xlabel_textheight = ((xlablin - axis_label[FIRST_X_AXIS].yoffset)
+			     * t->v_char);
+	if (!axis_tics[FIRST_X_AXIS])
 	    xlabel_textheight += 0.5 * t->v_char;
     } else
 	xlabel_textheight = 0;
@@ -460,7 +468,7 @@ int count;
     /*  end of preliminary ybot calculation }}} */
 
 
-#define KEY_PANIC(x) if (x) { lkey = 0; goto key_escape; }
+#define KEY_PANIC(x) if (x) { lkey = KEY_NONE; goto key_escape; }
 
     if (lkey) {
 	/*{{{  essential key features */
@@ -510,7 +518,7 @@ int count;
 	 * the tidiest way out is to  set lkey = 0, and a goto
 	 */
 
-	if (lkey == -1) {
+	if (lkey == KEY_AUTO_PLACEMENT) {
 	    if (key_vpos == TUNDER) {
 		/* maximise no cols, limited by label-length */
 		key_cols = (int) (xright - xleft) / key_col_wth;
@@ -551,20 +559,10 @@ int count;
 	}
 	/*}}} */
     }
+
     /*{{{  set up y and y2 tics */
-    {
-	/* setup_tics allows max number of tics to be specified
-	 * but users dont like it to change with size and font,
-	 * so we use value of 20, which is 3.5 behaviour.
-	 * Note also that if format is '', yticlin = 0, so this gives
-	 * division by zero. 
-	 * int guide = (ytop-ybot)/term->v_char;
-	 */
-	if (ytics)
-	    setup_tics(FIRST_Y_AXIS, &yticdef, yformat, 20 /*(int) (guide/yticlin) */ );
-	if (y2tics)
-	    setup_tics(SECOND_Y_AXIS, &y2ticdef, y2format, 20 /*(int) (guide/y2ticlin) */ );
-    }
+    setup_tics(FIRST_Y_AXIS, 20);
+    setup_tics(SECOND_Y_AXIS, 20);
     /*}}} */
 
 
@@ -572,7 +570,7 @@ int count;
        unless it has been explicitly set by lmargin */
 
     /* tic labels */
-    if (ytics & TICS_ON_BORDER) {
+    if (axis_tics[FIRST_Y_AXIS] & TICS_ON_BORDER) {
 	if (vertical_ytics)
 	    /* HBB: we will later add some white space as part of this, so
 	     * reserve two more rows (one above, one below the text ...).
@@ -584,7 +582,7 @@ int count;
 	     * the latter sets widest_tic to the length of the widest one
 	     * ought to consider tics on axis if axis near border...
 	     */
-	    gen_tics(FIRST_Y_AXIS, &yticdef, 0, 0, 0.0, widest2d_callback);
+	    gen_tics(FIRST_Y_AXIS, 0, widest2d_callback);
 
 	    ytic_textwidth = (int) ((t->h_char) * (widest_tic + 2));
 	}
@@ -593,15 +591,15 @@ int count;
     }
 
     /* tics */
-    if (!tic_in && ((ytics & TICS_ON_BORDER) || ((y2tics & TICS_MIRROR) && (y2tics & TICS_ON_BORDER))))
+    if (!tic_in && ((axis_tics[FIRST_Y_AXIS] & TICS_ON_BORDER) || ((axis_tics[SECOND_Y_AXIS] & TICS_MIRROR) && (axis_tics[SECOND_Y_AXIS] & TICS_ON_BORDER))))
 	ytic_width = (int) ((t->h_tic) * ticscale);
     else
 	ytic_width = 0;
 
     /* ylabel */
-    if (*ylabel.text && can_rotate) {
-	ylabel_textwidth = (int) ((ylablin - ylabel.xoffset) * (t->v_char));
-	if (!ytics)
+    if (*axis_label[FIRST_Y_AXIS].text && can_rotate) {
+	ylabel_textwidth = (int) ((ylablin - axis_label[FIRST_Y_AXIS].xoffset) * (t->v_char));
+	if (!axis_tics[FIRST_Y_AXIS])
 	    ylabel_textwidth += 0.5 * t->v_char;
     }
     /* this should get large for NEGATIVE ylabel.xoffsets  DBT 11-5-98 */
@@ -644,7 +642,7 @@ int count;
        unless it has been explicitly set by rmargin */
 
     /* tic labels */
-    if (y2tics & TICS_ON_BORDER) {
+    if (axis_tics[SECOND_Y_AXIS] & TICS_ON_BORDER) {
 	if (vertical_y2tics)
 	    y2tic_textwidth = (int) ((t->v_char) * (y2ticlin + 2));
 	else {
@@ -653,7 +651,7 @@ int count;
 	     * the latter sets widest_tic to the length of the widest one
 	     * ought to consider tics on axis if axis near border...
 	     */
-	    gen_tics(SECOND_Y_AXIS, &y2ticdef, 0, 0, 0.0, widest2d_callback);
+	    gen_tics(SECOND_Y_AXIS, 0, widest2d_callback);
 
 	    y2tic_textwidth = (int) ((t->h_char) * (widest_tic + 2));
 	}
@@ -662,15 +660,15 @@ int count;
     }
 
     /* tics */
-    if (!tic_in && ((y2tics & TICS_ON_BORDER) || ((ytics & TICS_MIRROR) && (ytics & TICS_ON_BORDER))))
+    if (!tic_in && ((axis_tics[SECOND_Y_AXIS] & TICS_ON_BORDER) || ((axis_tics[FIRST_Y_AXIS] & TICS_MIRROR) && (axis_tics[FIRST_Y_AXIS] & TICS_ON_BORDER))))
 	y2tic_width = (int) ((t->h_tic) * ticscale);
     else
 	y2tic_width = 0;
 
     /* y2label */
-    if (can_rotate && *y2label.text) {
-	y2label_textwidth = (int) ((y2lablin + y2label.xoffset) * (t->v_char));
-	if (!y2tics)
+    if (can_rotate && *axis_label[SECOND_Y_AXIS].text) {
+	y2label_textwidth = (int) ((y2lablin + axis_label[SECOND_Y_AXIS].xoffset) * (t->v_char));
+	if (!axis_tics[SECOND_Y_AXIS])
 	    y2label_textwidth += 0.5 * t->v_char;
     } else
 	y2label_textwidth = 0;
@@ -687,7 +685,7 @@ int count;
 	    xright -= y2label_textwidth;
 
 	/* adjust for outside key */
-	if (lkey == -1 && key_hpos == TOUT) {
+	if (lkey == KEY_AUTO_PLACEMENT && key_hpos == TOUT) {
 	    xright -= key_col_wth * key_cols;
 	    keybox.xl = xright + (int) (t->h_tic);
 	}
@@ -736,32 +734,23 @@ int count;
      * assume tics are 5 characters wide
      */
 
-    {
-	/* see equivalent code for ytics above
-	 * int guide = (xright - xleft) / (5*t->h_char);
-	 */
-
-	if (xtics)
-	    setup_tics(FIRST_X_AXIS, &xticdef, xformat, 20 /*guide */ );
-	if (x2tics)
-	    setup_tics(SECOND_X_AXIS, &x2ticdef, x2format, 20 /*guide */ );
-    }
-    /*}}} */
+    setup_tics(FIRST_X_AXIS, 20);
+    setup_tics(SECOND_X_AXIS, 20);
 
 
     /*  adjust top and bottom margins for tic label rotation */
 
-    if (tmargin < 0 && x2tics & TICS_ON_BORDER && vertical_x2tics) {
+    if (tmargin < 0 && axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER && vertical_x2tics) {
 	widest_tic = 0;		/* reset the global variable ... */
-	gen_tics(SECOND_X_AXIS, &x2ticdef, 0, 0, 0.0, widest2d_callback);
+	gen_tics(SECOND_X_AXIS, 0, widest2d_callback);
 	ytop += x2tic_textheight;
 	/* Now compute a new one and use that instead: */
 	x2tic_textheight = (int) ((t->h_char) * (widest_tic));
 	ytop -= x2tic_textheight;
     }
-    if (bmargin < 0 && xtics & TICS_ON_BORDER && vertical_xtics) {
+    if (bmargin < 0 && axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER && vertical_xtics) {
 	widest_tic = 0;		/* reset the global variable ... */
-	gen_tics(FIRST_X_AXIS, &xticdef, 0, 0, 0.0, widest2d_callback);
+	gen_tics(FIRST_X_AXIS, 0, widest2d_callback);
 	ybot -= xtic_textheight;
 	xtic_textheight = (int) ((t->h_char) * widest_tic);
 	ybot += xtic_textheight;
@@ -781,11 +770,11 @@ int count;
 
     xlabel_y = ybot - xtic_height - xtic_textheight - xlabel_textheight + xlablin * t->v_char;
     ylabel_x = xleft - ytic_width - ytic_textwidth;
-    if (*ylabel.text && can_rotate)
+    if (*axis_label[FIRST_Y_AXIS].text && can_rotate)
 	ylabel_x -= ylabel_textwidth;
 
     y2label_x = xright + y2tic_width + y2tic_textwidth;
-    if (*y2label.text && can_rotate)
+    if (*axis_label[SECOND_Y_AXIS].text && can_rotate)
 	y2label_x += y2label_textwidth - y2lablin * t->v_char;
 
     if (vertical_timelabel) {
@@ -825,12 +814,12 @@ int count;
     AXIS_SETSCALE(SECOND_X_AXIS, xleft, xright);
 
     /*{{{  calculate the window in the grid for the key */
-    if (lkey == 1 || (lkey == -1 && key_vpos != TUNDER)) {
+    if (lkey == KEY_USER_PLACEMENT || (lkey == KEY_AUTO_PLACEMENT && key_vpos != TUNDER)) {
 	/* calculate space for keys to prevent grid overwrite the keys */
 	/* do it even if there is no grid, as do_plot will use these to position key */
 	key_w = key_col_wth * key_cols;
 	key_h = (ktitl_lines) * t->v_char + key_rows * key_entry_height;
-	if (lkey == -1) {
+	if (lkey == KEY_AUTO_PLACEMENT) {
 	    if (key_vpos == TTOP) {
 		keybox.yt = (int) ytop - (t->v_tic);
 		keybox.yb = keybox.yt - key_h;
@@ -958,169 +947,21 @@ int pcount;			/* count of plots in linked list */
     y_axis = FIRST_Y_AXIS;
 
     /* label first y axis tics */
-    axis_output_tics(FIRST_Y_AXIS, ytics, rotate_ytics, xleft, xright,
-		     &ytic_x, FIRST_X_AXIS, &yticdef, (GRID_Y | GRID_MY),
-		     mytics, mytfreq, ytick2d_callback);
+    axis_output_tics(FIRST_Y_AXIS, &ytic_x, FIRST_X_AXIS,
+		     (GRID_Y | GRID_MY), ytick2d_callback);
     /* label first x axis tics */
-    axis_output_tics(FIRST_X_AXIS, xtics, rotate_xtics, ybot, ytop,
-		     &xtic_y, FIRST_Y_AXIS, &xticdef, (GRID_X | GRID_MX),
-		     mxtics, mxtfreq, xtick2d_callback);
-#if 0
-    if (ytics) {
-	/* set the globals ytick2d_callback() needs */
-
-	if (rotate_ytics && (*t->text_angle) (1)) {
-	    tic_hjust = CENTRE;
-	    tic_vjust = JUST_BOT;
-	    rotate_tics = 1;	/* HBB 980629 */
-	    ytic_x += t->v_char / 2;
-	} else {
-	    tic_hjust = RIGHT;
-	    tic_vjust = JUST_CENTRE;
-	    rotate_tics = 0;	/* HBB 980629 */
-	}
-
-	if (ytics & TICS_MIRROR)
-	    tic_mirror = xright;
-	else
-	    tic_mirror = -1;	/* no thank you */
-
-	if ((ytics & TICS_ON_AXIS) && !log_array[FIRST_X_AXIS] && inrange(0.0, min_array[x_axis], max_array[x_axis])) {
-	    tic_start = map_x(0.0);
-	    tic_direction = -1;
-	    if (ytics & TICS_MIRROR)
-		tic_mirror = tic_start;
-	    /* put text at boundary if axis is close to boundary */
-	    tic_text = (((tic_start - xleft) > (3 * t->h_char)) ? tic_start : xleft) - t->h_char;
-	} else {
-	    tic_start = xleft;
-	    tic_direction = tic_in ? 1 : -1;
-	    tic_text = ytic_x;
-	}
-	/* go for it */
-	gen_tics(FIRST_Y_AXIS, &yticdef, work_grid.l_type & (GRID_Y | GRID_MY), mytics, mytfreq, ytick2d_callback);
-	(*t->text_angle) (0);	/* reset rotation angle */
-
-    }
-    if (xtics) {
-	/* set the globals xtick2d_callback() needs */
-
-	if (rotate_xtics && (*t->text_angle) (1)) {
-	    tic_hjust = RIGHT;
-	    tic_vjust = JUST_CENTRE;
-	    rotate_tics = 1;	/* HBB 980629 */
-	} else {
-	    tic_hjust = CENTRE;
-	    tic_vjust = JUST_TOP;
-	    rotate_tics = 0;	/* HBB 980629 */
-	}
-
-	if (xtics & TICS_MIRROR)
-	    tic_mirror = ytop;
-	else
-	    tic_mirror = -1;	/* no thank you */
-	if ((xtics & TICS_ON_AXIS) && !log_array[FIRST_Y_AXIS] && inrange(0.0, min_array[y_axis], max_array[y_axis])) {
-	    tic_start = map_y(0.0);
-	    tic_direction = -1;
-	    if (xtics & TICS_MIRROR)
-		tic_mirror = tic_start;
-	    /* put text at boundary if axis is close to boundary */
-	    if (tic_start - ybot > 2 * t->v_char)
-		tic_text = tic_start - ticscale * t->v_tic - t->v_char;
-	    else
-		tic_text = ybot - t->v_char;
-	} else {
-	    tic_start = ybot;
-	    tic_direction = tic_in ? 1 : -1;
-	    tic_text = xtic_y;
-	}
-	/* go for it */
-	gen_tics(FIRST_X_AXIS, &xticdef, work_grid.l_type & (GRID_X | GRID_MX), mxtics, mxtfreq, xtick2d_callback);
-	(*t->text_angle) (0);	/* reset rotation angle */
-    }
-#endif /* HBB 20000416: test, test */
+    axis_output_tics(FIRST_X_AXIS, &xtic_y, FIRST_Y_AXIS,
+		     (GRID_X | GRID_MX), xtick2d_callback);
 
     /* select second mapping */
     x_axis = SECOND_X_AXIS;
     y_axis = SECOND_Y_AXIS;
 
-    axis_output_tics(SECOND_Y_AXIS, y2tics, rotate_y2tics, xright, xleft,
-		     &y2tic_x, SECOND_X_AXIS, &y2ticdef, (GRID_Y2 | GRID_MY2),
-		     my2tics, my2tfreq, ytick2d_callback);
-    axis_output_tics(SECOND_X_AXIS, x2tics, rotate_x2tics, ytop, ybot,
-		     &x2tic_y, SECOND_Y_AXIS, &x2ticdef, (GRID_X2 | GRID_MX2),
-		     mx2tics, mx2tfreq, xtick2d_callback);
+    axis_output_tics(SECOND_Y_AXIS, &y2tic_x, SECOND_X_AXIS,
+		     (GRID_Y2 | GRID_MY2), ytick2d_callback);
+    axis_output_tics(SECOND_X_AXIS, &x2tic_y, SECOND_Y_AXIS,
+		     (GRID_X2 | GRID_MX2), xtick2d_callback);
 
-#if 0 /* HBB 20000501: use generalized routine for these, too: */
-    /* label second y axis tics */
-    if (y2tics) {
-	/* set the globals ytick2d_callback() needs */
-
-	if (rotate_y2tics && (*t->text_angle) (1)) {
-	    tic_hjust = CENTRE;
-	    tic_vjust = JUST_TOP;
-	    rotate_tics = 1;	/* HBB 980629 */
-	} else {
-	    tic_hjust = LEFT;
-	    tic_vjust = JUST_CENTRE;
-	    rotate_tics = 0;	/* HBB 980629 */
-	}
-
-	if (y2tics & TICS_MIRROR)
-	    tic_mirror = xleft;
-	else
-	    tic_mirror = -1;	/* no thank you */
-	if ((y2tics & TICS_ON_AXIS) && !log_array[FIRST_X_AXIS] && inrange(0.0, min_array[x_axis], max_array[x_axis])) {
-	    tic_start = map_x(0.0);
-	    tic_direction = 1;
-	    if (y2tics & TICS_MIRROR)
-		tic_mirror = tic_start;
-	    /* put text at boundary if axis is close to boundary */
-	    tic_text = (((xright - tic_start) > (3 * t->h_char)) ? tic_start : xright) + t->h_char;
-	} else {
-	    tic_start = xright;
-	    tic_direction = tic_in ? -1 : 1;
-	    tic_text = y2tic_x;
-	}
-	/* go for it */
-	gen_tics(SECOND_Y_AXIS, &y2ticdef, work_grid.l_type & (GRID_Y2 | GRID_MY2), my2tics, my2tfreq, ytick2d_callback);
-	(*t->text_angle) (0);	/* reset rotation angle */
-    }
-    /* label second x axis tics */
-    if (x2tics) {
-	/* set the globals xtick2d_callback() needs */
-
-	if (rotate_x2tics && (*t->text_angle) (1)) {
-	    tic_hjust = LEFT;
-	    tic_vjust = JUST_CENTRE;
-	    rotate_tics = 1;	/* HBB 980629 */
-	} else {
-	    tic_hjust = CENTRE;
-	    tic_vjust = JUST_BOT;
-	    rotate_tics = 0;	/* HBB 980629 */
-	}
-
-	if (x2tics & TICS_MIRROR)
-	    tic_mirror = ybot;
-	else
-	    tic_mirror = -1;	/* no thank you */
-	if ((x2tics & TICS_ON_AXIS) && !log_array[SECOND_Y_AXIS] && inrange(0.0, min_array[y_axis], max_array[y_axis])) {
-	    tic_start = map_y(0.0);
-	    tic_direction = 1;
-	    if (x2tics & TICS_MIRROR)
-		tic_mirror = tic_start;
-	    /* put text at boundary if axis is close to boundary */
-	    tic_text = (((ytop - tic_start) > (2 * t->v_char)) ? tic_start : ytop) + t->v_char;
-	} else {
-	    tic_start = ytop;
-	    tic_direction = tic_in ? -1 : 1;
-	    tic_text = x2tic_y;
-	}
-	/* go for it */
-	gen_tics(SECOND_X_AXIS, &x2ticdef, work_grid.l_type & (GRID_X2 | GRID_MX2), mx2tics, mx2tfreq, xtick2d_callback);
-	(*t->text_angle) (0);	/* reset rotation angle */
-    }
-#endif /* 1/0 HBB 20000501 */
 
     /* select first mapping */
     x_axis = FIRST_X_AXIS;
@@ -1156,38 +997,25 @@ int pcount;			/* count of plots in linked list */
     x_axis = FIRST_X_AXIS;
     y_axis = FIRST_Y_AXIS;	/* chose scaling */
 
-    /* FIXME HBB 20000430: previous version treated log-scaled
-     * y and x axes slightly differently, here: xzeroaxis was set at
-     * ybot, but yzeroaxis would still try to map x=0.0... */
-    if (axis_position_zeroaxis(FIRST_Y_AXIS)
-	&& (xzeroaxis.l_type > -3)) {
-	term_apply_lp_properties(&xzeroaxis);
-	(*t->move) (xleft, axis_zero[FIRST_Y_AXIS]);
-	(*t->vector) (xright, axis_zero[FIRST_Y_AXIS]);
-    }
-    if (axis_position_zeroaxis(FIRST_X_AXIS)
-	&& (yzeroaxis.l_type > -3)) {
-	term_apply_lp_properties(&yzeroaxis);
-	(*t->move) (axis_zero[FIRST_X_AXIS], ybot);
-	(*t->vector) (axis_zero[FIRST_X_AXIS], ytop);
-    }
+#define DRAW_ZEROAXIS(axis,crossaxis)				\
+    do {							\
+	if (axis_position_zeroaxis(crossaxis)			\
+	    && (axis_zeroaxis[axis].l_type > -3)) {		\
+	    term_apply_lp_properties(&axis_zeroaxis[axis]);	\
+	    (*t->move) (xleft, axis_zero[crossaxis]);		\
+	    (*t->vector) (xright, axis_zero[crossaxis]);	\
+	}							\
+    } while (0);
+
+    DRAW_ZEROAXIS(FIRST_X_AXIS,FIRST_Y_AXIS);
+    DRAW_ZEROAXIS(FIRST_Y_AXIS,FIRST_X_AXIS);
 
     x_axis = SECOND_X_AXIS;
     y_axis = SECOND_Y_AXIS;	/* chose scaling */
 
-    if (axis_position_zeroaxis(SECOND_Y_AXIS)
-	&& (x2zeroaxis.l_type > -3)) {
-	term_apply_lp_properties(&x2zeroaxis);
-	(*t->move) (xleft, axis_zero[SECOND_Y_AXIS]);
-	(*t->vector) (xright, axis_zero[SECOND_Y_AXIS]);
-    }
-    if (axis_position_zeroaxis(SECOND_X_AXIS)
-	&& (y2zeroaxis.l_type > -3)) {
-	term_apply_lp_properties(&y2zeroaxis);
-	(*t->move) (axis_zero[SECOND_X_AXIS], ybot);
-	(*t->vector) (axis_zero[SECOND_X_AXIS], ytop);
-    }
-
+    DRAW_ZEROAXIS(SECOND_X_AXIS,SECOND_Y_AXIS);
+    DRAW_ZEROAXIS(SECOND_Y_AXIS,SECOND_X_AXIS);
+#undef DRAW_ZEROAXIS
 
     /* DRAW PLOT BORDER */
     if (draw_border) {
@@ -1217,41 +1045,41 @@ int pcount;			/* count of plots in linked list */
 	}
     }
 /* YLABEL */
-    if (*ylabel.text) {
+    if (*axis_label[FIRST_Y_AXIS].text) {
 	/* we worked out x-posn in boundary() */
 	if ((*t->text_angle) (1)) {
 	    unsigned int x = ylabel_x + (t->v_char / 2);
-	    unsigned int y = (ytop + ybot) / 2 + ylabel.yoffset * (t->h_char);
-	    write_multiline(x, y, ylabel.text, CENTRE, JUST_TOP, 1, ylabel.font);
+	    unsigned int y = (ytop + ybot) / 2 + axis_label[FIRST_Y_AXIS].yoffset * (t->h_char);
+	    write_multiline(x, y, axis_label[FIRST_Y_AXIS].text, CENTRE, JUST_TOP, 1, axis_label[FIRST_Y_AXIS].font);
 	    (*t->text_angle) (0);
 	} else {
 	    /* really bottom just, but we know number of lines 
 	       so we need to adjust x-posn by one line */
 	    unsigned int x = ylabel_x;
 	    unsigned int y = ylabel_y;
-	    write_multiline(x, y, ylabel.text, LEFT, JUST_TOP, 0, ylabel.font);
+	    write_multiline(x, y, axis_label[FIRST_Y_AXIS].text, LEFT, JUST_TOP, 0, axis_label[FIRST_Y_AXIS].font);
 	}
     }
 /* Y2LABEL */
-    if (*y2label.text) {
+    if (*axis_label[SECOND_Y_AXIS].text) {
 	/* we worked out coordinates in boundary() */
 	if ((*t->text_angle) (1)) {
 	    unsigned int x = y2label_x + (t->v_char / 2) - 1;
-	    unsigned int y = (ytop + ybot) / 2 + y2label.yoffset * (t->h_char);
-	    write_multiline(x, y, y2label.text, CENTRE, JUST_TOP, 1, y2label.font);
+	    unsigned int y = (ytop + ybot) / 2 + axis_label[SECOND_Y_AXIS].yoffset * (t->h_char);
+	    write_multiline(x, y, axis_label[SECOND_Y_AXIS].text, CENTRE, JUST_TOP, 1, axis_label[SECOND_Y_AXIS].font);
 	    (*t->text_angle) (0);
 	} else {
 	    /* really bottom just, but we know number of lines */
 	    unsigned int x = y2label_x;
 	    unsigned int y = y2label_y;
-	    write_multiline(x, y, y2label.text, RIGHT, JUST_TOP, 0, y2label.font);
+	    write_multiline(x, y, axis_label[SECOND_Y_AXIS].text, RIGHT, JUST_TOP, 0, axis_label[SECOND_Y_AXIS].font);
 	}
     }
 /* XLABEL */
-    if (*xlabel.text) {
-	unsigned int x = (xright + xleft) / 2 + xlabel.xoffset * (t->h_char);
+    if (*axis_label[FIRST_X_AXIS].text) {
+	unsigned int x = (xright + xleft) / 2 + axis_label[FIRST_X_AXIS].xoffset * (t->h_char);
 	unsigned int y = xlabel_y - t->v_char / 2;	/* HBB */
-	write_multiline(x, y, xlabel.text, CENTRE, JUST_TOP, 0, xlabel.font);
+	write_multiline(x, y, axis_label[FIRST_X_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[FIRST_X_AXIS].font);
     }
 /* PLACE TITLE */
     if (*title.text) {
@@ -1261,11 +1089,11 @@ int pcount;			/* count of plots in linked list */
 	write_multiline(x, y, title.text, CENTRE, JUST_TOP, 0, title.font);
     }
 /* X2LABEL */
-    if (*x2label.text) {
+    if (*axis_label[SECOND_X_AXIS].text) {
 	/* we worked out y-coordinate in boundary() */
-	unsigned int x = (xright + xleft) / 2 + x2label.xoffset * (t->h_char);
+	unsigned int x = (xright + xleft) / 2 + axis_label[SECOND_X_AXIS].xoffset * (t->h_char);
 	unsigned int y = x2label_y - t->v_char / 2 - 1;
-	write_multiline(x, y, x2label.text, CENTRE, JUST_TOP, 0, x2label.font);
+	write_multiline(x, y, axis_label[SECOND_X_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[SECOND_X_AXIS].font);
     }
 /* PLACE TIMEDATE */
     if (*timelabel.text) {

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.1 2000/05/02 21:26:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.2 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -60,8 +60,6 @@ static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.1 2000/05/02 21:26:21 b
 
 #include <ctype.h>		/* for isdigit() */
 
-#define BACKWARDS_COMPATIBLE
-
 /*
  * global variables to hold status of 'set' options
  *
@@ -79,17 +77,6 @@ double ang2rad = 1.0;		/* 1 or pi/180, tracking angles_format */
 /* set arrow */
 struct arrow_def *first_arrow = NULL;
 
-/* set autoscale */
-TBOOLEAN autoscale_x = DTRUE;
-TBOOLEAN autoscale_y = DTRUE;
-TBOOLEAN autoscale_z = DTRUE;
-TBOOLEAN autoscale_x2 = DTRUE;
-TBOOLEAN autoscale_y2 = DTRUE;
-TBOOLEAN autoscale_r = DTRUE;
-TBOOLEAN autoscale_t = DTRUE;
-TBOOLEAN autoscale_u = DTRUE;
-TBOOLEAN autoscale_v = DTRUE;
-
 /* set bars */
 double bar_size = 1.0;
 
@@ -105,36 +92,30 @@ TBOOLEAN clip_lines1 = TRUE;
 TBOOLEAN clip_lines2 = FALSE;
 TBOOLEAN draw_surface = TRUE;
 char dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1] = { "x", "y" };
-char xformat[MAX_ID_LEN+1] = DEF_FORMAT;
-char yformat[MAX_ID_LEN+1] = DEF_FORMAT;
-char zformat[MAX_ID_LEN+1] = DEF_FORMAT;
-char x2format[MAX_ID_LEN+1] = DEF_FORMAT;
-char y2format[MAX_ID_LEN+1] = DEF_FORMAT;
 
 enum PLOT_STYLE data_style = POINTSTYLE;
 enum PLOT_STYLE func_style = LINES;
 
-struct lp_style_type work_grid = { 0, GRID_OFF, 0, 1.0, 1.0 };
-struct lp_style_type grid_lp   = { 0, -1, 0, 1.0, 1.0 };
-struct lp_style_type mgrid_lp  = { 0, -1, 0, 1.0, 1.0 };
+int grid_selection = GRID_OFF;
+
+
+#define DEFAULT_GRID_LP { 0, -1, 0, 1.0, 1.0 }
+const struct lp_style_type default_grid_lp = DEFAULT_GRID_LP;
+struct lp_style_type grid_lp   = DEFAULT_GRID_LP;
+struct lp_style_type mgrid_lp  = DEFAULT_GRID_LP;
 double polar_grid_angle = 0;	/* nonzero means a polar grid */
-int key = -1;			/* default position */
+
+#define DEFAULT_KEYBOX_LP { 0, -3, 0, 1.0, 1.0 } /* -3 = no linetype */
+
+t_key_flag key = KEY_AUTO_PLACEMENT; /* default position */
 struct position key_user_pos;	/* user specified position for key */
 TBOOLEAN key_reverse = FALSE;	/* reverse text & sample ? */
-struct lp_style_type key_box = { 0, -3, 0, 1.0, 1.0 };		/* -3 = no linetype */
+const struct lp_style_type default_keybox_lp = DEFAULT_KEYBOX_LP;
+struct lp_style_type key_box = DEFAULT_KEYBOX_LP; 
 double key_swidth = 4.0;
 double key_vert_factor = 1.0;
 double key_width_fix = 0.0;
-TBOOLEAN is_log_x = FALSE;
-TBOOLEAN is_log_y = FALSE;
-TBOOLEAN is_log_z = FALSE;
-TBOOLEAN is_log_x2 = FALSE;
-TBOOLEAN is_log_y2 = FALSE;
-double base_log_x = 0.0;
-double base_log_y = 0.0;
-double base_log_z = 0.0;
-double base_log_x2 = 0.0;
-double base_log_y2 = 0.0;
+
 char *outstr = NULL;		/* means "STDOUT" */
 TBOOLEAN parametric = FALSE;
 double pointsize = 1.0;
@@ -163,38 +144,14 @@ float surface_scale = 1.0;
 float surface_zscale = 1.0;
 struct termentry *term = NULL;	/* unknown */
 char term_options[MAX_LINE_LEN+1] = "";
-label_struct title = { "", "", 0.0, 0.0 };
-label_struct timelabel = { "", "", 0.0, 0.0 };
-label_struct xlabel = { "", "", 0.0, 0.0 };
-label_struct ylabel = { "", "", 0.0, 0.0 };
-label_struct zlabel = { "", "", 0.0, 0.0 };
-label_struct x2label = { "", "", 0.0, 0.0 };
-label_struct y2label = { "", "", 0.0, 0.0 };
+label_struct title = EMPTY_LABELSTRUCT;
+label_struct timelabel = EMPTY_LABELSTRUCT;
 
 int timelabel_rotate = FALSE;
 int timelabel_bottom = TRUE;
 char key_title[MAX_LINE_LEN+1] = "";
-double rmin = -0.0;
-double rmax = 10.0;
-double tmin = -5.0;
-double tmax = 5.0;
-double umin = -5.0;
-double umax = 5.0;
-double vmin = -5.0;
-double vmax = 5.0;
-double xmin = -10.0;
-double xmax = 10.0;
-double ymin = -10.0;
-double ymax = 10.0;
-double zmin = -10.0;
-double zmax = 10.0;
-double x2min = -10.0;
-double x2max = 10.0;
-double y2min = -10.0;
-double y2max = 10.0;
-/* ULIG                  from plot.h:       z      y      x      t     z2     y2     x2     r     u     v  */
-double writeback_min[AXIS_ARRAY_SIZE] = {-10.0, -10.0, -10.0, -5.0, -10.0, -10.0, -10.0, -0.0, -5.0, -5.0};
-double writeback_max[AXIS_ARRAY_SIZE] = {+10.0, +10.0, +10.0, +5.0, +10.0, +10.0, +10.0, 10.0, +5.0, +5.0};
+
+
 double loff = 0.0;
 double roff = 0.0;
 double toff = 0.0;
@@ -214,47 +171,10 @@ int dgrid3d_col_fineness = 10;
 int dgrid3d_norm_value = 1;
 TBOOLEAN dgrid3d = FALSE;
 
-struct lp_style_type xzeroaxis = { 0, -3, 0, 1.0, 1.0 };
-struct lp_style_type yzeroaxis = { 0, -3, 0, 1.0, 1.0 };
-struct lp_style_type x2zeroaxis = { 0, -3, 0, 1.0, 1.0 };
-struct lp_style_type y2zeroaxis = { 0, -3, 0, 1.0, 1.0 };
-
-/* perhaps make these into an array one day */
-
-int xtics = TICS_ON_BORDER | TICS_MIRROR;
-int ytics = TICS_ON_BORDER | TICS_MIRROR;
-int ztics = TICS_ON_BORDER;	/* no mirror by default for ztics */
-int x2tics = NO_TICS;
-int y2tics = NO_TICS;
-
-TBOOLEAN rotate_xtics = FALSE;
-TBOOLEAN rotate_ytics = FALSE;
-TBOOLEAN rotate_ztics = FALSE;
-TBOOLEAN rotate_x2tics = FALSE;
-TBOOLEAN rotate_y2tics = FALSE;
-
-int mxtics = MINI_DEFAULT;
-int mytics = MINI_DEFAULT;
-int mztics = MINI_DEFAULT;
-int mx2tics = MINI_DEFAULT;
-int my2tics = MINI_DEFAULT;
-
-double mxtfreq = 10;		/* # intervals between major */
-double mytfreq = 10;		/* tic marks */
-double mztfreq = 10;
-double mx2tfreq = 10;
-double my2tfreq = 10;
-
 double ticscale = 1.0;		/* scale factor for tic mark */
 double miniticscale = 0.5;	/* and for minitics */
 
 float ticslevel = 0.5;
-
-struct ticdef xticdef = { TIC_COMPUTED, { NULL } };
-struct ticdef yticdef = { TIC_COMPUTED, { NULL } };
-struct ticdef zticdef = { TIC_COMPUTED, { NULL } };
-struct ticdef x2ticdef = { TIC_COMPUTED, { NULL } };
-struct ticdef y2ticdef = { TIC_COMPUTED, { NULL } };
 
 TBOOLEAN tic_in = TRUE;
 
@@ -281,16 +201,9 @@ int key_hpos = TRIGHT;		/* place for curve-labels, corner or outside */
 int key_vpos = TTOP;		/* place for curve-labels, corner or below */
 int key_just = JRIGHT;		/* alignment of key labels, left or right */
 
-#ifndef TIMEFMT
-#define TIMEFMT "%d/%m/%y\n%H:%M"
-#endif
-/* format for date/time for reading time in datafile */
-char timefmt[25] = TIMEFMT;
-
 static void set_angles __PROTO((void));
 static void set_arrow __PROTO((void));
 static int assign_arrow_tag __PROTO((void));
-static void delete_arrow __PROTO((struct arrow_def *, struct arrow_def *));
 static void set_autoscale __PROTO((void));
 static void set_bars __PROTO((void));
 
@@ -314,7 +227,6 @@ static void set_key __PROTO((void));
 static void set_keytitle __PROTO((void));
 static void set_label __PROTO((void));
 static int assign_label_tag __PROTO((void));
-static void delete_label __PROTO((struct text_label * prev, struct text_label * this));
 static void set_loadpath __PROTO((void));
 static void set_locale __PROTO((void));
 static void set_logscale __PROTO((void));
@@ -346,25 +258,10 @@ static void set_timefmt __PROTO((void));
 static void set_timestamp __PROTO((void));
 static void set_view __PROTO((void));
 static void set_zero __PROTO((void));
-static void set_xdata __PROTO((void));
-static void set_ydata __PROTO((void));
-static void set_zdata __PROTO((void));
-static void set_x2data __PROTO((void));
-static void set_y2data __PROTO((void));
-static void set_xrange __PROTO((void));
-static void set_x2range __PROTO((void));
-static void set_yrange __PROTO((void));
-static void set_y2range __PROTO((void));
-static void set_zrange __PROTO((void));
-static void set_rrange __PROTO((void));
-static void set_trange __PROTO((void));
-static void set_urange __PROTO((void));
-static void set_vrange __PROTO((void));
-static void set_xzeroaxis __PROTO((void));
-static void set_yzeroaxis __PROTO((void));
-static void set_x2zeroaxis __PROTO((void));
-static void set_y2zeroaxis __PROTO((void));
-static void set_zeroaxis __PROTO((void));
+static void set_timedata __PROTO((AXIS_INDEX));
+static void set_range __PROTO((AXIS_INDEX));
+static void set_zeroaxis __PROTO((AXIS_INDEX));
+static void set_allzeroaxis __PROTO((void));
 
 
 /******** Local functions ********/
@@ -372,243 +269,21 @@ static void set_zeroaxis __PROTO((void));
 static void get_position __PROTO((struct position * pos));
 static void get_position_type __PROTO((enum position_type * type, int *axes));
 static void set_xyzlabel __PROTO((label_struct * label));
-static void load_tics __PROTO((AXIS_INDEX axis, struct ticdef * tdef));
-static void load_tic_user __PROTO((AXIS_INDEX axis, struct ticdef * tdef));
+static void load_tics __PROTO((AXIS_INDEX axis));
+static void load_tic_user __PROTO((AXIS_INDEX axis));
 static void free_marklist __PROTO((struct ticmark * list));
-static void load_tic_series __PROTO((AXIS_INDEX axis, struct ticdef * tdef));
+static void load_tic_series __PROTO((AXIS_INDEX axis));
 static void load_offsets __PROTO((double *a, double *b, double *c, double *d));
 
 static void set_linestyle __PROTO((void));
 static int assign_linestyle_tag __PROTO((void));
 static int looks_like_numeric __PROTO((char *));
-static void set_lp_properties __PROTO((struct lp_style_type *, int, int, int, double, double));
 static void reset_lp_properties __PROTO((struct lp_style_type *arg));
 static void lp_use_properties __PROTO((struct lp_style_type *lp, int tag, int pointflag));
-
-static int set_tic_prop __PROTO((int *TICS, int *MTICS, double *FREQ,
-     struct ticdef * tdef, AXIS_INDEX axis, TBOOLEAN * ROTATE, const char *tic_side));
+static int set_tic_prop __PROTO((AXIS_INDEX));
 
 /* Backwards compatibility ... */
 static void set_nolinestyle __PROTO((void));
-
-/******** The 'reset' command ********/
-void
-reset_command()
-{
-    register struct curve_points *f_p = first_plot;
-    register struct surface_points *f_3dp = first_3dplot;
-    AXIS_INDEX axis;
-
-    c_token++;
-    first_plot = NULL;
-    first_3dplot = NULL;
-    cp_free(f_p);
-    sp_free(f_3dp);
-    /* delete arrows */
-    while (first_arrow != NULL)
-	delete_arrow((struct arrow_def *) NULL, first_arrow);
-    /* delete labels */
-    while (first_label != NULL)
-	delete_label((struct text_label *) NULL, first_label);
-    /* delete linestyles */
-    while (first_linestyle != NULL)
-	delete_linestyle((struct linestyle_def *) NULL, first_linestyle);
-    strcpy(dummy_var[0], "x");
-    strcpy(dummy_var[1], "y");
-    strcpy(title.text, "");
-    strcpy(xlabel.text, "");
-    strcpy(ylabel.text, "");
-    strcpy(zlabel.text, "");
-    strcpy(x2label.text, "");
-    strcpy(y2label.text, "");
-    *title.font = 0;
-    *xlabel.font = 0;
-    *ylabel.font = 0;
-    *zlabel.font = 0;
-    *x2label.font = 0;
-    *y2label.font = 0;
-    strcpy(key_title, "");
-    strcpy(timefmt, TIMEFMT);
-    strcpy(xformat, DEF_FORMAT);
-    strcpy(yformat, DEF_FORMAT);
-    strcpy(zformat, DEF_FORMAT);
-    strcpy(x2format, DEF_FORMAT);
-    strcpy(y2format, DEF_FORMAT);
-    for (axis=0; axis<AXIS_ARRAY_SIZE; axis++) {
-      format_is_numeric[axis] = 1;
-      axis_is_timedata[axis] = FALSE;
-      range_flags[axis] = 0;
-    }
-    autoscale_r = DTRUE;
-    autoscale_t = DTRUE;
-    autoscale_u = DTRUE;
-    autoscale_v = DTRUE;
-    autoscale_x = DTRUE;
-    autoscale_y = DTRUE;
-    autoscale_z = DTRUE;
-    autoscale_x2 = DTRUE;
-    autoscale_y2 = DTRUE;
-    boxwidth = -1.0;
-    clip_points = FALSE;
-    clip_lines1 = TRUE;
-    clip_lines2 = FALSE;
-    set_lp_properties(&border_lp, 0, -2, 0, 1.0, 1.0);
-    draw_border = 31;
-    draw_surface = TRUE;
-    data_style = POINTSTYLE;
-    func_style = LINES;
-    bar_size = 1.0;
-    set_lp_properties(&work_grid, 0, GRID_OFF, 0, 0.5, 1.0);
-    set_lp_properties(&grid_lp, 0, -1, 0, 0.5, 1.0);
-    set_lp_properties(&mgrid_lp, 0, -1, 0, 0.5, 1.0);
-    polar_grid_angle = 0;
-    key = -1;
-    is_log_x = FALSE;
-    is_log_y = FALSE;
-    is_log_z = FALSE;
-    is_log_x2 = FALSE;
-    is_log_y2 = FALSE;
-    base_log_x = 0.0;
-    base_log_y = 0.0;
-    base_log_z = 0.0;
-    base_log_x2 = 0.0;
-    base_log_y2 = 0.0;
-    parametric = FALSE;
-    polar = FALSE;
-    hidden3d = FALSE;
-    label_contours = TRUE;
-    strcpy(contour_format, "%8.3g");
-    angles_format = ANGLES_RADIANS;
-    ang2rad = 1.0;
-    mapping3d = MAP3D_CARTESIAN;
-    samples = SAMPLES;
-    samples_1 = SAMPLES;
-    samples_2 = SAMPLES;
-    iso_samples_1 = ISO_SAMPLES;
-    iso_samples_2 = ISO_SAMPLES;
-    xsize = 1.0;
-    ysize = 1.0;
-    zsize = 1.0;
-    xoffset = 0.0;
-    yoffset = 0.0;
-    aspect_ratio = 0.0;		/* dont force it */
-    surface_rot_z = 30.0;
-    surface_rot_x = 60.0;
-    surface_scale = 1.0;
-    surface_zscale = 1.0;
-    *timelabel.text = 0;
-    timelabel.xoffset = 0;
-    timelabel.yoffset = 0;
-    *timelabel.font = 0;
-    timelabel_rotate = FALSE;
-    timelabel_bottom = TRUE;
-    title.xoffset = 0;
-    title.yoffset = 0;
-    xlabel.xoffset = 0;
-    xlabel.yoffset = 0;
-    ylabel.xoffset = 0;
-    ylabel.yoffset = 0;
-    zlabel.xoffset = 0;
-    zlabel.yoffset = 0;
-    x2label.xoffset = 0;
-    x2label.yoffset = 0;
-    y2label.xoffset = 0;
-    y2label.yoffset = 0;
-    rmin = -0.0;
-    rmax = 10.0;
-    tmin = -5.0;
-    tmax = 5.0;
-    umin = -5.0;
-    umax = 5.0;
-    vmin = -5.0;
-    vmax = 5.0;
-    xmin = -10.0;
-    xmax = 10.0;
-    ymin = -10.0;
-    ymax = 10.0;
-    zmin = -10.0;
-    zmax = 10.0;
-    x2min = -10.0;
-    x2max = 10.0;
-    y2min = -10.0;
-    y2max = 10.0;
-    writeback_min[FIRST_Z_AXIS] = zmin; /* ULIG */
-    writeback_max[FIRST_Z_AXIS] = zmax;
-    writeback_min[FIRST_Y_AXIS] = ymin;
-    writeback_max[FIRST_Y_AXIS] = ymax;
-    writeback_min[FIRST_X_AXIS] = xmin;
-    writeback_max[FIRST_X_AXIS] = xmax;
-    writeback_min[SECOND_Z_AXIS] = zmin; /* no z2min (see plot.h) */
-    writeback_max[SECOND_Z_AXIS] = zmax; /* no z2max */
-    writeback_min[SECOND_Y_AXIS] = y2min;
-    writeback_max[SECOND_Y_AXIS] = y2max;
-    writeback_min[SECOND_X_AXIS] = x2min;
-    writeback_max[SECOND_X_AXIS] = x2max;
-    writeback_min[T_AXIS] = tmin;
-    writeback_max[T_AXIS] = tmax;
-    writeback_min[R_AXIS] = rmin;
-    writeback_max[R_AXIS] = rmax;
-    writeback_min[U_AXIS] = umin;
-    writeback_max[U_AXIS] = umax;
-    writeback_min[V_AXIS] = vmin;
-    writeback_max[V_AXIS] = vmax;
-    memset(range_flags, 0, sizeof(range_flags));	/* all = 0 */
-
-    loff = 0.0;
-    roff = 0.0;
-    toff = 0.0;
-    boff = 0.0;
-    draw_contour = CONTOUR_NONE;
-    contour_pts = 5;
-    contour_kind = CONTOUR_KIND_LINEAR;
-    contour_order = 4;
-    contour_levels = 5;
-    zero = ZERO;
-    levels_kind = LEVELS_AUTO;
-    dgrid3d_row_fineness = 10;
-    dgrid3d_col_fineness = 10;
-    dgrid3d_norm_value = 1;
-    dgrid3d = FALSE;
-    set_lp_properties(&xzeroaxis, 0, -3, 0, 1.0, 1.0);
-    set_lp_properties(&yzeroaxis, 0, -3, 0, 1.0, 1.0);
-    set_lp_properties(&x2zeroaxis, 0, -3, 0, 1.0, 1.0);
-    set_lp_properties(&y2zeroaxis, 0, -3, 0, 1.0, 1.0);
-    xtics = ytics = TICS_ON_BORDER | TICS_MIRROR;
-    ztics = TICS_ON_BORDER;	/* no mirror by default */
-    x2tics = NO_TICS;
-    y2tics = NO_TICS;
-    mxtics = mytics = mztics = mx2tics = my2tics = MINI_DEFAULT;
-    mxtfreq = 10.0;
-    mytfreq = 10.0;
-    mztfreq = 10.0;
-    mx2tfreq = 10.0;
-    my2tfreq = 10.0;
-    ticscale = 1.0;
-    miniticscale = 0.5;
-    ticslevel = 0.5;
-    xticdef.type = TIC_COMPUTED;
-    yticdef.type = TIC_COMPUTED;
-    zticdef.type = TIC_COMPUTED;
-    x2ticdef.type = TIC_COMPUTED;
-    y2ticdef.type = TIC_COMPUTED;
-    tic_in = TRUE;
-    lmargin = bmargin =	rmargin = tmargin = -1;		/* autocomputed */
-    key_hpos = TRIGHT;
-    key_vpos = TTOP;
-    key_just = JRIGHT;
-    key_reverse = FALSE;
-    set_lp_properties(&key_box, 0, -3, 0, 1.0, 1.0);
-    key_swidth = 4;
-    key_vert_factor = 1;
-    key_width_fix = 0;
-
-    pointsize = 1.0;
-    encoding = S_ENC_DEFAULT;
-
-    init_locale();
-    clear_loadpath();
-
-}
 
 /******** The 'set' command ********/
 void
@@ -843,8 +518,7 @@ set_command()
 	case S_NOXDTICS:
 	case S_XMTICS: 
 	case S_NOXMTICS:
-	    set_tic_prop(&xtics, &mxtics, &mxtfreq, &xticdef, FIRST_X_AXIS,
-			 &rotate_xtics, "x");
+	    set_tic_prop(FIRST_X_AXIS);
 	    break;
 	case S_MYTICS:
 	case S_NOMYTICS:
@@ -854,8 +528,7 @@ set_command()
 	case S_NOYDTICS:
 	case S_YMTICS: 
 	case S_NOYMTICS:
-	    set_tic_prop(&ytics, &mytics, &mytfreq, &yticdef, FIRST_Y_AXIS,
-			 &rotate_ytics, "y");
+	    set_tic_prop(FIRST_Y_AXIS);
 	    break;
 	case S_MX2TICS:
 	case S_NOMX2TICS:
@@ -865,8 +538,7 @@ set_command()
 	case S_NOX2DTICS:
 	case S_X2MTICS: 
 	case S_NOX2MTICS:
-	    set_tic_prop(&x2tics, &mx2tics, &mx2tfreq, &x2ticdef, SECOND_X_AXIS,
-			 &rotate_x2tics, "x2");
+	    set_tic_prop(SECOND_X_AXIS);
 	    break;
 	case S_MY2TICS:
 	case S_NOMY2TICS:
@@ -876,8 +548,7 @@ set_command()
 	case S_NOY2DTICS:
 	case S_Y2MTICS: 
 	case S_NOY2MTICS:
-	    set_tic_prop(&y2tics, &my2tics, &my2tfreq, &y2ticdef, SECOND_Y_AXIS,
-			 &rotate_y2tics, "y2");
+	    set_tic_prop(SECOND_Y_AXIS);
 	    break;
 	case S_MZTICS:
 	case S_NOMZTICS:
@@ -887,80 +558,85 @@ set_command()
 	case S_NOZDTICS:
 	case S_ZMTICS: 
 	case S_NOZMTICS:
-	    set_tic_prop(&ztics, &mztics, &mztfreq, &zticdef, FIRST_Z_AXIS,
-			 &rotate_ztics, "z");
+	    set_tic_prop(FIRST_Z_AXIS);
 	    break;
 	case S_XDATA:
-	    set_xdata();
+	    set_timedata(FIRST_X_AXIS);
+	    /* HBB 20000506: the old cod this this, too, although it
+	     * serves no useful purpose, AFAICS */
+	    set_timedata(T_AXIS);
+	    set_timedata(U_AXIS);
 	    break;
 	case S_YDATA:
-	    set_ydata();
+	    set_timedata(FIRST_Y_AXIS);
+	    /* dito */
+	    set_timedata(V_AXIS);
 	    break;
 	case S_ZDATA:
-	    set_zdata();
+	    set_timedata(FIRST_Z_AXIS);
 	    break;
 	case S_X2DATA:
-	    set_x2data();
+	    set_timedata(SECOND_X_AXIS);
 	    break;
 	case S_Y2DATA:
-	    set_y2data();
+	    set_timedata(SECOND_Y_AXIS);
 	    break;
 	case S_XLABEL:
-	    set_xyzlabel(&xlabel);
+	    set_xyzlabel(&axis_label[FIRST_X_AXIS]);
 	    break;
 	case S_YLABEL:
-	    set_xyzlabel(&ylabel);
+	    set_xyzlabel(&axis_label[FIRST_Y_AXIS]);
 	    break;
 	case S_ZLABEL:
-	    set_xyzlabel(&zlabel);
+	    set_xyzlabel(&axis_label[FIRST_Z_AXIS]);
 	    break;
 	case S_X2LABEL:
-	    set_xyzlabel(&x2label);
+	    set_xyzlabel(&axis_label[SECOND_X_AXIS]);
 	    break;
 	case S_Y2LABEL:
-	    set_xyzlabel(&y2label);
+	    set_xyzlabel(&axis_label[SECOND_Y_AXIS]);
 	    break;
 	case S_XRANGE:
-	    set_xrange();
+	    set_range(FIRST_X_AXIS);
 	    break;
 	case S_X2RANGE:
-	    set_x2range();
+	    set_range(SECOND_X_AXIS);
 	    break;
 	case S_YRANGE:
-	    set_yrange();
+	    set_range(FIRST_Y_AXIS);
 	    break;
 	case S_Y2RANGE:
-	    set_y2range();
+	    set_range(SECOND_Y_AXIS);
 	    break;
 	case S_ZRANGE:
-	    set_zrange();
+	    set_range(FIRST_Z_AXIS);
 	    break;
 	case S_RRANGE:
-	    set_rrange();
+	    set_range(R_AXIS);
 	    break;
 	case S_TRANGE:
-	    set_trange();
+	    set_range(T_AXIS);
 	    break;
 	case S_URANGE:
-	    set_urange();
+	    set_range(U_AXIS);
 	    break;
 	case S_VRANGE:
-	    set_vrange();
+	    set_range(V_AXIS);
 	    break;
 	case S_XZEROAXIS:
-	    set_xzeroaxis();
+	    set_zeroaxis(FIRST_X_AXIS);
 	    break;
 	case S_YZEROAXIS:
-	    set_yzeroaxis();
+	    set_zeroaxis(FIRST_Y_AXIS);
 	    break;
 	case S_X2ZEROAXIS:
-	    set_x2zeroaxis();
+	    set_zeroaxis(SECOND_X_AXIS);
 	    break;
 	case S_Y2ZEROAXIS:
-	    set_y2zeroaxis();
+	    set_zeroaxis(SECOND_Y_AXIS);
 	    break;
 	case S_ZEROAXIS:
-	    set_zeroaxis();
+	    set_allzeroaxis();
 	    break;
 	default:
 	    int_error(c_token, setmess);
@@ -994,10 +670,10 @@ set_angles()
     } else
 	int_error(c_token, "expecting 'radians' or 'degrees'");
 
-    if (polar && autoscale_t) {
+    if (polar && set_axis_autoscale[T_AXIS]) {
 	/* set trange if in polar mode and no explicit range */
-	tmin = 0;
-	tmax = 2 * M_PI / ang2rad;
+	set_axis_min[T_AXIS] = 0;
+	set_axis_max[T_AXIS] = 2 * M_PI / ang2rad;
     }
 }
 
@@ -1174,54 +850,56 @@ assign_arrow_tag()
 }
 
 
-/* delete arrow from linked list started by first_arrow.
- * called with pointers to the previous arrow (prev) and the 
- * arrow to delete (this).
- * If there is no previous arrow (the arrow to delete is
- * first_arrow) then call with prev = NULL.
- */
-static void
-delete_arrow(prev, this)
-struct arrow_def *prev, *this;
-{
-    if (this != NULL) {		/* there really is something to delete */
-	if (prev != NULL)	/* there is a previous arrow */
-	    prev->next = this->next;
-	else			/* this = first_arrow so change first_arrow */
-	    first_arrow = this->next;
-	free((char *) this);
-    }
-}
-
-
-/* save on replication with a macro */
-#define PROCESS_AUTO_LETTER(AUTO, STRING,MIN,MAX) \
- else if (equals(c_token, STRING))       { AUTO = DTRUE; ++c_token; } \
- else if (almost_equals(c_token, MIN)) { AUTO |= 1;    ++c_token; } \
- else if (almost_equals(c_token, MAX)) { AUTO |= 2;    ++c_token; }
-
 /* process 'set autoscale' command */
 static void
 set_autoscale()
 {
+    char min_string[20], max_string[20];
+
     c_token++;
     if (END_OF_COMMAND) {
-	autoscale_r = autoscale_t = autoscale_x = autoscale_y = autoscale_z =
-	    autoscale_x2 = autoscale_y2 = DTRUE;
+	INIT_AXIS_ARRAY(set_axis_autoscale , DTRUE);
+	return;
     } else if (equals(c_token, "xy") || equals(c_token, "yx")) {
-	autoscale_x = autoscale_y = DTRUE;
+	set_axis_autoscale[FIRST_X_AXIS] =
+	    set_axis_autoscale[FIRST_Y_AXIS] =  DTRUE;
 	c_token++;
+	return;
     }
-    PROCESS_AUTO_LETTER(autoscale_r, "r", "rmi$n", "rma$x")
-    PROCESS_AUTO_LETTER(autoscale_t, "t", "tmi$n", "tma$x")
-    PROCESS_AUTO_LETTER(autoscale_u, "u", "umi$n", "uma$x")
-    PROCESS_AUTO_LETTER(autoscale_v, "v", "vmi$n", "vma$x")
-    PROCESS_AUTO_LETTER(autoscale_x, "x", "xmi$n", "xma$x")
-    PROCESS_AUTO_LETTER(autoscale_y, "y", "ymi$n", "yma$x")
-    PROCESS_AUTO_LETTER(autoscale_z, "z", "zmi$n", "zma$x")
-    PROCESS_AUTO_LETTER(autoscale_x2, "x2", "x2mi$n", "x2ma$x")
-    PROCESS_AUTO_LETTER(autoscale_y2, "y2", "y2mi$n", "y2ma$x")
-    else
+
+    /* save on replication with a macro */
+#define PROCESS_AUTO_LETTER(axis)				\
+    do {							\
+	if (equals(c_token, axisname_array[axis])) {		\
+	    set_axis_autoscale[axis] = DTRUE;			\
+	    ++c_token;						\
+	    return;						\
+	}							\
+	sprintf(min_string, "%smi$n", axisname_array[axis]);	\
+	if (almost_equals(c_token, min_string)) {		\
+	    set_axis_autoscale[axis] |= 1;			\
+	    ++c_token;						\
+	    return;						\
+	}							\
+	sprintf(max_string, "%sma$x", axisname_array[axis]);	\
+	if (almost_equals(c_token, max_string)) {		\
+	    set_axis_autoscale[axis] |= 2;			\
+	    ++c_token;						\
+	    return;						\
+	}							\
+    } while(0)
+
+    PROCESS_AUTO_LETTER(R_AXIS);
+    PROCESS_AUTO_LETTER(T_AXIS);
+    PROCESS_AUTO_LETTER(U_AXIS);
+    PROCESS_AUTO_LETTER(V_AXIS);
+    PROCESS_AUTO_LETTER(FIRST_X_AXIS);
+    PROCESS_AUTO_LETTER(FIRST_Y_AXIS);
+    PROCESS_AUTO_LETTER(FIRST_Z_AXIS);
+    PROCESS_AUTO_LETTER(SECOND_X_AXIS);
+    PROCESS_AUTO_LETTER(SECOND_Y_AXIS);
+
+    /* came here only if nothing found: */
 	int_error(c_token, "Invalid range");
 }
 
@@ -1525,78 +1203,48 @@ set_encoding()
 static void
 set_format()
 {
-    TBOOLEAN setx = FALSE, sety = FALSE, setz = FALSE;
-    TBOOLEAN setx2 = FALSE, sety2 = FALSE;
+    TBOOLEAN set_for_axis[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE);
+    int axis;
 
     c_token++;
-    if (equals(c_token,"x")) {
-	setx = TRUE;
-	c_token++;
-    } else if (equals(c_token,"y")) {
-	sety = TRUE;
-	c_token++;
-    } else if (equals(c_token,"x2")) {
-	setx2 = TRUE;
-	c_token++;
-    } else if (equals(c_token,"y2")) {
-	sety2 = TRUE;
-	c_token++;
-    } else if (equals(c_token,"z")) {
-	setz = TRUE;
+    if ((axis = lookup_table(axisname_tbl, c_token)) >= 0) {
+	set_for_axis[axis] = TRUE;
 	c_token++;
     } else if (equals(c_token,"xy") || equals(c_token,"yx")) {
-	setx = sety = TRUE;
+        set_for_axis[FIRST_X_AXIS]
+	    = set_for_axis[FIRST_Y_AXIS]
+	    = TRUE;
 	c_token++;
     } else if (isstring(c_token) || END_OF_COMMAND) {
 	/* Assume he wants all */
-	setx = sety = setz = setx2 = sety2 = TRUE;
+	for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++)
+	    set_for_axis[axis] = TRUE;
     }
 
     if (END_OF_COMMAND) {
-	if (setx) {
-	    (void) strcpy(xformat,DEF_FORMAT);
-	    format_is_numeric[FIRST_X_AXIS] = 1;
-	}
-	if (sety) {
-	    (void) strcpy(yformat,DEF_FORMAT);
-	    format_is_numeric[FIRST_Y_AXIS] = 1;
-	}
-	if (setz) {
-	    (void) strcpy(zformat,DEF_FORMAT);
-	    format_is_numeric[FIRST_Z_AXIS] = 1;
-	}
-	if (setx2) {
-	    (void) strcpy(x2format,DEF_FORMAT);
-	    format_is_numeric[SECOND_X_AXIS] = 1;
-	}
-	if (sety2) {
-	    (void) strcpy(y2format,DEF_FORMAT);
-	    format_is_numeric[SECOND_Y_AXIS] = 1;
-	}
+	SET_DEFFORMAT(FIRST_X_AXIS , set_for_axis);
+	SET_DEFFORMAT(FIRST_Y_AXIS , set_for_axis);
+	SET_DEFFORMAT(FIRST_Z_AXIS , set_for_axis);
+	SET_DEFFORMAT(SECOND_X_AXIS, set_for_axis);
+	SET_DEFFORMAT(SECOND_Y_AXIS, set_for_axis);
     } else {
 	if (!isstring(c_token))
 	    int_error(c_token, "expecting format string");
 	else {
-	    if (setx) {
-		quote_str(xformat,c_token, MAX_ID_LEN);
-		format_is_numeric[FIRST_X_AXIS] = looks_like_numeric(xformat);
+
+#define SET_FORMATSTRING(axis)						\
+	    if (set_for_axis[axis]) {					\
+		quote_str(axis_formatstring[axis],c_token, MAX_ID_LEN);	\
+		format_is_numeric[axis] =				\
+		    looks_like_numeric(axis_formatstring[axis]);		\
 	    }
-	    if (sety) {
-		quote_str(yformat,c_token, MAX_ID_LEN);
-		format_is_numeric[FIRST_Y_AXIS] = looks_like_numeric(yformat);
-	    }
-	    if (setz) {
-		quote_str(zformat,c_token, MAX_ID_LEN);
-		format_is_numeric[FIRST_Z_AXIS] =looks_like_numeric(zformat);
-	    }
-	    if (setx2) {
-		quote_str(x2format,c_token, MAX_ID_LEN);
-		format_is_numeric[SECOND_X_AXIS] = looks_like_numeric(x2format);
-	    }
-	    if (sety2) {
-		quote_str(y2format,c_token, MAX_ID_LEN);
-		format_is_numeric[SECOND_Y_AXIS] = looks_like_numeric(y2format);
-	    }
+	    SET_FORMATSTRING(FIRST_X_AXIS);
+	    SET_FORMATSTRING(FIRST_Y_AXIS);
+	    SET_FORMATSTRING(FIRST_Z_AXIS);
+	    SET_FORMATSTRING(SECOND_X_AXIS);
+	    SET_FORMATSTRING(SECOND_Y_AXIS);
+#undef SET_FORMATSTRING
+
 	    c_token++;
 	}
     }
@@ -1607,10 +1255,10 @@ set_format()
 
 #define GRID_MATCH(string, neg, mask) \
  if (almost_equals(c_token, string)) { \
-  work_grid.l_type |= mask; \
+	grid_selection |= mask;		\
   ++c_token; \
  } else if (almost_equals(c_token, neg)) { \
-  work_grid.l_type &= ~(mask); \
+	grid_selection &= ~(mask);		\
   ++c_token; \
  }
 
@@ -1618,8 +1266,8 @@ static void
 set_grid()
 {
     c_token++;
-    if (END_OF_COMMAND && !work_grid.l_type)
-	work_grid.l_type = GRID_X|GRID_Y;
+    if (END_OF_COMMAND && !grid_selection)
+	grid_selection = GRID_X|GRID_Y;
     else
 	while (!END_OF_COMMAND) {
 	    GRID_MATCH("x$tics", "nox$tics", GRID_X)
@@ -1633,8 +1281,8 @@ set_grid()
 	    else GRID_MATCH("mx2$tics", "nomx2$tics", GRID_MX2)
 	    else GRID_MATCH("my2$tics", "nomy2$tics", GRID_MY2)
 	    else if (almost_equals(c_token,"po$lar")) {
-		if (!work_grid.l_type)
-		    work_grid.l_type = GRID_X;
+		if (!grid_selection)
+		    grid_selection = GRID_X;
 		c_token++;
 		if (END_OF_COMMAND) {
 		    polar_grid_angle = 30*DEG2RAD;
@@ -1659,8 +1307,8 @@ set_grid()
 	    grid_lp.l_type = real(const_express(&a)) - 1;
 	}
 			
-	if (!work_grid.l_type)
-	    work_grid.l_type = GRID_X|GRID_Y;
+	if (!grid_selection)
+	    grid_selection = GRID_X|GRID_Y;
 	/* probably just  set grid <linetype> */
 
 	if (END_OF_COMMAND) {
@@ -1675,8 +1323,8 @@ set_grid()
 	    }
 	}
 
-	if (!work_grid.l_type)
-	    work_grid.l_type = GRID_X|GRID_Y;
+	if (!grid_selection)
+	    grid_selection = GRID_X|GRID_Y;
 	/* probably just  set grid <linetype> */
     }
 }
@@ -1759,57 +1407,47 @@ set_key()
 
     c_token++;
     if (END_OF_COMMAND) {
-	key = -1;
-	key_vpos = TTOP;
-	key_hpos = TRIGHT;
-	key_just = JRIGHT;
-	key_reverse = FALSE;
-	set_lp_properties(&key_box,0,-3,0,1.0,1.0);
-	key_swidth = 4;
-	key_vert_factor = 1;
-	key_width_fix = 0;
+	reset_key(); 		/* reset to defaults */
 	key_title[0] = 0;
     } else {
 	while (!END_OF_COMMAND) {
 	    switch(lookup_table(&set_key_tbl[0],c_token)) {
 	    case S_KEY_TOP:
 		key_vpos = TTOP;
-		key = -1;
+		key = KEY_AUTO_PLACEMENT;
 		break;
 	    case S_KEY_BOTTOM:
 		key_vpos = TBOTTOM;
-		key = -1;
+		key = KEY_AUTO_PLACEMENT;
 		break;
 	    case S_KEY_LEFT:
 		key_hpos = TLEFT;
 		/* key_just = TRIGHT; */
-		key = -1;
+		key = KEY_AUTO_PLACEMENT;
 		break;
 	    case S_KEY_RIGHT:
 		key_hpos = TRIGHT;
-		key = -1;
+		key = KEY_AUTO_PLACEMENT;
 		break;
 	    case S_KEY_UNDER:
 		key_vpos = TUNDER;
 		if (key_hpos == TOUT)
-		    key_hpos--;
-		key = -1;
+		    key_hpos = TRIGHT;
+		key = KEY_AUTO_PLACEMENT;
 		break;
 	    case S_KEY_OUTSIDE:
 		key_hpos = TOUT;
 		if (key_vpos == TUNDER)
-		    key_vpos--;
-		key = -1;
+		    key_vpos = TBOTTOM;
+		key = KEY_AUTO_PLACEMENT;
 		break;
 	    case S_KEY_LLEFT:
 		/* key_hpos = TLEFT; */
 		key_just = JLEFT;
-		/* key = -1; */
 		break;
 	    case S_KEY_RRIGHT:
 		/* key_hpos = TLEFT; */
 		key_just = JRIGHT;
-		/* key = -1; */
 		break;
 	    case S_KEY_REVERSE:
 		key_reverse = TRUE;
@@ -1861,7 +1499,7 @@ set_key()
 	    case S_KEY_INVALID:
 	    default:
 		get_position(&key_user_pos);
-		key = 1;
+		key = KEY_USER_PLACEMENT;
 		c_token--;  /* will be incremented again soon */
 		break;
 	    }
@@ -2135,28 +1773,6 @@ assign_label_tag()
 }
 
 
-/* delete label from linked list started by first_label.
- * called with pointers to the previous label (prev) and the 
- * label to delete (this).
- * If there is no previous label (the label to delete is
- * first_label) then call with prev = NULL.
- */
-static void
-delete_label(prev, this)
-struct text_label *prev, *this;
-{
-    if (this != NULL) {		/* there really is something to delete */
-	if (prev != NULL)	/* there is a previous label */
-	    prev->next = this->next;
-	else			/* this = first_label so change first_label */
-	    first_label = this->next;
-	free (this->text);
-	free (this->font);
-	free (this);
-    }
-}
-
-
 /* process 'set loadpath' command */
 static void
 set_loadpath()
@@ -2222,31 +1838,25 @@ set_logscale()
 {
     c_token++;
     if (END_OF_COMMAND) {
-	is_log_x = is_log_y = is_log_z = is_log_x2 = is_log_y2 = TRUE;
-	base_log_x = base_log_y = base_log_z = base_log_x2 = base_log_y2 = 10.0;
-	/* HBB 20000430: these don't belong to set/show: */
-	/* log_base_log_x = log_base_log_y = log_base_log_z = log_base_log_x2 = log_base_log_y2 = M_LN10; */
+	INIT_AXIS_ARRAY(log_array,TRUE);
+	INIT_AXIS_ARRAY(base_array, 10.0);
     } else {
-	TBOOLEAN change_x = FALSE;
-	TBOOLEAN change_y = FALSE;
-	TBOOLEAN change_z = FALSE;
-	TBOOLEAN change_x2 = FALSE;
-	TBOOLEAN change_y2 = FALSE;
-	double newbase = 10, log_newbase;
+	TBOOLEAN set_for_axis[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE);
+	int axis;
+	double newbase = 10;
 
-	if (equals(c_token, "x2"))
-	    change_x2 = TRUE;
-	else if (equals(c_token, "y2"))
-	    change_y2 = TRUE;
-	else { /* must not see x when x2, etc */
+	if ((axis = lookup_table(axisname_tbl, c_token)) >= 0) {
+	    set_for_axis[axis] = TRUE;
+	} else { /* must not see x when x2, etc */
 	    if (chr_in_str(c_token, 'x'))
-		change_x = TRUE;
+ 		set_for_axis[FIRST_X_AXIS] = TRUE;
 	    if (chr_in_str(c_token, 'y'))
-		change_y = TRUE;
+ 		set_for_axis[FIRST_X_AXIS] = TRUE;
 	    if (chr_in_str(c_token, 'z'))
-		change_z = TRUE;
+ 		set_for_axis[FIRST_X_AXIS] = TRUE;
 	}
 	c_token++;
+
 	if (!END_OF_COMMAND) {
 	    struct value a;
 	    newbase = magnitude(const_express(&a));
@@ -2254,34 +1864,11 @@ set_logscale()
 		int_error(c_token,
 			  "log base must be >= 1.1; logscale unchanged");
 	}
-	log_newbase = log(newbase);
 
-	if (change_x) {
-	    is_log_x = TRUE;
-	    base_log_x = newbase;
-	    /* HBB 20000430 (here and below) :*base_log* variables
-             * don't really belong to set/show stuff */
-	    /*  log_base_log_x = log_newbase; */ 
-	}
-	if (change_y) {
-	    is_log_y = TRUE;
-	    base_log_y = newbase;
-	    /*  log_base_log_y = log_newbase; */
-	}
-	if (change_z) {
-	    is_log_z = TRUE;
-	    base_log_z = newbase;
-	    /*  log_base_log_z = log_newbase; */
-	}
-	if (change_x2) {
-	    is_log_x2 = TRUE;
-	    base_log_x2 = newbase;
-	    /*  log_base_log_x2 = log_newbase; */
-	}
-	if (change_y2) {
-	    is_log_y2 = TRUE;
-	    base_log_y2 = newbase;
-	    /*  log_base_log_y2 = log_newbase; */
+	for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++)
+	    if (set_for_axis[axis]) {
+		log_array[axis] = TRUE;
+		base_array[axis] = newbase;
 	}
     }
 }
@@ -2628,10 +2215,11 @@ set_polar()
 	    strcpy (dummy_var[0], "t");
 	}
 	polar = TRUE;
-	if (autoscale_t) {
+	if (set_axis_autoscale[T_AXIS]) {
 	    /* only if user has not set a range manually */
-	    tmin = 0.0;
-	    tmax = 2 * M_PI / ang2rad;  /* 360 if degrees, 2pi if radians */
+	    set_axis_min[T_AXIS] = 0.0;
+	    /* 360 if degrees, 2pi if radians */
+	    set_axis_max[T_AXIS] = 2 * M_PI / ang2rad;  
 	}
     }
 }
@@ -2835,18 +2423,35 @@ set_ticslevel()
 
 
 /* Process 'set timefmt' command */
+/* HBB 20000507: changed this to a per-axis setting. I.e. you can now
+ * have separate timefmt parse strings, different axes */
 static void
 set_timefmt()
 {
+    int axis;
+
     c_token++;
-    if (END_OF_COMMAND) {	/* set to default */
-	strcpy(timefmt,TIMEFMT);
+    if (END_OF_COMMAND) {
+	/* set all axes to default */
+	for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++)
+	    strcpy(timefmt[axis],TIMEFMT);
     } else {
+	if ((axis = lookup_table(axisname_tbl, c_token)) >= 0) {
+	    c_token++;
 	if (isstring(c_token)) {
-	    /* We have string specified - grab it. */
-	    quote_str(timefmt,c_token, 25);
+		quote_str(timefmt[axis],c_token, MAX_ID_LEN);
+		c_token++;
+	    } else {
+		int_error(c_token, "time format string expected");
 	}
+	} else if (isstring(c_token)) {
+	    /* set the given parse string for all current timedata axes: */
+	    for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++) 
+		quote_str(timefmt[axis], c_token, MAX_ID_LEN);
 	c_token++;
+	} else {
+	    int_error(c_token, "time format string expected");
+	}
     }
 }
 
@@ -2956,224 +2561,86 @@ set_zero()
     zero = magnitude(const_express(&a));
 }
 
-/* FIXME - merge set_*data() functions into one */
 
-#define PROCESS_AXIS_DATA(AXIS)						 \
-do {									 \
-    c_token++;								 \
-    if(END_OF_COMMAND) {						 \
-	axis_is_timedata[AXIS] = FALSE;					 \
-    } else {								 \
-	if ( (axis_is_timedata[AXIS] = almost_equals(c_token,"t$ime")) ) \
-	    c_token++;							 \
-    }									 \
-} while (0)
-
-/* process 'set xdata' command */
+/* process 'set {x|y|z|x2|y2}data' command */
 static void
-set_xdata()
+set_timedata(axis)
+    AXIS_INDEX axis;
 {
-    PROCESS_AXIS_DATA(FIRST_X_AXIS);
-    /* copy 'x' setting to 't' and 'u' axes: */
-    axis_is_timedata[T_AXIS] = axis_is_timedata[U_AXIS] =
-	axis_is_timedata[FIRST_X_AXIS];
+    c_token++;
+    if(END_OF_COMMAND) {
+	axis_is_timedata[axis] = FALSE;
+    } else {
+	if ((axis_is_timedata[axis] = almost_equals(c_token,"t$ime")))
+	    c_token++;
+}
 }
 
 
-/* process 'set ydata' command */
 static void
-set_ydata()
+set_range(axis)
+    AXIS_INDEX axis;
 {
-    PROCESS_AXIS_DATA(FIRST_Y_AXIS);
-    /* copy 'y' setting to 'v' axis: */
-    axis_is_timedata[V_AXIS] =
-	axis_is_timedata[FIRST_Y_AXIS];
+    if(almost_equals(c_token,"re$store")) { /* ULIG */
+	c_token++;
+	set_axis_min[axis] = get_writeback_min(axis);
+	set_axis_max[axis] = get_writeback_max(axis);
+	set_axis_autoscale[axis] = 0;
+    } else {
+	if (!equals(++c_token,"["))
+	    int_error(c_token, "expecting '[' or 'restore'");
+	c_token++;
+	set_axis_autoscale[axis] =
+	    load_range(axis,
+		       &set_axis_min[axis],&set_axis_max[axis],
+		       set_axis_autoscale[axis]);
+	if (!equals(c_token,"]"))
+	    int_error(c_token, "expecting ']'");
+	c_token++;
+	if (almost_equals(c_token, "rev$erse")) {
+	    ++c_token;
+	    range_flags[axis] |= RANGE_REVERSE;
+	} else if (almost_equals(c_token, "norev$erse")) {
+	    ++c_token;
+	    range_flags[axis] &= ~RANGE_REVERSE;
 }
-
-/* process 'set zdata' command */
-static void
-set_zdata()
-{
-    PROCESS_AXIS_DATA(FIRST_Z_AXIS);
+	if (almost_equals(c_token, "wr$iteback")) {
+	    ++c_token;
+	    range_flags[axis] |= RANGE_WRITEBACK;
+	} else if (almost_equals(c_token, "nowri$teback")) {
+	    ++c_token;
+	    range_flags[axis] &= ~RANGE_WRITEBACK;
 }
-
-
-/* process 'set x2data' command */
-static void
-set_x2data()
-{
-    PROCESS_AXIS_DATA(SECOND_X_AXIS);
 }
-
-
-/* process 'set y2data' command */
-static void
-set_y2data()
-{
-    PROCESS_AXIS_DATA(SECOND_Y_AXIS);
-}
-
-
-/* FIXME - merge set_*range() functions into one */
-
-#define PROCESS_RANGE(AXIS,MIN,MAX,AUTO)			\
-do {								\
-    if(almost_equals(++c_token,"re$store")) { /* ULIG */	\
-	c_token++;						\
-	MIN = get_writeback_min(AXIS);				\
-	MAX = get_writeback_max(AXIS);				\
-	AUTO = 0;						\
-    } else {							\
-	if (!equals(++c_token,"["))				\
-	    int_error(c_token, "expecting '[' or 'restore'");	\
-	c_token++;						\
-	AUTO = load_range(AXIS,&MIN,&MAX,AUTO);			\
-	if (!equals(c_token,"]"))				\
-	    int_error(c_token, "expecting ']'");		\
-	c_token++;						\
-	if (almost_equals(c_token, "rev$erse")) {		\
-	    ++c_token;						\
-	    range_flags[AXIS] |= RANGE_REVERSE;			\
-	} else if (almost_equals(c_token, "norev$erse")) {	\
-	    ++c_token;						\
-	    range_flags[AXIS] &= ~RANGE_REVERSE;		\
-	}							\
-	if (almost_equals(c_token, "wr$iteback")) {		\
-	    ++c_token;						\
-	    range_flags[AXIS] |= RANGE_WRITEBACK;		\
-	} else if (almost_equals(c_token, "nowri$teback")) {	\
-	    ++c_token;						\
-	    range_flags[AXIS] &= ~RANGE_WRITEBACK;		\
-	}							\
-    }								\
-} while (0)
-
-/* process 'set xrange' command */
-static void
-set_xrange()
-{
-    PROCESS_RANGE(FIRST_X_AXIS,xmin,xmax,autoscale_x);
-}
-
-
-/* process 'set x2range' command */
-static void
-set_x2range()
-{
-    PROCESS_RANGE(SECOND_X_AXIS,x2min,x2max,autoscale_x2);
-}
-
-
-/* process 'set yrange' command */
-static void
-set_yrange()
-{
-    PROCESS_RANGE(FIRST_Y_AXIS,ymin,ymax,autoscale_y);
-}
-
-
-/* process 'set y2range' command */
-static void
-set_y2range()
-{
-    PROCESS_RANGE(SECOND_Y_AXIS,y2min,y2max,autoscale_y2);
-}
-
-
-/* process 'set zrange' command */
-static void
-set_zrange()
-{
-    PROCESS_RANGE(FIRST_Z_AXIS,zmin,zmax,autoscale_z);
-}
-
-
-/* process 'set rrange' command */
-static void
-set_rrange()
-{
-    PROCESS_RANGE(R_AXIS,rmin,rmax,autoscale_r);
-}
-
-
-/* process 'set trange' command */
-static void
-set_trange()
-{
-    PROCESS_RANGE(T_AXIS,tmin,tmax,autoscale_t);
-}
-
-
-/* process 'set urange' command */
-static void
-set_urange()
-{
-    PROCESS_RANGE(U_AXIS,umin,umax,autoscale_u);
-}
-
-
-/* process 'set vrange' command */
-static void
-set_vrange()
-{
-    PROCESS_RANGE(V_AXIS,vmin,vmax,autoscale_v);
-}
-
-
-/* FIXME - merge *zeroaxis() functions into one */
-
-#define PROCESS_ZEROAXIS(ZAXIS) \
- c_token++; \
-  if (END_OF_COMMAND) \
-   ZAXIS.l_type = -1; \
-  else { \
-   struct value a; \
-   int old_token = c_token; \
-   lp_parse(&ZAXIS,1,0,-1,0); \
-   if (old_token == c_token) \
-    ZAXIS.l_type = real(const_express(&a)) - 1; \
   }
 
 /* process 'set xzeroaxis' command */
 static void
-set_xzeroaxis()
+set_zeroaxis(axis)
+    AXIS_INDEX axis;
 {
-    PROCESS_ZEROAXIS(xzeroaxis);
+
+    c_token++;
+    if (END_OF_COMMAND)
+	axis_zeroaxis[axis].l_type = -1;
+    else {
+	struct value a;
+	int old_token = c_token;
+	lp_parse(&axis_zeroaxis[axis],1,0,-1,0);
+	if (old_token == c_token)
+	    axis_zeroaxis[axis].l_type = real(const_express(&a)) - 1;
 }
 
-
-/* process 'set yzeroaxis' command */
-static void
-set_yzeroaxis()
-{
-    PROCESS_ZEROAXIS(yzeroaxis);
 }
-
-/* process 'set x2zeroaxis' command */
-static void
-set_x2zeroaxis()
-{
-    PROCESS_ZEROAXIS(x2zeroaxis);
-}
-
-
-/* process 'set y2zeroaxis' command */
-static void
-set_y2zeroaxis()
-{
-    PROCESS_ZEROAXIS(y2zeroaxis);
-}
-
 
 /* process 'set zeroaxis' command */
 static void
-set_zeroaxis()
+set_allzeroaxis()
 {
     c_token++;
-    lp_parse(&xzeroaxis,1,0,-1,0);
-    memcpy(&yzeroaxis,&xzeroaxis,sizeof(struct lp_style_type));
+    set_zeroaxis(FIRST_X_AXIS);
+    axis_zeroaxis[FIRST_Y_AXIS] = axis_zeroaxis[FIRST_Y_AXIS];
 }
-
 
 /*********** Support functions for set_command ***********/
 
@@ -3213,72 +2680,67 @@ set_zeroaxis()
  */
 
 static int
-set_tic_prop(TICS, MTICS, FREQ, tdef, AXIS, ROTATE, tic_side)
-int *TICS, *MTICS;
-AXIS_INDEX AXIS;
-double *FREQ;
-struct ticdef *tdef;
-TBOOLEAN *ROTATE;
-const char *tic_side;
+set_tic_prop(axis)
+    AXIS_INDEX axis;
 {
     int match = 0;		/* flag, set by matching a tic command */
-    char nocmd[12];		/* fill w/ "no"+'tic_side'+suffix */
+    char nocmd[12];		/* fill w/ "no"+axis_name+suffix */
     char *cmdptr, *sfxptr;
 
     (void) strcpy(nocmd, "no");
     cmdptr = &nocmd[2];
-    (void) strcpy(cmdptr, tic_side);
+    (void) strcpy(cmdptr, axisname_array[axis]);
     sfxptr = &nocmd[strlen(nocmd)];
     (void) strcpy(sfxptr, "t$ics");	/* STRING */
 
     if (almost_equals(c_token, cmdptr)) {
 	match = 1;
 	if (almost_equals(++c_token, "ax$is")) {
-	    *TICS &= ~TICS_ON_BORDER;
-	    *TICS |= TICS_ON_AXIS;
+	    axis_tics[axis] &= ~TICS_ON_BORDER;
+	    axis_tics[axis] |= TICS_ON_AXIS;
 	    ++c_token;
 	}
 	/* if tics are off, reset to default (border) */
-	if (*TICS == NO_TICS) {
-	    *TICS = TICS_ON_BORDER;
-	    if (!strcmp(tic_side, "x") || !strcmp(tic_side, "y")) {
-		*TICS |= TICS_MIRROR;
+	if (axis_tics[axis] == NO_TICS) {
+	    axis_tics[axis] = TICS_ON_BORDER;
+	    if ((axis == FIRST_X_AXIS) || (axis == FIRST_Y_AXIS)) {
+		axis_tics[axis] |= TICS_MIRROR;
 	    }
 	}
 	if (almost_equals(c_token, "bo$rder")) {
-	    *TICS &= ~TICS_ON_AXIS;
-	    *TICS |= TICS_ON_BORDER;
+	    axis_tics[axis] &= ~TICS_ON_AXIS;
+	    axis_tics[axis] |= TICS_ON_BORDER;
 	    ++c_token;
 	}
 	if (almost_equals(c_token, "mi$rror")) {
-	    *TICS |= TICS_MIRROR;
+	    axis_tics[axis] |= TICS_MIRROR;
 	    ++c_token;
 	} else if (almost_equals(c_token, "nomi$rror")) {
-	    *TICS &= ~TICS_MIRROR;
+	    axis_tics[axis] &= ~TICS_MIRROR;
 	    ++c_token;
 	}
 	if (almost_equals(c_token, "ro$tate")) {
-	    *ROTATE = TRUE;
+	    axis_tic_rotate[axis] = TRUE;
 	    ++c_token;
 	} else if (almost_equals(c_token, "noro$tate")) {
-	    *ROTATE = FALSE;
+	    axis_tic_rotate[axis] = FALSE;
 	    ++c_token;
 	}
 	if (almost_equals(c_token, "au$tofreq")) {	/* auto tic interval */
 	    ++c_token;
-	    if (tdef->type == TIC_USER) {
-		free_marklist(tdef->def.user);
-		tdef->def.user = NULL;
+	    if (axis_ticdef[axis].type == TIC_USER) {
+		free_marklist(axis_ticdef[axis].def.user);
+		axis_ticdef[axis].def.user = NULL;
 	    }
-	    tdef->type = TIC_COMPUTED;
+	    axis_ticdef[axis].type = TIC_COMPUTED;
 	}
 	/* user spec. is last */ 
 	else if (!END_OF_COMMAND) {
-	    load_tics(AXIS, tdef);
+	    load_tics(axis);
 	}
     }
     if (almost_equals(c_token, nocmd)) {	/* NOSTRING */
-	*TICS = NO_TICS;
+	axis_tics[axis] = NO_TICS;
 	c_token++;
 	match = 1;
     }
@@ -3286,36 +2748,36 @@ const char *tic_side;
 
     (void) strcpy(sfxptr, "m$tics");	/* MONTH */
     if (almost_equals(c_token, cmdptr)) {
-	if (tdef->type == TIC_USER) {
-	    free_marklist(tdef->def.user);
-	    tdef->def.user = NULL;
+	if (axis_ticdef[axis].type == TIC_USER) {
+	    free_marklist(axis_ticdef[axis].def.user);
+	    axis_ticdef[axis].def.user = NULL;
 	}
-	tdef->type = TIC_MONTH;
+	axis_ticdef[axis].type = TIC_MONTH;
 	++c_token;
 	match = 1;
     }
     if (almost_equals(c_token, nocmd)) {	/* NOMONTH */
-	tdef->type = TIC_COMPUTED;
+	axis_ticdef[axis].type = TIC_COMPUTED;
 	++c_token;
 	match = 1;
     }
     (void) strcpy(sfxptr, "d$tics");	/* DAYS */
     if (almost_equals(c_token, cmdptr)) {
 	match = 1;
-	if (tdef->type == TIC_USER) {
-	    free_marklist(tdef->def.user);
-	    tdef->def.user = NULL;
+	if (axis_ticdef[axis].type == TIC_USER) {
+	    free_marklist(axis_ticdef[axis].def.user);
+	    axis_ticdef[axis].def.user = NULL;
 	}
-	tdef->type = TIC_DAY;
+	axis_ticdef[axis].type = TIC_DAY;
 	++c_token;
     }
     if (almost_equals(c_token, nocmd)) {	/* NODAYS */
-	tdef->type = TIC_COMPUTED;
+	axis_ticdef[axis].type = TIC_COMPUTED;
 	++c_token;
 	match = 1;
     }
     *cmdptr = 'm';
-    (void) strcpy(cmdptr + 1, tic_side);
+    (void) strcpy(cmdptr + 1, axisname_array[axis]);
     (void) strcat(cmdptr, "t$ics");	/* MINISTRING */
 
     if (almost_equals(c_token, cmdptr)) {
@@ -3323,18 +2785,17 @@ const char *tic_side;
 	c_token++;
 	match = 1;
 	if (END_OF_COMMAND) {
-	    *MTICS = MINI_AUTO;
+	    axis_minitics[axis] = MINI_AUTO;
 	} else if (almost_equals(c_token, "def$ault")) {
-	    *MTICS = MINI_DEFAULT;
+	    axis_minitics[axis] = MINI_DEFAULT;
 	    ++c_token;
 	} else {
-	    *FREQ = real(const_express(&freq));
-	    *FREQ = floor(*FREQ);
-	    *MTICS = MINI_USER;
+	    axis_mtic_freq[axis] = floor(real(const_express(&freq)));
+	    axis_minitics[axis] = MINI_USER;
 	}
     }
     if (almost_equals(c_token, nocmd)) {	/* NOMINI */
-	*MTICS = FALSE;
+	axis_minitics[axis] = FALSE;
 	c_token++;
 	match = 1;
     }
@@ -3553,15 +3014,14 @@ expecting 'lines', 'points', 'linespoints', 'dots', 'impulses',\n\
 
 /* For set [xy]tics... command */
 static void
-load_tics(axis, tdef)
+load_tics(axis)
 AXIS_INDEX axis;
-struct ticdef *tdef;		/* change this ticdef */
 {
     if (equals(c_token, "(")) {	/* set : TIC_USER */
 	c_token++;
-	load_tic_user(axis, tdef);
+	load_tic_user(axis);
     } else {			/* series : TIC_SERIES */
-	load_tic_series(axis, tdef);
+	load_tic_series(axis);
     }
 }
 
@@ -3571,9 +3031,8 @@ struct ticdef *tdef;		/* change this ticdef */
  * Left paren is already scanned off before entry.
  */
 static void
-load_tic_user(axis, tdef)
+load_tic_user(axis)
 AXIS_INDEX axis;
-struct ticdef *tdef;
 {
     struct ticmark *list = NULL;	/* start of list */
     struct ticmark *last = NULL;	/* end of list */
@@ -3628,14 +3087,14 @@ struct ticdef *tdef;
     c_token++;
 
     /* successful list */
-    if (tdef->type == TIC_USER) {
+    if (axis_ticdef[axis].type == TIC_USER) {
 	/* remove old list */
 	/* VAX Optimiser was stuffing up following line. Turn Optimiser OFF */
-	free_marklist(tdef->def.user);
-	tdef->def.user = NULL;
+	free_marklist(axis_ticdef[axis].def.user);
+	axis_ticdef[axis].def.user = NULL;
     }
-    tdef->type = TIC_USER;
-    tdef->def.user = list;
+    axis_ticdef[axis].type = TIC_USER;
+    axis_ticdef[axis].def.user = list;
 }
 
 static void
@@ -3656,12 +3115,13 @@ struct ticmark *list;
 /* load TIC_SERIES definition */
 /* [start,]incr[,end] */
 static void
-load_tic_series(axis, tdef)
+load_tic_series(axis)
 AXIS_INDEX axis;
-struct ticdef *tdef;
 {
     double start, incr, end;
     int incr_token;
+
+    struct ticdef *tdef = &axis_ticdef[axis];
 
     GET_NUM_OR_TIME(start, axis);
 
@@ -3830,7 +3290,7 @@ struct position *pos;
     }
 }
 
-static void
+void
 set_lp_properties(arg, allow_points, lt, pt, lw, ps)
 struct lp_style_type *arg;
 int allow_points, lt, pt;
@@ -3921,77 +3381,3 @@ static void set_nolinestyle()
 }
 
 
-/*
- * get and set routines for range writeback
- * ULIG *
- */
-
-static double rm_log __PROTO((int axis, double val));
-
-double get_writeback_min(axis)
-int axis;
-{
-    /* printf("get min(%d)=%g\n",axis,writeback_min[axis]); */
-    return writeback_min[axis];
-}
-
-double get_writeback_max(axis)
-int axis;
-{
-    /* printf("get max(%d)=%g\n",axis,writeback_min[axis]); */
-    return writeback_max[axis];
-}
-
-void set_writeback_min(axis, val)
-int axis;
-double val;
-{
-    val = rm_log(axis,val);
-    /* printf("set min(%d)=%g\n",axis,val); */
-    writeback_min[axis] = val;
-}
-
-void set_writeback_max(axis, val)
-int axis;
-double val;
-{
-    val = rm_log(axis,val);
-    /* printf("set max(%d)=%g\n",axis,val); */
-    writeback_max[axis] = val;
-}
-
-double rm_log(axis, val)
-int axis;
-double val;
-{
-    TBOOLEAN islog;
-    double logbase;
-
-    /* check whether value is in logscale */
-    switch( axis ) {
-    case FIRST_X_AXIS:
-	logbase = base_log_x;
-	islog = is_log_x;
-	break;
-    case FIRST_Y_AXIS:
-	logbase = base_log_y;
-	islog = is_log_y;
-	break;
-    case FIRST_Z_AXIS:
-	logbase = base_log_z;
-	islog = is_log_z;
-	break;
-    case SECOND_X_AXIS:
-	logbase = base_log_y2;
-	islog = is_log_y2;
-	break;
-    default:
-	islog = FALSE;
-    }
-  
-    if(!islog)
-	return val;
-
-    /* remove logscale from value */
-    return pow(logbase,val);
-}

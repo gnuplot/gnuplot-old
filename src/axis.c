@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.c,v 1.2.2.1 2000/05/02 21:31:34 broeker Exp $
+ * $Id: axis.c,v 1.2.2.2 2000/05/09 19:04:05 broeker Exp $
  *
  */
 
@@ -40,16 +40,44 @@
 #include "gp_time.h"
 #include "setshow.h"
 
-/* HBB 20000614: this is the start of my try to centralize everything
+/* HBB 20000416: this is the start of my try to centralize everything
  * related to axes, once and for all. It'll probably end up as a
  * global array of OO-style 'axis' objects, when it's done */
 
-/* Variables originally found in graphics.[ch]: */
+/* HBB 20000507: for the range/autoscale variables, there are two
+ * copies of each variable. One is for manipulatio by 'set', the other
+ * is initialized with that, but may be updated by an explicit range
+ * in the 'plot' command. These copies of 'min' and 'max' also receive
+ * the effects of autoscaling. */
+ 
+/* range endpoints: default/startup values first: */
+/*    z    y1    x1     t    z2    y2    x2     r     u     v   */
+#define DEFAULT_AXIS_MIN						\
+{   -10.0,-10.0,-10.0,- 5.0,-10.0,-10.0,-10.0,- 0.0,- 5.0,- 5.0 }
+#define DEFAULT_AXIS_MAX						\
+{    10.0, 10.0, 10.0,  5.0, 10.0, 10.0, 10.0, 10.0,  5.0,  5.0	}
+/* store defaults in variable, for access by 'reset' */
+const double default_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN;
+const double default_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX;
+/* values handled by 'set/show/save/unset': */
+double set_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN;
+double set_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX;
+/* the actual field we work with */
 double min_array[AXIS_ARRAY_SIZE];
 double max_array[AXIS_ARRAY_SIZE];
+/* in writeback mode, copy autoscaled, tic-expanded values into here: */
+double writeback_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN;
+double writeback_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX;
+
+/* autoscaling flags */
+/* FIXME HBB 20000507: make new type 'double boolean' for these */
+TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(DTRUE);
 int auto_array[AXIS_ARRAY_SIZE];
+
+/* logscaling */
 TBOOLEAN log_array[AXIS_ARRAY_SIZE];
 double base_array[AXIS_ARRAY_SIZE];
+/* log(base) is stored, for quicker calculations: */
 double log_base_array[AXIS_ARRAY_SIZE];
 
 /* internal variables in graphics.c: */
@@ -57,8 +85,8 @@ double log_base_array[AXIS_ARRAY_SIZE];
 double scale[AXIS_ARRAY_SIZE];
 
 /* low and high end of the axis on output, in terminal coords: */
-unsigned int axis_graphical_lower[AXIS_ARRAY_SIZE];
-unsigned int axis_graphical_upper[AXIS_ARRAY_SIZE];
+int axis_graphical_lower[AXIS_ARRAY_SIZE];
+int axis_graphical_upper[AXIS_ARRAY_SIZE];
 /* axis' zero positions in terminal coords */
 unsigned int axis_zero[AXIS_ARRAY_SIZE];	
 
@@ -70,18 +98,36 @@ static char ticfmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1];
 static int timelevel[AXIS_ARRAY_SIZE];
 static double ticstep[AXIS_ARRAY_SIZE];
 
-static const char *axisname_array[AXIS_ARRAY_SIZE] = {
+const char *axisname_array[AXIS_ARRAY_SIZE] = {
     "z", "y", "x", "t",
-    "z2", "y2", "x2", 
-    "r", "u", "v"
+    "z2", "y2", "x2", "r",
+    "u",  "v"
+};
+
+/* HBB 20000506 new variable: parsing table for use with the table
+ * module, to help generalizing set/show/unset/save, where possible */
+struct gen_table axisname_tbl[] =
+{
+    { "z", FIRST_Z_AXIS},
+    { "y", FIRST_Y_AXIS},
+    { "x", FIRST_X_AXIS},
+    { "t", T_AXIS},
+    { "z2",SECOND_Z_AXIS},
+    { "y2",SECOND_Y_AXIS},
+    { "x2",SECOND_X_AXIS},
+    { "r", R_AXIS},
+    { "u", U_AXIS},
+    { "v", V_AXIS},
+    { NULL, -1}
 };
     
+
 /* penalty for doing tics by callback in gen_tics is need for global
  * variables to communicate with the tic routines. Dont need to be
  * arrays for this */
-/* HBB 20000614: they may not need to be array[]ed, but it'd sure
+/* HBB 20000416: they may not need to be array[]ed, but it'd sure
  * make coding easier, in some places... */
-/* HBB 20000614: for the testing, these are global... */
+/* HBB 20000416: for the testing, these are global... */
 /* static */ int tic_start, tic_direction, tic_text,
     rotate_tics, tic_hjust, tic_vjust, tic_mirror;
 
@@ -105,6 +151,46 @@ int range_flags[AXIS_ARRAY_SIZE];	/* = {0,0,...} */
  * output (--> 'set xdata time') */
 int axis_is_timedata[DATATYPE_ARRAY_SIZE];
 
+/* lots of tic control variables */
+#define DEFAULT_AXIS_TICS {			\
+    TICS_ON_BORDER,		/* Z */		\
+	TICS_ON_BORDER | TICS_MIRROR, /* Y */	\
+	TICS_ON_BORDER | TICS_MIRROR, /* X */	\
+	NO_TICS,		/* T */		\
+	NO_TICS,		/* Z2 */	\
+	NO_TICS,		/* Y2 */	\
+	NO_TICS,		/* X2 */	\
+	NO_TICS,		/* R */		\
+	NO_TICS,		/* U */		\
+	NO_TICS,		/* V */		\
+	}
+const int default_axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS;
+int axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS;
+
+#define DEFAULT_AXIS_TICDEF {TIC_COMPUTED, {NULL} }
+const struct ticdef default_axis_ticdef = DEFAULT_AXIS_TICDEF;
+struct ticdef axis_ticdef[AXIS_ARRAY_SIZE]
+    = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_TICDEF);
+
+TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE);
+int axis_minitics[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(MINI_DEFAULT);
+double axis_mtic_freq[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(10);
+char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(DEF_FORMAT);
+
+/* format for date/time for reading time in datafile */
+char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(TIMEFMT);
+
+/* axis labels */
+const label_struct default_axis_label = EMPTY_LABELSTRUCT;
+label_struct axis_label[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(EMPTY_LABELSTRUCT);
+
+/* zeroaxis drawing */
+#define DEFAULT_AXIS_ZEROAXIS {0, -3, 0, 1.0, 1.0}
+const lp_style_type default_axis_zeroaxis = DEFAULT_AXIS_ZEROAXIS;
+lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE]
+= AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_ZEROAXIS);
+  
+
 /* Define the boundary of the plot
  * These are computed at each call to do_plot, and are constant over
  * the period of one do_plot. They actually only change when the term
@@ -121,7 +207,6 @@ static void   gprintf __PROTO((char *, size_t, char *, double, double));
 static double make_ltic __PROTO((int, double));
 static double make_tics __PROTO((AXIS_INDEX, int));
 static void   mant_exp __PROTO((double log10_base, double x, int scientific, double *m, int *p));
-static void   timetic_format __PROTO((AXIS_INDEX, double, double));
 static double time_tic_just __PROTO((int, double));
 
 /* ---------------------- routines ----------------------- */
@@ -644,7 +729,7 @@ double log10_base, x;
 #endif
 
 /*{{{  timetic_format() */
-static void
+void
 timetic_format(axis, amin, amax)
      AXIS_INDEX axis;
      double amin, amax;
@@ -673,7 +758,7 @@ timetic_format(axis, amin, amax)
 	if (t_max.tm_year != t_min.tm_year) {
 	    /* different years, include year in ticlabel */
 	    /* check convention, day/month or month/day */
-	    if (strchr(timefmt, 'm') < strchr(timefmt, 'd')) {
+	    if (strchr(timefmt[axis], 'm') < strchr(timefmt[axis], 'd')) {
 		strcpy(ticfmt[axis], "%m/%d/%");
 	    } else {
 		strcpy(ticfmt[axis], "%d/%m/%");
@@ -685,7 +770,7 @@ timetic_format(axis, amin, amax)
 	    }
 
 	} else {
-	    if (strchr(timefmt, 'm') < strchr(timefmt, 'd')) {
+	    if (strchr(timefmt[axis], 'm') < strchr(timefmt[axis], 'd')) {
 		strcpy(ticfmt[axis], "%m/%d");
 	    } else {
 		strcpy(ticfmt[axis], "%d/%m");
@@ -843,17 +928,28 @@ make_tics(axis, guide)
 
 /*}}} */
 
+/* setup_tics allows max number of tics to be specified but users dont
+ * like it to change with size and font, so we use value of 20, which
+ * is 3.5 behaviour.  Note also that if format is '', yticlin = 0, so
+ * this gives division by zero.  */
+
 void
-setup_tics(axis, ticdef, format, max)
+setup_tics(axis, max)
      AXIS_INDEX axis;
-     struct ticdef *ticdef;
-     char *format;
      int max;			/* approx max number of slots available */
 {
     double tic = 0;
 
+    struct ticdef *ticdef = &(axis_ticdef[axis]);
+
     int fixmin = (auto_array[axis] & 1) != 0;
     int fixmax = (auto_array[axis] & 2) != 0;
+
+    /* HBB 20000506: if no tics required for this axis, do
+     * nothing. This used to be done exactly before each call of
+     * setup_tics, anyway... */
+    if (! axis_tics[axis])
+	return;
 
     if (ticdef->type == TIC_SERIES) {
 	ticstep[axis] = tic = ticdef->def.series.incr;
@@ -877,11 +973,11 @@ setup_tics(axis, ticdef, format, max)
 	else
 	    max_array[axis] = tic * floor(max_array[axis] / tic);
     }
-    if ((axis_is_timedata[axis]) && format_is_numeric[axis])
+    if (axis_is_timedata[axis] && format_is_numeric[axis])
 	/* invent one for them */
 	timetic_format(axis, min_array[axis], max_array[axis]);
     else
-	strcpy(ticfmt[axis], format);
+	strcpy(ticfmt[axis], axis_formatstring[axis]);
 }
 
 /*{{{  gen_tics */
@@ -892,16 +988,20 @@ setup_tics(axis, ticdef, format, max)
  * note this is also called from graph3d, so we need GRID_Z too
  */
 void
-gen_tics(axis, def, grid, minitics, minifreq, callback)
+gen_tics(axis, grid, callback)
      AXIS_INDEX axis;		/* FIRST_X_AXIS, etc */
-     struct ticdef *def;	/* tic defn */
      int grid;			/* GRID_X | GRID_MX etc */
-     int minitics;		/* minitics - off/default/auto/explicit */
-     double minifreq;		/* frequency */
      tic_callback callback;	/* fn to call to actually do the work */
 {
     /* separate main-tic part of grid */
     struct lp_style_type lgrd, mgrd;
+    /* tic defn */
+    struct ticdef *def = &axis_ticdef[axis]; 
+    /* minitics - off/default/auto/explicit */
+    int minitics = axis_minitics[axis];
+    /* minitic frequency */
+    double minifreq = axis_mtic_freq[axis];
+     
 
     memcpy(&lgrd, &grid_lp, sizeof(struct lp_style_type));
     memcpy(&mgrd, &mgrid_lp, sizeof(struct lp_style_type));
@@ -921,7 +1021,9 @@ gen_tics(axis, def, grid, minitics, minifreq, callback)
 	 * be translated. I dont think it will work at all for
 	 * log scale, so I shan't worry about it !
 	 */
-	double polar_shift = (polar && !(autoscale_r & 1)) ? rmin : 0;
+	double polar_shift = (polar
+			      && !(auto_array[R_AXIS] & 1))
+	    ? min_array[R_AXIS] : 0;
 
 	for (mark = def->def.user; mark; mark = mark->next) {
 	    char label[64];
@@ -1147,10 +1249,10 @@ gen_tics(axis, def, grid, minitics, minifreq, callback)
 			    /* if rmin is set, we stored internally with r-rmin */
 			    /* HBB 990327: reverted to 'pre-Igor' version... */
 #if 1				/* Igor's polar-grid patch */
-			    double r = fabs(user) + (autoscale_r & 1 ? 0 : rmin);
+			    double r = fabs(user) + (auto_array[R_AXIS] & 1 ? 0 : min_array[R_AXIS]);
 #else
 			    /* Igor removed fabs to allow -ve labels */
-			    double r = user + (autoscale_r & 1 ? 0 : rmin);
+			    double r = user + (auto_array[R_AXIS] & 1 ? 0 : min_array[R_AXIS]);
 #endif
 			    gprintf(label, sizeof(label), ticfmt[axis], log10_base, r);
 			} else {
@@ -1175,7 +1277,7 @@ gen_tics(axis, def, grid, minitics, minifreq, callback)
 			       : mplace);
 		    if (inrange(mtic, internal_min, internal_max)
 			&& inrange(mtic, start - step * SIGNIF, end + step * SIGNIF))
-			(*callback) (axis, mtic, NULL, mgrd);
+			(*callback) (axis, mtic, "", mgrd);
 		}
 		/*}}} */
 	    }
@@ -1248,33 +1350,35 @@ time_tic_just(level, ticplace)
  * directions, here. One is the direction of the axis itself (the one
  * it's "running" along). I refer to the one orthogonal to it as
  * "non-running", below. */
+
 void
-axis_output_tics(axis, want_tics, want_rotated_tics, axis_position,
-		 mirror_position, ticlabel_position, zeroaxis_basis,
-		 ticdef, grid_choice, want_minitics, minitic_frequency,
+axis_output_tics(axis, ticlabel_position, zeroaxis_basis, grid_choice,
 		 callback)
      AXIS_INDEX axis;		/* axis number we're dealing with */
-     int want_tics;		/* bit pattern */
-     int want_rotated_tics;
-     int axis_position;		/* 'non-running' coordinate */
-     int mirror_position;	/* 'non-running' coordinate, 'other' side */
      int *ticlabel_position;	/* 'non-running' coordinate */
      AXIS_INDEX zeroaxis_basis;	/* axis to base 'non-running' position of
 				 * zeroaxis on */
-     struct ticdef *ticdef;	/* Tic definition */
      int grid_choice;		/* bitpattern of grid linesets to draw */
-     int want_minitics;		/* what type of minitics (or none) wanted */
-     double minitic_frequency;	/* user-specified mtics */
      tic_callback callback;	/* tic-drawing callback function */
 {
     struct termentry *t = term;
     TBOOLEAN axis_is_vertical = ((axis % SECOND_AXES) == FIRST_Y_AXIS);
     TBOOLEAN axis_is_second = (axis / SECOND_AXES);
+    int axis_position;		/* 'non-running' coordinate */
+    int mirror_position;	/* 'non-running' coordinate, 'other' side */
 
-    if (want_tics) {
+    if (zeroaxis_basis / SECOND_AXES) {
+	axis_position = axis_graphical_upper[zeroaxis_basis];
+	mirror_position = axis_graphical_lower[zeroaxis_basis];
+    } else {
+	axis_position = axis_graphical_lower[zeroaxis_basis];
+	mirror_position = axis_graphical_upper[zeroaxis_basis];
+    }	
+
+    if (axis_tics[axis]) {
 	/* set the globals needed by the _callback() function */
 
-	if (want_rotated_tics && (*t->text_angle) (1)) {
+	if (axis_tic_rotate[axis] && (*t->text_angle) (1)) {
 	    tic_hjust = axis_is_vertical
 		? CENTRE
 		: (axis_is_second ? LEFT : RIGHT);
@@ -1295,19 +1399,19 @@ axis_output_tics(axis, want_tics, want_rotated_tics, axis_position,
 	    rotate_tics = 0;
 	}
 
-	if (want_tics & TICS_MIRROR)
+	if (axis_tics[axis] & TICS_MIRROR)
 	    tic_mirror = mirror_position;
 	else
 	    tic_mirror = -1;	/* no thank you */
 
-	if ((want_tics & TICS_ON_AXIS)
+	if ((axis_tics[axis] & TICS_ON_AXIS)
 	    && !log_array[zeroaxis_basis]
 	    && inrange(0.0, min_array[zeroaxis_basis],
 		       max_array[zeroaxis_basis])
 	    ) {
 	    tic_start = AXIS_MAP(zeroaxis_basis, 0.0);
 	    tic_direction = axis_is_second ? 1 : -1;
-	    if (want_tics & TICS_MIRROR)
+	    if (axis_tics[axis] & TICS_MIRROR)
 		tic_mirror = tic_start;
 	    /* put text at boundary if axis is close to boundary */
 	    if (axis_is_vertical) {
@@ -1332,8 +1436,7 @@ axis_output_tics(axis, want_tics, want_rotated_tics, axis_position,
 	    tic_text = (*ticlabel_position);
 	}
 	/* go for it */
-	gen_tics(axis, ticdef, work_grid.l_type & grid_choice,
-		 want_minitics, minitic_frequency, callback);
+	gen_tics(axis, grid_selection & grid_choice, callback);
 	(*t->text_angle) (0);	/* reset rotation angle */
     }
 }
@@ -1401,5 +1504,41 @@ load_range(axis, a, b, autosc)
 	}
     }
     return (autosc);
+}
+
+
+/*
+ * get and set routines for range writeback
+ * ULIG *
+ */
+
+double get_writeback_min(axis)
+    AXIS_INDEX axis;
+{
+    /* printf("get min(%d)=%g\n",axis,writeback_min[axis]); */
+    return writeback_min[axis];
+}
+
+double get_writeback_max(axis)
+    AXIS_INDEX axis;
+{
+    /* printf("get max(%d)=%g\n",axis,writeback_min[axis]); */
+    return writeback_max[axis];
+}
+
+void set_writeback_min(axis)
+    AXIS_INDEX axis;
+{
+    double val = AXIS_DE_LOG_VALUE(axis,min_array[axis]);
+    /* printf("set min(%d)=%g\n",axis,val); */
+    writeback_min[axis] = val;
+}
+
+void set_writeback_max(axis)
+    AXIS_INDEX axis;
+{
+    double val = AXIS_DE_LOG_VALUE(axis,max_array[axis]);
+    /* printf("set max(%d)=%g\n",axis,val); */
+    writeback_max[axis] = val;
 }
 

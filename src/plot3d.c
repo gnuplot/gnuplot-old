@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.1 2000/05/02 21:26:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.2 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -87,6 +87,7 @@ static int x_axis, y_axis, z_axis;
 int plot3d_num=0;
 
 
+
 /* support for dynamic size of input line */
 
 void
@@ -98,9 +99,8 @@ plot3drequest()
  * 
  */
 {
-    TBOOLEAN changed;
     int dummy_token0 = -1, dummy_token1 = -1;
-    int u_axis, v_axis;
+    AXIS_INDEX u_axis, v_axis;
 
     is_3d_plot = TRUE;
 
@@ -110,11 +110,11 @@ plot3drequest()
     }
 
     /* put stuff into arrays to simplify access */
-    AXIS_INIT3D(FIRST_X_AXIS, xmin, xmax, autoscale_x, is_log_x, base_log_x, 0);
-    AXIS_INIT3D(FIRST_Y_AXIS, ymin, ymax, autoscale_y, is_log_y, base_log_y, 0);
-    AXIS_INIT3D(FIRST_Z_AXIS, zmin, zmax, autoscale_z, is_log_z, base_log_z, 1);
-    AXIS_INIT3D(U_AXIS, umin, umax, autoscale_u, 0, 1, 0);
-    AXIS_INIT3D(V_AXIS, vmin, vmax, autoscale_v, 0, 1, 0);
+    AXIS_INIT3D(FIRST_X_AXIS, 0, 0);
+    AXIS_INIT3D(FIRST_Y_AXIS, 0, 0);
+    AXIS_INIT3D(FIRST_Z_AXIS, 0, 1);
+    AXIS_INIT3D(U_AXIS, 1, 0);
+    AXIS_INIT3D(V_AXIS, 1, 0);
 
     if (!term)			/* unknown */
 	int_error(c_token, "use 'set term' to set terminal type first");
@@ -629,10 +629,10 @@ struct surface_points *this_plot;
 		    int_error(this_plot->token, "Need 2 or 3 columns");
 		if (j < 3)
 		    v[2] = 1;	/* default radius */
-		if (angles_format == ANGLES_DEGREES) {
-		    v[0] *= DEG2RAD;	/* Convert to radians. */
-		    v[1] *= DEG2RAD;
-		}
+		/* Convert to radians. */
+		v[0] *= ang2rad;
+		v[1] *= ang2rad;
+
 		x = v[2] * cos(v[0]) * cos(v[1]);
 		y = v[2] * sin(v[0]) * cos(v[1]);
 		z = v[2] * sin(v[1]);
@@ -725,7 +725,6 @@ struct surface_points *this_plot;
 }
 
 
-
 static void
 print_3dtable(pcount)
 int pcount;
@@ -737,13 +736,16 @@ int pcount;
     char *table_format = NULL;
     char *pcat;
 
-    table_format = gp_alloc(strlen(xformat)+strlen(yformat)+strlen(zformat)+6,
+    table_format = gp_alloc(strlen(axis_formatstring[FIRST_X_AXIS])
+			    +strlen(axis_formatstring[FIRST_Y_AXIS])
+			    +strlen(axis_formatstring[FIRST_Z_AXIS])
+			    +6,
 			    "table format");
-    strcpy(table_format, xformat);
+    strcpy(table_format, axis_formatstring[FIRST_X_AXIS]);
     strcat(table_format, " ");
-    strcat(table_format, yformat);
+    strcat(table_format, axis_formatstring[FIRST_Y_AXIS]);
     strcat(table_format, " ");
-    strcat(table_format, zformat);
+    strcat(table_format, axis_formatstring[FIRST_Z_AXIS]);
     pcat = &table_format[strlen(table_format)];
 
     for (surface = 0, this_plot = first_3dplot; surface < pcount;
@@ -872,7 +874,7 @@ calculate_set_of_isolines(value_axis, cross, this_iso,
 static void
 eval_3dplots()
 {
-    int i, j;
+    int i;
     struct surface_points **tp_3d_ptr;
     int start_token, end_token;
     int begin_token;
@@ -966,21 +968,18 @@ eval_3dplots()
 
 		/* this_plot->token is temporary, for errors in get_3ddata() */
 
+		if (specs < 3) {
 		if (axis_is_timedata[FIRST_X_AXIS]) {
-		    if (specs < 3)
 			int_error(c_token, "Need full using spec for x time data");
-		    df_timecol[0] = 1;
 		}
 		if (axis_is_timedata[FIRST_Y_AXIS]) {
-		    if (specs < 3)
 			int_error(c_token, "Need full using spec for y time data");
-		    df_timecol[1] = 1;
 		}
-		if (axis_is_timedata[FIRST_Z_AXIS]) {
-		    if (specs < 3)
-			df_timecol[0] = 1;
-		    else
-			df_timecol[2] = 1;
+		    df_axis[0] = FIRST_Z_AXIS;
+		} else {
+		    df_axis[0] = FIRST_X_AXIS;
+		    df_axis[1] = FIRST_Y_AXIS;
+		    df_axis[2] = FIRST_Z_AXIS;
 		}
 		/*}}} */
 
@@ -1293,7 +1292,6 @@ eval_3dplots()
 		if (!isstring(c_token)) {	/* func to plot */
 		    /*{{{  evaluate function */
 		    struct iso_curve *this_iso = this_plot->iso_crvs;
-		    struct coordinate GPHUGE *points = this_iso->points;
 		    int num_sam_to_use, num_iso_to_use;
 
 		    /* crnt_param is used as the axis number.  As the
@@ -1369,22 +1367,11 @@ eval_3dplots()
     axis_revert_and_unlog_range(FIRST_Y_AXIS);
     axis_revert_and_unlog_range(FIRST_Z_AXIS);
 
-    /* last parameter should take plot size into effect...
-     * probably needs to be moved to graph3d.c
-     * in the meantime, a value of 20 gives same behaviour
-     * as 3.5 which will do for the moment
-     */
+    setup_tics(FIRST_X_AXIS, 20);
+    setup_tics(FIRST_Y_AXIS, 20);
+    setup_tics(FIRST_Z_AXIS, 20);
 
-    if (xtics)
-	setup_tics(FIRST_X_AXIS, &xticdef, xformat, 20);
-    if (ytics)
-	setup_tics(FIRST_Y_AXIS, &yticdef, yformat, 20);
-    if (ztics)
-	setup_tics(FIRST_Z_AXIS, &zticdef, zformat, 20);
-
-    AXIS_WRITEBACK(FIRST_X_AXIS, xmin, xmax);
-    AXIS_WRITEBACK(FIRST_Y_AXIS, ymin, ymax);
-    AXIS_WRITEBACK(FIRST_Z_AXIS, zmin, zmax);
+    AXIS_WRITEBACK(FIRST_X_AXIS);
 
     if (plot_num == 0 || first_3dplot == NULL) {
 	int_error(c_token, "no functions or data to plot");
@@ -1446,8 +1433,8 @@ eval_3dplots()
 
 #define SAVE_WRITEBACK(axis) \
   if(range_flags[axis]&RANGE_WRITEBACK) { \
-    set_writeback_min(axis,min_array[axis]); \
-    set_writeback_max(axis,max_array[axis]); \
+    set_writeback_min(axis); \
+    set_writeback_max(axis); \
   }
         SAVE_WRITEBACK(FIRST_X_AXIS);
         SAVE_WRITEBACK(FIRST_Y_AXIS);

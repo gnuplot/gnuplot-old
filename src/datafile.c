@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.1 2000/05/02 21:26:20 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.2 2000/05/09 19:04:05 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -186,7 +186,7 @@ int df_line_number;
 int df_datum;			/* suggested x value if none given */
 TBOOLEAN df_matrix = FALSE;	/* is this a matrix splot */
 int df_eof = 0;
-int df_timecol[NCOL];
+AXIS_INDEX df_axis[NCOL];
 TBOOLEAN df_binary = FALSE;	/* this is a binary file */
 
 /* jev -- the 'thru' function --- NULL means no dummy vars active */
@@ -522,6 +522,7 @@ int max_using;
     for (i = 0; i < NCOL; ++i) {
 	use_spec[i].column = i + 1;	/* default column */
 	use_spec[i].at = NULL;	/* no expression */
+	df_axis[i] = -1;
     }
 
     if (max_using > NCOL)
@@ -543,8 +544,6 @@ int max_using;
     lastpoint = lastline = MAXINT;
 
     df_eof = 0;
-
-    memset(df_timecol, 0, sizeof(df_timecol));
 
     df_binary = 1;
     /*}}} */
@@ -1025,12 +1024,13 @@ int max;
 		    v[output] = df_datum;	/* using 0 */
 		} else if (column <= 0)	/* really < -2, but */
 		    int_error(NO_CARET, "internal error: column <= 0 in datafile.c");
-		else if (df_timecol[output]) {
+		else if (axis_is_timedata[df_axis[output]]) {
 		    struct tm tm;
 		    if (column > df_no_cols ||
 			df_column[column - 1].good == DF_MISSING ||
 			!df_column[column - 1].position ||
-			!gstrptime(df_column[column - 1].position, timefmt, &tm)
+			!gstrptime(df_column[column - 1].position,
+				   timefmt[df_axis[output]], &tm)
 			) {
 			/* line bad only if user explicitly asked for this column */
 			if (df_no_use_specs)
@@ -1234,63 +1234,9 @@ struct surface_points *this_plot;
 
 	    point->type = INRANGE;	/* so far */
 
-#if 0 
-/* HBB 20000501: I just noticed that we can use STORE_WITH_LOG...
- * here, too. Funny how things have a way of falling into place
- * automatically, once you really make some effort at proper design
- * :-) */
-	    /*{{{  autoscaling/clipping */
-	    /* HBB 20000430: thrice the same code --> macro! */
-#define AUTOSCALE_RANGECHECK(axis,use_index)			\
-	    do {						\
-		if (used[use_index] > 0 || !log_array[axis]) {	\
-		    if (used[use_index] < min_array[axis]) {	\
-			if (auto_array[axis] & 1)		\
-			    min_array[axis] = used[use_index];	\
-			else					\
-			    point->type = OUTRANGE;		\
-		    }						\
-		    if (used[use_index] > max_array[axis]) {	\
-			if (auto_array[axis] & 2)		\
-			    max_array[axis] = used[use_index];	\
-			else					\
-			    point->type = OUTRANGE;		\
-		    }						\
-		}						\
-	    } while(0)
-	    AUTOSCALE_RANGECHECK(FIRST_X_AXIS, 0);
-	    AUTOSCALE_RANGECHECK(FIRST_Y_AXIS, 1);
-	    AUTOSCALE_RANGECHECK(FIRST_Z_AXIS, 2);
-#undef AUTOSCALE_RANGECHECK
-
-	    /* HBB 20000430: again, thrice the same thing: */
-#define CHECKED_LOG_VALUE(axis,used_index)				\
-	    do {							\
-		if (log_array[axis]) {					\
-		    if (used[used_index] < 0.0) {			\
-			point->type = UNDEFINED;			\
-			goto skip;					\
-		    } else if (used[used_index] == 0.0) {		\
-			point->type = OUTRANGE;				\
-			used[used_index] = -VERYLARGE;			\
-		    } else						\
-			used[used_index] =				\
-			  AXIS_UNDO_LOG(axis, used[used_index]);	\
-		}							\
-	    } while (0)
-	    CHECKED_LOG_VALUE(FIRST_X_AXIS, 0);
-	    CHECKED_LOG_VALUE(FIRST_Y_AXIS, 1);
-	    CHECKED_LOG_VALUE(FIRST_Z_AXIS, 2);
-#undef CHECKED_LOG_VALUE
-
-	    point->x = used[0];
-	    point->y = used[1];
-	    point->z = used[2];
-#else /* 0 */
 	    STORE_WITH_LOG_AND_UPDATE_RANGE(point->x, used[0], point->type, FIRST_X_AXIS, NOOP, goto skip);
 	    STORE_WITH_LOG_AND_UPDATE_RANGE(point->y, used[1], point->type, FIRST_Y_AXIS, NOOP, goto skip);
 	    STORE_WITH_LOG_AND_UPDATE_RANGE(point->z, used[2], point->type, FIRST_Z_AXIS, NOOP, goto skip);
-#endif
 	    /* some of you wont like this, but I say goto is for this */
 
 	  skip:
@@ -1377,13 +1323,26 @@ void
 f_timecolumn()
 {
     struct value a;
-    int column;
+    int column, output;
     struct tm tm;
+    int limit = (df_no_use_specs ? df_no_use_specs : NCOL);
+
     (void) pop(&a);
     column = (int) magnitude(&a) - 1;
+
+    /* try to match datafile column with output field number */
+    for (output=0; output<limit; output++)
+	if(use_spec[output].column == column)
+	    break;
+
     if (column < 0 || column >= df_no_cols ||
 	!df_column[column].position ||
-	!gstrptime(df_column[column].position, timefmt, &tm)) {
+	/* FIXME HBB 20000507: what's the correct _output_ column
+	 * number?  This is where my design error of associating time
+	 * parsing formats with the axes (output quantities!), instead
+	 * of the input fields, raises its ugly head. */
+	output == limit ||
+	!gstrptime(df_column[column].position, timefmt[df_axis[output]], &tm)) {
 	undefined = TRUE;
 	push(&a);		/* any objection to this ? */
     } else

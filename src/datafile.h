@@ -1,5 +1,5 @@
 /*
- * $Id: datafile.h,v 1.3 1999/11/08 19:24:14 lhecking Exp $
+ * $Id: datafile.h,v 1.3.4.1 2000/05/09 19:04:05 broeker Exp $
  */
 
 /* GNUPLOT - datafile.h */
@@ -39,7 +39,15 @@
 
 /* #if... / #include / #define collection: */
 
-#include "plot.h"
+/* HBB 20000507: testing without #include "plot.h"*/
+#include "axis.h"
+
+/* returns from DF_READLINE in datafile.c */
+/* +ve is number of columns read */
+#define DF_EOF          (-1)
+#define DF_UNDEFINED    (-2)
+#define DF_FIRST_BLANK  (-3)
+#define DF_SECOND_BLANK (-4)
 
 #ifndef MAXINT			/* should there be one already defined ? */
 # ifdef INT_MAX			/* in limits.h ? */
@@ -64,7 +72,7 @@ extern TBOOLEAN df_matrix;
 extern TBOOLEAN df_binary;
 extern int df_eof;
 extern int df_line_number;
-extern int df_timecol[];
+extern AXIS_INDEX df_axis[];
 extern struct udft_entry ydata_func; /* HBB 990829: moved from command.h */
 
 /* Prototypes of functions exported by datafile.c */

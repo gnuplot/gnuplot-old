@@ -1,5 +1,5 @@
 /*
- * $Id: gp_types.h,v 1.2.2.1 2000/05/02 21:31:34 broeker Exp $
+ * $Id: gp_types.h,v 1.2.2.2 2000/05/09 19:04:05 broeker Exp $
  */
 
 /* GNUPLOT - gp_types.h */
@@ -292,7 +292,7 @@ typedef struct coordinate {
 
 typedef struct lp_style_type {          /* contains all Line and Point properties */
     int     pointflag;		/* 0 if points not used, otherwise 1 */
-    int     l_type;
+    int     l_type;		/* -3 if line is not to be drawn */
     int	    p_type;
     double  l_width;
     double  p_size;
@@ -311,6 +311,8 @@ typedef struct curve_points {
     int p_count;		/* count of points in points */
     int x_axis;			/* FIRST_X_AXIS or SECOND_X_AXIS */
     int y_axis;			/* FIRST_Y_AXIS or SECOND_Y_AXIS */
+    /* HBB 20000504: new field */
+    int z_axis;			/* same as either x_axis or y_axis, for 5-column plot types */
     struct coordinate GPHUGE *points;
 } curve_points;
 
@@ -501,11 +503,13 @@ typedef enum en_key_sample_positioning {
     JRIGHT,
 } t_key_sample_positioning;
   
-/* returns from DF_READLINE in datafile.c */
-/* +ve is number of columns read */
-#define DF_EOF          (-1)
-#define DF_UNDEFINED    (-2)
-#define DF_FIRST_BLANK  (-3)
-#define DF_SECOND_BLANK (-4)
+#define MAX_LINE_LEN 1024	/* maximum number of chars allowed on line */
+
+typedef struct {
+    char text[MAX_LINE_LEN+1];
+    char font[MAX_LINE_LEN+1];
+    double xoffset, yoffset;
+} label_struct;
+#define EMPTY_LABELSTRUCT {"", "", 0.0, 0.0}
 
 #endif /* GNUPLOT_GPTYPES_H */

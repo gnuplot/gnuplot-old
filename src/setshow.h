@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.26.2.1 2000/05/02 21:26:21 broeker Exp $
+ * $Id: setshow.h,v 1.26.2.2 2000/05/09 19:04:06 broeker Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -38,29 +38,26 @@
 #ifndef GNUPLOT_SETSHOW_H
 # define GNUPLOT_SETSHOW_H
 
+#include "axis.h"
 #include "variable.h"
+
+/* activate backwards compatible syntax */
+#define BACKWARDS_COMPATIBLE
+
 
 #ifndef DEFAULT_TIMESTAMP_FORMAT
 /* asctime() format */
 # define DEFAULT_TIMESTAMP_FORMAT "%a %b %d %H:%M:%S %Y"
 #endif
 
-#ifndef TIMEFMT
-# define TIMEFMT "%d/%m/%y,%H:%M"
-#endif
-
-/* default format for tic mark labels */
-#define DEF_FORMAT "%g"
+#define SET_DEFFORMAT(axis, flag_array)				\
+	if (flag_array[axis]) {					\
+	    (void) strcpy(axis_formatstring[axis],DEF_FORMAT);	\
+	    format_is_numeric[axis] = 1;			\
+	}
 
 /* less than one hundredth of a tic mark */
 #define SIGNIF (0.01)
-
-typedef struct {
-    char text[MAX_LINE_LEN+1];
-    char font[MAX_LINE_LEN+1];
-    double xoffset, yoffset;
-} label_struct;
-
 
 /*
  * global variables to hold status of 'set' options
@@ -70,9 +67,6 @@ typedef struct {
 extern int angles_format;
 extern double ang2rad; /* 1 or pi/180 */
 extern struct arrow_def *first_arrow;
-extern TBOOLEAN autoscale_x, autoscale_y, autoscale_z, autoscale_x2,
-    autoscale_y2;
-extern TBOOLEAN autoscale_r, autoscale_t, autoscale_u, autoscale_v;
 extern double bar_size;
 
 extern struct lp_style_type     border_lp;
@@ -94,38 +88,29 @@ extern TBOOLEAN			clip_lines1;
 extern TBOOLEAN			clip_lines2;
 extern TBOOLEAN			draw_surface;
 extern char			dummy_var[MAX_NUM_VAR][MAX_ID_LEN+1];
-extern char			xformat[];
-extern char			yformat[];
-extern char			zformat[];
-extern char			x2format[];
-extern char			y2format[];
-
-/* format for date/time for reading time in datafile */
-extern char timefmt[];
 
 extern char			key_title[];
 extern enum PLOT_STYLE data_style, func_style;
-extern struct lp_style_type     work_grid, grid_lp, mgrid_lp;
+
+extern int 			grid_selection;
+extern const struct lp_style_type default_grid_lp;
+extern struct lp_style_type     grid_lp, mgrid_lp;
 extern double     polar_grid_angle; /* angle step in polar grid in radians */
-extern int			key;
+
+typedef enum key_type {
+    KEY_NONE,
+    KEY_USER_PLACEMENT,
+    KEY_AUTO_PLACEMENT
+} t_key_flag;
+extern t_key_flag		key;
+
 extern struct position key_user_pos; /* user specified position for key */
 extern int 			key_vpos, key_hpos, key_just;
 extern double       key_swidth, key_vert_factor; /* user specified vertical spacing multiplier */
 extern double                   key_width_fix; /* user specified additional (+/-) width of key titles */
 extern TBOOLEAN			key_reverse;  /* key back to front */
-extern struct lp_style_type 	key_box;  /* linetype round box < -2 = none */
-extern TBOOLEAN			is_log_x, is_log_y, is_log_z;
-extern double			base_log_x, base_log_y, base_log_z;
-				/* base, for computing pow(base,x) */
-#if 0 /* HBB 20000430: doesn't belong to set/show stuff, really */
-extern double			log_base_log_x, log_base_log_y, log_base_log_z;
-				/* log of base, for computing logbase(base,x) */
-#endif /* 0 */
-extern TBOOLEAN			is_log_x2, is_log_y2;
-extern double			base_log_x2, base_log_y2;
-				/* base, for computing pow(base,x) */
-extern double			log_base_log_x2, log_base_log_y2;
-				/* log of base, for computing logbase(base,x) */
+extern const struct lp_style_type default_keybox_lp;
+extern struct lp_style_type 	key_box;  /* linetype of box around keyx */
 extern char			*outstr;
 extern TBOOLEAN			parametric;
 extern double			pointsize;
@@ -150,15 +135,9 @@ extern float			surface_zscale;
 extern char			term_options[];
 
 extern label_struct title, timelabel;
-extern label_struct xlabel, ylabel, zlabel;
-extern label_struct x2label, y2label;
 
 extern int			timelabel_rotate;
 extern int			timelabel_bottom;
-extern double			rmin, rmax;
-extern double			tmin, tmax, umin, umax, vmin, vmax;
-extern double			xmin, xmax, ymin, ymax, zmin, zmax;
-extern double			x2min, x2max, y2min, y2max;
 extern double			loff, roff, toff, boff;
 extern int			draw_contour;
 extern TBOOLEAN      label_contours;
@@ -179,42 +158,9 @@ extern TBOOLEAN			dgrid3d;
 extern int			encoding;
 extern const char		*encoding_names[];
 
-/* -3 for no axis, or linetype */
-extern struct lp_style_type xzeroaxis;
-extern struct lp_style_type yzeroaxis;
-extern struct lp_style_type x2zeroaxis;
-extern struct lp_style_type y2zeroaxis;
-
-extern int xtics;
-extern int ytics;
-extern int ztics;
-extern int mxtics;
-extern int mytics;
-extern int mztics;
-extern int x2tics;
-extern int y2tics;
-extern int mx2tics;
-extern int my2tics;
-extern double mxtfreq;
-extern double mytfreq;
-extern double mztfreq;
-extern double mx2tfreq;
-extern double my2tfreq;
-extern TBOOLEAN rotate_xtics;
-extern TBOOLEAN rotate_ytics;
-extern TBOOLEAN rotate_ztics;
-extern TBOOLEAN rotate_x2tics;
-extern TBOOLEAN rotate_y2tics;
-
 extern float ticslevel;
 extern double ticscale; /* scale factor for tic marks (was (0..1])*/
 extern double miniticscale; /* and for minitics */
-
-extern struct ticdef xticdef;
-extern struct ticdef yticdef;
-extern struct ticdef zticdef;
-extern struct ticdef x2ticdef;
-extern struct ticdef y2ticdef;
 
 extern TBOOLEAN			tic_in;
 
@@ -222,6 +168,24 @@ extern struct text_label *first_label;
 extern struct linestyle_def *first_linestyle;
 
 extern int lmargin, bmargin,rmargin,tmargin; /* plot border in characters */
+
+/* string representing missing values, ascii datafiles */
+extern char *missing_val;
+
+#define SAVE_NUM_OR_TIME(fp, x, axis)			\
+do{							\
+    if (axis_is_timedata[axis]) {			\
+	char s[80]; char *p;				\
+							\
+	putc('"', fp);					\
+	gstrftime(s,80,timefmt[axis],(double)(x));	\
+	fputs(conv_text(s), fp);			\
+	putc('"', fp);					\
+    } else {						\
+	fprintf(fp,"%#g",x);				\
+    }							\
+} while(0)
+
 
 /* HBB 19991108 FIXME: this is way off. There is no setshow.c, and
  * these functions ought to be prototyped in their own .h files, each!
@@ -238,15 +202,8 @@ void show_version __PROTO((FILE *fp));
 char *conv_text __PROTO((const char *s));
 void lp_parse __PROTO((struct lp_style_type *, int, int, int, int));
 void delete_linestyle __PROTO((struct linestyle_def *, struct linestyle_def *));
-
-/* should be in set.h */
 int set_label_tag __PROTO((void));
-double get_writeback_min __PROTO((int axis));
-double get_writeback_max __PROTO((int axis));
-void set_writeback_min __PROTO((int axis, double val));
-void set_writeback_max __PROTO((int axis, double val));
-
-/* string representing missing values, ascii datafiles */
-extern char *missing_val;
+void set_lp_properties __PROTO((struct lp_style_type *, int, int, int, double, double));
+void reset_key __PROTO((void));
 
 #endif /* GNUPLOT_SETSHOW_H */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.1 2000/05/02 21:26:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.2 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -122,7 +122,7 @@ static TBOOLEAN opened_binary = FALSE;
 static TBOOLEAN term_force_init = FALSE;
 
 /* internal pointsize for do_point */
-static double term_pointsize;
+static double term_pointsize=1;
 
 static void term_suspend __PROTO((void));
 static void term_close_output __PROTO((void));
@@ -1659,7 +1659,7 @@ fill_gp4mouse (void)
     /* For development purposes: */
     printf("trm: [xleft,ybot] [xright,ytop] = [%i,%i]..[%i,%i]\n",xleft,ybot,xright,ytop);
     printf("trm: [xmin,ymin] [xmax,ymax] = [%g,%g]..[%g,%g]\n",xmin,ymin,xmax,ymax);
-    printf("trm: autoscale_x=%i,  _y=%i\n",autoscale_x,autoscale_y);
+    printf("trm: autoscale_x=%i,  _y=%i\n",auto_array[FIRST_X_AXIS],auto_array[FIRST_Y_AXIS]);
     printf("trm: true min,max = [%g,%g]..[%g,%g]\n",min_array[FIRST_X_AXIS],min_array[FIRST_Y_AXIS],max_array[FIRST_X_AXIS],max_array[FIRST_Y_AXIS]);
     printf("trm: multiplot=%i\n",multiplot);
     printf("trm: draw_surface=%i\n",draw_surface);
@@ -1709,7 +1709,7 @@ fill_gp4mouse (void)
     gp4mouse.log_base_array[FIRST_X_AXIS] = log_base_array[FIRST_X_AXIS];
     gp4mouse.log_base_array[FIRST_Y_AXIS] = log_base_array[FIRST_Y_AXIS];
     gp4mouse.log_base_array[FIRST_Z_AXIS] = log_base_array[FIRST_Z_AXIS];
-    gp4mouse.has_grid = work_grid.l_type ? 1 : 0;
+    gp4mouse.has_grid = grid_selection ? 1 : 0;
 }
 #endif /* 0 -- disabled code! */
 

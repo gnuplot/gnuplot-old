@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.5.2.1 2000/05/02 21:26:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.5.2.2 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -97,10 +97,9 @@ static int mouse_x, mouse_y;
 static double real_x, real_y, real_x2, real_y2;
 
 
-/* mouse_polar_distance is set to TRUE if user wants to see the distance between
- * the ruler and mouse pointer in polar coordinates too (otherwise, distance 
- * in cartesian coordinates only is shown)
- */
+/* mouse_polar_distance is set to TRUE if user wants to see the
+ * distance between the ruler and mouse pointer in polar coordinates
+ * too (otherwise, distance in cartesian coordinates only is shown) */
 /* int mouse_polar_distance = FALSE; */
 /* moved to the struct mouse_setting_t (joze) */
 
@@ -178,6 +177,7 @@ static void event_buttonpress __PROTO((struct gp_event_t * ge));
 static void event_buttonrelease __PROTO((struct gp_event_t * ge));
 static void event_motion __PROTO((struct gp_event_t * ge));
 static void event_modifier __PROTO((struct gp_event_t * ge));
+static void event_plotdone __PROTO((void));
 static void event_print __PROTO((FILE * fp, char *s));
 static void do_save_3dplot __PROTO((struct surface_points *, int, int));
 
@@ -329,14 +329,10 @@ MousePosToGraphPosReal(int xx, int yy, double *x, double *y, double *x2, double 
      */
 
     /* Now take into account possible log scales of x and y axes */
-    if (is_log_x)
-	*x = exp(*x * log_base_log_x);
-    if (is_log_y)
-	*y = exp(*y * log_base_log_y);
-    if (is_log_x2)
-	*x2 = exp(*x2 * log_base_log_x2);
-    if (is_log_y2)
-	*y2 = exp(*y2 * log_base_log_y2);
+    *x = AXIS_DE_LOG_VALUE(FIRST_X_AXIS, *x);
+    *x2 = AXIS_DE_LOG_VALUE(SECOND_X_AXIS, *x2);
+    *y = AXIS_DE_LOG_VALUE(FIRST_X_AXIS, *y);
+    *y2 = AXIS_DE_LOG_VALUE(SECOND_Y_AXIS, *y2);
 }
 
 static char *
@@ -450,7 +446,9 @@ xDateTimeFormat(double x, char *b, int mode)
 		pxtime_position->tm_hour, pxtime_position->tm_min);
 	break;
     case MOUSE_COORDINATES_TIMEFMT:
-	gstrftime(b, 0xff, timefmt, x);
+	/* FIXME HBB 20000507: timefmt is for *reading* timedata, not
+	 * for writing them! */
+	gstrftime(b, 0xff, timefmt[FIRST_X_AXIS], x);
 	break;
     default:
 	sprintf(b, mouse_setting.fmt, x);
@@ -460,12 +458,18 @@ xDateTimeFormat(double x, char *b, int mode)
 
 
 
-
-#define MKSTR(sp,x,idx,_format)  \
-    if (axis_is_timedata[idx]) {  \
-	if (format_is_numeric[idx]) sp+=gstrftime(sp,40,timefmt,x);  \
-	else sp+=gstrftime(sp,40,_format,x);  \
-    } else sp+=sprintf(sp, mouse_setting.fmt ,x);
+/* HBB 20000507: fixed a construction error. Was using the 'timefmt'
+ * string (which is for reading, not writing time data) to output the
+ * value. Code is now closer to what setup_tics does. */
+#define MKSTR(sp,x,axis)						\
+do {									\
+    if (axis_is_timedata[axis]) {					\
+	if (format_is_numeric[axis])					\
+	    timetic_format(axis, min_array[axis], max_array[axis]);	\
+	sp+=gstrftime(sp,40,axis_formatstring[axis],x);			\
+    } else								\
+	sp+=sprintf(sp, mouse_setting.fmt ,x);				\
+} while (0)
 
 
 /* formats the information for an annotation (middle mouse button clicked)
@@ -478,10 +482,10 @@ GetCoordinateString(char *s, double x, double y)
     char *sp;
     s[0] = '[';
     sp = s + 1;
-    MKSTR(sp, x, FIRST_X_AXIS, xformat);
+    MKSTR(sp, x, FIRST_X_AXIS);
     *sp++ = ',';
     *sp++ = ' ';
-    MKSTR(sp, y, FIRST_Y_AXIS, yformat);
+    MKSTR(sp, y, FIRST_Y_AXIS);
     *sp++ = ']';
     *sp = 0;
     return sp;
@@ -489,8 +493,9 @@ GetCoordinateString(char *s, double x, double y)
 # endif
 
 
-# define DIST(x,rx,is_log)  \
-    (is_log)  /* ratio for log, distance for linear */  \
+/* ratio for log, distance for linear */	
+# define DIST(x,rx,axis) 			\
+   (log_array[axis])				\
     ? ( (rx==0) ? 99999 : x / rx )  \
     : (x - rx)
 
@@ -514,8 +519,8 @@ GetRulerString(char *p, double x, double y)
     strcat(format, ", ");
     strcat(format, mouse_setting.fmt);
 
-    dx = DIST(x, ruler.x, log_array[FIRST_X_AXIS]);
-    dy = DIST(y, ruler.y, log_array[FIRST_Y_AXIS]);
+    dx = DIST(x, ruler.x, FIRST_X_AXIS);
+    dy = DIST(y, ruler.y, FIRST_Y_AXIS);
     sprintf(p, format, ruler.x,ruler.y, dx, dy);
 
     if (mouse_setting.polardistance && !log_array[FIRST_X_AXIS] && !log_array[FIRST_Y_AXIS]) {
@@ -716,7 +721,7 @@ UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
 	strcat(format, ", ");
 	strcat(format, ms->fmt);
 	sprintf(s0, format, surface_rot_x, surface_rot_z, surface_scale, surface_zscale);
-    } else if (!TICS_ON(x2tics) && !TICS_ON(y2tics)) {
+    } else if (!TICS_ON(axis_tics[SECOND_X_AXIS]) && !TICS_ON(axis_tics[SECOND_Y_AXIS])) {
 	/* only first X and Y axis are in use */
 # ifdef OLD_STATUS_LINE
 	sp = GetCoordinateString(s0, real_x, real_y);
@@ -732,24 +737,24 @@ UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
     } else {
 	/* X2 and/or Y2 are in use: use more verbose format */
 	sp = s0;
-	if (TICS_ON(xtics)) {
+	if (TICS_ON(axis_tics[FIRST_X_AXIS])) {
 	    sp = stpcpy(sp, "x=");
-	    MKSTR(sp, real_x, FIRST_X_AXIS, xformat);
+	    MKSTR(sp, real_x, FIRST_X_AXIS);
 	    *sp++ = ' ';
 	}
-	if (TICS_ON(ytics)) {
+	if (TICS_ON(axis_tics[FIRST_Y_AXIS])) {
 	    sp = stpcpy(sp, "y=");
-	    MKSTR(sp, real_y, FIRST_Y_AXIS, yformat);
+	    MKSTR(sp, real_y, FIRST_Y_AXIS);
 	    *sp++ = ' ';
 	}
-	if (TICS_ON(x2tics)) {
+	if (TICS_ON(axis_tics[SECOND_X_AXIS])) {
 	    sp = stpcpy(sp, "x2=");
-	    MKSTR(sp, real_x2, SECOND_X_AXIS, x2format);
+	    MKSTR(sp, real_x2, SECOND_X_AXIS);
 	    *sp++ = ' ';
 	}
-	if (TICS_ON(y2tics)) {
+	if (TICS_ON(axis_tics[SECOND_Y_AXIS])) {
 	    sp = stpcpy(sp, "y2=");
-	    MKSTR(sp, real_y2, SECOND_Y_AXIS, y2format);
+	    MKSTR(sp, real_y2, SECOND_Y_AXIS);
 	    *sp++ = ' ';
 	}
 	if (ruler.on) {
@@ -757,14 +762,14 @@ UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
 # if 0
 	    MousePosToGraphPosReal(ruler.px, ruler.py, &ruler.x, &ruler.y, &ruler.x2, &ruler.y2);
 # endif
-	    if (TICS_ON(xtics))
-		sp += sprintf(sp, xy1_format("dx="), DIST(real_x, ruler.x, log_array[FIRST_X_AXIS]));
-	    if (TICS_ON(ytics))
-		sp += sprintf(sp, xy1_format("dy="), DIST(real_y, ruler.y, log_array[FIRST_Y_AXIS]));
-	    if (TICS_ON(x2tics))
-		sp += sprintf(sp, xy1_format("dx2="), DIST(real_x2, ruler.x2, log_array[SECOND_X_AXIS]));
-	    if (TICS_ON(y2tics))
-		sp += sprintf(sp, xy1_format("dy2="), DIST(real_y2, ruler.y2, log_array[SECOND_Y_AXIS]));
+	    if (TICS_ON(axis_tics[FIRST_X_AXIS]))
+		sp += sprintf(sp, xy1_format("dx="), DIST(real_x, ruler.x, FIRST_X_AXIS));
+	    if (TICS_ON(axis_tics[FIRST_Y_AXIS]))
+		sp += sprintf(sp, xy1_format("dy="), DIST(real_y, ruler.y, FIRST_Y_AXIS));
+	    if (TICS_ON(axis_tics[SECOND_X_AXIS]))
+		sp += sprintf(sp, xy1_format("dx2="), DIST(real_x2, ruler.x2, SECOND_X_AXIS));
+	    if (TICS_ON(axis_tics[SECOND_Y_AXIS]))
+		sp += sprintf(sp, xy1_format("dy2="), DIST(real_y2, ruler.y2, SECOND_Y_AXIS));
 	}
 	*--sp = 0;		/* delete trailing space */
     }
@@ -829,7 +834,7 @@ builtin_toggle_grid(struct gp_event_t *ge)
     if (!ge) {
 	return "`builtin-toggle-grid`";
     }
-    if (work_grid.l_type == GRID_OFF)
+    if (grid_selection == GRID_OFF)
 	do_string("set grid; replot");
     else
 	do_string("unset grid; replot");

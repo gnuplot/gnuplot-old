@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.1 2000/05/02 21:26:20 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.2 2000/05/09 19:04:05 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -54,6 +54,7 @@ static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.1 2000/05/02 21:26:
 
 #include "alloc.h"
 #include "axis.h"
+#include "graphics.h"		/* HBB 20000506: put in again, for label_width() */
 #include "hidden3d.h"
 #include "misc.h"
 #include "setshow.h"
@@ -68,14 +69,9 @@ static int key_entry_height;	/* bigger of t->v_size, pointsize*t->v_tick */
 int suppressMove = 0;		/* to prevent moveto while drawing contours */
 
 /*
- * hidden_no_update - if TRUE lines will be hidden line removed but they
- *   are not assumed to be part of the surface (i.e. grid) and therefore
- *   do not influence the hidings.
- * NOTE HBB 20000430: this has _no_ effect on the new hidden3d code.
  * hidden_active - TRUE if hidden lines are to be removed.
  */
 int hidden_active = FALSE;
-int hidden_no_update;		
 
 /* LITE defines a restricted memory version for MS-DOS, which doesn't
  * use the routines in hidden3d.c
@@ -333,7 +329,7 @@ int count;
     xright = (scaling ? 1 : xsize) * (t->xmax) - (t->h_char) * 2 - (t->h_tic);
     key_rows = ptitl_cnt;
     key_cols = 1;
-    if (key == -1 && key_vpos == TUNDER) {
+    if (key == KEY_AUTO_PLACEMENT && key_vpos == TUNDER) {
 	if (ptitl_cnt > 0) {
 	    /* calculate max no cols, limited by label-length */
 	    key_cols = (int) (xright - xleft) / ((max_ptitl_len + 4) * (t->h_char) + key_sample_width);
@@ -354,7 +350,7 @@ int count;
 
     /* an absolute 1, with no terminal-dependent scaling ? */
     ybot = (t->v_char) * 2.5 + 1;
-    if (key_rows && key == -1 && key_vpos == TUNDER)
+    if (key_rows && key == KEY_AUTO_PLACEMENT && key_vpos == TUNDER)
 	ybot += key_rows * key_entry_height + ktitle_lines * t->v_char;
 
     if (strlen(title.text)) {
@@ -365,7 +361,7 @@ int count;
 	}
     }
     ytop = (scaling ? 1 : ysize) * (t->ymax) - (t->v_char) * (titlelin + 1.5) - 1;
-    if (key == -1 && key_vpos != TUNDER) {
+    if (key == KEY_AUTO_PLACEMENT && key_vpos != TUNDER) {
 	/* calculate max no rows, limited be ytop-ybot */
 	i = (int) (ytop - ybot) / (t->v_char) - 1 - ktitle_lines;
 	if (ptitl_cnt > i) {
@@ -375,7 +371,7 @@ int count;
 	}
 	key_rows += ktitle_lines;
     }
-    if (key == -1 && key_hpos == TOUT) {
+    if (key == KEY_AUTO_PLACEMENT && key_hpos == TOUT) {
 	xright -= key_col_wth * (key_cols - 1) + key_col_wth - 2 * (t->h_char);
     }
     xleft += t->xmax * xoffset;
@@ -454,7 +450,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
      */
 
     /* If we are to draw the bottom grid make sure zmin is updated properly. */
-    if (xtics || ytics || work_grid.l_type) {
+    if (axis_tics[FIRST_X_AXIS] || axis_tics[FIRST_Y_AXIS] || grid_selection) {
 	base_z = min_array[FIRST_Z_AXIS] - (max_array[FIRST_Z_AXIS] - min_array[FIRST_Z_AXIS]) * ticslevel;
 	if (ticslevel >= 0)
 	    floor_z = base_z;
@@ -523,9 +519,9 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 	char str[MAX_LINE_LEN+1];
 	time_t now;
 	unsigned int x = t->v_char + timelabel.xoffset * t->h_char;
-	unsigned int y = timelabel_bottom ?
-	yoffset * ymax + (timelabel.yoffset + 1) * t->v_char :
-	ytop + (timelabel.yoffset - 1) * t->v_char;
+	unsigned int y = timelabel_bottom
+	    ? yoffset * max_array[FIRST_Y_AXIS] + (timelabel.yoffset + 1) * t->v_char
+	    : ytop + (timelabel.yoffset - 1) * t->v_char;
 
 	time(&now);
 	strftime(str, MAX_LINE_LEN, timelabel.text, localtime(&now));
@@ -611,7 +607,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     }
     key_point_offset = (key_sample_left + key_sample_right) / 2;
 
-    if (key == -1) {
+    if (key == KEY_AUTO_PLACEMENT) {
 	if (key_vpos == TUNDER) {
 #if 0
 	    yl = yoffset * t->ymax + (key_rows) * key_entry_height + (ktitle_lines + 2) * t->v_char;
@@ -656,10 +652,10 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 	}
 	yl_ref = yl - ktitle_lines * (t->v_char);
     }
-    if (key == 1) {
+    if (key == KEY_USER_PLACEMENT) {
 	map3d_position(&key_user_pos, &xl, &yl, "key");
     }
-    if (key && key_box.l_type > -3) {
+    if (key != KEY_NONE && key_box.l_type > -3) {
 	int yt = yl;
 	int yb = yl - key_entry_height * (key_rows - ktitle_lines) - ktitle_lines * t->v_char;
 	int key_xr = xl + key_col_wth * (key_cols - 1) + key_size_right;
@@ -683,7 +679,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 #endif /* not LITE */
 
     /* KEY TITLE */
-    if (key != 0 && strlen(key_title)) {
+    if (key != KEY_NONE && strlen(key_title)) {
 	char *ss = gp_alloc(strlen(key_title) + 2, "tmp string ss");
 	strcpy(ss, key_title);
 	strcat(ss, "\n");
@@ -725,13 +721,9 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 	 surface < pcount;
 	 this_plot = this_plot->next_sp, surface++) {
 
-#ifndef LITE
-	if (hidden3d)
-	    hidden_no_update = FALSE;
-#endif /* not LITE */
 
 	if (draw_surface) {
-	    int lkey = (key != 0 && this_plot->title && this_plot->title[0]);
+	    TBOOLEAN lkey = (key != 0 && this_plot->title && this_plot->title[0]);
 	    term_apply_lp_properties(&(this_plot->lp_properties));
 
 	    if (lkey) {
@@ -796,7 +788,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 
 	    case DOTS:
 		if (lkey) {
-		    if (key == 1) {
+		    if (key == KEY_USER_PLACEMENT) {
 			if (!clip_point(xl + key_point_offset, yl))
 			    (*t->point) (xl + key_point_offset, yl, -1);
 		    } else {
@@ -817,11 +809,6 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 		NEXT_KEY_LINE();
 	    }
 	}			/* draw_surface */
-#ifndef LITE
-	if (hidden3d) {
-	    hidden_no_update = TRUE;
-	}
-#endif /* not LITE */
 
 	if (draw_contour && this_plot->contours != NULL) {
 	    struct gnuplot_contours *cntrs = this_plot->contours;
@@ -829,7 +816,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 	    term_apply_lp_properties(&(this_plot->lp_properties));
 	    (*t->linetype) (this_plot->lp_properties.l_type + (hidden3d ? 2 : 1));
 
-	    if (key != 0 && this_plot->title && this_plot->title[0]
+	    if (key != KEY_NONE && this_plot->title && this_plot->title[0]
 		&& !draw_surface && !label_contours) {
 		/* unlabelled contours but no surface : put key entry in now */
 		key_text(xl, yl, this_plot->title);
@@ -870,7 +857,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 	    while (cntrs) {
 		if (label_contours && cntrs->isNewLevel) {
 		    (*t->linetype) (linetypeOffset++);
-		    if (key) {
+		    if (key != KEY_NONE) {
 
 			key_text(xl, yl, cntrs->label);
 
@@ -1094,6 +1081,7 @@ struct surface_points *plot;
 	icrvs = icrvs->next;
     }
 }
+
 
 /* plot3d_lines:
  * Plot the surfaces in LINES style
@@ -1423,7 +1411,6 @@ double depth[2][2];
     }
 }
 
-
 /* Draw the bottom grid that hold the tic marks for 3d surface. */
 static void
 draw_bottom_grid(plot, plot_num)
@@ -1468,11 +1455,6 @@ int plot_num;
 	unsigned int bb_x, bb_y;	/* bottom back */
 	unsigned int br_x, br_y;	/* bottom right */
 	unsigned int bf_x, bf_y;	/* bottom front */
-
-#ifndef LITE
-	int save_update = hidden_no_update;
-	hidden_no_update = TRUE;
-#endif /* LITE */
 
 	/* Here is the one and only call to this function. */
 	setlinestyle(border_lp);
@@ -1594,12 +1576,8 @@ else if (height[i][j] != depth[i][j]) \
 		draw_clip_line(tr_x, tr_y, tf_x, tf_y);
 	    hidden_active = save;
 	}
-#ifndef LITE
-	hidden_no_update = save_update;
-#endif /* LITE */
-
     }
-    if (xtics || *xlabel.text) {
+    if (axis_tics[FIRST_X_AXIS] || *axis_label[FIRST_X_AXIS].text) {
 	unsigned int x0, y0, x1, y1;
 	double mid_x = (max_array[FIRST_X_AXIS] + min_array[FIRST_X_AXIS]) / 2;
 	double len;
@@ -1618,26 +1596,25 @@ else if (height[i][j] != depth[i][j]) \
 	    }
 	}
 
-	if (xtics) {
-	    gen_tics(FIRST_X_AXIS, &xticdef,
-		     work_grid.l_type & (GRID_X | GRID_MX),
-		     mxtics, mxtfreq, xtick_callback);
+	if (axis_tics[FIRST_X_AXIS]) {
+	    gen_tics(FIRST_X_AXIS, grid_selection & (GRID_X | GRID_MX),
+		     xtick_callback);
 	}
-	if (*xlabel.text) {
+	if (*axis_label[FIRST_X_AXIS].text) {
 	    /* label at xaxis_y + 1/4 of (xaxis_y-other_y) */
 	    double step = (2 * xaxis_y - max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS]) / 4;
 	    map3d_xy(mid_x, xaxis_y + step, base_z, &x1, &y1);
-	    x1 += xlabel.xoffset * t->h_char;
-	    y1 += xlabel.yoffset * t->v_char;
+	    x1 += axis_label[FIRST_X_AXIS].xoffset * t->h_char;
+	    y1 += axis_label[FIRST_X_AXIS].yoffset * t->v_char;
 	    if (!tic_in) {
 		x1 -= tic_unitx * ticscale * (t->h_tic);
 		y1 -= tic_unity * ticscale * (t->v_tic);
 	    }
 	    /* write_multiline mods it */
-	    write_multiline(x1, y1, xlabel.text, CENTRE, JUST_TOP, 0, xlabel.font);
+	    write_multiline(x1, y1, axis_label[FIRST_X_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[FIRST_X_AXIS].font);
 	}
     }
-    if (ytics || *ylabel.text) {
+    if (axis_tics[FIRST_Y_AXIS] || *axis_label[FIRST_Y_AXIS].text) {
 	unsigned int x0, y0, x1, y1;
 	double mid_y = (max_array[FIRST_Y_AXIS] + min_array[FIRST_Y_AXIS]) / 2;
 	double len;
@@ -1655,56 +1632,57 @@ else if (height[i][j] != depth[i][j]) \
 		tic_unitx = tic_unity = 0;
 	    }
 	}
-	if (ytics) {
-	    gen_tics(FIRST_Y_AXIS, &yticdef,
-		     work_grid.l_type & (GRID_Y | GRID_MY),
-		     mytics, mytfreq, ytick_callback);
+	if (axis_tics[FIRST_Y_AXIS]) {
+	    gen_tics(FIRST_Y_AXIS, grid_selection & (GRID_Y | GRID_MY),
+		     ytick_callback);
 	}
-	if (*ylabel.text) {
+	if (*axis_label[FIRST_Y_AXIS].text) {
 	    double step = (max_array[FIRST_X_AXIS] + min_array[FIRST_X_AXIS] - 2 * yaxis_x) / 4;
 	    map3d_xy(yaxis_x - step, mid_y, base_z, &x1, &y1);
-	    x1 += ylabel.xoffset * t->h_char;
-	    y1 += ylabel.yoffset * t->v_char;
+	    x1 += axis_label[FIRST_Y_AXIS].xoffset * t->h_char;
+	    y1 += axis_label[FIRST_Y_AXIS].yoffset * t->v_char;
 	    if (!tic_in) {
 		x1 -= tic_unitx * ticscale * (t->h_tic);
 		y1 -= tic_unity * ticscale * (t->v_tic);
 	    }
 	    /* write_multiline mods it */
-	    write_multiline(x1, y1, ylabel.text, CENTRE, JUST_TOP, 0, ylabel.font);
+	    write_multiline(x1, y1, axis_label[FIRST_Y_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[FIRST_Y_AXIS].font);
 	}
     }
     /* do z tics */
 
-    if (ztics && (draw_surface || (draw_contour & CONTOUR_SRF))) {
-	gen_tics(FIRST_Z_AXIS, &zticdef, work_grid.l_type & (GRID_Z | GRID_MZ),
-		 mztics, mztfreq, ztick_callback);
+    if (axis_tics[FIRST_Z_AXIS]
+	&& (draw_surface || (draw_contour & CONTOUR_SRF))) {
+	gen_tics(FIRST_Z_AXIS, grid_selection & (GRID_Z | GRID_MZ),
+		 ztick_callback);
     }
-    if ((yzeroaxis.l_type >= -2) && !log_array[FIRST_X_AXIS] && inrange(0, min_array[FIRST_X_AXIS], max_array[FIRST_X_AXIS])) {
+    if ((axis_zeroaxis[FIRST_Y_AXIS].l_type >= -2) && !log_array[FIRST_X_AXIS] && inrange(0, min_array[FIRST_X_AXIS], max_array[FIRST_X_AXIS])) {
 	unsigned int x, y, x1, y1;
-	term_apply_lp_properties(&yzeroaxis);
+	term_apply_lp_properties(&axis_zeroaxis[FIRST_Y_AXIS]);
 	map3d_xy(0.0, min_array[FIRST_Y_AXIS], base_z, &x, &y);		/* line through x=0 */
 	map3d_xy(0.0, max_array[FIRST_Y_AXIS], base_z, &x1, &y1);
 	draw_clip_line(x, y, x1, y1);
     }
-    if ((xzeroaxis.l_type >= -2) && !log_array[FIRST_Y_AXIS] && inrange(0, min_array[FIRST_Y_AXIS], max_array[FIRST_Y_AXIS])) {
+    if ((axis_zeroaxis[FIRST_X_AXIS].l_type >= -2) && !log_array[FIRST_Y_AXIS] && inrange(0, min_array[FIRST_Y_AXIS], max_array[FIRST_Y_AXIS])) {
 	unsigned int x, y, x1, y1;
-	term_apply_lp_properties(&xzeroaxis);
+	term_apply_lp_properties(&axis_zeroaxis[FIRST_X_AXIS]);
 	map3d_xy(min_array[FIRST_X_AXIS], 0.0, base_z, &x, &y);		/* line through y=0 */
 	map3d_xy(max_array[FIRST_X_AXIS], 0.0, base_z, &x1, &y1);
 	draw_clip_line(x, y, x1, y1);
     }
     /* PLACE ZLABEL - along the middle grid Z axis - eh ? */
-    if (*zlabel.text && (draw_surface || (draw_contour & CONTOUR_SRF))) {
+    if (*axis_label[FIRST_Z_AXIS].text && (draw_surface || (draw_contour & CONTOUR_SRF))) {
 	map3d_xy(zaxis_x, zaxis_y, max_array[FIRST_Z_AXIS] + (max_array[FIRST_Z_AXIS] - base_z) / 4, &x, &y);
 
-	x += zlabel.xoffset * t->h_char;
-	y += zlabel.yoffset * t->v_char;
+	x += axis_label[FIRST_Z_AXIS].xoffset * t->h_char;
+	y += axis_label[FIRST_Z_AXIS].yoffset * t->v_char;
 
-	write_multiline(x, y, zlabel.text, CENTRE, CENTRE, 0, zlabel.font);
+	write_multiline(x, y, axis_label[FIRST_Z_AXIS].text,
+			CENTRE, CENTRE, 0,
+			axis_label[FIRST_Z_AXIS].font);
 
     }
 }
-
 
 static void
 xtick_callback(axis, place, text, grid)
@@ -1726,7 +1704,7 @@ struct lp_style_type grid;	/* linetype or -2 for none */
 	draw_clip_line(x, y, x1, y1);
 	term_apply_lp_properties(&border_lp);
     }
-    if (xtics & TICS_ON_AXIS) {
+    if (axis_tics[FIRST_X_AXIS] & TICS_ON_AXIS) {
 	map3d_xy(place, (min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS]) / 2, base_z, &x, &y);
     }
     x1 = x + tic_unitx * scale * (t->h_tic) * dirn;
@@ -1755,7 +1733,7 @@ struct lp_style_type grid;	/* linetype or -2 for none */
 	}
 	clip_put_text_just(x1, y1, text, just);
     }
-    if (xtics & TICS_MIRROR) {
+    if (axis_tics[FIRST_X_AXIS] & TICS_MIRROR) {
 	map3d_xy(place, min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - xaxis_y, base_z, &x, &y);
 	x1 = x - tic_unitx * scale * (t->h_tic) * dirn;
 	y1 = y - tic_unity * scale * (t->v_tic) * dirn;
@@ -1782,7 +1760,7 @@ struct lp_style_type grid;
 	draw_clip_line(x, y, x1, y1);
 	term_apply_lp_properties(&border_lp);
     }
-    if (ytics & TICS_ON_AXIS) {
+    if (axis_tics[FIRST_Y_AXIS] & TICS_ON_AXIS) {
 	map3d_xy((min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS]) / 2, place, base_z, &x, &y);
     }
     x1 = x + tic_unitx * scale * dirn * (t->h_tic);
@@ -1810,7 +1788,7 @@ struct lp_style_type grid;
 	}
 	clip_put_text_just(x1, y1, text, just);
     }
-    if (ytics & TICS_MIRROR) {
+    if (axis_tics[FIRST_Y_AXIS] & TICS_MIRROR) {
 	map3d_xy(min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - yaxis_x, place, base_z, &x, &y);
 	x1 = x - tic_unitx * scale * (t->h_tic) * dirn;
 	y1 = y - tic_unity * scale * (t->v_tic) * dirn;
@@ -1831,8 +1809,10 @@ struct lp_style_type grid;
 
     if (grid.l_type > -2) {
 	unsigned int x1, y1, x2, y2, x3, y3;
-	double other_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - zaxis_x;
-	double other_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - zaxis_y;
+	double other_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS]
+	    - zaxis_x;
+	double other_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS]
+	    - zaxis_y;
 	term_apply_lp_properties(&grid);
 	map3d_xy(zaxis_x, zaxis_y, place, &x1, &y1);
 	map3d_xy(back_x, back_y, place, &x2, &y2);
@@ -1849,9 +1829,11 @@ struct lp_style_type grid;
 	    x1 -= (term->h_tic) * ticscale;
 	clip_put_text_just(x1, y, text, RIGHT);
     }
-    if (ztics & TICS_MIRROR) {
-	double other_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS] - zaxis_x;
-	double other_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS] - zaxis_y;
+    if (axis_tics[FIRST_Z_AXIS] & TICS_MIRROR) {
+	double other_x = min_array[FIRST_X_AXIS] + max_array[FIRST_X_AXIS]
+	    - zaxis_x;
+	double other_y = min_array[FIRST_Y_AXIS] + max_array[FIRST_Y_AXIS]
+	    - zaxis_y;
 	map3d_xy(other_x, other_y, place, &x, &y);
 	draw_clip_line(x, y, x - len, y);
     }
@@ -1933,18 +1915,18 @@ key_text(xl, yl, text)
 int xl, yl;
 char *text;
 {
-    if (key_just == JLEFT && key == -1) {
+    if (key_just == JLEFT && key == KEY_AUTO_PLACEMENT) {
 	(*term->justify_text) (LEFT);
 	(*term->put_text) (xl + key_text_left, yl, text);
     } else {
 	if ((*term->justify_text) (RIGHT)) {
-	    if (key == 1)
+	    if (key == KEY_USER_PLACEMENT)
 		clip_put_text(xl + key_text_right, yl, text);
 	    else
 		(*term->put_text) (xl + key_text_right, yl, text);
 	} else {
 	    int x = xl + key_text_right - (term->h_char) * strlen(text);
-	    if (key == 1) {
+	    if (key == KEY_USER_PLACEMENT) {
 		if (i_inrange(x, xleft, xright))
 		    clip_put_text(x, yl, text);
 	    } else {
@@ -1958,7 +1940,7 @@ static void
 key_sample_line(xl, yl)
 int xl, yl;
 {
-    if (key == -1) {
+    if (key == KEY_AUTO_PLACEMENT) {
 	(*term->move) (xl + key_sample_left, yl);
 	(*term->vector) (xl + key_sample_right, yl);
     } else {
@@ -1987,7 +1969,7 @@ int pointtype;
      *
      * Now, all 'automatically' placed cases will never be clipped,
      * only user-specified ones. */
-    if ((key == -1)            /* ==-1 means auto-placed key */
+    if ((key == KEY_AUTO_PLACEMENT)            /* ==-1 means auto-placed key */
 	|| !clip_point(xl + key_point_offset, yl)) {
 	(*term->point) (xl + key_point_offset, yl, pointtype);
     }

@@ -1,5 +1,5 @@
 /*
- * $Id: graph3d.h,v 1.6.2.1 2000/05/02 21:26:20 broeker Exp $
+ * $Id: graph3d.h,v 1.6.2.2 2000/05/09 19:04:05 broeker Exp $
  */
 
 /* GNUPLOT - graph3d.h */
@@ -56,7 +56,6 @@ extern int hidden_active;
 extern int suppressMove;
 extern int xmiddle, ymiddle, xscaler, yscaler;
 extern double floor_z;
-extern int hidden_no_update;
 extern transform_matrix trans_mat;
 extern double xscale3d, yscale3d, zscale3d;
 
@@ -66,7 +65,6 @@ extern int axis3d_o_x, axis3d_o_y, axis3d_x_dx, axis3d_x_dy, axis3d_y_dx, axis3d
 
 /* Prototypes from file "graph3d.c" */
 
-void do_openglplot __PROTO((struct surface_points *plots, int pcount));
 void do_3dplot __PROTO((struct surface_points *plots, int pcount, int quick));
 
 void clip_move __PROTO((unsigned int x, unsigned int y));

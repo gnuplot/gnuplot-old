@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.24 2000/05/02 17:44:10 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.24.2.1 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -133,17 +133,21 @@ int num;
  * cp_free() releases any memory which was previously malloc()'d to hold
  *   curve points (and recursively down the linked list).
  */
+/* HBB 20000506: instead of risking stack havoc by recursion, operate
+ * iteratively */
 void
 cp_free(cp)
 struct curve_points *cp;
 {
-    if (cp) {
-	cp_free(cp->next);
+    while (cp) {
+	struct curve_points *next = cp->next;
+
 	if (cp->title)
-	    free((char *) cp->title);
+	    free(cp->title);
 	if (cp->points)
-	    free((char *) cp->points);
+	    free(cp->points);
 	free((char *) cp);
+	cp = next;
     }
 }
 
@@ -300,34 +304,34 @@ int num_samp_1, num_iso_1, num_samp_2, num_iso_2;
  * sp_free() releases any memory which was previously malloc()'d to hold
  *   surface points.
  */
+/* HBB 20000506: don't risk stack havoc by recursion, use iterative list
+ * cleanup unstead */
 void
 sp_free(sp)
 struct surface_points *sp;
 {
-    if (sp) {
-	sp_free(sp->next_sp);
+    while (sp) {
+	struct surface_points *next = sp->next_sp;
 	if (sp->title)
-	    free((char *) sp->title);
-	if (sp->contours) {
-	    struct gnuplot_contours *cntr, *cntrs = sp->contours;
+	    free(sp->title);
 
-	    while (cntrs) {
-		cntr = cntrs;
-		cntrs = cntrs->next;
-		free(cntr->coords);
-		free(cntr);
+	while (sp->contours) {
+	    struct gnuplot_contours *next_cntrs = sp->contours->next;
+	    
+	    free(sp->contours->coords);
+	    free(sp->contours);
+	    sp->contours = next_cntrs;
 	    }
-	}
-	if (sp->iso_crvs) {
-	    struct iso_curve *icrv, *icrvs = sp->iso_crvs;
 
-	    while (icrvs) {
-		icrv = icrvs;
-		icrvs = icrvs->next;
-		iso_free(icrv);
-	    }
+	while (sp->iso_crvs) {
+	    struct iso_curve *next_icrvs = sp->iso_crvs->next;
+
+	    iso_free(sp->iso_crvs);
+	    sp->iso_crvs = next_icrvs;
 	}
-	free((char *) sp);
+
+	free(sp);
+	sp = next;
     }
 }
 

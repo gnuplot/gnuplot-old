@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.32.2.1 2000/05/02 21:26:21 broeker Exp $
+ * $Id: plot.h,v 1.32.2.2 2000/05/09 19:04:06 broeker Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -87,7 +87,6 @@
    size of the input. The values describe the steps in which the sizes are
    extended. */
 
-#define MAX_LINE_LEN 1024	/* maximum number of chars allowed on line */
 #define MAX_TOKENS 400
 #define MAX_ID_LEN 50		/* max length of an identifier */
 

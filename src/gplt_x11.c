@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.13 2000/05/02 16:50:47 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.13.2.1 2000/05/09 19:04:05 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -97,9 +97,8 @@ static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.13 2000/05/02 16:50:47 
  * of mouse patches. (November 1999) (See also mouse.[ch]).
  */
 
-#ifdef HAVE_CONFIG_H
-#   include "config.h"
-#endif
+#include "syscfg.h"
+#include <stdlib.h>
 
 #ifdef USE_MOUSE
 #define USE_NONBLOCKING_STDOUT
@@ -873,6 +872,8 @@ plot_struct *plot;
 }
 
 #ifndef VMS
+
+int read_input __PROTO((void));
 
 /* Handle input.  Use read instead of fgets because stdio buffering
 * causes trouble when combined with calls to select.
@@ -1965,6 +1966,9 @@ Window window;
 }
 
 #ifdef USE_MOUSE
+
+static void update_modifiers __PROTO((unsigned int));
+
 void
 update_modifiers(state)
 unsigned int state;
@@ -2417,7 +2421,7 @@ XEvent *event;
 
 static XrmDatabase dbCmd, dbApp, dbDef, dbEnv, db = (XrmDatabase) 0;
 
-char *getenv(), *type[20];
+char *type[20];
 XrmValue value;
 
 static XrmOptionDescRec options[] = {

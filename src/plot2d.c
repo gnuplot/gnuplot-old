@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.1 2000/05/02 21:26:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.2 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -114,11 +114,12 @@ plotrequest()
 
     /* initialise the arrays from the 'set' scalars */
 
-    AXIS_INIT2D(FIRST_X_AXIS, xmin, xmax, autoscale_x, is_log_x, base_log_x, 0);
-    AXIS_INIT2D(FIRST_Y_AXIS, ymin, ymax, autoscale_y, is_log_y, base_log_y, 1);
-    AXIS_INIT2D(SECOND_X_AXIS, x2min, x2max, autoscale_x2, is_log_x2, base_log_x2, 0);
-    AXIS_INIT2D(SECOND_Y_AXIS, y2min, y2max, autoscale_y2, is_log_y2, base_log_y2, 1);
-    AXIS_INIT2D(T_AXIS, tmin, tmax, autoscale_t, 0, 1, 0);
+    AXIS_INIT2D(FIRST_X_AXIS, 0);
+    AXIS_INIT2D(FIRST_Y_AXIS, 1);
+    AXIS_INIT2D(SECOND_X_AXIS, 0);
+    AXIS_INIT2D(SECOND_Y_AXIS, 1);
+    AXIS_INIT2D(T_AXIS, 0);
+    AXIS_INIT2D(R_AXIS, 1);
     
     t_axis = (parametric || polar) ? T_AXIS : FIRST_X_AXIS;
 
@@ -172,6 +173,12 @@ struct curve_points *current_plot;
 
     /* eval_plots has already opened file */
 
+    /* HBB 2000504: For most plot styles, the 'z' coordinate is
+     * unused.  set it to -1, to account for that. For styles that use
+     * the z coordinate as a real coordinate (i.e. not a width or
+     * 'delta' component, change the setting inside the switch: */
+    current_plot->z_axis = -1;
+
     switch (current_plot->plot_style) {	/* set maximum columns to scan */
     case XYERRORLINES:
     case XYERRORBARS:
@@ -182,6 +189,8 @@ struct curve_points *current_plot;
 
     case FINANCEBARS:
     case CANDLESTICKS:
+	/* HBB 20000504: use 'z' coordinate for y-axis quantity */
+	current_plot->z_axis = current_plot->y_axis;
 	min_cols = max_cols = 5;
 	break;
 
@@ -397,7 +406,7 @@ struct curve_points *current_plot;
 				  v[0] + v[4] / 2, v[2], v[3], 0.0);
 		    break;
 
-		case FINANCEBARS:
+		case FINANCEBARS: /* x yopen ylow yhigh yclose */
 		case CANDLESTICKS:
 		    store2d_point(current_plot, i++, v[0], v[1], v[0], v[0],
 				  v[2], v[3], v[4]);
@@ -474,12 +483,12 @@ double width;			/* -1 means autocalc, 0 means use xmin/xmax */
 
     if (polar) {
 	double newx, newy;
-	if (!(autoscale_r & 2) && y > rmax) {
+	if (!(auto_array[R_AXIS] & 2) && y > max_array[R_AXIS]) {
 	    cp->type = OUTRANGE;
 	}
-	if (!(autoscale_r & 1)) {
+	if (!(auto_array[R_AXIS] & 1)) {
 	    /* we store internally as if plotting r(t)-rmin */
-	    y -= rmin;
+	    y -= min_array[R_AXIS];
 	}
 	newx = y * cos(x * ang2rad);
 	newy = y * sin(x * ang2rad);
@@ -491,24 +500,24 @@ double width;			/* -1 means autocalc, 0 means use xmin/xmax */
 	y = newy;
 	x = newx;
 
-	if (!(autoscale_r & 2) && yhigh > rmax) {
+	if (!(auto_array[R_AXIS] & 2) && yhigh > max_array[R_AXIS]) {
 	    cp->type = OUTRANGE;
 	}
-	if (!(autoscale_r & 1)) {
+	if (!(auto_array[R_AXIS] & 1)) {
 	    /* we store internally as if plotting r(t)-rmin */
-	    yhigh -= rmin;
+	    yhigh -= min_array[R_AXIS];
 	}
 	newx = yhigh * cos(xhigh * ang2rad);
 	newy = yhigh * sin(xhigh * ang2rad);
 	yhigh = newy;
 	xhigh = newx;
 
-	if (!(autoscale_r & 2) && ylow > rmax) {
+	if (!(auto_array[R_AXIS] & 2) && ylow > max_array[R_AXIS]) {
 	    cp->type = OUTRANGE;
 	}
-	if (!(autoscale_r & 1)) {
+	if (!(auto_array[R_AXIS] & 1)) {
 	    /* we store internally as if plotting r(t)-rmin */
-	    ylow -= rmin;
+	    ylow -= min_array[R_AXIS];
 	}
 	newx = ylow * cos(xlow * ang2rad);
 	newy = ylow * sin(xlow * ang2rad);
@@ -528,7 +537,7 @@ double width;			/* -1 means autocalc, 0 means use xmin/xmax */
     STORE_WITH_LOG_AND_UPDATE_RANGE(cp->y, y, cp->type, current_plot->y_axis, NOOP, return);
     STORE_WITH_LOG_AND_UPDATE_RANGE(cp->ylow, ylow, dummy_type, current_plot->y_axis, NOOP, cp->ylow = -VERYLARGE);
     STORE_WITH_LOG_AND_UPDATE_RANGE(cp->yhigh, yhigh, dummy_type, current_plot->y_axis, NOOP, cp->yhigh = -VERYLARGE);
-    cp->z = width;
+    STORE_WITH_LOG_AND_UPDATE_RANGE(cp->z, width, dummy_type, current_plot->z_axis, NOOP, cp->z = -VERYLARGE);
 }				/* store2d_point */
 
 
@@ -632,10 +641,10 @@ int plot_num;
     /* The data format is determined by the format of the axis labels.
      * See 'set format'.  Patch by Don Taber
      */
-    table_format = gp_alloc(strlen(xformat)+strlen(yformat)+5, "table format");
-    strcpy(table_format, xformat);
+    table_format = gp_alloc(strlen(axis_formatstring[FIRST_X_AXIS])+strlen(axis_formatstring[FIRST_Y_AXIS])+5, "table format");
+    strcpy(table_format, axis_formatstring[FIRST_X_AXIS]);
     strcat(table_format, " ");
-    strcat(table_format, yformat);
+    strcat(table_format, axis_formatstring[FIRST_Y_AXIS]);
     strcat(table_format, " %c\n");
 
     for (curve = 0; curve < plot_num;
@@ -895,14 +904,15 @@ eval_plots()
 		if (axis_is_timedata[x_axis]) {
 		    if (specs < 2)
 			int_error(c_token, "Need full using spec for x time data");
-		    df_timecol[0] = 1;
 		}
 		if (axis_is_timedata[y_axis]) {
 		    if (specs < 1)
 			int_error(c_token, "Need using spec for y time data");
-		    /* need other cols, but I'm lazy */
-		    df_timecol[y_axis] = 1;
 		}
+		/* need other cols, but I'm lazy */
+		df_axis[0] = x_axis;
+		df_axis[1] = y_axis;
+
 		/* separate record of datafile and func */
 		uses_axis[x_axis] |= 1;
 		uses_axis[y_axis] |= 1;
@@ -1095,10 +1105,10 @@ eval_plots()
 			    this_plot->points[i].y = temp;
 			} else if (polar) {
 			    double y;
-			    if (!(autoscale_r & 2) && temp > rmax)
+			    if (!(auto_array[R_AXIS] & 2) && temp > max_array[R_AXIS])
 				this_plot->points[i].type = OUTRANGE;
-			    if (!(autoscale_r & 1))
-				temp -= rmin;
+			    if (!(auto_array[R_AXIS] & 1))
+				temp -= min_array[R_AXIS];
 			    y = temp * sin(x * ang2rad);
 			    x = temp * cos(x * ang2rad);
 			    temp = y;
@@ -1215,12 +1225,12 @@ eval_plots()
     }
 
 #if 0
-    /* HBB 20000502: this seems to have been replaced by newer code,
-     * in the meantime --> disable it */
-    AXIS_WRITEBACK(FIRST_X_AXIS, xmin, xmax)
-    AXIS_WRITEBACK(FIRST_Y_AXIS, ymin, ymax)
-    AXIS_WRITEBACK(SECOND_X_AXIS, x2min, x2max)
-    AXIS_WRITEBACK(SECOND_Y_AXIS, y2min, y2max)
+    /* FIXME HBB 20000502: this seems to have been replaced by newer code,
+     * in the meantime? --> disable it */
+    AXIS_WRITEBACK(FIRST_X_AXIS);
+    AXIS_WRITEBACK(FIRST_Y_AXIS);
+    AXIS_WRITEBACK(SECOND_X_AXIS);
+    AXIS_WRITEBACK(SECOND_Y_AXIS);
 #endif
 
     if (strcmp(term->name, "table") == 0)
@@ -1241,9 +1251,10 @@ eval_plots()
 
 #define SAVE_WRITEBACK(axis) /* ULIG */ \
   if(range_flags[axis]&RANGE_WRITEBACK) { \
-    set_writeback_min(axis,min_array[axis]); \
-    set_writeback_max(axis,max_array[axis]); \
+	    set_writeback_min(axis);		\
+	    set_writeback_max(axis);		\
   }
+
         SAVE_WRITEBACK(FIRST_X_AXIS);
         SAVE_WRITEBACK(FIRST_Y_AXIS);
         SAVE_WRITEBACK(FIRST_Z_AXIS);
@@ -1255,6 +1266,7 @@ eval_plots()
         SAVE_WRITEBACK(U_AXIS);
         SAVE_WRITEBACK(V_AXIS);
     }
+#undef SAVE_WRITEBACK
 
     /* if we get here, all went well, so record this line for replot */
 
@@ -1329,11 +1341,11 @@ int *plot_num;
 		    double r = yp->points[i].y;
 		    double t = xp->points[i].y * ang2rad;
 		    double x, y;
-		    if (!(autoscale_r & 2) && r > rmax)
+		    if (!(auto_array[R_AXIS] & 2) && r > max_array[R_AXIS])
 			yp->points[i].type = OUTRANGE;
-		    if (!(autoscale_r & 1)) {
+		    if (!(auto_array[R_AXIS] & 1)) {
 			/* store internally as if plotting r(t)-rmin */
-			r -= rmin;
+			r -= min_array[R_AXIS];
 		    }
 		    x = r * cos(t);
 		    y = r * sin(t);

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.1 2000/05/02 21:26:20 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.2 2000/05/09 19:04:05 broeker Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -1196,9 +1196,9 @@ fit_command()
     /* first look for a restricted x fit range... */
     
     /* put stuff into arrays to simplify access */
-    AXIS_INIT3D(FIRST_X_AXIS, xmin, xmax, autoscale_x, 0, 1, 0);
-    AXIS_INIT3D(FIRST_Y_AXIS, ymin, ymax, autoscale_y, 0, 1, 0);
-    AXIS_INIT3D(FIRST_Z_AXIS, zmin, zmax, autoscale_z, 0, 1, 1);
+    AXIS_INIT3D(FIRST_X_AXIS, 1, 0);
+    AXIS_INIT3D(FIRST_Y_AXIS, 1, 0);
+    AXIS_INIT3D(FIRST_Z_AXIS, 1, 1);
     
     PARSE_NAMED_RANGE(FIRST_X_AXIS, dummy_x);
     PARSE_NAMED_RANGE(FIRST_Y_AXIS, dummy_y);
@@ -1250,13 +1250,17 @@ fit_command()
     if (axis_is_timedata[FIRST_X_AXIS]) {
 	if (columns < 2)
 	    int_error(c_token, "Need full using spec for x time data");
-	df_timecol[0] = 1;
     }
     if (axis_is_timedata[FIRST_Y_AXIS]) {
 	if (columns < 1)
 	    int_error(c_token, "Need using spec for y time data");
-	df_timecol[1] = 1;
     }
+    df_axis[0] = FIRST_X_AXIS;
+    df_axis[1] = (is_a_3d_fit) ? FIRST_Y_AXIS : FIRST_Z_AXIS;
+    /* don't parse delta_z as times */
+    df_axis[2] = (is_a_3d_fit) ? FIRST_Z_AXIS : -1;
+    df_axis[3] = -1;
+
     /* HBB 20000430: No need for such a check for the z axis. That
      * axis is only used iff columns==4, i.e. the detection method for
      * 3d fits requires a 4 column 'using', already. */

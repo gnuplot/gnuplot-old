@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: variable.c,v 1.12 1999/11/08 19:24:35 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: variable.c,v 1.12.4.1 2000/05/09 19:04:06 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - variable.c */
@@ -214,7 +214,7 @@ char *newlocale;
     switch(action) {
     case ACTION_CLEAR:
     case ACTION_INIT:
-	free(current_locale);
+	if (current_locale) free(current_locale);
 	current_locale = gp_strdup(INITIAL_LOCALE);
 	break;
     case ACTION_SET:
