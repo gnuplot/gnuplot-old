@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.14 1998/12/09 15:24:06 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.15 1998/12/10 18:33:22 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -942,9 +942,12 @@ char *text;
 	fprintf(fp, "set no%stics\n", text);
 	return;
     }
-    fprintf(fp, "set %stics %s %smirror %srotate ", text, (where & TICS_MASK) == TICS_ON_AXIS ? "axis" : "border", (where & TICS_MIRROR) ? "" : "no", rotate ? "" : "no");
+    fprintf(fp, "set %stics %s %smirror %srotate ", text,
+	    (where & TICS_MASK) == TICS_ON_AXIS ? "axis" : "border",
+	    (where & TICS_MIRROR) ? "" : "no", rotate ? "" : "no");
     switch (tdef->type) {
     case TIC_COMPUTED:{
+	    fputs("autofreq ", fp);
 	    break;
 	}
     case TIC_MONTH:{
