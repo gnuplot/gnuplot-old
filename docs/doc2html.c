@@ -1,5 +1,5 @@
 /*
- * $Id: doc2html.c,v 1.1.1.1 1998/04/15 19:16:44 lhecking Exp $
+ * $Id: doc2html.c,v 1.1.1.2 1998/04/22 13:39:02 lhecking Exp $
  *
  */
 
@@ -38,15 +38,8 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#ifndef NO_STDLIB_H
-#include <stdlib.h>
-#endif
-#if !defined(NEXT) && !defined(ATARI)
-#include <malloc.h>
-#endif
+#include "ansichek.h"
+#include "stdfn.h"
 
 #define MAX_LINE_LEN	1024
 #define TRUE 1
@@ -54,8 +47,6 @@
 
 int debug = FALSE;
 char title[256];
-
-#include "ansichek.h"
 
 void convert __PROTO((FILE *, FILE *));
 void process_line __PROTO((char *, FILE *));
@@ -78,10 +69,10 @@ FILE * outfile;
 
     if ( (argc > 3) || (argc == 1) ) {
         fprintf(stderr,"Usage: %s infile outfile\n", argv[0]);
-#ifndef ALL_TERM
-#define ALL_TERM
+#ifndef ALL_TERM_DOC
+#define ALL_TERM_DOC
 #endif
-#define GOT_DRIVER_H
+#define TERM_DRIVER_H
         return(1);
     }
     if ( (infile = fopen(argv[1],"r")) == (FILE *)NULL) {

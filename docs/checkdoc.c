@@ -1,5 +1,5 @@
 /*
- * $Id: checkdoc.c,v 1.1.1.1 1998/04/15 19:16:43 lhecking Exp $
+ * $Id: checkdoc.c,v 1.1.1.2 1998/04/22 13:38:58 lhecking Exp $
  *
  */
 
@@ -39,14 +39,8 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <ctype.h>
-
 #include "ansichek.h"
-
-#ifndef NO_STDLIB_H
-#include <stdlib.h>
-#endif
+#include "stdfn.h"
 
 #define MAX_LINE_LEN	256
 #define TRUE 1
@@ -56,7 +50,9 @@ void convert __PROTO(( FILE *a, FILE *b ));
 void process_line __PROTO(( char *line, FILE *b ));
 
 /* checkdoc should check all terminal driver help */
-#define ALL_TERM
+#ifndef ALL_TERM_DOC
+#define ALL_TERM_DOC
+#endif
 
 #include "termdoc.c"
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: interpol.c,v 1.1.1.2 1998/04/15 19:22:39 lhecking Exp $";
+static char *RCSid = "$Id: interpol.c,v 1.1.1.3 1998/04/22 13:37:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - interpol.c */
@@ -114,7 +114,6 @@ static char *RCSid = "$Id: interpol.c,v 1.1.1.2 1998/04/15 19:22:39 lhecking Exp
  *      implemented handling of UNDEFINED points
  */
 
-#include <math.h>
 #include "plot.h"
 #include "setshow.h"
 

@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.1.1.2 1998/04/15 19:23:02 lhecking Exp $
+ * $Id: protos.h,v 1.1.1.3 1998/04/22 13:38:09 lhecking Exp $
  *
  */
 
@@ -88,7 +88,7 @@ int label_width __PROTO((char *str, int *lines));
 double set_tic __PROTO((double l10, int guide));
 void setup_tics __PROTO((int axis, struct ticdef *def, char *format, int max));
 /* is this valid use of __P ? */
-typedef void (*tic_callback) __PROTO((int axis, double place, char *text, int grid));
+typedef void (*tic_callback) __PROTO((int axis, double place, char *text, struct lp_style_type grid));
 void gen_tics __PROTO((int axis, struct ticdef *def, int grid, int minitic, double minifreq, tic_callback callback));
 void write_multiline __PROTO((unsigned int x, unsigned int y, char *text_will_be_mangled, enum JUSTIFY hor, int vert, int angle, char *font));
 

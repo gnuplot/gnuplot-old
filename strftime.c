@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid="$Id: strftime.c,v 1.1.1.2 1998/04/15 19:23:17 lhecking Exp $";
+static char *RCSid="$Id: strftime.c,v 1.1.1.3 1998/04/22 13:38:22 lhecking Exp $";
 #endif
 
 /* GNUPLOT - strftime.c */
@@ -49,12 +49,10 @@ static char *RCSid="$Id: strftime.c,v 1.1.1.2 1998/04/15 19:23:17 lhecking Exp $
 
 #define NOTIMEZONE
 
-#include <time.h>
-#include <string.h>
-#include <stdio.h>
+#include "plot.h"     /* for MAX_LINE_LEN */
 #include "setshow.h"  /* for days/months */
 
-#ifdef TEST /* test case */
+#ifdef TEST_STRFTIME /* test case */
 #define strftime _strftime
 #else
 #define const /**/
@@ -202,7 +200,7 @@ size_t strftime(s, max, format, tp)
   return s-start;
 }
 
-#ifdef TEST
+#ifdef TEST_STRFTIME
 
 #undef strftime
 #define test(s)				\

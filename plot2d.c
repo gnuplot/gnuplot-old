@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: plot2d.c,v 1.1.1.2 1998/04/15 19:22:59 lhecking Exp $";
+static char    *RCSid = "$Id: plot2d.c,v 1.1.1.3 1998/04/22 13:38:06 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -33,14 +33,6 @@ static char    *RCSid = "$Id: plot2d.c,v 1.1.1.2 1998/04/15 19:22:59 lhecking Ex
  * This software is provided "as is" without express or implied warranty
  * to the extent permitted by applicable law.
 ]*/
-
-#include <math.h>
-#include <ctype.h>
-#include <assert.h>
-
-#ifdef VMS
-#include <signal.h>  /* for sleep() */
-#endif
 
 #if defined(MSDOS) || defined(DOS386)
 #ifdef DJGPP

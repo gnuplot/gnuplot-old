@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.1.1.2 1998/04/15 19:23:04 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.1.1.3 1998/04/22 13:38:10 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -80,7 +80,6 @@ static char *RCSid = "$Id: readline.c,v 1.1.1.2 1998/04/15 19:23:04 lhecking Exp
 
 /* all other characters are ignored */
 
-#include <ctype.h>
 #include <signal.h>
 #include "plot.h" /* get prototype for alloc and gpfaralloc */
 #include "stdfn.h"
@@ -259,7 +258,7 @@ char tos_getch();
 #undef special_getc() 
 #endif
 #define special_getc() msdos_getch()
-static char msdos_getch();
+static char msdos_getch __PROTO((void));    /* HBB 980308: PROTO'ed it */
 #endif
 
 
@@ -355,9 +354,7 @@ static void extend_cur_line()
   }
   cur_line=new_line;
   line_len+=MAXBUF;
-#ifdef DEBUG_STR
-  fprintf(stderr, "\nextending readline length to %d chars\n", line_len);
-#endif
+  FPRINTF((stderr, "\nextending readline length to %d chars\n", line_len));
 }
 
 char *
@@ -616,9 +613,7 @@ char *prompt;
 				/* else we just hang on to what we had - it's not a problem */
 				
 				line_len=0;
-#ifdef DEBUG_STR
-				fprintf(stderr, "Resizing input line to %d chars\n", strlen(cur_line));
-#endif
+				FPRINTF((stderr, "Resizing input line to %d chars\n", strlen(cur_line)));
 				reset_termio();
 				return(cur_line);
 			    default:

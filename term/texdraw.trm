@@ -1,5 +1,5 @@
 /*
- * $Id: texdraw.trm,v 1.1.1.2 1998/04/15 19:25:43 lhecking Exp $
+ * $Id: texdraw.trm,v 1.1.1.3 1998/04/22 13:40:41 lhecking Exp $
  */
 
 /* GNUPLOT - texdraw.trm */
@@ -55,9 +55,7 @@
  *  latex driver. You need texdraw.sty, and texdraw.tex in the texdraw package.
  *
  */
-#ifndef GOT_DRIVER_H
 #include "driver.h"
-#endif
 
 #ifdef TERM_REGISTER
 register_term(texdraw)

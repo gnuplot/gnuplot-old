@@ -1,5 +1,5 @@
 /*
- * $Id: doc2rtf.c,v 1.1.1.2 1998/04/15 19:24:13 lhecking Exp $
+ * $Id: doc2rtf.c,v 1.1.1.3 1998/04/22 13:39:07 lhecking Exp $
  *
  */
 
@@ -38,15 +38,8 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#ifndef NO_STDLIB_H
-#include <stdlib.h>
-#endif
-#include <assert.h>
-
 #include "ansichek.h"
+#include "stdfn.h"
 
 #define MAX_LINE_LEN	1024
 #define TRUE 1

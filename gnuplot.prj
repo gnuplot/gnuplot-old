@@ -1,5 +1,5 @@
 ;
-;  $Id: gnuplot.prj,v 1.1.1.1 1998/04/15 19:16:29 lhecking Exp $
+;  $Id: gnuplot.prj,v 1.1.1.2 1998/04/22 13:37:12 lhecking Exp $
 ;
 ; gnuplot.prj - this project can be used for both PureC and TurboC on the
 ; Atari. It is currently set up for PureC, but if you change all lines
@@ -19,7 +19,7 @@
 gnuplot.prg
 ; some of the demos require quite a large stack
 .L[-S=122880]
-.C[-P -Iterm -DATARI -DREADLINE -DHELPFILE="GNUPLOT.GIH" -DSTRNICMP -DNO_SYS_TYPES_H -DHAVE_STRERROR]
+.C[-P -Iterm -DATARI -DREADLINE -DHELPFILE="GNUPLOT.GIH" -DSTRNICMP -DNO_SYS_TYPES_H]
 =
 PCSTART.O
 binary		(binary.c, plot.h)
@@ -43,6 +43,7 @@ scanner		(scanner.c, plot.h)
 setshow		(setshow.c, plot.h, setshow.h)
 specfun		(specfun.c, plot.h)
 standard	(standard.c, plot.h)
+stdfn		(stdfn.c, stdfn.h)
 term		(term.c, bitmap.h, plot.h, setshow.h, term.h,
 		 term\atari.trm, term\dumb.trm, term\eepic.trm,
 		 term\epson.trm, term\hpgl.trm, term\hpljii.trm,

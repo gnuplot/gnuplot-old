@@ -1,5 +1,5 @@
 /*
- * $Id: apollo.trm,v 1.1.1.1 1998/04/15 19:16:47 lhecking Exp $
+ * $Id: apollo.trm,v 1.1.1.2 1998/04/22 13:39:29 lhecking Exp $
  *
  */
 
@@ -25,9 +25,7 @@
  * adapted to the new terminal layout by Stefan Bodewig (Dec. 1995)
  */
 
-#ifndef GOT_DRIVER_H
 #include "driver.h"
-#endif
 
 #ifdef TERM_REGISTER
 register_term(apollo)

@@ -1,5 +1,5 @@
 /*
- * $Id: doc2gih.c,v 1.1.1.1 1998/04/15 19:16:44 lhecking Exp $
+ * $Id: doc2gih.c,v 1.1.1.2 1998/04/22 13:38:59 lhecking Exp $
  *
  */
 
@@ -39,14 +39,8 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <ctype.h>
-
 #include "ansichek.h"
-
-#ifndef NO_STDLIB_H
-#include <stdlib.h>
-#endif
+#include "stdfn.h"
 
 #define MAX_LINE_LEN	256
 #define TRUE 1

@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: plot3d.c,v 1.1.1.2 1998/04/15 19:23:01 lhecking Exp $";
+static char    *RCSid = "$Id: plot3d.c,v 1.1.1.3 1998/04/22 13:38:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -34,13 +34,10 @@ static char    *RCSid = "$Id: plot3d.c,v 1.1.1.2 1998/04/15 19:23:01 lhecking Ex
  * to the extent permitted by applicable law.
 ]*/
 
-#include <math.h>
-#include <ctype.h>
-#include <assert.h>
-
 #include "plot.h"
 #include "setshow.h"
 #include "binary.h"
+
 #ifndef _Windows
 #include "help.h"
 #else
@@ -52,7 +49,6 @@ static char    *RCSid = "$Id: plot3d.c,v 1.1.1.2 1998/04/15 19:23:01 lhecking Ex
 #include <ext.h>
 #include <tos.h>
 #include <aes.h>
-/* #include <float.h> - already in plot.h */
 #else
 #include <osbind.h>
 #include <aesbind.h>

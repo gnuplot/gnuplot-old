@@ -1,9 +1,13 @@
 
-# $Id: makefile.r,v 1.1.1.1 1998/04/15 19:16:32 lhecking Exp $
+# $Id: makefile.r,v 1.1.1.2 1998/04/22 13:37:46 lhecking Exp $
 #
 # $Log: makefile.r,v $
-# Revision 1.1.1.1  1998/04/15 19:16:32  lhecking
-# Initial import of beta340.
+# Revision 1.1.1.2  1998/04/22 13:37:46  lhecking
+# Import of beta 344.
+#
+# Revision 1.7  1998/04/14  00:15:55  drd
+# HBB, Lars : latest mega monster patches. (Yes, this was supposed
+#             to be frozen...)
 #
 # Revision 1.6  1996/01/28  16:31:40  drd
 # drd: take out defunct atari.trm from some makefiles
@@ -736,7 +740,7 @@ DIRS = term demo docs docs/latextut
 
 CSOURCE1 = bf_test.c binary.c command.c setshow.c
 CSOURCE2 = help.c graphics.c graph3d.c internal.c
-CSOURCE3 = misc.c eval.c parse.c plot.c readline.c scanner.c standard.c
+CSOURCE3 = misc.c eval.c parse.c plot.c readline.c scanner.c standard.c stdfn.c
 CSOURCE4 = bitmap.c term.c util.c version.c
 CSOURCE5 = term/ai.trm term/amiga.trm term/aed.trm \
 	term/cgi.trm term/corel.trm \
