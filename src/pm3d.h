@@ -101,6 +101,8 @@ The following two are used in z2gray(), and for labeling draw_color_smooth_box()
 */
 extern double used_pm3d_zmin, used_pm3d_zmax;
 
+/* trick for rotating the ylabel in 'set pm3d map' */
+extern int pm3d_map_rotate_ylabel;
 
 /****
   Declaration of routines

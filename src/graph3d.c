@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.2 2000/05/03 21:26:11 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.3 2000/06/24 21:57:33 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1797,7 +1797,15 @@ else if (height[i][j] != depth[i][j]) \
 		y1 -= tic_unity * ticscale * (t->v_tic);
 	    }
 	    /* write_multiline mods it */
+#ifdef PM3D
+	    if (pm3d_map_rotate_ylabel)
+		(*t->text_angle)(1);
+#endif
 	    write_multiline(x1, y1, ylabel.text, CENTRE, JUST_TOP, 0, ylabel.font);
+#ifdef PM3D
+	    if (pm3d_map_rotate_ylabel)
+		(*t->text_angle)(0);
+#endif
 #ifdef PM3D
 	    }
 #endif

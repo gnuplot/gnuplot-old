@@ -45,6 +45,8 @@ pm3d_struct pm3d = {
 /* global variables */
 double used_pm3d_zmin, used_pm3d_zmax;
 
+/* trick for rotating the ylabel in 'set pm3d map' */
+int pm3d_map_rotate_ylabel = 0;
 
 /****************************************************************/
 /* Now the routines which are really those exactly for pm3d.c

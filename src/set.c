@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.4 2000/06/09 07:47:58 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.5 2000/06/24 21:57:33 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2955,6 +2955,7 @@ set_pm3d()
 		surface_rot_z = 0;
 		surface_scale = 1.3;
 		range_flags[FIRST_Y_AXIS] |= RANGE_REVERSE; /* set yrange reverse */
+		pm3d_map_rotate_ylabel = 1;  /* trick for rotating ylabel */
 		continue;
 	    }
 	    if (almost_equals(c_token, "hi$dden3d")) {

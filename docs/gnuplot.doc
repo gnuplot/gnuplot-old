@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.40.2.7 2000/06/14 00:38:37 joze Exp $
+C RCS $Id: gnuplot.doc,v 1.40.2.8 2000/06/24 21:57:33 mikulik Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -5267,8 +5267,9 @@ C ... and restart the table:
     1. What I call scan, it is called iso_curve in gnuplot sources. I am 
        physicist and we measure maps taking one scan after another scan, 
        that's why 
-    2. Map is obtained by `set view 180,0,1.25; set yrange [*:*] reverse`. 
-       This can be easily switched on by using `set pm3d map`.
+    2. Map is obtained by `set view 180,0,1.25; set yrange [*:*] reverse`, 
+       plus something more. This can be easily switched on by using
+       `set pm3d map`.
     3. If you find this help unclear, then your assistance is welcome.
        Similarly, any feedback for the code is welcome as well as the
        required terminal entries for other terminals, like X11
@@ -5354,10 +5355,15 @@ C ... and restart the table:
        set pm3d at b; set nosurface; set nocontour
        set view 180,0,1.3
        set yrange [*:*] reverse
-       ... and something on size, origin (no! gnuplot bug!)
- Notice that *now* y label goes away from screen since it is not rotated as 
- I would expect. Adjust it with sth like `set ylabel "hogo fogo" 12`. Or 
- implement a 2D LAYOUT FOR 3D MAPS, please!!!
+       a trick to rotate the ylabel
+       ... and something on size, origin (no! gnuplot bug of negative origin!)
+ Notice that *now* the ylabel is rotated by an internal 'set pm3d map' switch,
+ as far as no user option is available to rotate x,y,z labels explicitly. 
+ Furthermore, the graph area is smaller than that of 2D graphs (some more 
+ white space than I would expect like). Thus: 
+ PLEASE IMPLEMENT A 2D LAYOUT FOR 3D MAPS!
+ Please use 'unset pm3d' to correctly get rid of the pm3d setup, notably
+ the reversed y axis and rotated ylabel.
 
  The colouring setup as well as the colour box drawing are determinated by `set
  palette`. Maybe in future there could be a possibility of using more palettes, 
