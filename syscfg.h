@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.7 1998/12/01 20:14:49 lhecking Exp $
+ * $Id: syscfg.h,v 1.8 1998/12/07 22:08:18 lhecking Exp $
  *
  */
 
@@ -136,6 +136,10 @@
 # define OS "VMS "
 # define HOME "sys$login:"
 # define PLOTRC "gnuplot.ini"
+# ifdef NO_GIH
+   /* for show version long */
+#  define HELPFILE "GNUPLOT$HELP"
+# endif
 # if !defined(VAXCRTL) && !defined(DECCRTL)
 #  error Please /define either VAXCRTL or DECCRTL
 # endif
