@@ -1,7 +1,9 @@
 /*
- * $Id: table.trm,v 1.1.1.3 1998/06/23 12:40:00 lhecking Exp $
+ * $Id: table.trm,v 1.7.2.1 1999/11/18 20:43:55 lhecking Exp $
  *
  */
+
+/* GNUPLOT - table.trm */
 
 /*[
  * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
@@ -34,15 +36,20 @@
 ]*/
 
 /*
-      The terminal 'table' is built into the source code; it is not
-      available separately.  This file is needed only for building
-      the documentation for gnuplot 3.6 (or higher) using the new
-      including mechanismn.
-*/
+ * The terminal 'table' is built into the source code; it is not
+ * available separately.  This file is needed only for building
+ * the documentation for gnuplot 3.6 (or higher) using the new
+ * including mechanismn.
+ */
+
+#ifdef TERM_REGISTER
+register_term(table)
+#endif
 
 #ifdef TERM_HELP
 START_HELP(table)
 "1 table",
+"?commands set terminal table",
 "?set terminal table",
 "?set term table",
 "?terminal table",
@@ -53,9 +60,10 @@ START_HELP(table)
 " `splot` command, in a multicolumn ASCII table of X Y {Z} R values.  The",
 " character R takes on one of three values: \"i\" if the point is in the active",
 " range, \"o\" if it is out-of-range, or \"u\" if it is undefined.  The data",
-" format is determined by the format of the axis labels (see `set format`).",
+" format is determined by the format of the axis labels (see `set format`),",
+" and the columns are separated by single spaces.",
 "",
-" For those times when you want the numbers, you can display them on the", 
+" For those times when you want the numbers, you can display them on the",
 " screen or save them to a file.  This can be useful if you want to generate",
 " contours and then save them for further use, perhaps for plotting with",
 " `plot`;  see `set contour` for an example.  The same method can be used to",
