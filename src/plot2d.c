@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.55 2002/10/09 14:13:15 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.56 2002/10/20 21:19:50 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -195,6 +195,9 @@ plotrequest()
 	int_error(c_token, "use 'set term' to set terminal type first");
 
     is_3d_plot = FALSE;
+
+    /* Deactivate if 'set view map' is still running after the previous 'splot': */
+    splot_map_deactivate();
 
     if (parametric && strcmp(set_dummy_var[0], "u") == 0)
 	strcpy(set_dummy_var[0], "t");
