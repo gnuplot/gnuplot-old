@@ -1,3 +1,8 @@
+2003-01-22  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/post.trm (ENHPS_recurse): Fix buggy PS output if backslash
+ 	is at the end of the input string.
+
 2003-01-20  Lars Hecking  <lhecking@nmrc.ucc.ie>
 
 	* 0FAQ, syscfg.h, docs/gnuplot.doc, docs/gnuplot.texi: The name of
