@@ -1,5 +1,5 @@
 /*
- * $Id: win.trm,v 1.13 1999/10/01 15:09:14 lhecking Exp $
+ * $Id: win.trm,v 1.13.4.1 2000/07/26 18:52:59 broeker Exp $
  */
 
 /* GNUPLOT - win.trm */
@@ -114,13 +114,11 @@ TERM_PUBLIC void WIN_set_pointsize __PROTO((double));
 #ifdef TERM_BODY
 
 #include <windows.h>
-#include "../src/win/wgnuplib.h"
+#include "win/winmain.h"
 
 #ifdef __MSC__
 #include <io.h>			/* for mktemp() */
 #endif
-
-extern GW graphwin;
 
 #define WIN_POINT_TYPES 12
 

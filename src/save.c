@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.13.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -239,11 +239,11 @@ set ydata%s\n\
 set zdata%s\n\
 set x2data%s\n\
 set y2data%s\n",
-	    axis_is_timedata[FIRST_X_AXIS] ? " time" : "",
-	    axis_is_timedata[FIRST_Y_AXIS] ? " time" : "",
-	    axis_is_timedata[FIRST_Z_AXIS] ? " time" : "",
-	    axis_is_timedata[SECOND_X_AXIS] ? " time" : "",
-	    axis_is_timedata[SECOND_Y_AXIS] ? " time" : "");
+	    axis_array[FIRST_X_AXIS].is_timedata ? " time" : "",
+	    axis_array[FIRST_Y_AXIS].is_timedata ? " time" : "",
+	    axis_array[FIRST_Z_AXIS].is_timedata ? " time" : "",
+	    axis_array[SECOND_X_AXIS].is_timedata ? " time" : "",
+	    axis_array[SECOND_Y_AXIS].is_timedata ? " time" : "");
 
     if (boxwidth < 0.0)
 	fputs("set boxwidth\n", fp);
@@ -257,9 +257,9 @@ set y2data%s\n",
 
     fprintf(fp, "set dummy %s,%s\n", set_dummy_var[0], set_dummy_var[1]);
 
-#define SAVE_FORMAT(axis)					\
-    fprintf(fp, "set format %s \"%s\"\n", axisname_array[axis],	\
-	    conv_text(axis_formatstring[axis]));
+#define SAVE_FORMAT(axis)						\
+    fprintf(fp, "set format %s \"%s\"\n", axis_defaults[axis].name,	\
+	    conv_text(axis_array[axis].formatstring));
     SAVE_FORMAT(FIRST_X_AXIS );
     SAVE_FORMAT(FIRST_Y_AXIS );
     SAVE_FORMAT(SECOND_X_AXIS);
@@ -388,9 +388,9 @@ set y2data%s\n",
     }
     fputs("unset logscale\n", fp);
 #define SAVE_LOG(axis)							\
-    if (log_array[axis])						\
-	fprintf(fp, "set logscale %s %g\n", axisname_array[axis],	\
-		base_array[axis]);
+    if (axis_array[axis].log)						\
+	fprintf(fp, "set logscale %s %g\n", axis_defaults[axis].name,	\
+		axis_array[axis].base);
     SAVE_LOG(FIRST_X_AXIS );
     SAVE_LOG(FIRST_Y_AXIS );
     SAVE_LOG(SECOND_X_AXIS);
@@ -644,18 +644,18 @@ set ticscale %g %g\n",
 	    ticscale, miniticscale);
 
 #define SAVE_MINI(axis)							  \
-    switch(axis_minitics[axis] & TICS_MASK) {				  \
+    switch(axis_array[axis].minitics & TICS_MASK) {				  \
     case 0:								  \
-	fprintf(fp, "set nom%stics\n", axisname_array[axis]);		  \
+	fprintf(fp, "set nom%stics\n", axis_defaults[axis].name);		  \
 	break;								  \
     case MINI_AUTO:							  \
-	fprintf(fp, "set m%stics\n", axisname_array[axis]);		  \
+	fprintf(fp, "set m%stics\n", axis_defaults[axis].name);		  \
 	break;								  \
     case MINI_DEFAULT:							  \
-	fprintf(fp, "set m%stics default\n", axisname_array[axis]);	  \
+	fprintf(fp, "set m%stics default\n", axis_defaults[axis].name);	  \
 	break;								  \
-    case MINI_USER: fprintf(fp, "set m%stics %f\n", axisname_array[axis], \
-			    axis_mtic_freq[axis]);			  \
+    case MINI_USER: fprintf(fp, "set m%stics %f\n", axis_defaults[axis].name, \
+			    axis_array[axis].mtic_freq);			  \
 	break;								  \
     }
 
@@ -696,9 +696,9 @@ set ticscale %g %g\n",
     save_range(fp, V_AXIS);
 
 #define SAVE_TIMEFMT(axis)						\
-    if (strlen(timefmt[axis])) 						\
-	fprintf(fp, "set timefmt %s \"%s\"\n", axisname_array[axis],	\
-		conv_text(timefmt[axis]));
+    if (strlen(axis_array[axis].timefmt)) 						\
+	fprintf(fp, "set timefmt %s \"%s\"\n", axis_defaults[axis].name,	\
+		conv_text(axis_array[axis].timefmt));
     SAVE_TIMEFMT(FIRST_X_AXIS);
     SAVE_TIMEFMT(FIRST_Y_AXIS);
     SAVE_TIMEFMT(FIRST_Z_AXIS);
@@ -707,8 +707,8 @@ set ticscale %g %g\n",
 #undef SAVE_TIMEFMT
     
 #define SAVE_AXISLABEL(axis)					\
-    SAVE_AXISLABEL_OR_TITLE(axisname_array[axis],"label",	\
-			    axis_label[axis])
+    SAVE_AXISLABEL_OR_TITLE(axis_defaults[axis].name,"label",	\
+			    axis_array[axis].label)
 	
     SAVE_AXISLABEL(FIRST_X_AXIS);
     SAVE_AXISLABEL(SECOND_X_AXIS);
@@ -747,44 +747,45 @@ save_tics(fp, axis)
 FILE *fp;
 AXIS_INDEX axis;
 {
-    if (axis_tics[axis] == NO_TICS) {
-	fprintf(fp, "set no%stics\n", axisname_array[axis]);
+    if (axis_array[axis].ticmode == NO_TICS) {
+	fprintf(fp, "set no%stics\n", axis_defaults[axis].name);
 	return;
     }
-    fprintf(fp, "set %stics %s %smirror %srotate ", axisname_array[axis],
-	    ((axis_tics[axis] & TICS_MASK) == TICS_ON_AXIS)
+    fprintf(fp, "set %stics %s %smirror %srotate ", axis_defaults[axis].name,
+	    ((axis_array[axis].ticmode & TICS_MASK) == TICS_ON_AXIS)
 	    ? "axis" : "border",
-	    (axis_tics[axis] & TICS_MIRROR) ? "" : "no",
-	    axis_tic_rotate[axis] ? "" : "no");
-    switch (axis_ticdef[axis].type) {
+	    (axis_array[axis].ticmode & TICS_MIRROR) ? "" : "no",
+	    axis_array[axis].tic_rotate ? "" : "no");
+    switch (axis_array[axis].ticdef.type) {
     case TIC_COMPUTED:{
 	    fputs("autofreq ", fp);
 	    break;
 	}
     case TIC_MONTH:{
-	    fprintf(fp, "\nset %smtics", axisname_array[axis]);
+	    fprintf(fp, "\nset %smtics", axis_defaults[axis].name);
 	    break;
 	}
     case TIC_DAY:{
-	    fprintf(fp, "\nset %sdtics", axisname_array[axis]);
+	    fprintf(fp, "\nset %sdtics", axis_defaults[axis].name);
 	    break;
 	}
     case TIC_SERIES:
-	if (axis_ticdef[axis].def.series.start != -VERYLARGE) 
+	if (axis_array[axis].ticdef.def.series.start != -VERYLARGE) 
 	    SAVE_NUM_OR_TIME(fp,
-			     (double) axis_ticdef[axis].def.series.start,
+			     (double) axis_array[axis].ticdef.def.series.start,
 			     axis);
-	fprintf(fp, "%g", axis_ticdef[axis].def.series.incr);
-	if (axis_ticdef[axis].def.series.end != VERYLARGE) 
+	fprintf(fp, "%g", axis_array[axis].ticdef.def.series.incr);
+	if (axis_array[axis].ticdef.def.series.end != VERYLARGE) 
 	    SAVE_NUM_OR_TIME(fp,
-			     (double) axis_ticdef[axis].def.series.end,
+			     (double) axis_array[axis].ticdef.def.series.end,
 			     axis);
 	break;
 
     case TIC_USER:{
 	    register struct ticmark *t;
 	    fputs(" (", fp);
-	    for (t = axis_ticdef[axis].def.user; t != NULL; t = t->next) {
+	    for (t = axis_array[axis].ticdef.def.user;
+		 t != NULL; t = t->next) {
 		if (t->label)
 		    fprintf(fp, "\"%s\" ", conv_text(t->label));
 		SAVE_NUM_OR_TIME(fp, (double) t->position, axis);
@@ -823,32 +824,32 @@ AXIS_INDEX axis;
     int i;
 
     i = axis;
-    fprintf(fp, "set %srange [ ", axisname_array[axis]);
-    if (set_axis_autoscale[axis] & 1) {
+    fprintf(fp, "set %srange [ ", axis_defaults[axis].name);
+    if (axis_array[axis].set_autoscale & 1) {
 	putc('*', fp);
     } else {
-	SAVE_NUM_OR_TIME(fp, set_axis_min[axis], axis);
+	SAVE_NUM_OR_TIME(fp, axis_array[axis].set_min, axis);
     }
     fputs(" : ", fp);
-    if (set_axis_autoscale[axis] & 2) {
+    if (axis_array[axis].set_autoscale & 2) {
 	putc('*', fp);
     } else {
-	SAVE_NUM_OR_TIME(fp, set_axis_max[axis], axis);
+	SAVE_NUM_OR_TIME(fp, axis_array[axis].set_max, axis);
     }
 
     fprintf(fp, " ] %sreverse %swriteback",
-	    range_flags[axis] & RANGE_REVERSE ? "" : "no",
-	    range_flags[axis] & RANGE_WRITEBACK ? "" : "no");
+	    axis_array[axis].range_flags & RANGE_REVERSE ? "" : "no",
+	    axis_array[axis].range_flags & RANGE_WRITEBACK ? "" : "no");
 
-    if (set_axis_autoscale[axis]) {
+    if (axis_array[axis].set_autoscale) {
 	/* add current (hidden) range as comments */
 	fputs("  # (currently [", fp);
-	if (set_axis_autoscale[axis] & 1) {
-	    SAVE_NUM_OR_TIME(fp, set_axis_min[axis], axis);
+	if (axis_array[axis].set_autoscale & 1) {
+	    SAVE_NUM_OR_TIME(fp, axis_array[axis].set_min, axis);
 	}
 	putc(':', fp);
-	if (set_axis_autoscale[axis] & 2) {
-	    SAVE_NUM_OR_TIME(fp, set_axis_max[axis], axis);
+	if (axis_array[axis].set_autoscale & 2) {
+	    SAVE_NUM_OR_TIME(fp, axis_array[axis].set_max, axis);
 	}
 	fputs("] )", fp);
     }
@@ -860,8 +861,8 @@ save_zeroaxis(fp, axis)
     FILE *fp;
     AXIS_INDEX axis;
 {
-    fprintf(fp, "set %szeroaxis lt %d lw %.3f\n", axisname_array[axis],
-	    axis_zeroaxis[axis].l_type + 1,
-	    axis_zeroaxis[axis].l_width);
+    fprintf(fp, "set %szeroaxis lt %d lw %.3f\n", axis_defaults[axis].name,
+	    axis_array[axis].zeroaxis.l_type + 1,
+	    axis_array[axis].zeroaxis.l_width);
 
 }

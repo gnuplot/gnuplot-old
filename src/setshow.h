@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.26.2.3 2000/06/22 12:57:39 broeker Exp $
+ * $Id: setshow.h,v 1.26.2.4 2000/07/26 18:52:59 broeker Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -49,18 +49,18 @@
 #define BACKWARDS_COMPATIBLE
 
 
-#define SAVE_NUM_OR_TIME(fp, x, axis)			\
-do{							\
-    if (axis_is_timedata[axis]) {			\
-	char s[80];					\
-							\
-	putc('"', fp);					\
-	gstrftime(s,80,timefmt[axis],(double)(x));	\
-	fputs(conv_text(s), fp);			\
-	putc('"', fp);					\
-    } else {						\
-	fprintf(fp,"%#g",x);				\
-    }							\
+#define SAVE_NUM_OR_TIME(fp, x, axis)				\
+do{								\
+    if (axis_array[axis].is_timedata) {				\
+	char s[80];						\
+								\
+	putc('"', fp);						\
+	gstrftime(s,80,axis_array[axis].timefmt,(double)(x));	\
+	fputs(conv_text(s), fp);				\
+	putc('"', fp);						\
+    } else {							\
+	fprintf(fp,"%#g",x);					\
+    }								\
 } while(0)
 
 

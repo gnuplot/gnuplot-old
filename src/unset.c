@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.11.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.11.2.4 2000/07/26 18:52:59 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -508,17 +508,17 @@ static void
 unset_autoscale()
 {
     if (END_OF_COMMAND) {
-	INIT_AXIS_ARRAY(set_axis_autoscale, FALSE);
+	INIT_AXIS_ARRAY(set_autoscale, FALSE);
     } else if (equals(c_token, "xy") || equals(c_token, "tyx")) {
-	set_axis_autoscale[FIRST_X_AXIS]
-	    = set_axis_autoscale[FIRST_Y_AXIS] = FALSE;
+	axis_array[FIRST_X_AXIS].set_autoscale
+	    = axis_array[FIRST_Y_AXIS].set_autoscale = FALSE;
 	c_token++;
     } else {
 	/* HBB 20000506: parse axis name, and unset the right element
 	 * of the array: */
 	int axis = lookup_table(axisname_tbl, c_token);
 	if (axis >= 0) {
-	    set_axis_autoscale[axis] = FALSE;
+	    axis_array[axis].set_autoscale = FALSE;
 	c_token++;
     }
 }
@@ -810,8 +810,8 @@ static void
 reset_logscale(axis)
     AXIS_INDEX axis;
 {
-    log_array[axis] = FALSE;
-    base_array[axis] = 0.0;
+    axis_array[axis].log = FALSE;
+    axis_array[axis].base = 0.0;
 }
 
 /* process 'unset logscale' command */
@@ -907,8 +907,8 @@ static void
 unset_mtics(axis)
     AXIS_INDEX axis;
 {
-    axis_minitics[axis] = MINI_DEFAULT;
-    axis_mtic_freq[axis] = 10.0;
+    axis_array[axis].minitics = MINI_DEFAULT;
+    axis_array[axis].mtic_freq = 10.0;
 }
 
 
@@ -919,7 +919,7 @@ unset_tics(axis)
 {
     /* FIXME HBB 20000506: shouldn't we remove tic series settings,
      * too? */
-    axis_tics[axis] = NO_TICS;
+    axis_array[axis].ticmode = NO_TICS;
 }
 
 
@@ -982,10 +982,10 @@ unset_polar()
 {
     if (polar) {
 	polar = FALSE;
-	if (parametric && set_axis_autoscale[T_AXIS]) {
+	if (parametric && axis_array[T_AXIS].set_autoscale) {
 	    /* only if user has not set an explicit range */
-	    set_axis_min[T_AXIS] = default_axis_min[T_AXIS];
-	    set_axis_max[T_AXIS] = default_axis_min[T_AXIS];
+	    axis_array[T_AXIS].set_min = axis_defaults[T_AXIS].min;
+	    axis_array[T_AXIS].set_max = axis_defaults[T_AXIS].min;
 	}
 	if (!parametric) {
 	    strcpy (set_dummy_var[0], "x");
@@ -1102,9 +1102,9 @@ unset_timefmt()
 
     if (END_OF_COMMAND)
 	for (axis=0; axis < AXIS_ARRAY_SIZE; axis++)
-	    strcpy(timefmt[axis],TIMEFMT);
+	    strcpy(axis_array[axis].timefmt,TIMEFMT);
     else if ((axis=lookup_table(axisname_tbl, c_token)) >= 0) {
-	strcpy(timefmt[axis], TIMEFMT);
+	strcpy(axis_array[axis].timefmt, TIMEFMT);
     c_token++;
     }
     else
@@ -1146,7 +1146,7 @@ static void
 unset_timedata(axis)
     AXIS_INDEX axis;
 {
-    axis_is_timedata[axis] = FALSE;
+    axis_array[axis].is_timedata = FALSE;
 }
 
 
@@ -1157,7 +1157,7 @@ unset_range(axis)
 {
     /* FIXME HBB 20000506: do we want to reset the axis autoscale and
      * min/max, too?  */
-    range_flags[axis] = 0;
+    axis_array[axis].range_flags = 0;
 }
 
 /* process 'unset {x|y|z|x2|y2}zeroaxis' command */
@@ -1165,7 +1165,7 @@ static void
 unset_zeroaxis(axis)
     AXIS_INDEX axis;
 {
-    axis_zeroaxis[axis] = default_axis_zeroaxis;
+    axis_array[axis].zeroaxis = default_axis_zeroaxis;
 }
 
 
@@ -1195,7 +1195,7 @@ static void
 unset_axislabel(axis)
     AXIS_INDEX axis;
 {
-    axis_label[axis] = default_axis_label;
+    axis_array[axis].label = default_axis_label;
 }
 
 /******** The 'reset' command ********/
@@ -1255,14 +1255,16 @@ reset_command()
 	unset_range(axis);
 	unset_axislabel(axis);
 
-	set_axis_autoscale[axis] = DTRUE;
-	writeback_min[axis] = set_axis_min[axis] = default_axis_min[axis];
-	writeback_max[axis] = set_axis_max[axis] = default_axis_max[axis];
+	axis_array[axis].set_autoscale = DTRUE;
+	axis_array[axis].writeback_min = axis_array[axis].set_min
+	    = axis_defaults[axis].min;
+	axis_array[axis].writeback_max = axis_array[axis].set_max
+	    = axis_defaults[axis].max;
 
 	/* 'tics' default is on for some, off for the other axes: */
-	axis_tics[axis] = default_axis_tics[axis];
+	axis_array[axis].ticmode = axis_defaults[axis].ticmode;
 	unset_mtics(axis);
-	axis_ticdef[axis] = default_axis_ticdef;
+	axis_array[axis].ticdef = default_axis_ticdef;
 
 	reset_logscale(axis);
 }

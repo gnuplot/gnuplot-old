@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.3.2.1 2000/06/22 12:57:39 broeker Exp $
+ * $Id: term_api.h,v 1.3.2.2 2000/07/26 18:52:59 broeker Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -161,6 +161,15 @@ extern const char *encoding_names[];
 /* parsing table for encodings */
 extern struct gen_table set_encoding_tbl[];
 
+/* mouse module needs this */
+extern TBOOLEAN term_initialised;
+
+#ifdef OS2
+extern int mouseGnupmdrv;
+extern FILE *PM_pipe;
+#endif 
+
+
 /* Prototypes of functions exported by term.c */
 
 void term_set_output __PROTO((char *));
@@ -187,6 +196,10 @@ void LINUX_setup __PROTO((void));
 
 #ifdef VMS
 void vms_reset();
+#endif
+
+#ifdef OS2
+extern int PM_pause __PROTO((char *)); /* term/pm.trm */
 #endif
 
 #endif /* GNUPLOT_TERM_API_H */

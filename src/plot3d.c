@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -855,16 +855,16 @@ int pcount;
     char *table_format = NULL;
     char *pcat;
 
-    table_format = gp_alloc(strlen(axis_formatstring[FIRST_X_AXIS])
-			    +strlen(axis_formatstring[FIRST_Y_AXIS])
-			    +strlen(axis_formatstring[FIRST_Z_AXIS])
+    table_format = gp_alloc(strlen(axis_array[FIRST_X_AXIS].formatstring)
+			    +strlen(axis_array[FIRST_Y_AXIS].formatstring)
+			    +strlen(axis_array[FIRST_Z_AXIS].formatstring)
 			    +6,
 			    "table format");
-    strcpy(table_format, axis_formatstring[FIRST_X_AXIS]);
+    strcpy(table_format, axis_array[FIRST_X_AXIS].formatstring);
     strcat(table_format, " ");
-    strcat(table_format, axis_formatstring[FIRST_Y_AXIS]);
+    strcat(table_format, axis_array[FIRST_Y_AXIS].formatstring);
     strcat(table_format, " ");
-    strcat(table_format, axis_formatstring[FIRST_Z_AXIS]);
+    strcat(table_format, axis_array[FIRST_Z_AXIS].formatstring);
     pcat = &table_format[strlen(table_format)];
 
     for (surface = 0, this_plot = first_3dplot; surface < pcount;
@@ -1053,17 +1053,17 @@ eval_3dplots()
 		    int_error(c_token, "previous parametric function not fully specified");
 
 		if (!some_data_files) {
-		    if (auto_array[FIRST_X_AXIS] & 1) {
-			min_array[FIRST_X_AXIS] = VERYLARGE;
+		    if (axis_array[FIRST_X_AXIS].autoscale & 1) {
+			axis_array[FIRST_X_AXIS].min = VERYLARGE;
 		    }
-		    if (auto_array[FIRST_X_AXIS] & 2) {
-			max_array[FIRST_X_AXIS] = -VERYLARGE;
+		    if (axis_array[FIRST_X_AXIS].autoscale & 2) {
+			axis_array[FIRST_X_AXIS].max = -VERYLARGE;
 		    }
-		    if (auto_array[FIRST_Y_AXIS] & 1) {
-			min_array[FIRST_Y_AXIS] = VERYLARGE;
+		    if (axis_array[FIRST_Y_AXIS].autoscale & 1) {
+			axis_array[FIRST_Y_AXIS].min = VERYLARGE;
 		    }
-		    if (auto_array[FIRST_Y_AXIS] & 2) {
-			max_array[FIRST_Y_AXIS] = -VERYLARGE;
+		    if (axis_array[FIRST_Y_AXIS].autoscale & 2) {
+			axis_array[FIRST_Y_AXIS].max = -VERYLARGE;
 		    }
 		    some_data_files = TRUE;
 		}
@@ -1088,14 +1088,14 @@ eval_3dplots()
 		/* this_plot->token is temporary, for errors in get_3ddata() */
 
 		if (specs < 3) {
-		if (axis_is_timedata[FIRST_X_AXIS]) {
+		    if (axis_array[FIRST_X_AXIS].is_timedata) {
 			int_error(c_token, "Need full using spec for x time data");
-		}
-		if (axis_is_timedata[FIRST_Y_AXIS]) {
+		    }
+		    if (axis_array[FIRST_Y_AXIS].is_timedata) {
 			int_error(c_token, "Need full using spec for y time data");
-		}
-		    df_axis[0] = FIRST_Z_AXIS;
-		} else {
+		    }
+		    /* df_axis[0] = FIRST_Z_AXIS; */ 
+		} /*  else */ {  /* HBB 20000725: testestest */
 		    df_axis[0] = FIRST_X_AXIS;
 		    df_axis[1] = FIRST_Y_AXIS;
 		    df_axis[2] = FIRST_Z_AXIS;
@@ -1320,7 +1320,7 @@ eval_3dplots()
     /*
      * Everything is defined now, except the function data. We expect no
      * syntax errors, etc, since the above parsed it all. This makes the code
-     * below simpler. If auto_array[FIRST_Y_AXIS], the yrange may still change.
+     * below simpler. If axis_array[FIRST_Y_AXIS].autoscale, the yrange may still change.
      * - eh ?  - z can still change.  x/y/z can change if we are parametric ??
      */
 
@@ -1356,22 +1356,22 @@ eval_3dplots()
 	if (parametric && !some_data_files) {
 	    /*{{{  set ranges */
 	    /* parametric fn can still change x/y range */
-	    if (auto_array[FIRST_X_AXIS] & 1)
-		min_array[FIRST_X_AXIS] = VERYLARGE;
-	    if (auto_array[FIRST_X_AXIS] & 2)
-		max_array[FIRST_X_AXIS] = -VERYLARGE;
-	    if (auto_array[FIRST_Y_AXIS] & 1)
-		min_array[FIRST_Y_AXIS] = VERYLARGE;
-	    if (auto_array[FIRST_Y_AXIS] & 2)
-		max_array[FIRST_Y_AXIS] = -VERYLARGE;
+	    if (axis_array[FIRST_X_AXIS].autoscale & 1)
+		axis_array[FIRST_X_AXIS].min = VERYLARGE;
+	    if (axis_array[FIRST_X_AXIS].autoscale & 2)
+		axis_array[FIRST_X_AXIS].max = -VERYLARGE;
+	    if (axis_array[FIRST_Y_AXIS].autoscale & 1)
+		axis_array[FIRST_Y_AXIS].min = VERYLARGE;
+	    if (axis_array[FIRST_Y_AXIS].autoscale & 2)
+		axis_array[FIRST_Y_AXIS].max = -VERYLARGE;
 	    /*}}} */
 	}
 	
 	/*{{{  figure ranges, taking logs etc into account */
-	u_min = axis_log_value_checked(u_axis, min_array[u_axis], "x range");
-	u_max = axis_log_value_checked(u_axis, max_array[u_axis], "x range");
-	v_min = axis_log_value_checked(v_axis, min_array[v_axis], "y range");
-	v_max = axis_log_value_checked(v_axis, max_array[v_axis], "y range");
+	u_min = axis_log_value_checked(u_axis, axis_array[u_axis].min, "x range");
+	u_max = axis_log_value_checked(u_axis, axis_array[u_axis].max, "x range");
+	v_min = axis_log_value_checked(v_axis, axis_array[v_axis].min, "y range");
+	v_max = axis_log_value_checked(v_axis, axis_array[v_axis].max, "y range");
 	/*}}} */
 
 
@@ -1537,27 +1537,12 @@ eval_3dplots()
 	do_3dplot(first_3dplot, plot_num, 0);
 	END_LEAK_CHECK();
 
-        /* after do_3dplot(), min_array[] and max_array[]
+        /* after do_3dplot(), axis_array[] and max_array[].min
          * contain the plotting range actually used (rounded
          * to tic marks, not only the min/max data values)
          * --> save them now for writeback if requested
 	 */
-
-#define SAVE_WRITEBACK(axis) \
-  if(range_flags[axis]&RANGE_WRITEBACK) { \
-    set_writeback_min(axis); \
-    set_writeback_max(axis); \
-  }
-        SAVE_WRITEBACK(FIRST_X_AXIS);
-        SAVE_WRITEBACK(FIRST_Y_AXIS);
-        SAVE_WRITEBACK(FIRST_Z_AXIS);
-        SAVE_WRITEBACK(SECOND_X_AXIS);
-        SAVE_WRITEBACK(SECOND_Y_AXIS);
-        SAVE_WRITEBACK(SECOND_Z_AXIS);
-        SAVE_WRITEBACK(T_AXIS);
-        SAVE_WRITEBACK(R_AXIS);
-        SAVE_WRITEBACK(U_AXIS);
-	SAVE_WRITEBACK(V_AXIS);
+	SAVE_WRITEBACK_ALL_AXES;
     }
 
     /* if we get here, all went well, so record the line for replot */

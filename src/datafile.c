@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.3 2000/06/22 12:57:38 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.18.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -278,10 +278,6 @@ df_gets()
     if (mixed_data_fp && interactive)
 	fputs("input data ('e' ends) > ", stderr);
 
-    /* HBB 20000526: prompt user for inline data, if in interactive mode */
-    if (mixed_data_fp && interactive)
-	fputs("input data ('e' ends) > ", stderr);
-
     if (!fgets(line, max_line_len, data_fp))
 	return NULL;
 
@@ -538,9 +534,9 @@ int max_using;
     df_no_use_specs = 0;
 
     for (i = 0; i < NCOL; ++i) {
-	use_spec[i].column = i + 1;	/* default column */
+	use_spec[i].column = i + 1; /* default column */
 	use_spec[i].at = NULL;	/* no expression */
-	df_axis[i] = -1;
+	df_axis[i] = -1;	/* no timefmt for this output column */
     }
 
     if (max_using > NCOL)
@@ -1043,13 +1039,14 @@ int max;
 		    v[output] = df_datum;	/* using 0 */
 		} else if (column <= 0)	/* really < -2, but */
 		    int_error(NO_CARET, "internal error: column <= 0 in datafile.c");
-		else if (axis_is_timedata[df_axis[output]]) {
+		else if ((df_axis[output] != -1) 
+		         && (axis_array[df_axis[output]].is_timedata)) {
 		    struct tm tm;
 		    if (column > df_no_cols ||
 			df_column[column - 1].good == DF_MISSING ||
 			!df_column[column - 1].position ||
 			!gstrptime(df_column[column - 1].position,
-				   timefmt[df_axis[output]], &tm)
+				   axis_array[df_axis[output]].timefmt, &tm)
 			) {
 			/* line bad only if user explicitly asked for this column */
 			if (df_no_use_specs)
@@ -1361,7 +1358,8 @@ f_timecolumn()
 	 * parsing formats with the axes (output quantities!), instead
 	 * of the input fields, raises its ugly head. */
 	output == limit ||
-	!gstrptime(df_column[column].position, timefmt[df_axis[output]], &tm)) {
+	!gstrptime(df_column[column].position,
+		   axis_array[df_axis[output]].timefmt, &tm)) {
 	undefined = TRUE;
 	push(&a);		/* any objection to this ? */
     } else

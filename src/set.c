@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -453,19 +453,19 @@ set_command()
 	    set_timedata(SECOND_Y_AXIS);
 	    break;
 	case S_XLABEL:
-	    set_xyzlabel(&axis_label[FIRST_X_AXIS]);
+	    set_xyzlabel(&axis_array[FIRST_X_AXIS].label);
 	    break;
 	case S_YLABEL:
-	    set_xyzlabel(&axis_label[FIRST_Y_AXIS]);
+	    set_xyzlabel(&axis_array[FIRST_Y_AXIS].label);
 	    break;
 	case S_ZLABEL:
-	    set_xyzlabel(&axis_label[FIRST_Z_AXIS]);
+	    set_xyzlabel(&axis_array[FIRST_Z_AXIS].label);
 	    break;
 	case S_X2LABEL:
-	    set_xyzlabel(&axis_label[SECOND_X_AXIS]);
+	    set_xyzlabel(&axis_array[SECOND_X_AXIS].label);
 	    break;
 	case S_Y2LABEL:
-	    set_xyzlabel(&axis_label[SECOND_Y_AXIS]);
+	    set_xyzlabel(&axis_array[SECOND_Y_AXIS].label);
 	    break;
 	case S_XRANGE:
 	    set_range(FIRST_X_AXIS);
@@ -538,10 +538,10 @@ set_angles()
     } else
 	int_error(c_token, "expecting 'radians' or 'degrees'");
 
-    if (polar && set_axis_autoscale[T_AXIS]) {
+    if (polar && axis_array[T_AXIS].set_autoscale) {
 	/* set trange if in polar mode and no explicit range */
-	set_axis_min[T_AXIS] = 0;
-	set_axis_max[T_AXIS] = 2 * M_PI / ang2rad;
+	axis_array[T_AXIS].set_min = 0;
+	axis_array[T_AXIS].set_max = 2 * M_PI / ang2rad;
     }
 }
 
@@ -726,11 +726,11 @@ set_autoscale()
 
     c_token++;
     if (END_OF_COMMAND) {
-	INIT_AXIS_ARRAY(set_axis_autoscale , DTRUE);
+	INIT_AXIS_ARRAY(set_autoscale , DTRUE);
 	return;
     } else if (equals(c_token, "xy") || equals(c_token, "yx")) {
-	set_axis_autoscale[FIRST_X_AXIS] =
-	    set_axis_autoscale[FIRST_Y_AXIS] =  DTRUE;
+	axis_array[FIRST_X_AXIS].set_autoscale =
+	    axis_array[FIRST_Y_AXIS].set_autoscale =  DTRUE;
 	c_token++;
 	return;
     }
@@ -738,20 +738,20 @@ set_autoscale()
     /* save on replication with a macro */
 #define PROCESS_AUTO_LETTER(axis)				\
     do {							\
-	if (equals(c_token, axisname_array[axis])) {		\
-	    set_axis_autoscale[axis] = DTRUE;			\
+	if (equals(c_token, axis_defaults[axis].name)) {		\
+	    axis_array[axis].set_autoscale = DTRUE;			\
 	    ++c_token;						\
 	    return;						\
 	}							\
-	sprintf(min_string, "%smi$n", axisname_array[axis]);	\
+	sprintf(min_string, "%smi$n", axis_defaults[axis].name);	\
 	if (almost_equals(c_token, min_string)) {		\
-	    set_axis_autoscale[axis] |= 1;			\
+	    axis_array[axis].set_autoscale |= 1;			\
 	    ++c_token;						\
 	    return;						\
 	}							\
-	sprintf(max_string, "%sma$x", axisname_array[axis]);	\
+	sprintf(max_string, "%sma$x", axis_defaults[axis].name);	\
 	if (almost_equals(c_token, max_string)) {		\
-	    set_axis_autoscale[axis] |= 2;			\
+	    axis_array[axis].set_autoscale |= 2;			\
 	    ++c_token;						\
 	    return;						\
 	}							\
@@ -1102,11 +1102,11 @@ set_format()
 	    int_error(c_token, "expecting format string");
 	else {
 
-#define SET_FORMATSTRING(axis)						\
-	    if (set_for_axis[axis]) {					\
-		quote_str(axis_formatstring[axis],c_token, MAX_ID_LEN);	\
-		format_is_numeric[axis] =				\
-		    looks_like_numeric(axis_formatstring[axis]);		\
+#define SET_FORMATSTRING(axis)						      \
+	    if (set_for_axis[axis]) {					      \
+		quote_str(axis_array[axis].formatstring,c_token, MAX_ID_LEN); \
+		axis_array[axis].format_is_numeric =			      \
+		    looks_like_numeric(axis_array[axis].formatstring);	      \
 	    }
 	    SET_FORMATSTRING(FIRST_X_AXIS);
 	    SET_FORMATSTRING(FIRST_Y_AXIS);
@@ -1708,8 +1708,8 @@ set_logscale()
 {
     c_token++;
     if (END_OF_COMMAND) {
-	INIT_AXIS_ARRAY(log_array,TRUE);
-	INIT_AXIS_ARRAY(base_array, 10.0);
+	INIT_AXIS_ARRAY(log,TRUE);
+	INIT_AXIS_ARRAY(base, 10.0);
     } else {
 	TBOOLEAN set_for_axis[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE);
 	int axis;
@@ -1737,8 +1737,8 @@ set_logscale()
 
 	for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++)
 	    if (set_for_axis[axis]) {
-		log_array[axis] = TRUE;
-		base_array[axis] = newbase;
+		axis_array[axis].log = TRUE;
+		axis_array[axis].base = newbase;
 	}
     }
 }
@@ -2085,11 +2085,11 @@ set_polar()
 	    strcpy (set_dummy_var[0], "t");
 	}
 	polar = TRUE;
-	if (set_axis_autoscale[T_AXIS]) {
+	if (axis_array[T_AXIS].set_autoscale) {
 	    /* only if user has not set a range manually */
-	    set_axis_min[T_AXIS] = 0.0;
+	    axis_array[T_AXIS].set_min = 0.0;
 	    /* 360 if degrees, 2pi if radians */
-	    set_axis_max[T_AXIS] = 2 * M_PI / ang2rad;  
+	    axis_array[T_AXIS].set_max = 2 * M_PI / ang2rad;  
 	}
     }
 }
@@ -2303,12 +2303,12 @@ set_timefmt()
     if (END_OF_COMMAND) {
 	/* set all axes to default */
 	for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++)
-	    strcpy(timefmt[axis],TIMEFMT);
+	    strcpy(axis_array[axis].timefmt,TIMEFMT);
     } else {
 	if ((axis = lookup_table(axisname_tbl, c_token)) >= 0) {
 	    c_token++;
 	if (isstring(c_token)) {
-		quote_str(timefmt[axis],c_token, MAX_ID_LEN);
+		quote_str(axis_array[axis].timefmt,c_token, MAX_ID_LEN);
 		c_token++;
 	    } else {
 		int_error(c_token, "time format string expected");
@@ -2316,7 +2316,7 @@ set_timefmt()
 	} else if (isstring(c_token)) {
 	    /* set the given parse string for all current timedata axes: */
 	    for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++) 
-		quote_str(timefmt[axis], c_token, MAX_ID_LEN);
+		quote_str(axis_array[axis].timefmt, c_token, MAX_ID_LEN);
 	c_token++;
 	} else {
 	    int_error(c_token, "time format string expected");
@@ -2438,9 +2438,9 @@ set_timedata(axis)
 {
     c_token++;
     if(END_OF_COMMAND) {
-	axis_is_timedata[axis] = FALSE;
+	axis_array[axis].is_timedata = FALSE;
     } else {
-	if ((axis_is_timedata[axis] = almost_equals(c_token,"t$ime")))
+	if ((axis_array[axis].is_timedata = almost_equals(c_token,"t$ime")))
 	    c_token++;
 }
 }
@@ -2452,33 +2452,33 @@ set_range(axis)
 {
     if(almost_equals(c_token,"re$store")) { /* ULIG */
 	c_token++;
-	set_axis_min[axis] = get_writeback_min(axis);
-	set_axis_max[axis] = get_writeback_max(axis);
-	set_axis_autoscale[axis] = 0;
+	axis_array[axis].set_min = get_writeback_min(axis);
+	axis_array[axis].set_max = get_writeback_max(axis);
+	axis_array[axis].set_autoscale = 0;
     } else {
 	if (!equals(++c_token,"["))
 	    int_error(c_token, "expecting '[' or 'restore'");
 	c_token++;
-	set_axis_autoscale[axis] =
+	axis_array[axis].set_autoscale =
 	    load_range(axis,
-		       &set_axis_min[axis],&set_axis_max[axis],
-		       set_axis_autoscale[axis]);
+		       &axis_array[axis].set_min,&axis_array[axis].set_max,
+		       axis_array[axis].set_autoscale);
 	if (!equals(c_token,"]"))
 	    int_error(c_token, "expecting ']'");
 	c_token++;
 	if (almost_equals(c_token, "rev$erse")) {
 	    ++c_token;
-	    range_flags[axis] |= RANGE_REVERSE;
+	    axis_array[axis].range_flags |= RANGE_REVERSE;
 	} else if (almost_equals(c_token, "norev$erse")) {
 	    ++c_token;
-	    range_flags[axis] &= ~RANGE_REVERSE;
+	    axis_array[axis].range_flags &= ~RANGE_REVERSE;
 }
 	if (almost_equals(c_token, "wr$iteback")) {
 	    ++c_token;
-	    range_flags[axis] |= RANGE_WRITEBACK;
+	    axis_array[axis].range_flags |= RANGE_WRITEBACK;
 	} else if (almost_equals(c_token, "nowri$teback")) {
 	    ++c_token;
-	    range_flags[axis] &= ~RANGE_WRITEBACK;
+	    axis_array[axis].range_flags &= ~RANGE_WRITEBACK;
 }
 }
   }
@@ -2491,13 +2491,13 @@ set_zeroaxis(axis)
 
     c_token++;
     if (END_OF_COMMAND)
-	axis_zeroaxis[axis].l_type = -1;
+	axis_array[axis].zeroaxis.l_type = -1;
     else {
 	struct value a;
 	int old_token = c_token;
-	lp_parse(&axis_zeroaxis[axis],1,0,-1,0);
+	lp_parse(&axis_array[axis].zeroaxis,1,0,-1,0);
 	if (old_token == c_token)
-	    axis_zeroaxis[axis].l_type = real(const_express(&a)) - 1;
+	    axis_array[axis].zeroaxis.l_type = real(const_express(&a)) - 1;
 }
 
 }
@@ -2508,7 +2508,7 @@ set_allzeroaxis()
 {
     c_token++;
     set_zeroaxis(FIRST_X_AXIS);
-    axis_zeroaxis[FIRST_Y_AXIS] = axis_zeroaxis[FIRST_X_AXIS];
+    axis_array[FIRST_Y_AXIS].zeroaxis = axis_array[FIRST_X_AXIS].zeroaxis;
 }
 
 /*********** Support functions for set_command ***********/
@@ -2558,50 +2558,50 @@ set_tic_prop(axis)
 
     (void) strcpy(nocmd, "no");
     cmdptr = &nocmd[2];
-    (void) strcpy(cmdptr, axisname_array[axis]);
+    (void) strcpy(cmdptr, axis_defaults[axis].name);
     sfxptr = &nocmd[strlen(nocmd)];
     (void) strcpy(sfxptr, "t$ics");	/* STRING */
 
     if (almost_equals(c_token, cmdptr)) {
 	match = 1;
 	if (almost_equals(++c_token, "ax$is")) {
-	    axis_tics[axis] &= ~TICS_ON_BORDER;
-	    axis_tics[axis] |= TICS_ON_AXIS;
+	    axis_array[axis].ticmode &= ~TICS_ON_BORDER;
+	    axis_array[axis].ticmode |= TICS_ON_AXIS;
 	    ++c_token;
 	}
 	/* if tics are off, reset to default (border) */
-	if (axis_tics[axis] == NO_TICS) {
-	    axis_tics[axis] = TICS_ON_BORDER;
+	if (axis_array[axis].ticmode == NO_TICS) {
+	    axis_array[axis].ticmode = TICS_ON_BORDER;
 	    if ((axis == FIRST_X_AXIS) || (axis == FIRST_Y_AXIS)) {
-		axis_tics[axis] |= TICS_MIRROR;
+		axis_array[axis].ticmode |= TICS_MIRROR;
 	    }
 	}
 	if (almost_equals(c_token, "bo$rder")) {
-	    axis_tics[axis] &= ~TICS_ON_AXIS;
-	    axis_tics[axis] |= TICS_ON_BORDER;
+	    axis_array[axis].ticmode &= ~TICS_ON_AXIS;
+	    axis_array[axis].ticmode |= TICS_ON_BORDER;
 	    ++c_token;
 	}
 	if (almost_equals(c_token, "mi$rror")) {
-	    axis_tics[axis] |= TICS_MIRROR;
+	    axis_array[axis].ticmode |= TICS_MIRROR;
 	    ++c_token;
 	} else if (almost_equals(c_token, "nomi$rror")) {
-	    axis_tics[axis] &= ~TICS_MIRROR;
+	    axis_array[axis].ticmode &= ~TICS_MIRROR;
 	    ++c_token;
 	}
 	if (almost_equals(c_token, "ro$tate")) {
-	    axis_tic_rotate[axis] = TRUE;
+	    axis_array[axis].tic_rotate = TRUE;
 	    ++c_token;
 	} else if (almost_equals(c_token, "noro$tate")) {
-	    axis_tic_rotate[axis] = FALSE;
+	    axis_array[axis].tic_rotate = FALSE;
 	    ++c_token;
 	}
 	if (almost_equals(c_token, "au$tofreq")) {	/* auto tic interval */
 	    ++c_token;
-	    if (axis_ticdef[axis].type == TIC_USER) {
-		free_marklist(axis_ticdef[axis].def.user);
-		axis_ticdef[axis].def.user = NULL;
+	    if (axis_array[axis].ticdef.type == TIC_USER) {
+		free_marklist(axis_array[axis].ticdef.def.user);
+		axis_array[axis].ticdef.def.user = NULL;
 	    }
-	    axis_ticdef[axis].type = TIC_COMPUTED;
+	    axis_array[axis].ticdef.type = TIC_COMPUTED;
 	}
 	/* user spec. is last */ 
 	else if (!END_OF_COMMAND) {
@@ -2609,7 +2609,7 @@ set_tic_prop(axis)
 	}
     }
     if (almost_equals(c_token, nocmd)) {	/* NOSTRING */
-	axis_tics[axis] = NO_TICS;
+	axis_array[axis].ticmode = NO_TICS;
 	c_token++;
 	match = 1;
     }
@@ -2617,36 +2617,36 @@ set_tic_prop(axis)
 
     (void) strcpy(sfxptr, "m$tics");	/* MONTH */
     if (almost_equals(c_token, cmdptr)) {
-	if (axis_ticdef[axis].type == TIC_USER) {
-	    free_marklist(axis_ticdef[axis].def.user);
-	    axis_ticdef[axis].def.user = NULL;
+	if (axis_array[axis].ticdef.type == TIC_USER) {
+	    free_marklist(axis_array[axis].ticdef.def.user);
+	    axis_array[axis].ticdef.def.user = NULL;
 	}
-	axis_ticdef[axis].type = TIC_MONTH;
+	axis_array[axis].ticdef.type = TIC_MONTH;
 	++c_token;
 	match = 1;
     }
     if (almost_equals(c_token, nocmd)) {	/* NOMONTH */
-	axis_ticdef[axis].type = TIC_COMPUTED;
+	axis_array[axis].ticdef.type = TIC_COMPUTED;
 	++c_token;
 	match = 1;
     }
     (void) strcpy(sfxptr, "d$tics");	/* DAYS */
     if (almost_equals(c_token, cmdptr)) {
 	match = 1;
-	if (axis_ticdef[axis].type == TIC_USER) {
-	    free_marklist(axis_ticdef[axis].def.user);
-	    axis_ticdef[axis].def.user = NULL;
+	if (axis_array[axis].ticdef.type == TIC_USER) {
+	    free_marklist(axis_array[axis].ticdef.def.user);
+	    axis_array[axis].ticdef.def.user = NULL;
 	}
-	axis_ticdef[axis].type = TIC_DAY;
+	axis_array[axis].ticdef.type = TIC_DAY;
 	++c_token;
     }
     if (almost_equals(c_token, nocmd)) {	/* NODAYS */
-	axis_ticdef[axis].type = TIC_COMPUTED;
+	axis_array[axis].ticdef.type = TIC_COMPUTED;
 	++c_token;
 	match = 1;
     }
     *cmdptr = 'm';
-    (void) strcpy(cmdptr + 1, axisname_array[axis]);
+    (void) strcpy(cmdptr + 1, axis_defaults[axis].name);
     (void) strcat(cmdptr, "t$ics");	/* MINISTRING */
 
     if (almost_equals(c_token, cmdptr)) {
@@ -2654,17 +2654,17 @@ set_tic_prop(axis)
 	c_token++;
 	match = 1;
 	if (END_OF_COMMAND) {
-	    axis_minitics[axis] = MINI_AUTO;
+	    axis_array[axis].minitics = MINI_AUTO;
 	} else if (almost_equals(c_token, "def$ault")) {
-	    axis_minitics[axis] = MINI_DEFAULT;
+	    axis_array[axis].minitics = MINI_DEFAULT;
 	    ++c_token;
 	} else {
-	    axis_mtic_freq[axis] = floor(real(const_express(&freq)));
-	    axis_minitics[axis] = MINI_USER;
+	    axis_array[axis].mtic_freq = floor(real(const_express(&freq)));
+	    axis_array[axis].minitics = MINI_USER;
 	}
     }
     if (almost_equals(c_token, nocmd)) {	/* NOMINI */
-	axis_minitics[axis] = FALSE;
+	axis_array[axis].minitics = FALSE;
 	c_token++;
 	match = 1;
     }
@@ -2861,7 +2861,7 @@ AXIS_INDEX axis;
 
 	/* has a string with it? */
 	if (isstring(c_token) &&
-	    (!axis_is_timedata[axis] || isstring(c_token + 1))) {
+	    (!axis_array[axis].is_timedata || isstring(c_token + 1))) {
 	    quote_str(temp_string, c_token, MAX_LINE_LEN);
 	    tic->label = gp_alloc(strlen(temp_string) + 1, "tic label");
 	    (void) strcpy(tic->label, temp_string);
@@ -2895,14 +2895,14 @@ AXIS_INDEX axis;
     c_token++;
 
     /* successful list */
-    if (axis_ticdef[axis].type == TIC_USER) {
+    if (axis_array[axis].ticdef.type == TIC_USER) {
 	/* remove old list */
 	/* VAX Optimiser was stuffing up following line. Turn Optimiser OFF */
-	free_marklist(axis_ticdef[axis].def.user);
-	axis_ticdef[axis].def.user = NULL;
+	free_marklist(axis_array[axis].ticdef.def.user);
+	axis_array[axis].ticdef.def.user = NULL;
     }
-    axis_ticdef[axis].type = TIC_USER;
-    axis_ticdef[axis].def.user = list;
+    axis_array[axis].ticdef.type = TIC_USER;
+    axis_array[axis].ticdef.def.user = list;
 }
 
 static void
@@ -2929,7 +2929,7 @@ AXIS_INDEX axis;
     double start, incr, end;
     int incr_token;
 
-    struct ticdef *tdef = &axis_ticdef[axis];
+    struct ticdef *tdef = &axis_array[axis].ticdef;
 
     GET_NUM_OR_TIME(start, axis);
 

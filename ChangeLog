@@ -1,3 +1,12 @@
+2000-07-25  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* all over the place: restructured axis module global 
+	variables. Instead of sevaral separate arrays, it's now
+	a single array of structs, to bring it even closer to the
+	idea of an OO-style axis class. 
+	* removed some more occurances of 'extern' from .trm and
+	.c files. 'extern' should only ever be needed in headers.
+
 2000-07-18  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/hidden3d.c: implemented TEST_QUADTREE code, finally.

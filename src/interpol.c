@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: interpol.c,v 1.16.2.2 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: interpol.c,v 1.16.2.3 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - interpol.c */
@@ -369,10 +369,10 @@ struct coordinate *dest;	/* where to put the interpolated data */
     double ixmin, ixmax, iymin, iymax;
     double sxmin, sxmax, symin, symax;	/* starting values of above */
 
-    ixmin = sxmin = AXIS_LOG_VALUE(xaxis, min_array[xaxis]);
-    ixmax = sxmax = AXIS_LOG_VALUE(xaxis, max_array[xaxis]);
-    iymin = symin = AXIS_LOG_VALUE(yaxis, min_array[yaxis]);
-    iymax = symax = AXIS_LOG_VALUE(yaxis, max_array[yaxis]);
+    ixmin = sxmin = AXIS_LOG_VALUE(xaxis, axis_array[xaxis].min);
+    ixmax = sxmax = AXIS_LOG_VALUE(xaxis, axis_array[xaxis].max);
+    iymin = symin = AXIS_LOG_VALUE(yaxis, axis_array[yaxis].min);
+    iymax = symax = AXIS_LOG_VALUE(yaxis, axis_array[yaxis].max);
 
     for (i = 0; i < samples_1; i++) {
 	eval_bezier(cp, first_point, num_points, (double) i / (double) (samples_1 - 1), &x, &y, bc);
@@ -380,8 +380,8 @@ struct coordinate *dest;	/* where to put the interpolated data */
 	/* now we have to store the points and adjust the ranges */
 
 	dest[i].type = INRANGE;
-	STORE_AND_FIXUP_RANGE(dest[i].x, x, dest[i].type, ixmin, ixmax, auto_array[xaxis], NOOP, continue);
-	STORE_AND_FIXUP_RANGE(dest[i].y, y, dest[i].type, iymin, iymax, auto_array[yaxis], NOOP, NOOP);
+	STORE_AND_FIXUP_RANGE(dest[i].x, x, dest[i].type, ixmin, ixmax, axis_array[xaxis].autoscale, NOOP, continue);
+	STORE_AND_FIXUP_RANGE(dest[i].y, y, dest[i].type, iymin, iymax, axis_array[yaxis].autoscale, NOOP, NOOP);
 
 	dest[i].xlow = dest[i].xhigh = dest[i].x;
 	dest[i].ylow = dest[i].yhigh = dest[i].y;
@@ -389,10 +389,10 @@ struct coordinate *dest;	/* where to put the interpolated data */
 	dest[i].z = -1;
     }
 
-    UPDATE_RANGE(ixmax > sxmax, max_array[xaxis], ixmax, xaxis);
-    UPDATE_RANGE(ixmin < sxmin, min_array[xaxis], ixmin, xaxis);
-    UPDATE_RANGE(iymax > symax, max_array[yaxis], iymax, yaxis);
-    UPDATE_RANGE(iymin < symin, min_array[yaxis], iymin, yaxis);
+    UPDATE_RANGE(ixmax > sxmax, axis_array[xaxis].max, ixmax, xaxis);
+    UPDATE_RANGE(ixmin < sxmin, axis_array[xaxis].min, ixmin, xaxis);
+    UPDATE_RANGE(iymax > symax, axis_array[yaxis].max, iymax, yaxis);
+    UPDATE_RANGE(iymin < symin, axis_array[yaxis].min, iymin, yaxis);
 }
 
 /*
@@ -525,14 +525,14 @@ int num_points;			/* to determine end in plot->points */
 
     /* KB 981107: With logarithmic axis first convert back to linear scale */
 
-    if (log_array[xaxis]) {
+    if (axis_array[xaxis].log) {
 	for (i = 0; i <= num_points - 1; i++)
 	    xp[i] = AXIS_UNDO_LOG(xaxis,this_points[i].x);
     } else {
 	for (i = 0; i <= num_points - 1; i++)
 	    xp[i] = this_points[i].x;
     }
-    if (log_array[yaxis]) {
+    if (axis_array[yaxis].log) {
 	for (i = 0; i <= num_points - 1; i++)
 	    yp[i] = AXIS_UNDO_LOG(yaxis,this_points[i].y);
     } else {
@@ -658,14 +658,14 @@ int first_point, num_points;
 
     /* KB 981107: With logarithmic axis first convert back to linear scale */
 
-    if (log_array[xaxis]) {
+    if (axis_array[xaxis].log) {
 	for (i = 0; i <= num_points - 1; i++)
 	    xp[i] = AXIS_UNDO_LOG(xaxis,this_points[i].x);
     } else {
 	for (i = 0; i <= num_points - 1; i++)
 	    xp[i] = this_points[i].x;
     }
-    if (log_array[yaxis]) {
+    if (axis_array[yaxis].log) {
 	for (i = 0; i <= num_points - 1; i++)
 	    yp[i] = AXIS_UNDO_LOG(yaxis,this_points[i].y);
     } else {
@@ -752,10 +752,10 @@ struct coordinate *dest;	/* where to put the interpolated data */
     double ixmin, ixmax, iymin, iymax;
     double sxmin, sxmax, symin, symax;	/* starting values of above */
 
-    ixmin = sxmin = AXIS_LOG_VALUE(xaxis, min_array[xaxis]);
-    ixmax = sxmax = AXIS_LOG_VALUE(xaxis, max_array[xaxis]);
-    iymin = symin = AXIS_LOG_VALUE(yaxis, min_array[yaxis]);
-    iymax = symax = AXIS_LOG_VALUE(yaxis, max_array[yaxis]);
+    ixmin = sxmin = AXIS_LOG_VALUE(xaxis, axis_array[xaxis].min);
+    ixmax = sxmax = AXIS_LOG_VALUE(xaxis, axis_array[xaxis].max);
+    iymin = symin = AXIS_LOG_VALUE(yaxis, axis_array[yaxis].min);
+    iymax = symax = AXIS_LOG_VALUE(yaxis, axis_array[yaxis].max);
 
     this_points = (plot->points) + first_point;
 
@@ -772,7 +772,7 @@ struct coordinate *dest;	/* where to put the interpolated data */
 	/* KB 981107: With logarithmic x axis the values were converted back to linear  */
 	/* scale before calculating the coefficients. Use exponential for log x values. */
 
-	if (log_array[xaxis]) {
+	if (axis_array[xaxis].log) {
 	    temp = AXIS_UNDO_LOG(xaxis, x)
 		- AXIS_UNDO_LOG(xaxis, this_points[l].x);
 	} else {
@@ -781,15 +781,15 @@ struct coordinate *dest;	/* where to put the interpolated data */
 	y = ((sc[l][3] * temp + sc[l][2]) * temp + sc[l][1]) * temp + sc[l][0];
 
 	/* With logarithmic y axis, we need to convert from linear to log scale now. */
-	if (log_array[yaxis]) {
+	if (axis_array[yaxis].log) {
 	    if (y > 0.)
 		y = AXIS_DO_LOG(yaxis, y);
 	    else
 		y = symin - (symax - symin);
 	}
 	dest[i].type = INRANGE;
-	STORE_AND_FIXUP_RANGE(dest[i].x, x, dest[i].type, ixmin, ixmax, auto_array[xaxis], NOOP, continue);
-	STORE_AND_FIXUP_RANGE(dest[i].y, y, dest[i].type, iymin, iymax, auto_array[yaxis], NOOP, NOOP);
+	STORE_AND_FIXUP_RANGE(dest[i].x, x, dest[i].type, ixmin, ixmax, axis_array[xaxis].autoscale, NOOP, continue);
+	STORE_AND_FIXUP_RANGE(dest[i].y, y, dest[i].type, iymin, iymax, axis_array[yaxis].autoscale, NOOP, NOOP);
 
 	dest[i].xlow = dest[i].xhigh = dest[i].x;
 	dest[i].ylow = dest[i].yhigh = dest[i].y;
@@ -798,10 +798,10 @@ struct coordinate *dest;	/* where to put the interpolated data */
 
     }
 
-    UPDATE_RANGE(ixmax > sxmax, max_array[xaxis], ixmax, xaxis);
-    UPDATE_RANGE(ixmin < sxmin, min_array[xaxis], ixmin, xaxis);
-    UPDATE_RANGE(iymax > symax, max_array[yaxis], iymax, yaxis);
-    UPDATE_RANGE(iymin < symin, min_array[yaxis], iymin, yaxis);
+    UPDATE_RANGE(ixmax > sxmax, axis_array[xaxis].max, ixmax, xaxis);
+    UPDATE_RANGE(ixmin < sxmin, axis_array[xaxis].min, ixmin, xaxis);
+    UPDATE_RANGE(iymax > symax, axis_array[yaxis].max, iymax, yaxis);
+    UPDATE_RANGE(iymin < symin, axis_array[yaxis].min, iymin, yaxis);
 
 }
 
@@ -960,13 +960,13 @@ struct curve_points *cp;
 		cp->points[j].type = INRANGE;
 		if (! all_inrange) {
 		    x = AXIS_DE_LOG_VALUE(xaxis, x);
-		    if (((x < min_array[xaxis]) && !(auto_array[xaxis] & 1))
-			|| ((x > max_array[xaxis]) && !(auto_array[xaxis] & 2)))
+		    if (((x < axis_array[xaxis].min) && !(axis_array[xaxis].autoscale & 1))
+			|| ((x > axis_array[xaxis].max) && !(axis_array[xaxis].autoscale & 2)))
 			cp->points[j].type = OUTRANGE;
 		    else {
 			y = AXIS_DE_LOG_VALUE(yaxis, y);
-			if (((y < min_array[yaxis]) && !(auto_array[yaxis] & 1))
-			    || ((y > max_array[yaxis]) && !(auto_array[yaxis] & 2)))
+			if (((y < axis_array[yaxis].min) && !(axis_array[yaxis].autoscale & 1))
+			    || ((y > axis_array[yaxis].max) && !(axis_array[yaxis].autoscale & 2)))
 			    cp->points[j].type = OUTRANGE;
 		    }
 		}
@@ -985,13 +985,13 @@ struct curve_points *cp;
 	    cp->points[j].type = INRANGE;
 	    if (! all_inrange) {
 		x = AXIS_DE_LOG_VALUE(xaxis, x);
-		if (((x < min_array[xaxis]) && !(auto_array[xaxis] & 1))
-		    || ((x > max_array[xaxis]) && !(auto_array[xaxis] & 2)))
+		if (((x < axis_array[xaxis].min) && !(axis_array[xaxis].autoscale & 1))
+		    || ((x > axis_array[xaxis].max) && !(axis_array[xaxis].autoscale & 2)))
 		    cp->points[j].type = OUTRANGE;
 		else {
 		    x = AXIS_DE_LOG_VALUE(yaxis, y);
-		    if (((y < min_array[yaxis]) && !(auto_array[yaxis] & 1))
-			|| ((y > max_array[yaxis]) && !(auto_array[yaxis] & 2)))
+		    if (((y < axis_array[yaxis].min) && !(axis_array[yaxis].autoscale & 1))
+			|| ((y > axis_array[yaxis].max) && !(axis_array[yaxis].autoscale & 2)))
 			cp->points[j].type = OUTRANGE;
 		}
 	    }

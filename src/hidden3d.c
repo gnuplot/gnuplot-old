@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.20.2.3 2000/07/20 13:12:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.20.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -1041,7 +1041,7 @@ build_networks(plots, pcount)
 			{
 			    coordval remember_z = points[i].z;
 			    
-			    points[i].z = min_array[FIRST_Z_AXIS];
+			    points[i].z = axis_array[FIRST_Z_AXIS].min;
 			    basevertex = store_vertex(points + i, pointtype);
 			    points[i].z = remember_z;
 			}
@@ -1219,7 +1219,7 @@ build_networks(plots, pcount)
 		    {
 			coordval remember_z = points[i].z;
 						
-			points[i].z = min_array[FIRST_Z_AXIS];
+			points[i].z = axis_array[FIRST_Z_AXIS].min;
 			basevertex = store_vertex(points + i, pointtype);
 			points[i].z = remember_z;
 		    }

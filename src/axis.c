@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.c,v 1.2.2.3 2000/06/22 12:57:38 broeker Exp $
+ * $Id: axis.c,v 1.2.2.4 2000/07/26 18:52:58 broeker Exp $
  *
  */
 
@@ -48,6 +48,29 @@
  * related to axes, once and for all. It'll probably end up as a
  * global array of OO-style 'axis' objects, when it's done */
 
+/* HBB 20000725: gather all per-axis variables into a struct, and set
+ * up a single large array of such structs. Next step might be to use
+ * isolated AXIS structs, instead of an array. At least for *some* of
+ * the axes... */
+AXIS axis_array[AXIS_ARRAY_SIZE]
+    = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_STRUCT);
+
+/* Keep defaults varying by axis in their own array, to ease initialization
+ * of the main array */
+AXIS_DEFAULTS axis_defaults[AXIS_ARRAY_SIZE] = {
+    { -10, 10, "z" , TICS_ON_BORDER,               }, 
+    { -10, 10, "y" , TICS_ON_BORDER | TICS_MIRROR, }, 
+    { -10, 10, "x" , TICS_ON_BORDER | TICS_MIRROR, }, 
+    { - 5,  5, "t" , NO_TICS,                      }, 
+    { -10, 10, "z2", NO_TICS,                      },
+    { -10, 10, "y2", NO_TICS,                      },
+    { -10, 10, "x2", NO_TICS,                      },
+    { - 0, 10, "r" , NO_TICS,                      }, 
+    { - 5,  5, "u" , NO_TICS,                      }, 
+    { - 5,  5, "v" , NO_TICS,                      }, 
+};
+
+
 /* HBB 20000507: for the range/autoscale variables, there are two
  * copies of each variable. One is for manipulatio by 'set', the other
  * is initialized with that, but may be updated by an explicit range
@@ -56,43 +79,39 @@
  
 /* range endpoints: default/startup values first: */
 /*    z    y1    x1     t    z2    y2    x2     r     u     v   */
-#define DEFAULT_AXIS_MIN						\
-{   -10.0,-10.0,-10.0,- 5.0,-10.0,-10.0,-10.0,- 0.0,- 5.0,- 5.0 }
-#define DEFAULT_AXIS_MAX						\
-{    10.0, 10.0, 10.0,  5.0, 10.0, 10.0, 10.0, 10.0,  5.0,  5.0	}
+/*  #define DEFAULT_AXIS_MIN						\ */
+/*  {   -10.0,-10.0,-10.0,- 5.0,-10.0,-10.0,-10.0,- 0.0,- 5.0,- 5.0 } */
+/*  #define DEFAULT_AXIS_MAX						\ */
+/*  {    10.0, 10.0, 10.0,  5.0, 10.0, 10.0, 10.0, 10.0,  5.0,  5.0	} */
 /* store defaults in variable, for access by 'reset' */
-const double default_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN;
-const double default_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX;
+/*  const double default_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN; */
+/*  const double default_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX; */
 /* values handled by 'set/show/save/unset': */
-double set_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN;
-double set_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX;
-/* the actual field we work with */
-double min_array[AXIS_ARRAY_SIZE];
-double max_array[AXIS_ARRAY_SIZE];
+/*  double set_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN; */
+/*  double set_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX; */
 /* in writeback mode, copy autoscaled, tic-expanded values into here: */
-double writeback_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN;
-double writeback_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX;
+/*  double writeback_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN; */
+/*  double writeback_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX; */
 
 /* autoscaling flags */
 /* FIXME HBB 20000507: make new type 'double boolean' for these */
-TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(DTRUE);
-int auto_array[AXIS_ARRAY_SIZE];
+/*  TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(DTRUE); */
 
 /* logscaling */
-TBOOLEAN log_array[AXIS_ARRAY_SIZE];
-double base_array[AXIS_ARRAY_SIZE];
+/*  TBOOLEAN log_array[AXIS_ARRAY_SIZE]; */
+/*  double base_array[AXIS_ARRAY_SIZE]; */
 /* log(base) is stored, for quicker calculations: */
-double log_base_array[AXIS_ARRAY_SIZE];
+/*  double log_base_array[AXIS_ARRAY_SIZE]; */
 
 /* internal variables in graphics.c: */
 /* scale factors for mapping for each axis */
-double scale[AXIS_ARRAY_SIZE];
+/*  double scale[AXIS_ARRAY_SIZE]; */
 
 /* low and high end of the axis on output, in terminal coords: */
-int axis_graphical_lower[AXIS_ARRAY_SIZE];
-int axis_graphical_upper[AXIS_ARRAY_SIZE];
+/*  int axis_graphical_lower[AXIS_ARRAY_SIZE]; */
+/*  int axis_graphical_upper[AXIS_ARRAY_SIZE]; */
 /* axis' zero positions in terminal coords */
-unsigned int axis_zero[AXIS_ARRAY_SIZE];	
+/*  unsigned int axis_zero[AXIS_ARRAY_SIZE];	 */
 
 /* either xformat etc or invented time format
  * index with FIRST_X_AXIS etc
@@ -102,11 +121,11 @@ static char ticfmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1];
 static int timelevel[AXIS_ARRAY_SIZE];
 static double ticstep[AXIS_ARRAY_SIZE];
 
-const char *axisname_array[AXIS_ARRAY_SIZE] = {
-    "z", "y", "x", "t",
-    "z2", "y2", "x2", "r",
-    "u",  "v"
-};
+/* const char *axisname_array[AXIS_ARRAY_SIZE] = { */
+/*     "z", "y", "x", "t", */
+/*     "z2", "y2", "x2", "r", */
+/*     "u",  "v" */
+/* }; */
 
 /* HBB 20000506 new variable: parsing table for use with the table
  * module, to help generalizing set/show/unset/save, where possible */
@@ -136,66 +155,52 @@ struct gen_table axisname_tbl[] =
     rotate_tics, tic_hjust, tic_vjust, tic_mirror;
 
 /* if user specifies [10:-10] we use [-10:10] internally, and swap at end */
-int reverse_range[AXIS_ARRAY_SIZE];
+/*  int reverse_range[AXIS_ARRAY_SIZE]; */
 
 /* from set.c:*/
 /* assert that AXIS_ARRAY_SIZE is still 10, as the next thing assumes: */
-#if AXIS_ARRAY_SIZE != 10
-# define AXIS_ARRAY_SIZE  AXIS_ARRAY_SIZE_not_defined
-#endif
+/*  #if AXIS_ARRAY_SIZE != 10 */
+/*  # define AXIS_ARRAY_SIZE  AXIS_ARRAY_SIZE_not_defined */
+/*  #endif */
 
 /* do formats look like times - never saved or shown ...  */
-int format_is_numeric[AXIS_ARRAY_SIZE] = {
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1 
-};
+/*  int format_is_numeric[AXIS_ARRAY_SIZE] = { */
+/*    1, 1, 1, 1, 1, 1, 1, 1, 1, 1  */
+/*  }; */
 
-int range_flags[AXIS_ARRAY_SIZE];	/* = {0,0,...} */
+/*  int range_flags[AXIS_ARRAY_SIZE];  */
 
 /* array of flags telling if an axis is formatted as time/date, on
  * output (--> 'set xdata time') */
-int axis_is_timedata[AXIS_ARRAY_SIZE];
+/*  int axis_is_timedata[AXIS_ARRAY_SIZE]; */
 
 /* lots of tic control variables */
-#define DEFAULT_AXIS_TICS {			\
-    TICS_ON_BORDER,		/* Z */		\
-	TICS_ON_BORDER | TICS_MIRROR, /* Y */	\
-	TICS_ON_BORDER | TICS_MIRROR, /* X */	\
-	NO_TICS,		/* T */		\
-	NO_TICS,		/* Z2 */	\
-	NO_TICS,		/* Y2 */	\
-	NO_TICS,		/* X2 */	\
-	NO_TICS,		/* R */		\
-	NO_TICS,		/* U */		\
-	NO_TICS,		/* V */		\
-	}
-const int default_axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS;
-int axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS;
+/*  const int default_axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS; */
+/*  int axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS; */
 
-#define DEFAULT_AXIS_TICDEF {TIC_COMPUTED, {NULL} }
 const struct ticdef default_axis_ticdef = DEFAULT_AXIS_TICDEF;
-struct ticdef axis_ticdef[AXIS_ARRAY_SIZE]
-    = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_TICDEF);
+/*  struct ticdef axis_ticdef[AXIS_ARRAY_SIZE] */
+/*      = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_TICDEF); */
 
-TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE);
-int axis_minitics[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(MINI_DEFAULT);
-double axis_mtic_freq[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(10);
-char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(DEF_FORMAT);
+/*  TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE); */
+/*  int axis_minitics[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(MINI_DEFAULT); */
+/*  double axis_mtic_freq[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(10); */
+/*  char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(DEF_FORMAT); */
 double ticscale = 1.0;		/* scale factor for tic mark */
 double miniticscale = 0.5;	/* and for minitics */
 TBOOLEAN tic_in = TRUE;		/* tics on inside of coordinate box? */
 
 /* format for date/time for reading time in datafile */
-char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(TIMEFMT);
+/*  char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(TIMEFMT); */
 
 /* axis labels */
 const label_struct default_axis_label = EMPTY_LABELSTRUCT;
-label_struct axis_label[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(EMPTY_LABELSTRUCT);
+/*  label_struct axis_label[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(EMPTY_LABELSTRUCT); */
 
 /* zeroaxis drawing */
-#define DEFAULT_AXIS_ZEROAXIS {0, -3, 0, 1.0, 1.0}
 const lp_style_type default_axis_zeroaxis = DEFAULT_AXIS_ZEROAXIS;
-lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE]
-= AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_ZEROAXIS);
+/*  lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE] */
+/*  = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_ZEROAXIS); */
 
 /* grid drawing */  
 int grid_selection = GRID_OFF;
@@ -230,11 +235,11 @@ axis_unlog_interval(axis, min, max, checkrange)
     double *min, *max;
     TBOOLEAN checkrange;
 {
-    if (log_array[axis]) {
+    if (axis_array[axis].log) {
 	if (checkrange && (*min<= 0.0 || *max <= 0.0))
 	    int_error(NO_CARET,
 		      "%s range must be greater than 0 for log scale",
-		      axisname_array[axis]);
+		      axis_defaults[axis].name);
 	*min = (*min<=0) ? -VERYLARGE : AXIS_DO_LOG(axis,*min);
 	*max = (*max<=0) ? -VERYLARGE : AXIS_DO_LOG(axis,*max);
     }
@@ -244,12 +249,12 @@ void
 axis_revert_and_unlog_range(axis)
     AXIS_INDEX axis;
 {
-  if (reverse_range[axis]) {
-    double temp = min_array[axis];
-    min_array[axis] = max_array[axis];
-    max_array[axis] = temp;
+  if (axis_array[axis].reverse_range) {
+    double temp = axis_array[axis].min;
+    axis_array[axis].min = axis_array[axis].max;
+    axis_array[axis].max = temp;
   }
-  axis_unlog_interval(axis, &min_array[axis], &max_array[axis], 1);
+  axis_unlog_interval(axis, &axis_array[axis].min, &axis_array[axis].max, 1);
 }
 
 
@@ -260,10 +265,10 @@ axis_log_value_checked(axis, coord, what)
      double coord;		/* the value */
      const char *what;		/* what is the coord for? */
 {
-    if (log_array[axis]) {
+    if (axis_array[axis].log) {
 	if (coord <= 0.0) {
 	    graph_error("%s has %s coord of %g; must be above 0 for log scale!",
-			what, axisname_array[axis], coord);
+			what, axis_defaults[axis].name, coord);
 	} else
 	    return (AXIS_DO_LOG(axis,coord));
     }
@@ -351,31 +356,31 @@ axis_checked_extend_empty_range(axis,mesg)
     /* widen [nonzero:nonzero] by -/+ this relative amount */
 #define FIXUP_RANGE__WIDEN_NONZERO_REL	0.01
 
-    double dmin = min_array[axis];
-    double dmax = max_array[axis];
+    double dmin = axis_array[axis].min;
+    double dmax = axis_array[axis].max;
 
     /* HBB 20000501: this same action was taken just before most of
      * the invocations of this function, so I moved it into here.
      * Only do this if 'mesg' is non-NULL --> pass NULL if you don't
      * want the test */
     if (mesg
-	&& (min_array[axis] == VERYLARGE
-	    || max_array[axis] == -VERYLARGE))
+	&& (axis_array[axis].min == VERYLARGE
+	    || axis_array[axis].max == -VERYLARGE))
 	int_error(c_token, mesg);
 
     if (dmax - dmin == 0.0) {
 	/* empty range */
-	if (auto_array[axis]) {
+	if (axis_array[axis].autoscale) {
 	    /* range came from autoscaling ==> widen it */
 	    double widen = (dmax == 0.0) ?
 		FIXUP_RANGE__WIDEN_ZERO_ABS 
 		: FIXUP_RANGE__WIDEN_NONZERO_REL * dmax;
 	    fprintf(stderr, "Warning: empty %s range [%g:%g], ",
-		    axisname_array[axis], dmin, dmax);
-	    min_array[axis] -= widen;
-	    max_array[axis] += widen;
+		    axis_defaults[axis].name, dmin, dmax);
+	    axis_array[axis].min -= widen;
+	    axis_array[axis].max += widen;
 	    fprintf(stderr, "adjusting to [%g:%g]\n",
-		    min_array[axis], max_array[axis]);
+		    axis_array[axis].min, axis_array[axis].max);
 	} else {
 	    /* user has explicitly set the range (to something empty)
                ==> we're in trouble */
@@ -383,7 +388,7 @@ axis_checked_extend_empty_range(axis,mesg)
 	     * when this is called? We might be better off using
 	     * NO_CARET..., here */
 	    int_error(c_token, "Can't plot with an empty %s range!",
-		      axisname_array[axis]);
+		      axis_defaults[axis].name);
 	}
     }
 }
@@ -761,7 +766,8 @@ timetic_format(axis, amin, amax)
 	if (t_max.tm_year != t_min.tm_year) {
 	    /* different years, include year in ticlabel */
 	    /* check convention, day/month or month/day */
-	    if (strchr(timefmt[axis], 'm') < strchr(timefmt[axis], 'd')) {
+	    if (strchr(axis_array[axis].timefmt, 'm')
+		< strchr(axis_array[axis].timefmt, 'd')) {
 		strcpy(ticfmt[axis], "%m/%d/%");
 	    } else {
 		strcpy(ticfmt[axis], "%d/%m/%");
@@ -773,7 +779,8 @@ timetic_format(axis, amin, amax)
 	    }
 
 	} else {
-	    if (strchr(timefmt[axis], 'm') < strchr(timefmt[axis], 'd')) {
+	    if (strchr(axis_array[axis].timefmt, 'm')
+		< strchr(axis_array[axis].timefmt, 'd')) {
 		strcpy(ticfmt[axis], "%m/%d");
 	    } else {
 		strcpy(ticfmt[axis], "%d/%m");
@@ -865,17 +872,17 @@ make_tics(axis, guide)
 {
     register double xr, tic, l10;
 
-    xr = fabs(min_array[axis] - max_array[axis]);
+    xr = fabs(axis_array[axis].min - axis_array[axis].max);
 
     l10 = log10(xr);
     tic = set_tic(l10, guide);
-    if (log_array[axis] && tic < 1.0)
+    if (axis_array[axis].log && tic < 1.0)
 	tic = 1.0;
-    if (axis_is_timedata[axis]) {
+    if (axis_array[axis].is_timedata) {
 	struct tm ftm, etm;
 	/* this is not fun */
-	ggmtime(&ftm, (double) min_array[axis]);
-	ggmtime(&etm, (double) max_array[axis]);
+	ggmtime(&ftm, (double) axis_array[axis].min);
+	ggmtime(&etm, (double) axis_array[axis].max);
 
 	timelevel[axis] = 0;	/* seconds */
 	if (tic > 20) {
@@ -943,15 +950,15 @@ setup_tics(axis, max)
 {
     double tic = 0;
 
-    struct ticdef *ticdef = &(axis_ticdef[axis]);
+    struct ticdef *ticdef = &(axis_array[axis].ticdef);
 
-    int fixmin = (auto_array[axis] & 1) != 0;
-    int fixmax = (auto_array[axis] & 2) != 0;
+    int fixmin = (axis_array[axis].autoscale & 1) != 0;
+    int fixmax = (axis_array[axis].autoscale & 2) != 0;
 
     /* HBB 20000506: if no tics required for this axis, do
      * nothing. This used to be done exactly before each call of
      * setup_tics, anyway... */
-    if (! axis_tics[axis])
+    if (! axis_array[axis].ticmode)
 	return;
 
     if (ticdef->type == TIC_SERIES) {
@@ -965,27 +972,26 @@ setup_tics(axis, max)
     }
 
     if (fixmin) {
-	if (min_array[axis] < max_array[axis])
-	    min_array[axis] = tic * floor(min_array[axis] / tic);
+	if (axis_array[axis].min < axis_array[axis].max)
+	    axis_array[axis].min = tic * floor(axis_array[axis].min / tic);
 	else
-	    min_array[axis] = tic * ceil(min_array[axis] / tic);
+	    axis_array[axis].min = tic * ceil(axis_array[axis].min / tic);
     }
     if (fixmax) {
-	if (min_array[axis] < max_array[axis])
-	    max_array[axis] = tic * ceil(max_array[axis] / tic);
+	if (axis_array[axis].min < axis_array[axis].max)
+	    axis_array[axis].max = tic * ceil(axis_array[axis].max / tic);
 	else
-	    max_array[axis] = tic * floor(max_array[axis] / tic);
+	    axis_array[axis].max = tic * floor(axis_array[axis].max / tic);
     }
-    if (axis_is_timedata[axis] && format_is_numeric[axis])
+    if (axis_array[axis].is_timedata && axis_array[axis].format_is_numeric)
 	/* invent one for them */
-	timetic_format(axis, min_array[axis], max_array[axis]);
+	timetic_format(axis, axis_array[axis].min, axis_array[axis].max);
     else
-	strcpy(ticfmt[axis], axis_formatstring[axis]);
+	strcpy(ticfmt[axis], axis_array[axis].formatstring);
 }
 
 /*{{{  gen_tics */
-/* uses global arrays ticstep[], ticfmt[], min_array[], max_array[],
- * auto_array[], log_array[], log_base_array[]
+/* uses global arrays ticstep[], ticfmt[], axis_array[], 
  * we use any of GRID_X/Y/X2/Y2 and  _MX/_MX2/etc - caller is expected
  * to clear the irrelevent fields from global grid bitmask
  * note this is also called from graph3d, so we need GRID_Z too
@@ -999,11 +1005,11 @@ gen_tics(axis, grid, callback)
     /* separate main-tic part of grid */
     struct lp_style_type lgrd, mgrd;
     /* tic defn */
-    struct ticdef *def = &axis_ticdef[axis]; 
+    struct ticdef *def = &axis_array[axis].ticdef; 
     /* minitics - off/default/auto/explicit */
-    int minitics = axis_minitics[axis];
+    int minitics = axis_array[axis].minitics;
     /* minitic frequency */
-    double minifreq = axis_mtic_freq[axis];
+    double minifreq = axis_array[axis].mtic_freq;
      
 
     memcpy(&lgrd, &grid_lp, sizeof(struct lp_style_type));
@@ -1014,10 +1020,10 @@ gen_tics(axis, grid, callback)
     if (def->type == TIC_USER) {	/* special case */
 	/*{{{  do user tics then return */
 	struct ticmark *mark = def->def.user;
-	double uncertain = (max_array[axis] - min_array[axis]) / 10;
-	double ticmin = min_array[axis] - SIGNIF * uncertain;
-	double internal_max = max_array[axis] + SIGNIF * uncertain;
-	double log10_base = log_array[axis] ? log10(base_array[axis]) : 1.0;
+	double uncertain = (axis_array[axis].max - axis_array[axis].min) / 10;
+	double ticmin = axis_array[axis].min - SIGNIF * uncertain;
+	double internal_max = axis_array[axis].max + SIGNIF * uncertain;
+	double log10_base = axis_array[axis].log ? log10(axis_array[axis].base) : 1.0;
 
 	/* polar labels always +ve, and if rmin has been set, they are
 	 * relative to rmin. position is as user specified, but must
@@ -1025,8 +1031,8 @@ gen_tics(axis, grid, callback)
 	 * log scale, so I shan't worry about it !
 	 */
 	double polar_shift = (polar
-			      && !(auto_array[R_AXIS] & 1))
-	    ? min_array[R_AXIS] : 0;
+			      && !(axis_array[R_AXIS].autoscale & 1))
+	    ? axis_array[R_AXIS].min : 0;
 
 	for (mark = def->def.user; mark; mark = mark->next) {
 	    char label[64];
@@ -1037,7 +1043,7 @@ gen_tics(axis, grid, callback)
 	    if (!inrange(internal, ticmin, internal_max))
 		continue;
 
-	    if (axis_is_timedata[axis])
+	    if (axis_array[axis].is_timedata)
 		gstrftime(label, 24, mark->label ? mark->label : ticfmt[axis], mark->position);
 	    else
 		gprintf(label, sizeof(label), mark->label ? mark->label : ticfmt[axis], log10_base, mark->position);
@@ -1065,13 +1071,13 @@ gen_tics(axis, grid, callback)
 	double internal;	/* in internal co-ords */
 	double user;		/* in user co-ords */
 	double start, step, end;
-	double lmin = min_array[axis], lmax = max_array[axis];
+	double lmin = axis_array[axis].min, lmax = axis_array[axis].max;
 	double internal_min, internal_max;	/* to allow for rounding errors */
 	double ministart = 0, ministep = 1, miniend = 1;	/* internal or user - depends on step */
 	int anyticput = 0;	/* for detection of infinite loop */
 
 	/* gprintf uses log10() of base - log_base_array is log() */
-	double log10_base = log_array[axis] ? log10(base_array[axis]) : 1.0;
+	double log10_base = axis_array[axis].log ? log10(axis_array[axis].base) : 1.0;
 
 	if (lmax < lmin) {
 	    /* hmm - they have set reversed range for some reason */
@@ -1082,7 +1088,7 @@ gen_tics(axis, grid, callback)
 	/*{{{  choose start, step and end */
 	switch (def->type) {
 	case TIC_SERIES:
-	    if (log_array[axis]) {
+	    if (axis_array[axis].log) {
 		/* we can tolerate start <= 0 if step and end > 0 */
 		if (def->def.series.end <= 0 || def->def.series.incr <= 0)
 		    return;	/* just quietly ignore */
@@ -1147,14 +1153,14 @@ gen_tics(axis, grid, callback)
 		/* they have said what they want */
 		if (minifreq <= 0)
 		    minitics = 0;	/* not much else we can do */
-/* 		else if (log_array[axis]) { */
-/* 		    ministart = ministep = step / minifreq * base_array[axis]; */
+/* 		else if (axis_array[axis].log) { */
+/* 		    ministart = ministep = step / minifreq * axis_array[axis].base; */
 /* 		    miniend = step * base_array[axis]; */
 /* 		} else { */
 		ministart = ministep = step / minifreq;
 		miniend = step;
 /* 		} */
-	    } else if (log_array[axis]) {
+	    } else if (axis_array[axis].log) {
 		if (step > 1.5) {	/* beware rounding errors */
 		    /*{{{  10,100,1000 case */
 		    /* no more than five minitics */
@@ -1165,7 +1171,7 @@ gen_tics(axis, grid, callback)
 		    /*}}} */
 		} else {
 		    /*{{{  2,5,8 case */
-		    miniend = base_array[axis];
+		    miniend = axis_array[axis].base;
 		    if (end - start >= 10)
 			minitics = 0;	/* none */
 		    else if (end - start >= 5) {
@@ -1177,7 +1183,7 @@ gen_tics(axis, grid, callback)
 		    }
 		    /*}}} */
 		}
-	    } else if (axis_is_timedata[axis]) {
+	    } else if (axis_array[axis].is_timedata) {
 		ministart = ministep = make_ltic(timelevel[axis], step);
 		miniend = step * 0.9;
 	    } else if (minitics == MINI_AUTO) {
@@ -1211,15 +1217,15 @@ gen_tics(axis, grid, callback)
 		anyticput = 1;
 
 	    /*{{{  calc internal and user co-ords */
-	    if (!log_array[axis]) {
-		internal = (axis_is_timedata[axis])
+	    if (!axis_array[axis].log) {
+		internal = (axis_array[axis].is_timedata)
 		    ? time_tic_just(timelevel[axis], tic)
 		    : tic;
 		user = CheckZero(internal, step);
 	    } else {
 		/* log scale => dont need to worry about zero ? */
 		internal = tic;
-		user = pow(base_array[axis], internal);
+		user = pow(axis_array[axis].base, internal);
 	    }
 	    /*}}} */
 	    if (internal > internal_max)
@@ -1245,17 +1251,17 @@ gen_tics(axis, grid, callback)
 		    }
 		default:{	/* comp or series */
 			char label[64];
-			if (axis_is_timedata[axis]) {
+			if (axis_array[axis].is_timedata) {
 			    /* If they are doing polar time plot, good luck to them */
 			    gstrftime(label, 24, ticfmt[axis], (double) user);
 			} else if (polar) {
 			    /* if rmin is set, we stored internally with r-rmin */
 			    /* HBB 990327: reverted to 'pre-Igor' version... */
 #if 1				/* Igor's polar-grid patch */
-			    double r = fabs(user) + (auto_array[R_AXIS] & 1 ? 0 : min_array[R_AXIS]);
+			    double r = fabs(user) + (axis_array[R_AXIS].autoscale & 1 ? 0 : axis_array[R_AXIS].min);
 #else
 			    /* Igor removed fabs to allow -ve labels */
-			    double r = user + (auto_array[R_AXIS] & 1 ? 0 : min_array[R_AXIS]);
+			    double r = user + (axis_array[R_AXIS].autoscale & 1 ? 0 : axis_array[R_AXIS].min);
 #endif
 			    gprintf(label, sizeof(label), ticfmt[axis], log10_base, r);
 			} else {
@@ -1271,11 +1277,12 @@ gen_tics(axis, grid, callback)
 		/*{{{  process minitics */
 		double mplace, mtic;
 		for (mplace = ministart; mplace < miniend; mplace += ministep) {
-		    if (axis_is_timedata[axis])
-			mtic = time_tic_just(timelevel[axis] - 1, internal + mplace);
+		    if (axis_array[axis].is_timedata)
+			mtic = time_tic_just(timelevel[axis] - 1,
+					     internal + mplace);
 		    else
 			mtic = internal
-			    + (log_array[axis] && step <= 1.5
+			    + (axis_array[axis].log && step <= 1.5
 			       ? AXIS_DO_LOG(axis,mplace)
 			       : mplace);
 		    if (inrange(mtic, internal_min, internal_max)
@@ -1371,17 +1378,17 @@ axis_output_tics(axis, ticlabel_position, zeroaxis_basis, grid_choice,
     int mirror_position;	/* 'non-running' coordinate, 'other' side */
 
     if (zeroaxis_basis / SECOND_AXES) {
-	axis_position = axis_graphical_upper[zeroaxis_basis];
-	mirror_position = axis_graphical_lower[zeroaxis_basis];
+	axis_position = axis_array[zeroaxis_basis].term_upper;
+	mirror_position = axis_array[zeroaxis_basis].term_lower;
     } else {
-	axis_position = axis_graphical_lower[zeroaxis_basis];
-	mirror_position = axis_graphical_upper[zeroaxis_basis];
+	axis_position = axis_array[zeroaxis_basis].term_lower;
+	mirror_position = axis_array[zeroaxis_basis].term_upper;
     }	
 
-    if (axis_tics[axis]) {
+    if (axis_array[axis].ticmode) {
 	/* set the globals needed by the _callback() function */
 
-	if (axis_tic_rotate[axis] && (*t->text_angle) (1)) {
+	if (axis_array[axis].tic_rotate && (*t->text_angle) (1)) {
 	    tic_hjust = axis_is_vertical
 		? CENTRE
 		: (axis_is_second ? LEFT : RIGHT);
@@ -1402,19 +1409,19 @@ axis_output_tics(axis, ticlabel_position, zeroaxis_basis, grid_choice,
 	    rotate_tics = 0;
 	}
 
-	if (axis_tics[axis] & TICS_MIRROR)
+	if (axis_array[axis].ticmode & TICS_MIRROR)
 	    tic_mirror = mirror_position;
 	else
 	    tic_mirror = -1;	/* no thank you */
 
-	if ((axis_tics[axis] & TICS_ON_AXIS)
-	    && !log_array[zeroaxis_basis]
-	    && inrange(0.0, min_array[zeroaxis_basis],
-		       max_array[zeroaxis_basis])
+	if ((axis_array[axis].ticmode & TICS_ON_AXIS)
+	    && !axis_array[zeroaxis_basis].log
+	    && inrange(0.0, axis_array[zeroaxis_basis].min,
+		       axis_array[zeroaxis_basis].max)
 	    ) {
 	    tic_start = AXIS_MAP(zeroaxis_basis, 0.0);
 	    tic_direction = axis_is_second ? 1 : -1;
-	    if (axis_tics[axis] & TICS_MIRROR)
+	    if (axis_array[axis].ticmode & TICS_MIRROR)
 		tic_mirror = tic_start;
 	    /* put text at boundary if axis is close to boundary */
 	    if (axis_is_vertical) {
@@ -1449,8 +1456,8 @@ axis_set_graphical_range(axis, lower, upper)
     AXIS_INDEX axis;
     unsigned int lower, upper;
 {
-    axis_graphical_lower[axis] = lower;
-    axis_graphical_upper[axis] = upper;
+    axis_array[axis].term_lower = lower;
+    axis_array[axis].term_upper = upper;
 }
 
 TBOOLEAN 
@@ -1459,14 +1466,14 @@ axis_position_zeroaxis(axis)
 {
     TBOOLEAN is_inside = FALSE;
 
-    if ((min_array[axis] >= 0.0 && max_array[axis] >= 0.0)
-	|| log_array[axis]) {
+    if ((axis_array[axis].min >= 0.0 && axis_array[axis].max >= 0.0)
+	|| axis_array[axis].log) {
 	/* save for impulse plotting */
-	axis_zero[axis] = axis_graphical_lower[axis];	
-    } else if (min_array[axis] <= 0.0 && max_array[axis] <= 0.0) {
-	axis_zero[axis] = axis_graphical_upper[axis];
+	axis_array[axis].term_zero = axis_array[axis].term_lower;	
+    } else if (axis_array[axis].min <= 0.0 && axis_array[axis].max <= 0.0) {
+	axis_array[axis].term_zero = axis_array[axis].term_upper;
     } else {
-	axis_zero[axis] = AXIS_MAP(axis, 0.0);
+	axis_array[axis].term_zero = AXIS_MAP(axis, 0.0);
 	is_inside = TRUE;
     }
 
@@ -1478,14 +1485,14 @@ axis_draw_2d_zeroaxis(axis, crossaxis)
     AXIS_INDEX axis, crossaxis;
 {
     if (axis_position_zeroaxis(crossaxis)
-	    && (axis_zeroaxis[axis].l_type > -3)) {
-	term_apply_lp_properties(&axis_zeroaxis[axis]);
+	    && (axis_array[axis].zeroaxis.l_type > -3)) {
+	term_apply_lp_properties(&axis_array[axis].zeroaxis);
 	if ((axis % SECOND_AXES) == FIRST_X_AXIS) {
-	    (*term->move) (axis_graphical_lower[axis], axis_zero[crossaxis]);
-	    (*term->vector) (axis_graphical_upper[axis], axis_zero[crossaxis]);
+	    (*term->move) (axis_array[axis].term_lower, axis_array[crossaxis].term_zero);
+	    (*term->vector) (axis_array[axis].term_upper, axis_array[crossaxis].term_zero);
 	} else {
-	    (*term->move) (axis_zero[crossaxis], axis_graphical_lower[axis]);
-	    (*term->vector) (axis_zero[crossaxis], axis_graphical_upper[axis]);
+	    (*term->move) (axis_array[crossaxis].term_zero, axis_array[axis].term_lower);
+	    (*term->vector) (axis_array[crossaxis].term_zero, axis_array[axis].term_upper);
 	}
     }
 }
@@ -1537,30 +1544,30 @@ load_range(axis, a, b, autosc)
 double get_writeback_min(axis)
     AXIS_INDEX axis;
 {
-    /* printf("get min(%d)=%g\n",axis,writeback_min[axis]); */
-    return writeback_min[axis];
+    /* printf("get min(%d)=%g\n",axis,axis_array[axis].writeback_min); */
+    return axis_array[axis].writeback_min;
 }
 
 double get_writeback_max(axis)
     AXIS_INDEX axis;
 {
-    /* printf("get max(%d)=%g\n",axis,writeback_min[axis]); */
-    return writeback_max[axis];
+    /* printf("get max(%d)=%g\n",axis,axis_array[axis].writeback_min); */
+    return axis_array[axis].writeback_max;
 }
 
 void set_writeback_min(axis)
     AXIS_INDEX axis;
 {
-    double val = AXIS_DE_LOG_VALUE(axis,min_array[axis]);
+    double val = AXIS_DE_LOG_VALUE(axis,axis_array[axis].min);
     /* printf("set min(%d)=%g\n",axis,val); */
-    writeback_min[axis] = val;
+    axis_array[axis].writeback_min = val;
 }
 
 void set_writeback_max(axis)
     AXIS_INDEX axis;
 {
-    double val = AXIS_DE_LOG_VALUE(axis,max_array[axis]);
+    double val = AXIS_DE_LOG_VALUE(axis,axis_array[axis].max);
     /* printf("set max(%d)=%g\n",axis,val); */
-    writeback_max[axis] = val;
+    axis_array[axis].writeback_max = val;
 }
 

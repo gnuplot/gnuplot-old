@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -306,9 +306,12 @@ struct curve_points *current_plot;
 	break;
     }
 
-    if (current_plot->plot_smooth == SMOOTH_ACSPLINES)
+    if (current_plot->plot_smooth == SMOOTH_ACSPLINES) {
 	max_cols = 3;
-
+	current_plot->z_axis = FIRST_Z_AXIS;
+	df_axis[2] = FIRST_Z_AXIS;
+    }
+	
     if (df_no_use_specs > max_cols)
 	int_error(NO_CARET, "Too many using specs for this style");
 
@@ -567,12 +570,12 @@ double width;			/* -1 means autocalc, 0 means use xmin/xmax */
 
     if (polar) {
 	double newx, newy;
-	if (!(auto_array[R_AXIS] & 2) && y > max_array[R_AXIS]) {
+	if (!(axis_array[R_AXIS].autoscale & 2) && y > axis_array[R_AXIS].max) {
 	    cp->type = OUTRANGE;
 	}
-	if (!(auto_array[R_AXIS] & 1)) {
+	if (!(axis_array[R_AXIS].autoscale & 1)) {
 	    /* we store internally as if plotting r(t)-rmin */
-	    y -= min_array[R_AXIS];
+	    y -= axis_array[R_AXIS].min;
 	}
 	newx = y * cos(x * ang2rad);
 	newy = y * sin(x * ang2rad);
@@ -584,24 +587,24 @@ double width;			/* -1 means autocalc, 0 means use xmin/xmax */
 	y = newy;
 	x = newx;
 
-	if (!(auto_array[R_AXIS] & 2) && yhigh > max_array[R_AXIS]) {
+	if (!(axis_array[R_AXIS].autoscale & 2) && yhigh > axis_array[R_AXIS].max) {
 	    cp->type = OUTRANGE;
 	}
-	if (!(auto_array[R_AXIS] & 1)) {
+	if (!(axis_array[R_AXIS].autoscale & 1)) {
 	    /* we store internally as if plotting r(t)-rmin */
-	    yhigh -= min_array[R_AXIS];
+	    yhigh -= axis_array[R_AXIS].min;
 	}
 	newx = yhigh * cos(xhigh * ang2rad);
 	newy = yhigh * sin(xhigh * ang2rad);
 	yhigh = newy;
 	xhigh = newx;
 
-	if (!(auto_array[R_AXIS] & 2) && ylow > max_array[R_AXIS]) {
+	if (!(axis_array[R_AXIS].autoscale & 2) && ylow > axis_array[R_AXIS].max) {
 	    cp->type = OUTRANGE;
 	}
-	if (!(auto_array[R_AXIS] & 1)) {
+	if (!(axis_array[R_AXIS].autoscale & 1)) {
 	    /* we store internally as if plotting r(t)-rmin */
-	    ylow -= min_array[R_AXIS];
+	    ylow -= axis_array[R_AXIS].min;
 	}
 	newx = ylow * cos(xlow * ang2rad);
 	newy = ylow * sin(xlow * ang2rad);
@@ -725,10 +728,12 @@ int plot_num;
     /* The data format is determined by the format of the axis labels.
      * See 'set format'.  Patch by Don Taber
      */
-    table_format = gp_alloc(strlen(axis_formatstring[FIRST_X_AXIS])+strlen(axis_formatstring[FIRST_Y_AXIS])+5, "table format");
-    strcpy(table_format, axis_formatstring[FIRST_X_AXIS]);
+    table_format = gp_alloc(strlen(axis_array[FIRST_X_AXIS].formatstring)
+			    + strlen(axis_array[FIRST_Y_AXIS].formatstring)
+			    + 5, "table format");
+    strcpy(table_format, axis_array[FIRST_X_AXIS].formatstring);
     strcat(table_format, " ");
-    strcat(table_format, axis_formatstring[FIRST_Y_AXIS]);
+    strcat(table_format, axis_array[FIRST_Y_AXIS].formatstring);
     strcat(table_format, " %c\n");
 
     for (curve = 0; curve < plot_num;
@@ -979,17 +984,17 @@ eval_plots()
 	    /* we can now do some checks that we deferred earlier */
 
 	    if (this_plot->plot_type == DATA) {
-		if (!(uses_axis[x_axis] & 1) && auto_array[x_axis]) {
-		    if (auto_array[x_axis] & 1)
-			min_array[x_axis] = VERYLARGE;
-		    if (auto_array[x_axis] & 2)
-			max_array[x_axis] = -VERYLARGE;
+		if (!(uses_axis[x_axis] & 1) && axis_array[x_axis].autoscale) {
+		    if (axis_array[x_axis].autoscale & 1)
+			axis_array[x_axis].min = VERYLARGE;
+		    if (axis_array[x_axis].autoscale & 2)
+			axis_array[x_axis].max = -VERYLARGE;
 		}
-		if (axis_is_timedata[x_axis]) {
+		if (axis_array[x_axis].is_timedata) {
 		    if (specs < 2)
 			int_error(c_token, "Need full using spec for x time data");
 		}
-		if (axis_is_timedata[y_axis]) {
+		if (axis_array[y_axis].is_timedata) {
 		    if (specs < 1)
 			int_error(c_token, "Need using spec for y time data");
 		}
@@ -1088,12 +1093,12 @@ eval_plots()
 	if (uses_axis[SECOND_X_AXIS] & 1) {
 	    /* check that x2min -> x2max is not too small */
 	    axis_checked_extend_empty_range(SECOND_X_AXIS, "x2 range is invalid");
-	} else if (auto_array[SECOND_X_AXIS]) {
+	} else if (axis_array[SECOND_X_AXIS].autoscale) {
 	    /* copy x1's range */
-	    if (auto_array[SECOND_X_AXIS] & 1)
-		min_array[SECOND_X_AXIS] = min_array[FIRST_X_AXIS];
-	    if (auto_array[SECOND_X_AXIS] & 2)
-		max_array[SECOND_X_AXIS] = max_array[FIRST_X_AXIS];
+	    if (axis_array[SECOND_X_AXIS].autoscale & 1)
+		axis_array[SECOND_X_AXIS].min = axis_array[FIRST_X_AXIS].min;
+	    if (axis_array[SECOND_X_AXIS].autoscale & 2)
+		axis_array[SECOND_X_AXIS].max = axis_array[FIRST_X_AXIS].max;
 	}
     }
     if (some_functions) {
@@ -1105,16 +1110,16 @@ eval_plots()
 	if (parametric || polar) {
 	    if (!(uses_axis[FIRST_X_AXIS] & 1)) {
 		/* these have not yet been set to full width */
-		if (auto_array[FIRST_X_AXIS] & 1)
-		    min_array[FIRST_X_AXIS] = VERYLARGE;
-		if (auto_array[FIRST_X_AXIS] & 2)
-		    max_array[FIRST_X_AXIS] = -VERYLARGE;
+		if (axis_array[FIRST_X_AXIS].autoscale & 1)
+		    axis_array[FIRST_X_AXIS].min = VERYLARGE;
+		if (axis_array[FIRST_X_AXIS].autoscale & 2)
+		    axis_array[FIRST_X_AXIS].max = -VERYLARGE;
 	    }
 	    if (!(uses_axis[SECOND_X_AXIS] & 1)) {
-		if (auto_array[SECOND_X_AXIS] & 1)
-		    min_array[SECOND_X_AXIS] = VERYLARGE;
-		if (auto_array[SECOND_X_AXIS] & 2)
-		    max_array[SECOND_X_AXIS] = -VERYLARGE;
+		if (axis_array[SECOND_X_AXIS].autoscale & 1)
+		    axis_array[SECOND_X_AXIS].min = VERYLARGE;
+		if (axis_array[SECOND_X_AXIS].autoscale & 2)
+		    axis_array[SECOND_X_AXIS].max = -VERYLARGE;
 	    }
 	}
 
@@ -1123,8 +1128,8 @@ eval_plots()
 	 * be logscaled in parametric or polar mode. Does this
 	 * *really* hold? */
 	if (parametric || polar) {
-	    t_min = min_array[T_AXIS];
-	    t_max = max_array[T_AXIS];
+	    t_min = axis_array[T_AXIS].min;
+	    t_max = axis_array[T_AXIS].max;
 	    t_step = (t_max - t_min) / (samples_1 - 1);
 	}
 	/* else we'll do it on each plot (see below) */
@@ -1151,8 +1156,8 @@ eval_plots()
 		    plot_func.at = temp_at();	/* reparse function */
 
 		    if (!parametric && !polar) {
-			t_min = min_array[x_axis];
-			t_max = max_array[x_axis];
+			t_min = axis_array[x_axis].min;
+			t_max = axis_array[x_axis].max;
 			axis_unlog_interval(x_axis, &t_min, &t_max, 1);
 			t_step = (t_max - t_min) / (samples_1 - 1);
 		    }
@@ -1162,7 +1167,7 @@ eval_plots()
 			double t = t_min + i * t_step;
 			/* parametric/polar => NOT a log quantity */
 			double x = (!parametric && !polar &&
-				    log_array[x_axis]) ? pow(base_array[x_axis], t) : t;
+				    axis_array[x_axis].log) ? pow(axis_array[x_axis].base, t) : t;
 
 			(void) Gcomplex(&plot_func.dummy_values[0], x, 0.0);
 			evaluate_at(plot_func.at, &a);
@@ -1189,10 +1194,10 @@ eval_plots()
 			    this_plot->points[i].y = temp;
 			} else if (polar) {
 			    double y;
-			    if (!(auto_array[R_AXIS] & 2) && temp > max_array[R_AXIS])
+			    if (!(axis_array[R_AXIS].autoscale & 2) && temp > axis_array[R_AXIS].max)
 				this_plot->points[i].type = OUTRANGE;
-			    if (!(auto_array[R_AXIS] & 1))
-				temp -= min_array[R_AXIS];
+			    if (!(axis_array[R_AXIS].autoscale & 1))
+				temp -= axis_array[R_AXIS].min;
 			    y = temp * sin(x * ang2rad);
 			    x = temp * cos(x * ang2rad);
 			    temp = y;
@@ -1253,31 +1258,31 @@ eval_plots()
 
 
     if (uses_axis[FIRST_X_AXIS]) {
-	if (max_array[FIRST_X_AXIS] == -VERYLARGE ||
-	    min_array[FIRST_X_AXIS] == VERYLARGE)
+	if (axis_array[FIRST_X_AXIS].max == -VERYLARGE ||
+	    axis_array[FIRST_X_AXIS].min == VERYLARGE)
 	    int_error(NO_CARET, "all points undefined!");
 	axis_revert_and_unlog_range(FIRST_X_AXIS);
     }
     if (uses_axis[SECOND_X_AXIS]) {
-	if (max_array[SECOND_X_AXIS] == -VERYLARGE ||
-	    min_array[SECOND_X_AXIS] == VERYLARGE)
+	if (axis_array[SECOND_X_AXIS].max == -VERYLARGE ||
+	    axis_array[SECOND_X_AXIS].min == VERYLARGE)
 	    int_error(NO_CARET, "all points undefined!");
 	axis_revert_and_unlog_range(SECOND_X_AXIS);
     } else {
 	assert(uses_axis[FIRST_X_AXIS]);
-	if (auto_array[SECOND_X_AXIS] & 1)
-	    min_array[SECOND_X_AXIS] = min_array[FIRST_X_AXIS];
-	if (auto_array[SECOND_X_AXIS] & 2)
-	    max_array[SECOND_X_AXIS] = max_array[FIRST_X_AXIS];
-	if (! auto_array[SECOND_X_AXIS])
+	if (axis_array[SECOND_X_AXIS].autoscale & 1)
+	    axis_array[SECOND_X_AXIS].min = axis_array[FIRST_X_AXIS].min;
+	if (axis_array[SECOND_X_AXIS].autoscale & 2)
+	    axis_array[SECOND_X_AXIS].max = axis_array[FIRST_X_AXIS].max;
+	if (! axis_array[SECOND_X_AXIS].autoscale)
 	    axis_revert_and_unlog_range(SECOND_X_AXIS);
     }
     if (!uses_axis[FIRST_X_AXIS]) {
 	assert(uses_axis[SECOND_X_AXIS]);
-	if (auto_array[FIRST_X_AXIS] & 1)
-	    min_array[FIRST_X_AXIS] = min_array[SECOND_X_AXIS];
-	if (auto_array[FIRST_X_AXIS] & 2)
-	    max_array[FIRST_X_AXIS] = max_array[SECOND_X_AXIS];
+	if (axis_array[FIRST_X_AXIS].autoscale & 1)
+	    axis_array[FIRST_X_AXIS].min = axis_array[SECOND_X_AXIS].min;
+	if (axis_array[FIRST_X_AXIS].autoscale & 2)
+	    axis_array[FIRST_X_AXIS].max = axis_array[SECOND_X_AXIS].max;
     }
 
 
@@ -1291,21 +1296,21 @@ eval_plots()
     } else {
         /* else we want to copy y2 range */
         assert(uses_axis[FIRST_Y_AXIS]);
-	if (auto_array[SECOND_Y_AXIS] & 1)
-	    min_array[SECOND_Y_AXIS] = min_array[FIRST_Y_AXIS];
-	if (auto_array[SECOND_Y_AXIS] & 2)
-	    max_array[SECOND_Y_AXIS] = max_array[FIRST_Y_AXIS];
+	if (axis_array[SECOND_Y_AXIS].autoscale & 1)
+	    axis_array[SECOND_Y_AXIS].min = axis_array[FIRST_Y_AXIS].min;
+	if (axis_array[SECOND_Y_AXIS].autoscale & 2)
+	    axis_array[SECOND_Y_AXIS].max = axis_array[FIRST_Y_AXIS].max;
 	/* Log() fixup is only necessary if the range was *not* copied from
 	 * the (already logarithmized) yrange */
-	if (! auto_array[SECOND_Y_AXIS])
+	if (! axis_array[SECOND_Y_AXIS].autoscale)
 	    axis_revert_and_unlog_range(SECOND_Y_AXIS);
     }
     if (!uses_axis[FIRST_Y_AXIS]) {
 	assert(uses_axis[SECOND_Y_AXIS]);
-	if (auto_array[FIRST_Y_AXIS] & 1)
-	    min_array[FIRST_Y_AXIS] = min_array[SECOND_Y_AXIS];
-	if (auto_array[FIRST_Y_AXIS] & 2)
-	    max_array[FIRST_Y_AXIS] = max_array[SECOND_Y_AXIS];
+	if (axis_array[FIRST_Y_AXIS].autoscale & 1)
+	    axis_array[FIRST_Y_AXIS].min = axis_array[SECOND_Y_AXIS].min;
+	if (axis_array[FIRST_Y_AXIS].autoscale & 2)
+	    axis_array[FIRST_Y_AXIS].max = axis_array[SECOND_Y_AXIS].max;
     }
 
 #if 0
@@ -1322,35 +1327,18 @@ eval_plots()
     else {
 	START_LEAK_CHECK();	/* check for memory leaks in this routine */
 
-	/* do_plot now uses max_array[], etc */
+	/* do_plot now uses axis_array[] */
 	do_plot(first_plot, plot_num);
 
 	END_LEAK_CHECK();
 
-        /* after do_plot(), min_array[] and max_array[]
+        /* after do_plot(), axis_array[].min and .max
          * contain the plotting range actually used (rounded
          * to tic marks, not only the min/max data values)
          *  --> save them now for writeback if requested
 	 */
-
-#define SAVE_WRITEBACK(axis) /* ULIG */ \
-  if(range_flags[axis]&RANGE_WRITEBACK) { \
-	    set_writeback_min(axis);		\
-	    set_writeback_max(axis);		\
-  }
-
-        SAVE_WRITEBACK(FIRST_X_AXIS);
-        SAVE_WRITEBACK(FIRST_Y_AXIS);
-        SAVE_WRITEBACK(FIRST_Z_AXIS);
-        SAVE_WRITEBACK(SECOND_X_AXIS);
-        SAVE_WRITEBACK(SECOND_Y_AXIS);
-        SAVE_WRITEBACK(SECOND_Z_AXIS);
-        SAVE_WRITEBACK(T_AXIS);
-        SAVE_WRITEBACK(R_AXIS);
-        SAVE_WRITEBACK(U_AXIS);
-        SAVE_WRITEBACK(V_AXIS);
+	SAVE_WRITEBACK_ALL_AXES;
     }
-#undef SAVE_WRITEBACK
 
     /* if we get here, all went well, so record this line for replot */
 
@@ -1425,11 +1413,11 @@ int *plot_num;
 		    double r = yp->points[i].y;
 		    double t = xp->points[i].y * ang2rad;
 		    double x, y;
-		    if (!(auto_array[R_AXIS] & 2) && r > max_array[R_AXIS])
+		    if (!(axis_array[R_AXIS].autoscale & 2) && r > axis_array[R_AXIS].max)
 			yp->points[i].type = OUTRANGE;
-		    if (!(auto_array[R_AXIS] & 1)) {
+		    if (!(axis_array[R_AXIS].autoscale & 1)) {
 			/* store internally as if plotting r(t)-rmin */
-			r -= min_array[R_AXIS];
+			r -= axis_array[R_AXIS].min;
 		    }
 		    x = r * cos(t);
 		    y = r * sin(t);

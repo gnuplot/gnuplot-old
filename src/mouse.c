@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.5.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.5.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -63,7 +63,6 @@ static char *RCSid() { return RCSid("$Id: mouse.c,v 1.5.2.3 2000/06/22 12:57:39 
 #include "graph3d.h"
 #include "plot3d.h"
 #include "readline.h"
-/*  #include "setshow.h" */
 #include "term_api.h"
 
 /********************** variables ***********************************************************/
@@ -115,7 +114,7 @@ static int setting_zoom_x, setting_zoom_y;
 /* variables for changing the 3D view:
 */
 /* do we allow motion to result in a replot right now? */
-static TBOOLEAN allowmotion = TRUE; 
+TBOOLEAN allowmotion = TRUE;	/* used by pm.trm, too */
 /* did we already postpone a replot because allowmotion was FALSE ? */
 static TBOOLEAN needreplot = FALSE; 
 /* mouse position when dragging started */
@@ -303,14 +302,14 @@ MousePosToGraphPosReal(int xx, int yy, double *x, double *y, double *x2, double 
 	xx -= axis3d_o_x;
 	yy -= axis3d_o_y;
 	if (abs(axis3d_x_dx) > abs(axis3d_x_dy)) {
-	    *x = min_array[FIRST_X_AXIS] + ((double) xx) / axis3d_x_dx * (max_array[FIRST_X_AXIS] - min_array[FIRST_X_AXIS]);
+	    *x = axis_array[FIRST_X_AXIS].min + ((double) xx) / axis3d_x_dx * (axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min);
 	} else {
-	    *x = min_array[FIRST_X_AXIS] + ((double) yy) / axis3d_x_dy * (max_array[FIRST_X_AXIS] - min_array[FIRST_X_AXIS]);
+	    *x = axis_array[FIRST_X_AXIS].min + ((double) yy) / axis3d_x_dy * (axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min);
 	}
 	if (abs(axis3d_y_dx) > abs(axis3d_y_dy)) {
-	    *y = min_array[FIRST_Y_AXIS] + ((double) xx) / axis3d_y_dx * (max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS]);
+	    *y = axis_array[FIRST_Y_AXIS].min + ((double) xx) / axis3d_y_dx * (axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min);
 	} else {
-	    *y = min_array[FIRST_Y_AXIS] + ((double) yy) / axis3d_y_dy * (max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS]);
+	    *y = axis_array[FIRST_Y_AXIS].min + ((double) yy) / axis3d_y_dy * (axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min);
 	}
 	*x2 = *y2 = 1e38;	/* protection */
     }
@@ -374,14 +373,14 @@ GetAnnotateString(char *s, double x, double y, int mode, char *fmt)
 	strcat(format, "]");
 	s += sprintf(s, format, xDateTimeFormat(x, buf, mode), y);
     } else if (mode == MOUSE_COORDINATES_FRACTIONAL) {
-	double xrange = max_array[FIRST_X_AXIS] - min_array[FIRST_X_AXIS];
-	double yrange = max_array[FIRST_Y_AXIS] - min_array[FIRST_Y_AXIS];
+	double xrange = axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min;
+	double yrange = axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min;
 	/* calculate fractional coordinates.
 	 * prevent division by zero */
 	if (xrange) {
 	    char format[0xff] = "/";
 	    strcat(format, mouse_setting.fmt);
-	    s += sprintf(s, format, (x - min_array[FIRST_X_AXIS]) / xrange);
+	    s += sprintf(s, format, (x - axis_array[FIRST_X_AXIS].min) / xrange);
 	} else {
 	    s += sprintf(s, "/(undefined)");
 	}
@@ -389,7 +388,7 @@ GetAnnotateString(char *s, double x, double y, int mode, char *fmt)
 	    char format[0xff] = ", ";
 	    strcat(format, mouse_setting.fmt);
 	    strcat(format, "/");
-	    s += sprintf(s, format, (y - min_array[FIRST_Y_AXIS]) / yrange);
+	    s += sprintf(s, format, (y - axis_array[FIRST_Y_AXIS].min) / yrange);
 	} else {
 	    s += sprintf(s, ", (undefined)/");
 	}
@@ -442,7 +441,7 @@ xDateTimeFormat(double x, char *b, int mode)
     case MOUSE_COORDINATES_TIMEFMT:
 	/* FIXME HBB 20000507: timefmt is for *reading* timedata, not
 	 * for writing them! */
-	gstrftime(b, 0xff, timefmt[FIRST_X_AXIS], x);
+	gstrftime(b, 0xff, axis_array[FIRST_X_AXIS].timefmt, x);
 	break;
     default:
 	sprintf(b, mouse_setting.fmt, x);
@@ -455,14 +454,14 @@ xDateTimeFormat(double x, char *b, int mode)
 /* HBB 20000507: fixed a construction error. Was using the 'timefmt'
  * string (which is for reading, not writing time data) to output the
  * value. Code is now closer to what setup_tics does. */
-#define MKSTR(sp,x,axis)						\
-do {									\
-    if (axis_is_timedata[axis]) {					\
-	if (format_is_numeric[axis])					\
-	    timetic_format(axis, min_array[axis], max_array[axis]);	\
-	sp+=gstrftime(sp,40,axis_formatstring[axis],x);			\
-    } else								\
-	sp+=sprintf(sp, mouse_setting.fmt ,x);				\
+#define MKSTR(sp,x,axis)						      \
+do {									      \
+    if (axis_array[axis].is_timedata) {					      \
+	if (axis_array[axis].format_is_numeric)				      \
+	    timetic_format(axis, axis_array[axis].min, axis_array[axis].max); \
+	sp+=gstrftime(sp,40,axis_array[axis].formatstring,x);		      \
+    } else								      \
+	sp+=sprintf(sp, mouse_setting.fmt ,x);				      \
 } while (0)
 
 
@@ -488,9 +487,9 @@ GetCoordinateString(char *s, double x, double y)
 
 
 /* ratio for log, distance for linear */	
-# define DIST(x,rx,axis) 			\
-   (log_array[axis])				\
-    ? ( (rx==0) ? 99999 : x / rx )  \
+# define DIST(x,rx,axis)			\
+   (axis_array[axis].log)			\
+    ? ( (rx==0) ? 99999 : x / rx )		\
     : (x - rx)
 
 
@@ -517,7 +516,7 @@ GetRulerString(char *p, double x, double y)
     dy = DIST(y, ruler.y, FIRST_Y_AXIS);
     sprintf(p, format, ruler.x,ruler.y, dx, dy);
 
-    if (mouse_setting.polardistance && !log_array[FIRST_X_AXIS] && !log_array[FIRST_Y_AXIS]) {
+    if (mouse_setting.polardistance && !axis_array[FIRST_X_AXIS].log && !axis_array[FIRST_Y_AXIS].log) {
 	/* polar coords of distance (axes cannot be logarithmic) */
 	double rho = sqrt((x - ruler.x) * (x - ruler.x) + (y - ruler.y) * (y - ruler.y));
 	double phi = (180 / M_PI) * atan2(y - ruler.y, x - ruler.x);
@@ -549,14 +548,14 @@ apply_zoom(struct t_zoom *z)
     char s[255];
 
     if (zoom_now != NULL) { /* remember the current zoom */
-	zoom_now->xmin = AXIS_DE_LOG_VALUE(FIRST_X_AXIS, min_array[FIRST_X_AXIS]);
-	zoom_now->ymin = AXIS_DE_LOG_VALUE(FIRST_Y_AXIS, min_array[FIRST_Y_AXIS]);
-	zoom_now->x2min = AXIS_DE_LOG_VALUE(SECOND_X_AXIS, min_array[SECOND_X_AXIS]);
-	zoom_now->y2min = AXIS_DE_LOG_VALUE(SECOND_Y_AXIS, min_array[SECOND_Y_AXIS]);
-	zoom_now->xmax = AXIS_DE_LOG_VALUE(FIRST_X_AXIS, max_array[FIRST_X_AXIS]);
-	zoom_now->ymax = AXIS_DE_LOG_VALUE(FIRST_Y_AXIS, max_array[FIRST_Y_AXIS]);
-	zoom_now->x2max = AXIS_DE_LOG_VALUE(SECOND_X_AXIS, max_array[SECOND_X_AXIS]);
-	zoom_now->y2max = AXIS_DE_LOG_VALUE(SECOND_Y_AXIS, max_array[SECOND_Y_AXIS]);
+	zoom_now->xmin = AXIS_DE_LOG_VALUE(FIRST_X_AXIS, axis_array[FIRST_X_AXIS].min);
+	zoom_now->ymin = AXIS_DE_LOG_VALUE(FIRST_Y_AXIS, axis_array[FIRST_Y_AXIS].min);
+	zoom_now->x2min = AXIS_DE_LOG_VALUE(SECOND_X_AXIS, axis_array[SECOND_X_AXIS].min);
+	zoom_now->y2min = AXIS_DE_LOG_VALUE(SECOND_Y_AXIS, axis_array[SECOND_Y_AXIS].min);
+	zoom_now->xmax = AXIS_DE_LOG_VALUE(FIRST_X_AXIS, axis_array[FIRST_X_AXIS].max);
+	zoom_now->ymax = AXIS_DE_LOG_VALUE(FIRST_Y_AXIS, axis_array[FIRST_Y_AXIS].max);
+	zoom_now->x2max = AXIS_DE_LOG_VALUE(SECOND_X_AXIS, axis_array[SECOND_X_AXIS].max);
+	zoom_now->y2max = AXIS_DE_LOG_VALUE(SECOND_Y_AXIS, axis_array[SECOND_Y_AXIS].max);
     }
     zoom_now = z;
     if (zoom_now == NULL) {
@@ -698,7 +697,6 @@ static void
 UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
 {
     char s0[256], *sp;
-    extern TBOOLEAN term_initialised;	/* term.c */
     if (!term_initialised)
 	return;
     if (!ms->on) {
@@ -715,7 +713,7 @@ UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
 	strcat(format, ", ");
 	strcat(format, ms->fmt);
 	sprintf(s0, format, surface_rot_x, surface_rot_z, surface_scale, surface_zscale);
-    } else if (!TICS_ON(axis_tics[SECOND_X_AXIS]) && !TICS_ON(axis_tics[SECOND_Y_AXIS])) {
+    } else if (!TICS_ON(axis_array[SECOND_X_AXIS].ticmode) && !TICS_ON(axis_array[SECOND_Y_AXIS].ticmode)) {
 	/* only first X and Y axis are in use */
 # ifdef OLD_STATUS_LINE
 	sp = GetCoordinateString(s0, real_x, real_y);
@@ -731,22 +729,22 @@ UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
     } else {
 	/* X2 and/or Y2 are in use: use more verbose format */
 	sp = s0;
-	if (TICS_ON(axis_tics[FIRST_X_AXIS])) {
+	if (TICS_ON(axis_array[FIRST_X_AXIS].ticmode)) {
 	    sp = stpcpy(sp, "x=");
 	    MKSTR(sp, real_x, FIRST_X_AXIS);
 	    *sp++ = ' ';
 	}
-	if (TICS_ON(axis_tics[FIRST_Y_AXIS])) {
+	if (TICS_ON(axis_array[FIRST_Y_AXIS].ticmode)) {
 	    sp = stpcpy(sp, "y=");
 	    MKSTR(sp, real_y, FIRST_Y_AXIS);
 	    *sp++ = ' ';
 	}
-	if (TICS_ON(axis_tics[SECOND_X_AXIS])) {
+	if (TICS_ON(axis_array[SECOND_X_AXIS].ticmode)) {
 	    sp = stpcpy(sp, "x2=");
 	    MKSTR(sp, real_x2, SECOND_X_AXIS);
 	    *sp++ = ' ';
 	}
-	if (TICS_ON(axis_tics[SECOND_Y_AXIS])) {
+	if (TICS_ON(axis_array[SECOND_Y_AXIS].ticmode)) {
 	    sp = stpcpy(sp, "y2=");
 	    MKSTR(sp, real_y2, SECOND_Y_AXIS);
 	    *sp++ = ' ';
@@ -756,13 +754,13 @@ UpdateStatuslineWithMouseSetting(mouse_setting_t * ms)
 # if 0
 	    MousePosToGraphPosReal(ruler.px, ruler.py, &ruler.x, &ruler.y, &ruler.x2, &ruler.y2);
 # endif
-	    if (TICS_ON(axis_tics[FIRST_X_AXIS]))
+	    if (TICS_ON(axis_array[FIRST_X_AXIS].ticmode))
 		sp += sprintf(sp, xy1_format("dx="), DIST(real_x, ruler.x, FIRST_X_AXIS));
-	    if (TICS_ON(axis_tics[FIRST_Y_AXIS]))
+	    if (TICS_ON(axis_array[FIRST_Y_AXIS].ticmode))
 		sp += sprintf(sp, xy1_format("dy="), DIST(real_y, ruler.y, FIRST_Y_AXIS));
-	    if (TICS_ON(axis_tics[SECOND_X_AXIS]))
+	    if (TICS_ON(axis_array[SECOND_X_AXIS].ticmode))
 		sp += sprintf(sp, xy1_format("dx2="), DIST(real_x2, ruler.x2, SECOND_X_AXIS));
-	    if (TICS_ON(axis_tics[SECOND_Y_AXIS]))
+	    if (TICS_ON(axis_array[SECOND_Y_AXIS].ticmode))
 		sp += sprintf(sp, xy1_format("dy2="), DIST(real_y2, ruler.y2, SECOND_Y_AXIS));
 	}
 	*--sp = 0;		/* delete trailing space */
@@ -854,12 +852,12 @@ builtin_toggle_log(struct gp_event_t *ge)
 	return "`builtin-toggle-log` y logscale for plots, z logscale for splots";
     }
     if (is_3d_plot) {
-	if (log_array[FIRST_Z_AXIS])
+	if (axis_array[FIRST_Z_AXIS].log)
 	    do_string_replot("unset log z");
 	else
 	    do_string_replot("set log z");
     } else {
-	if (log_array[FIRST_Y_AXIS])
+	if (axis_array[FIRST_Y_AXIS].log)
 	    do_string_replot("unset log y");
 	else
 	    do_string_replot("set log y");
@@ -875,7 +873,7 @@ builtin_nearest_log(struct gp_event_t *ge)
     }
     if (is_3d_plot) {
 	/* 3D-plot: toggle lin/log z axis */
-	if (log_array[FIRST_Z_AXIS])
+	if (axis_array[FIRST_Z_AXIS].log)
 	    do_string_replot("unset log z");
 	else
 	    do_string_replot("set log z");
@@ -887,19 +885,19 @@ builtin_nearest_log(struct gp_event_t *ge)
 	 * would be better to derive that from the ..tics settings */
 	TBOOLEAN change = FALSE;
 	if (mouse_y < ybot + (ytop - ybot) / 4 && mouse_x > xleft && mouse_x < xright) {
-	    do_string( log_array[FIRST_X_AXIS] ? "unset log x" : "set log x");
+	    do_string( axis_array[FIRST_X_AXIS].log ? "unset log x" : "set log x");
 	    change = TRUE;
 	}
 	if (mouse_y > ytop - (ytop - ybot) / 4 && mouse_x > xleft && mouse_x < xright) {
-	    do_string( log_array[SECOND_X_AXIS] ? "unset log x2" : "set log x2");
+	    do_string( axis_array[SECOND_X_AXIS].log ? "unset log x2" : "set log x2");
 	    change = TRUE;
 	}
 	if (mouse_x < xleft + (xright - xleft) / 4 && mouse_y > ybot && mouse_y < ytop) {
-	    do_string( log_array[FIRST_Y_AXIS] ? "unset log y" : "set log y");
+	    do_string( axis_array[FIRST_Y_AXIS].log ? "unset log y" : "set log y");
 	    change = TRUE;
 	}
 	if (mouse_x > xright - (xright - xleft) / 4 && mouse_y > ybot && mouse_y < ytop) {
-	    do_string( log_array[SECOND_Y_AXIS] ? "unset log y2" : "set log y2");
+	    do_string( axis_array[SECOND_Y_AXIS].log ? "unset log y2" : "set log y2");
 	    change = TRUE;
 	}
 	if (change)
@@ -1983,13 +1981,13 @@ static void
 recalc_ruler_pos(void)
 {
     double P, dummy;
-    if (log_array[FIRST_X_AXIS] && ruler.x < 0)
+    if (axis_array[FIRST_X_AXIS].log && ruler.x < 0)
 	ruler.px = -1;
     else {
 	P = AXIS_LOG_VALUE(FIRST_X_AXIS, ruler.x);
 	ruler.px = AXIS_MAP(FIRST_X_AXIS,P);
     }
-    if (log_array[FIRST_Y_AXIS] && ruler.y < 0)
+    if (axis_array[FIRST_Y_AXIS].log && ruler.y < 0)
 	ruler.py = -1;
     else {
 	P = AXIS_LOG_VALUE(FIRST_Y_AXIS, ruler.y);
@@ -2098,7 +2096,6 @@ void
 send_gpPMmenu(FILE * PM_pipe)
 {
     struct t_gpPMmenu gpPMmenu;
-    extern int mouseGnupmdrv;
     /* not connected to mouseable gnupmdrv */
     if (!PM_pipe || !mouseGnupmdrv)
 	return;
@@ -2121,7 +2118,6 @@ send_gpPMmenu(FILE * PM_pipe)
 void
 update_menu_items_PM_terminal(void)
 {
-    extern FILE *PM_pipe;
     send_gpPMmenu(PM_pipe);
 }
 # endif

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.19.4.1 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.19.4.2 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -245,8 +245,7 @@ static int ansi_getc __PROTO((void));
 # ifdef _Windows
 #  include <windows.h>
 #  include "win/wtext.h"
-#  include "win/wgnuplib.h"
-extern TW textwin;
+#  include "win/winmain.h"
 #  define TEXTUSER 0xf1
 #  define TEXTGNUPLOT 0xf0
 #  define special_getc() msdos_getch()

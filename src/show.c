@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.39.2.4 2000/07/26 18:52:59 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -837,10 +837,10 @@ show_autoscale()
 
 #define SHOW_AUTOSCALE(axis)					\
     fprintf(stderr, "\t%s: %s%s%s, ",				\
-	    axisname_array[axis],				\
-	    (set_axis_autoscale[axis]) ? "ON" : "OFF",		\
-	    (set_axis_autoscale[axis] == 1) ? " (min)" : "",	\
-	    (set_axis_autoscale[axis] == 2) ? " (max)" : "");
+	    axis_defaults[axis].name,				\
+	    (axis_array[axis].set_autoscale) ? "ON" : "OFF",		\
+	    (axis_array[axis].set_autoscale == 1) ? " (min)" : "",	\
+	    (axis_array[axis].set_autoscale == 2) ? " (max)" : "");
 
     fputs("\tautoscaling is ", stderr);
     if (parametric) {
@@ -1061,8 +1061,8 @@ show_format()
 
     fprintf(stderr, "\ttic format is:\n");
 #define SHOW_FORMAT(axis)					\
-    fprintf(stderr, "\t  %s-axis: \"%s\"\n", axisname_array[axis],	\
-	    conv_text(axis_formatstring[axis]));
+    fprintf(stderr, "\t  %s-axis: \"%s\"\n", axis_defaults[axis].name,	\
+	    conv_text(axis_array[axis].formatstring));
     SHOW_FORMAT(FIRST_X_AXIS );
     SHOW_FORMAT(FIRST_Y_AXIS );
     SHOW_FORMAT(SECOND_X_AXIS);
@@ -1241,14 +1241,14 @@ show_zeroaxis(axis)
 {
     SHOW_ALL_NL;
 
-    if (axis_zeroaxis[axis].l_type > -3)
+    if (axis_array[axis].zeroaxis.l_type > -3)
 	fprintf(stderr, "\
 \t%szeroaxis is drawn with linestyle %d, linewidth %.3f\n",
-		axisname_array[axis],
-		axis_zeroaxis[axis].l_type + 1,
-		axis_zeroaxis[axis].l_width);
+		axis_defaults[axis].name,
+		axis_array[axis].zeroaxis.l_type + 1,
+		axis_array[axis].zeroaxis.l_width);
     else
-	fprintf(stderr, "\t%szeroaxis is OFF\n", axisname_array[axis]);
+	fprintf(stderr, "\t%szeroaxis is OFF\n", axis_defaults[axis].name);
 
     if ((axis / SECOND_AXES) == 0) {
 	/* this is a 'first' axis. To output secondary axis, call self
@@ -1429,10 +1429,10 @@ show_logscale()
 
 #define SHOW_LOG(axis)							\
     {									\
-	if (log_array[axis]) 					\
+	if (axis_array[axis].log) 					\
 	    fprintf(stderr, "%s %s (base %g)",				\
 		    !count++ ? "\tlogscaling" : " and",			\
-		    axisname_array[axis],base_array[axis]);	\
+		    axis_defaults[axis].name,axis_array[axis].base);	\
     }
     SHOW_LOG(FIRST_X_AXIS );
     SHOW_LOG(FIRST_Y_AXIS );
@@ -1690,22 +1690,22 @@ static void
 show_mtics(axis)
     AXIS_INDEX axis;
 {
-    switch (axis_minitics[axis]) {
+    switch (axis_array[axis].minitics) {
     case MINI_OFF:
-	fprintf(stderr, "\tminor %stics are off\n", axisname_array[axis]);
+	fprintf(stderr, "\tminor %stics are off\n", axis_defaults[axis].name);
 	break;
     case MINI_DEFAULT:
 	fprintf(stderr, "\
 \tminor %stics are off for linear scales\n\
-\tminor %stics are computed automatically for log scales\n", axisname_array[axis], axisname_array[axis]);
+\tminor %stics are computed automatically for log scales\n", axis_defaults[axis].name, axis_defaults[axis].name);
 	break;
     case MINI_AUTO:
-	fprintf(stderr, "\tminor %stics are computed automatically\n", axisname_array[axis]);
+	fprintf(stderr, "\tminor %stics are computed automatically\n", axis_defaults[axis].name);
 	break;
     case MINI_USER:
 	fprintf(stderr, "\
 \tminor %stics are drawn with %d subintervals between major xtic marks\n",
-		axisname_array[axis], (int) axis_mtic_freq[axis]);
+		axis_defaults[axis].name, (int) axis_array[axis].mtic_freq);
 	break;
     default:
 	int_error(NO_CARET, "Unknown minitic type in show_mtics()");
@@ -1738,33 +1738,33 @@ AXIS_INDEX axis;
      */
     SHOW_ALL_NL;
 
-    if (axis_is_timedata[axis])
-	fprintf(stderr, "\tset %sdata time\n", axisname_array[axis]);
-    fprintf(stderr, "\tset %srange [", axisname_array[axis]);
-    if (set_axis_autoscale[axis] & 1) {
+    if (axis_array[axis].is_timedata)
+	fprintf(stderr, "\tset %sdata time\n", axis_defaults[axis].name);
+    fprintf(stderr, "\tset %srange [", axis_defaults[axis].name);
+    if (axis_array[axis].set_autoscale & 1) {
 	fputc('*', stderr);
     } else {
-	SHOW_NUM_OR_TIME(set_axis_min[axis], axis);
+	SHOW_NUM_OR_TIME(axis_array[axis].set_min, axis);
     }
     fputs(" : ", stderr);
-    if (set_axis_autoscale[axis] & 2) {
+    if (axis_array[axis].set_autoscale & 2) {
 	fputc('*', stderr);
     } else {
-	SHOW_NUM_OR_TIME(set_axis_max[axis], axis);
+	SHOW_NUM_OR_TIME(axis_array[axis].set_max, axis);
     }
     fprintf(stderr, "] %sreverse %swriteback",
-	    (range_flags[axis] & RANGE_REVERSE) ? "" : "no",
-	    (range_flags[axis] & RANGE_WRITEBACK) ? "" : "no");
+	    (axis_array[axis].range_flags & RANGE_REVERSE) ? "" : "no",
+	    (axis_array[axis].range_flags & RANGE_WRITEBACK) ? "" : "no");
 
-    if (set_axis_autoscale[axis]) {
+    if (axis_array[axis].set_autoscale) {
 	/* add current (hidden) range as comments */
 	fputs("  # (currently [", stderr);
-	if (set_axis_autoscale[axis] & 1) {
-	    SHOW_NUM_OR_TIME(set_axis_min[axis], axis);
+	if (axis_array[axis].set_autoscale & 1) {
+	    SHOW_NUM_OR_TIME(axis_array[axis].set_min, axis);
 	}
 	putc(':', stderr);
-	if (set_axis_autoscale[axis] & 2) {
-	    SHOW_NUM_OR_TIME(set_axis_max[axis], axis);
+	if (axis_array[axis].set_autoscale & 2) {
+	    SHOW_NUM_OR_TIME(axis_array[axis].set_max, axis);
 	}
 	fputs("] )\n", stderr);
     } else {
@@ -1805,7 +1805,7 @@ show_axislabel(axis)
     AXIS_INDEX axis;
 {
     SHOW_ALL_NL;
-    show_xyzlabel(axisname_array[axis], "label", &axis_label[axis]);
+    show_xyzlabel(axis_defaults[axis].name, "label", &axis_array[axis].label);
 }
 
 
@@ -1815,8 +1815,8 @@ show_data_is_timedate(axis)
 AXIS_INDEX axis;
 {
     SHOW_ALL_NL;
-    fprintf(stderr, "\t%s is set to %s\n", axisname_array[axis],
-	    axis_is_timedata[axis] ? "time" : "numerical");
+    fprintf(stderr, "\t%s is set to %s\n", axis_defaults[axis].name,
+	    axis_array[axis].is_timedata ? "time" : "numerical");
 }
 
 
@@ -1829,19 +1829,19 @@ show_timefmt()
     SHOW_ALL_NL;
 
     if ((axis = lookup_table(axisname_tbl, c_token)) >= 0) {
-    c_token++;
+	c_token++;
 	fprintf(stderr, "\tread format for time on %s axis is \"%s\"\n",
-		axisname_array[axis],
-		conv_text(timefmt[axis]));
+		axis_defaults[axis].name,
+		conv_text(axis_array[axis].timefmt));
     } else {
         /* show all currently active time axes' formats: */
 	for (axis = 0; axis<AXIS_ARRAY_SIZE; axis++)
-	    if (axis_is_timedata[axis]) 
+	    if (axis_array[axis].is_timedata) 
 		fprintf(stderr,
 			"\tread format for time on %s axis is \"%s\"\n",
-			axisname_array[axis],
-			conv_text(timefmt[axis]));
-}
+			axis_defaults[axis].name,
+			conv_text(axis_array[axis].timefmt));
+    }
 }
 
 
@@ -2002,32 +2002,32 @@ AXIS_INDEX axis;
 {
     register struct ticmark *t;
 
-    const char *ticfmt = conv_text(axis_formatstring[axis]);
+    const char *ticfmt = conv_text(axis_array[axis].formatstring);
 
-    fprintf(stderr, "\t%s-axis tics:\t", axisname_array[axis]);
-    switch (axis_tics[axis] & TICS_MASK) {
+    fprintf(stderr, "\t%s-axis tics:\t", axis_defaults[axis].name);
+    switch (axis_array[axis].ticmode & TICS_MASK) {
     case NO_TICS:
 	fputs("OFF\n", stderr);
 	return;
     case TICS_ON_AXIS:
 	fputs("on axis", stderr);
-	if (axis_tics[axis] & TICS_MIRROR)
+	if (axis_array[axis].ticmode & TICS_MIRROR)
 	    fprintf(stderr, " and mirrored %s", (tic_in ? "OUT" : "IN"));
 	break;
     case TICS_ON_BORDER:
 	fputs("on border", stderr);
-	if (axis_tics[axis] & TICS_MIRROR)
+	if (axis_array[axis].ticmode & TICS_MIRROR)
 	    fputs(" and mirrored on opposite border", stderr);
 	break;
     }
 
     fprintf(stderr, "\n\t  labels are format \"%s\"", ticfmt);
-    if (axis_tic_rotate[axis])
+    if (axis_array[axis].tic_rotate)
 	fputs(", rotated in 2D mode, terminal permitting.\n\t", stderr);
     else
 	fputs(" and are not rotated\n\t", stderr);
 
-    switch (axis_ticdef[axis].type) {
+    switch (axis_array[axis].ticdef.type) {
     case TIC_COMPUTED:{
 	    fputs("  intervals computed automatically\n", stderr);
 	    break;
@@ -2042,14 +2042,15 @@ AXIS_INDEX axis;
 	}
     case TIC_SERIES:{
 	    fputs("  series", stderr);
-	    if (axis_ticdef[axis].def.series.start != -VERYLARGE) {
+	    if (axis_array[axis].ticdef.def.series.start != -VERYLARGE) {
 		fputs(" from ", stderr);
-		SHOW_NUM_OR_TIME(axis_ticdef[axis].def.series.start, axis);
+		SHOW_NUM_OR_TIME(axis_array[axis].ticdef.def.series.start, axis);
 	    }
-	    fprintf(stderr, " by %g%s", axis_ticdef[axis].def.series.incr, axis_is_timedata[axis] ? " secs" : "");
-	    if (axis_ticdef[axis].def.series.end != VERYLARGE) {
+	    fprintf(stderr, " by %g%s", axis_array[axis].ticdef.def.series.incr,
+		    axis_array[axis].is_timedata ? " secs" : "");
+	    if (axis_array[axis].ticdef.def.series.end != VERYLARGE) {
 		fputs(" until ", stderr);
-		SHOW_NUM_OR_TIME(axis_ticdef[axis].def.series.end, axis);
+		SHOW_NUM_OR_TIME(axis_array[axis].ticdef.def.series.end, axis);
 	    }
 	    putc('\n', stderr);
 	    break;
@@ -2057,10 +2058,10 @@ AXIS_INDEX axis;
     case TIC_USER:{
 /* this appears to be unused? lh
 	    int time;
-	    time = (axis_is_timedata[axis]);
+	    time = (axis_array[axis].is_timedata);
  */
 	    fputs("  list (", stderr);
-	    for (t = axis_ticdef[axis].def.user; t != NULL; t = t->next) {
+	    for (t = axis_array[axis].ticdef.def.user; t != NULL; t = t->next) {
 		if (t->label)
 		    fprintf(stderr, "\"%s\" ", conv_text(t->label));
 		SHOW_NUM_OR_TIME(t->position, axis);

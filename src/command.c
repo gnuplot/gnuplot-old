@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.39.2.1 2000/06/22 12:57:38 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.39.2.2 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -94,9 +94,6 @@ unsigned _stklen = 16394;        /* increase stack size */
 #endif /* MSDOS && TURBOC */
 
 #ifdef OS2
-extern int PM_pause(char *);            /* term/pm.trm */
-extern int ExecuteMacro(char *, int);   /* plot.c */
-extern TBOOLEAN CallFromRexx;           /* plot.c */
 # ifdef USE_MOUSE
 #  define INCL_DOSMEMMGR
 #  define INCL_DOSPROCESS
@@ -128,11 +125,7 @@ static int winsystem __PROTO((char *));
 #  include <alloc.h>
 #  include <dir.h>		/* setdisk() */
 # endif				/* !MSC */
-# include "win/wgnuplib.h"
-extern TW textwin;
-extern LPSTR winhelpname;
-extern void screen_dump(void);	/* in term/win.trm */
-extern int Pause(LPSTR mess);	/* in winmain.c */
+# include "win/winmain.h"
 #endif /* _Windows */
 
 #ifdef VMS

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.3 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.25.2.4 2000/07/26 18:52:59 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1746,20 +1746,26 @@ fflush_binary()
 void
 fill_gp4mouse (void)
 {
-#ifdef USE_MOUSE
+    /* FIXME HBB 20000725: gadgets, axis and command module
+     * dependencies would be introduced by activating this code. This
+     * clearly would be a design bug */
     extern int xleft, xright, ybot, ytop;
-    extern double min_array[], max_array[];
+    extern AXIS axis_array[];
     extern int /*TBOOLEAN*/ is_3d_plot;
-#endif
 
     int rev_xy = 0;
 
 #if 0
     /* For development purposes: */
     printf("trm: [xleft,ybot] [xright,ytop] = [%i,%i]..[%i,%i]\n",xleft,ybot,xright,ytop);
-    printf("trm: [xmin,ymin] [xmax,ymax] = [%g,%g]..[%g,%g]\n",xmin,ymin,xmax,ymax);
-    printf("trm: autoscale_x=%i,  _y=%i\n",auto_array[FIRST_X_AXIS],auto_array[FIRST_Y_AXIS]);
-    printf("trm: true min,max = [%g,%g]..[%g,%g]\n",min_array[FIRST_X_AXIS],min_array[FIRST_Y_AXIS],max_array[FIRST_X_AXIS],max_array[FIRST_Y_AXIS]);
+    printf("trm: [xmin,ymin] [xmax,ymax] = [%g,%g]..[%g,%g]\n",
+	   xmin,ymin,xmax,ymax);
+    printf("trm: autoscale_x=%i,  _y=%i\n",
+	   axis_array[FIRST_X_AXIS].autoscale,
+	   axis_array[FIRST_Y_AXIS].autoscale);
+    printf("trm: true min,max = [%g,%g]..[%g,%g]\n",
+	   axis_array[FIRST_X_AXIS].min,axis_array[FIRST_Y_AXIS].min,
+	   axis_array[FIRST_X_AXIS].max,axis_array[FIRST_Y_AXIS].max);
     printf("trm: multiplot=%i\n",multiplot);
     printf("trm: draw_surface=%i\n",draw_surface);
     printf("trm: draw_contour=%i\n",draw_contour);
@@ -1784,30 +1790,30 @@ fill_gp4mouse (void)
       }
     /* printf("trm: gp4mouse.graph=%i\n",0+gp4mouse.graph); */
     if (!rev_xy) {
-	gp4mouse.xmin = min_array[FIRST_X_AXIS];
-	gp4mouse.ymin = min_array[FIRST_Y_AXIS];
-	gp4mouse.xmax = max_array[FIRST_X_AXIS];
-	gp4mouse.ymax = max_array[FIRST_Y_AXIS];
+	gp4mouse.xmin = axis_array[FIRST_X_AXIS].min;
+	gp4mouse.ymin = axis_array[FIRST_Y_AXIS].min;
+	gp4mouse.xmax = axis_array[FIRST_X_AXIS].max;
+	gp4mouse.ymax = axis_array[FIRST_Y_AXIS].max;
 	}
       else {
-	gp4mouse.xmin = min_array[FIRST_Y_AXIS];
-	gp4mouse.ymin = min_array[FIRST_X_AXIS];
-	gp4mouse.xmax = max_array[FIRST_Y_AXIS];
-	gp4mouse.ymax = max_array[FIRST_X_AXIS];
+	gp4mouse.xmin = axis_array[FIRST_Y_AXIS].min;
+	gp4mouse.ymin = axis_array[FIRST_X_AXIS].min;
+	gp4mouse.xmax = axis_array[FIRST_Y_AXIS].max;
+	gp4mouse.ymax = axis_array[FIRST_X_AXIS].max;
 	}
     gp4mouse.xleft = xleft;
     gp4mouse.ybot = ybot;
     gp4mouse.xright = xright;
     gp4mouse.ytop = ytop;
-    gp4mouse.log_array[FIRST_X_AXIS] = log_array[FIRST_X_AXIS];
-    gp4mouse.log_array[FIRST_Y_AXIS] = log_array[FIRST_Y_AXIS];
-    gp4mouse.log_array[FIRST_Z_AXIS] = log_array[FIRST_Z_AXIS];
-    gp4mouse.base_array[FIRST_X_AXIS] = base_array[FIRST_X_AXIS];
-    gp4mouse.base_array[FIRST_Y_AXIS] = base_array[FIRST_Y_AXIS];
-    gp4mouse.base_array[FIRST_Z_AXIS] = base_array[FIRST_Z_AXIS];
-    gp4mouse.log_base_array[FIRST_X_AXIS] = log_base_array[FIRST_X_AXIS];
-    gp4mouse.log_base_array[FIRST_Y_AXIS] = log_base_array[FIRST_Y_AXIS];
-    gp4mouse.log_base_array[FIRST_Z_AXIS] = log_base_array[FIRST_Z_AXIS];
+    gp4mouse.log_array[FIRST_X_AXIS] = axis_array[FIRST_X_AXIS].log;
+    gp4mouse.log_array[FIRST_Y_AXIS] = axis_array[FIRST_Y_AXIS].log;
+    gp4mouse.log_array[FIRST_Z_AXIS] = axis_array[FIRST_Z_AXIS].log;
+    gp4mouse.base_array[FIRST_X_AXIS] = axis_array[FIRST_X_AXIS].base;
+    gp4mouse.base_array[FIRST_Y_AXIS] = axis_array[FIRST_Y_AXIS].base;
+    gp4mouse.base_array[FIRST_Z_AXIS] = axis_array[FIRST_Z_AXIS].base;
+    gp4mouse.log_base_array[FIRST_X_AXIS] = axis_array[FIRST_X_AXIS].log_base;
+    gp4mouse.log_base_array[FIRST_Y_AXIS] = axis_array[FIRST_Y_AXIS].log_base;
+    gp4mouse.log_base_array[FIRST_Z_AXIS] = axis_array[FIRST_Z_AXIS].log_base;
     gp4mouse.has_grid = grid_selection ? 1 : 0;
 }
 #endif /* 0 -- disabled code! */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.32.2.1 2000/06/22 12:57:39 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.32.2.2 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -168,8 +168,7 @@ static int exit_status = EXIT_SUCCESS;
 # endif
 # include <os2.h>
 # include <process.h>
-ULONG RexxInterface(PRXSTRING, PUSHORT, PRXSTRING);
-int ExecuteMacro(char *, int);
+static ULONG RexxInterface(PRXSTRING, PUSHORT, PRXSTRING);
 TBOOLEAN CallFromRexx = FALSE;
 void PM_intc_cleanup();
 void PM_setup();
@@ -465,8 +464,14 @@ char **argv;
 	get_user_env();
 	init_loadpath();
 	init_locale();
+	/* HBB: make sure all variables start in the same mode 'reset'
+	 * would set them to. Since the axis variables aren't in
+	 * initialized arrays any more, this is now necessary... */
+	reset_command();
 	load_rcfile();
 	init_fit();		/* Initialization of fitting module */
+
+
 
 	if (interactive && term != 0) {		/* not unknown */
 #if defined(HAVE_LIBREADLINE) && defined(GNUPLOT_HISTORY)

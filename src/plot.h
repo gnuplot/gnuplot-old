@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.32.2.3 2000/06/22 12:57:39 broeker Exp $
+ * $Id: plot.h,v 1.32.2.4 2000/07/26 18:52:58 broeker Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -57,6 +57,10 @@ extern const char *user_gnuplotpath;
 extern long int gnuplot_history_size;
 #endif
 
+#ifdef OS2
+extern TBOOLEAN CallFromRexx = FALSE;
+#endif
+
 /* Prototypes of functions exported by plot.c */
 
 void bail_to_command_line __PROTO((void));
@@ -68,4 +72,7 @@ void drop_privilege __PROTO((void));
 void take_privilege __PROTO((void));
 #endif /* LINUXVGA */
 
+#ifdef OS2
+int ExecuteMacro __PROTO((char *, int));
+#endif
 #endif /* GNUPLOT_PLOT_H */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.3 2000/06/22 12:57:38 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.31.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -309,10 +309,10 @@ int count;
     /* figure out which rotatable items are to be rotated
      * (ylabel and y2label are rotated if possible) */
     int vertical_timelabel = can_rotate && timelabel_rotate;
-    int vertical_xtics = can_rotate && axis_tic_rotate[FIRST_X_AXIS];
-    int vertical_x2tics = can_rotate && axis_tic_rotate[SECOND_X_AXIS];
-    int vertical_ytics = can_rotate && axis_tic_rotate[FIRST_Y_AXIS];
-    int vertical_y2tics = can_rotate && axis_tic_rotate[SECOND_Y_AXIS];
+    int vertical_xtics = can_rotate && axis_array[FIRST_X_AXIS].tic_rotate;
+    int vertical_x2tics = can_rotate && axis_array[SECOND_X_AXIS].tic_rotate;
+    int vertical_ytics = can_rotate && axis_array[FIRST_Y_AXIS].tic_rotate;
+    int vertical_y2tics = can_rotate && axis_array[SECOND_Y_AXIS].tic_rotate;
 
     lkey = key;			/* but we may have to disable it later */
 
@@ -321,22 +321,22 @@ int count;
     /*{{{  count lines in labels and tics */
     if (*title.text)
 	label_width(title.text, &titlelin);
-    if (*axis_label[FIRST_X_AXIS].text)
-	label_width(axis_label[FIRST_X_AXIS].text, &xlablin);
-    if (*axis_label[SECOND_X_AXIS].text)
-	label_width(axis_label[SECOND_X_AXIS].text, &x2lablin);
-    if (*axis_label[FIRST_Y_AXIS].text)
-	label_width(axis_label[FIRST_Y_AXIS].text, &ylablin);
-    if (*axis_label[SECOND_Y_AXIS].text)
-	label_width(axis_label[SECOND_Y_AXIS].text, &y2lablin);
-    if (axis_tics[FIRST_X_AXIS])
-	label_width(axis_formatstring[FIRST_X_AXIS], &xticlin);
-    if (axis_tics[SECOND_X_AXIS])
-	label_width(axis_formatstring[SECOND_X_AXIS], &x2ticlin);
-    if (axis_tics[FIRST_Y_AXIS])
-	label_width(axis_formatstring[FIRST_Y_AXIS], &yticlin);
-    if (axis_tics[SECOND_Y_AXIS])
-	label_width(axis_formatstring[SECOND_Y_AXIS], &y2ticlin);
+    if (*axis_array[FIRST_X_AXIS].label.text)
+	label_width(axis_array[FIRST_X_AXIS].label.text, &xlablin);
+    if (*axis_array[SECOND_X_AXIS].label.text)
+	label_width(axis_array[SECOND_X_AXIS].label.text, &x2lablin);
+    if (*axis_array[FIRST_Y_AXIS].label.text)
+	label_width(axis_array[FIRST_Y_AXIS].label.text, &ylablin);
+    if (*axis_array[SECOND_Y_AXIS].label.text)
+	label_width(axis_array[SECOND_Y_AXIS].label.text, &y2lablin);
+    if (axis_array[FIRST_X_AXIS].ticmode)
+	label_width(axis_array[FIRST_X_AXIS].formatstring, &xticlin);
+    if (axis_array[SECOND_X_AXIS].ticmode)
+	label_width(axis_array[SECOND_X_AXIS].formatstring, &x2ticlin);
+    if (axis_array[FIRST_Y_AXIS].ticmode)
+	label_width(axis_array[FIRST_Y_AXIS].formatstring, &yticlin);
+    if (axis_array[SECOND_Y_AXIS].ticmode)
+	label_width(axis_array[SECOND_Y_AXIS].formatstring, &y2ticlin);
     if (*timelabel.text)
 	label_width(timelabel.text, &timelin);
     /*}}} */
@@ -353,14 +353,14 @@ int count;
 
     /* x2label */
     if (x2lablin) {
-	x2label_textheight = (int) ((x2lablin + axis_label[SECOND_X_AXIS].yoffset) * (t->v_char));
-	if (!axis_tics[SECOND_X_AXIS])
+	x2label_textheight = (int) ((x2lablin + axis_array[SECOND_X_AXIS].label.yoffset) * (t->v_char));
+	if (!axis_array[SECOND_X_AXIS].ticmode)
 	    x2label_textheight += 0.5 * t->v_char;
     } else
 	x2label_textheight = 0;
 
     /* tic labels */
-    if (axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER) {
+    if (axis_array[SECOND_X_AXIS].ticmode & TICS_ON_BORDER) {
 	/* ought to consider tics on axes if axis near border */
 	if (vertical_x2tics) {
 	    /* guess at tic length, since we don't know it yet
@@ -372,7 +372,10 @@ int count;
 	x2tic_textheight = 0;
 
     /* tics */
-    if (!tic_in && ((axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER) || ((axis_tics[FIRST_X_AXIS] & TICS_MIRROR) && (axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER))))
+    if (!tic_in
+	&& ((axis_array[SECOND_X_AXIS].ticmode & TICS_ON_BORDER)
+	    || ((axis_array[FIRST_X_AXIS].ticmode & TICS_MIRROR)
+		&& (axis_array[FIRST_X_AXIS].ticmode & TICS_ON_BORDER))))
 	x2tic_height = (int) ((t->v_tic) * ticscale);
     else
 	x2tic_height = 0;
@@ -384,14 +387,14 @@ int count;
 	timetop_textheight = 0;
 
     /* horizontal ylabel */
-    if (*axis_label[FIRST_Y_AXIS].text && !can_rotate)
-	ylabel_textheight = (int) ((ylablin + axis_label[FIRST_Y_AXIS].yoffset) * (t->v_char));
+    if (*axis_array[FIRST_Y_AXIS].label.text && !can_rotate)
+	ylabel_textheight = (int) ((ylablin + axis_array[FIRST_Y_AXIS].label.yoffset) * (t->v_char));
     else
 	ylabel_textheight = 0;
 
     /* horizontal y2label */
-    if (*axis_label[SECOND_Y_AXIS].text && !can_rotate)
-	y2label_textheight = (int) ((y2lablin + axis_label[SECOND_Y_AXIS].yoffset) * (t->v_char));
+    if (*axis_array[SECOND_Y_AXIS].label.text && !can_rotate)
+	y2label_textheight = (int) ((y2lablin + axis_array[SECOND_Y_AXIS].label.yoffset) * (t->v_char));
     else
 	y2label_textheight = 0;
 
@@ -445,7 +448,7 @@ int count;
      *     first compute heights of labels and tics */
 
     /* tic labels */
-    if (axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER) {
+    if (axis_array[FIRST_X_AXIS].ticmode & TICS_ON_BORDER) {
 	/* ought to consider tics on axes if axis near border */
 	if (vertical_xtics) {
 	    /* guess at tic length, since we don't know it yet */
@@ -456,7 +459,10 @@ int count;
 	xtic_textheight = 0;
 
     /* tics */
-    if (!tic_in && ((axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER) || ((axis_tics[SECOND_X_AXIS] & TICS_MIRROR) && (axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER))))
+    if (!tic_in
+	&& ((axis_array[FIRST_X_AXIS].ticmode & TICS_ON_BORDER)
+	    || ((axis_array[SECOND_X_AXIS].ticmode & TICS_MIRROR)
+		&& (axis_array[SECOND_X_AXIS].ticmode & TICS_ON_BORDER))))
 	xtic_height = (int) ((t->v_tic) * ticscale);
     else
 	xtic_height = 0;
@@ -464,9 +470,9 @@ int count;
     /* xlabel */
     if (xlablin) {
 	/* offset is subtracted because if > 0, the margin is smaller */
-	xlabel_textheight = ((xlablin - axis_label[FIRST_X_AXIS].yoffset)
+	xlabel_textheight = ((xlablin - axis_array[FIRST_X_AXIS].label.yoffset)
 			     * t->v_char);
-	if (!axis_tics[FIRST_X_AXIS])
+	if (!axis_array[FIRST_X_AXIS].ticmode)
 	    xlabel_textheight += 0.5 * t->v_char;
     } else
 	xlabel_textheight = 0;
@@ -606,7 +612,7 @@ int count;
        unless it has been explicitly set by lmargin */
 
     /* tic labels */
-    if (axis_tics[FIRST_Y_AXIS] & TICS_ON_BORDER) {
+    if (axis_array[FIRST_Y_AXIS].ticmode & TICS_ON_BORDER) {
 	if (vertical_ytics)
 	    /* HBB: we will later add some white space as part of this, so
 	     * reserve two more rows (one above, one below the text ...).
@@ -627,15 +633,18 @@ int count;
     }
 
     /* tics */
-    if (!tic_in && ((axis_tics[FIRST_Y_AXIS] & TICS_ON_BORDER) || ((axis_tics[SECOND_Y_AXIS] & TICS_MIRROR) && (axis_tics[SECOND_Y_AXIS] & TICS_ON_BORDER))))
+    if (!tic_in
+	&& ((axis_array[FIRST_Y_AXIS].ticmode & TICS_ON_BORDER)
+	    || ((axis_array[SECOND_Y_AXIS].ticmode & TICS_MIRROR)
+		&& (axis_array[SECOND_Y_AXIS].ticmode & TICS_ON_BORDER))))
 	ytic_width = (int) ((t->h_tic) * ticscale);
     else
 	ytic_width = 0;
 
     /* ylabel */
-    if (*axis_label[FIRST_Y_AXIS].text && can_rotate) {
-	ylabel_textwidth = (int) ((ylablin - axis_label[FIRST_Y_AXIS].xoffset) * (t->v_char));
-	if (!axis_tics[FIRST_Y_AXIS])
+    if (*axis_array[FIRST_Y_AXIS].label.text && can_rotate) {
+	ylabel_textwidth = (int) ((ylablin - axis_array[FIRST_Y_AXIS].label.xoffset) * (t->v_char));
+	if (!axis_array[FIRST_Y_AXIS].ticmode)
 	    ylabel_textwidth += 0.5 * t->v_char;
     }
     /* this should get large for NEGATIVE ylabel.xoffsets  DBT 11-5-98 */
@@ -678,7 +687,7 @@ int count;
        unless it has been explicitly set by rmargin */
 
     /* tic labels */
-    if (axis_tics[SECOND_Y_AXIS] & TICS_ON_BORDER) {
+    if (axis_array[SECOND_Y_AXIS].ticmode & TICS_ON_BORDER) {
 	if (vertical_y2tics)
 	    y2tic_textwidth = (int) ((t->v_char) * (y2ticlin + 2));
 	else {
@@ -696,15 +705,18 @@ int count;
     }
 
     /* tics */
-    if (!tic_in && ((axis_tics[SECOND_Y_AXIS] & TICS_ON_BORDER) || ((axis_tics[FIRST_Y_AXIS] & TICS_MIRROR) && (axis_tics[FIRST_Y_AXIS] & TICS_ON_BORDER))))
+    if (!tic_in
+	&& ((axis_array[SECOND_Y_AXIS].ticmode & TICS_ON_BORDER)
+	    || ((axis_array[FIRST_Y_AXIS].ticmode & TICS_MIRROR)
+		&& (axis_array[FIRST_Y_AXIS].ticmode & TICS_ON_BORDER))))
 	y2tic_width = (int) ((t->h_tic) * ticscale);
     else
 	y2tic_width = 0;
 
     /* y2label */
-    if (can_rotate && *axis_label[SECOND_Y_AXIS].text) {
-	y2label_textwidth = (int) ((y2lablin + axis_label[SECOND_Y_AXIS].xoffset) * (t->v_char));
-	if (!axis_tics[SECOND_Y_AXIS])
+    if (can_rotate && *axis_array[SECOND_Y_AXIS].label.text) {
+	y2label_textwidth = (int) ((y2lablin + axis_array[SECOND_Y_AXIS].label.xoffset) * (t->v_char));
+	if (!axis_array[SECOND_Y_AXIS].ticmode)
 	    y2label_textwidth += 0.5 * t->v_char;
     } else
 	y2label_textwidth = 0;
@@ -741,11 +753,11 @@ int count;
 	double current_aspect_ratio;
 
 	if (aspect_ratio < 0
-	    && (max_array[x_axis] - min_array[x_axis]) != 0.0
+	    && (axis_array[x_axis].max - axis_array[x_axis].min) != 0.0
 	    ) {
 	    current_aspect_ratio = - aspect_ratio
-		* fabs((max_array[y_axis] - min_array[y_axis]) /
-		       (max_array[x_axis] - min_array[x_axis]));
+		* fabs((axis_array[y_axis].max - axis_array[y_axis].min) /
+		       (axis_array[x_axis].max - axis_array[x_axis].min));
 	} else
 	    current_aspect_ratio = aspect_ratio;
 
@@ -776,7 +788,9 @@ int count;
 
     /*  adjust top and bottom margins for tic label rotation */
 
-    if (tmargin < 0 && axis_tics[SECOND_X_AXIS] & TICS_ON_BORDER && vertical_x2tics) {
+    if (tmargin < 0
+	&& axis_array[SECOND_X_AXIS].ticmode & TICS_ON_BORDER
+	&& vertical_x2tics) {
 	widest_tic = 0;		/* reset the global variable ... */
 	gen_tics(SECOND_X_AXIS, 0, widest2d_callback);
 	ytop += x2tic_textheight;
@@ -784,7 +798,9 @@ int count;
 	x2tic_textheight = (int) ((t->h_char) * (widest_tic));
 	ytop -= x2tic_textheight;
     }
-    if (bmargin < 0 && axis_tics[FIRST_X_AXIS] & TICS_ON_BORDER && vertical_xtics) {
+    if (bmargin < 0
+	&& axis_array[FIRST_X_AXIS].ticmode & TICS_ON_BORDER
+	&& vertical_xtics) {
 	widest_tic = 0;		/* reset the global variable ... */
 	gen_tics(FIRST_X_AXIS, 0, widest2d_callback);
 	ybot -= xtic_textheight;
@@ -806,11 +822,11 @@ int count;
 
     xlabel_y = ybot - xtic_height - xtic_textheight - xlabel_textheight + xlablin * t->v_char;
     ylabel_x = xleft - ytic_width - ytic_textwidth;
-    if (*axis_label[FIRST_Y_AXIS].text && can_rotate)
+    if (*axis_array[FIRST_Y_AXIS].label.text && can_rotate)
 	ylabel_x -= ylabel_textwidth;
 
     y2label_x = xright + y2tic_width + y2tic_textwidth;
-    if (*axis_label[SECOND_Y_AXIS].text && can_rotate)
+    if (*axis_array[SECOND_Y_AXIS].label.text && can_rotate)
 	y2label_x += y2label_textwidth - y2lablin * t->v_char;
 
     if (vertical_timelabel) {
@@ -922,19 +938,19 @@ int pcount;			/* count of plots in linked list */
     y_axis = FIRST_Y_AXIS;
 
 /*      Apply the desired viewport offsets. */
-    if (min_array[y_axis] < max_array[y_axis]) {
-	min_array[y_axis] -= boff;
-	max_array[y_axis] += toff;
+    if (axis_array[y_axis].min < axis_array[y_axis].max) {
+	axis_array[y_axis].min -= boff;
+	axis_array[y_axis].max += toff;
     } else {
-	max_array[y_axis] -= boff;
-	min_array[y_axis] += toff;
+	axis_array[y_axis].max -= boff;
+	axis_array[y_axis].min += toff;
     }
-    if (min_array[x_axis] < max_array[x_axis]) {
-	min_array[x_axis] -= loff;
-	max_array[x_axis] += roff;
+    if (axis_array[x_axis].min < axis_array[x_axis].max) {
+	axis_array[x_axis].min -= loff;
+	axis_array[x_axis].max += roff;
     } else {
-	max_array[x_axis] -= loff;
-	min_array[x_axis] += roff;
+	axis_array[x_axis].max -= loff;
+	axis_array[x_axis].min += roff;
     }
 
     /*
@@ -946,9 +962,9 @@ int pcount;			/* count of plots in linked list */
      * absolute equality test again, since
      * axis_checked_extend_empty_range() should have widened empty
      * ranges before we get here.  */
-    if (min_array[x_axis] == max_array[x_axis])
+    if (axis_array[x_axis].min == axis_array[x_axis].max)
 	int_error(NO_CARET, "x_min should not equal x_max!");
-    if (min_array[y_axis] == max_array[y_axis])
+    if (axis_array[y_axis].min == axis_array[y_axis].max)
 	int_error(NO_CARET, "y_min should not equal y_max!");
 
     term_init();		/* may set xmax/ymax */
@@ -1070,41 +1086,41 @@ int pcount;			/* count of plots in linked list */
 	}
     }
 /* YLABEL */
-    if (*axis_label[FIRST_Y_AXIS].text) {
+    if (*axis_array[FIRST_Y_AXIS].label.text) {
 	/* we worked out x-posn in boundary() */
 	if ((*t->text_angle) (1)) {
 	    unsigned int x = ylabel_x + (t->v_char / 2);
-	    unsigned int y = (ytop + ybot) / 2 + axis_label[FIRST_Y_AXIS].yoffset * (t->h_char);
-	    write_multiline(x, y, axis_label[FIRST_Y_AXIS].text, CENTRE, JUST_TOP, 1, axis_label[FIRST_Y_AXIS].font);
+	    unsigned int y = (ytop + ybot) / 2 + axis_array[FIRST_Y_AXIS].label.yoffset * (t->h_char);
+	    write_multiline(x, y, axis_array[FIRST_Y_AXIS].label.text, CENTRE, JUST_TOP, 1, axis_array[FIRST_Y_AXIS].label.font);
 	    (*t->text_angle) (0);
 	} else {
 	    /* really bottom just, but we know number of lines 
 	       so we need to adjust x-posn by one line */
 	    unsigned int x = ylabel_x;
 	    unsigned int y = ylabel_y;
-	    write_multiline(x, y, axis_label[FIRST_Y_AXIS].text, LEFT, JUST_TOP, 0, axis_label[FIRST_Y_AXIS].font);
+	    write_multiline(x, y, axis_array[FIRST_Y_AXIS].label.text, LEFT, JUST_TOP, 0, axis_array[FIRST_Y_AXIS].label.font);
 	}
     }
 /* Y2LABEL */
-    if (*axis_label[SECOND_Y_AXIS].text) {
+    if (*axis_array[SECOND_Y_AXIS].label.text) {
 	/* we worked out coordinates in boundary() */
 	if ((*t->text_angle) (1)) {
 	    unsigned int x = y2label_x + (t->v_char / 2) - 1;
-	    unsigned int y = (ytop + ybot) / 2 + axis_label[SECOND_Y_AXIS].yoffset * (t->h_char);
-	    write_multiline(x, y, axis_label[SECOND_Y_AXIS].text, CENTRE, JUST_TOP, 1, axis_label[SECOND_Y_AXIS].font);
+	    unsigned int y = (ytop + ybot) / 2 + axis_array[SECOND_Y_AXIS].label.yoffset * (t->h_char);
+	    write_multiline(x, y, axis_array[SECOND_Y_AXIS].label.text, CENTRE, JUST_TOP, 1, axis_array[SECOND_Y_AXIS].label.font);
 	    (*t->text_angle) (0);
 	} else {
 	    /* really bottom just, but we know number of lines */
 	    unsigned int x = y2label_x;
 	    unsigned int y = y2label_y;
-	    write_multiline(x, y, axis_label[SECOND_Y_AXIS].text, RIGHT, JUST_TOP, 0, axis_label[SECOND_Y_AXIS].font);
+	    write_multiline(x, y, axis_array[SECOND_Y_AXIS].label.text, RIGHT, JUST_TOP, 0, axis_array[SECOND_Y_AXIS].label.font);
 	}
     }
 /* XLABEL */
-    if (*axis_label[FIRST_X_AXIS].text) {
-	unsigned int x = (xright + xleft) / 2 + axis_label[FIRST_X_AXIS].xoffset * (t->h_char);
+    if (*axis_array[FIRST_X_AXIS].label.text) {
+	unsigned int x = (xright + xleft) / 2 + axis_array[FIRST_X_AXIS].label.xoffset * (t->h_char);
 	unsigned int y = xlabel_y - t->v_char / 2;	/* HBB */
-	write_multiline(x, y, axis_label[FIRST_X_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[FIRST_X_AXIS].font);
+	write_multiline(x, y, axis_array[FIRST_X_AXIS].label.text, CENTRE, JUST_TOP, 0, axis_array[FIRST_X_AXIS].label.font);
     }
 /* PLACE TITLE */
     if (*title.text) {
@@ -1114,11 +1130,11 @@ int pcount;			/* count of plots in linked list */
 	write_multiline(x, y, title.text, CENTRE, JUST_TOP, 0, title.font);
     }
 /* X2LABEL */
-    if (*axis_label[SECOND_X_AXIS].text) {
+    if (*axis_array[SECOND_X_AXIS].label.text) {
 	/* we worked out y-coordinate in boundary() */
-	unsigned int x = (xright + xleft) / 2 + axis_label[SECOND_X_AXIS].xoffset * (t->h_char);
+	unsigned int x = (xright + xleft) / 2 + axis_array[SECOND_X_AXIS].label.xoffset * (t->h_char);
 	unsigned int y = x2label_y - t->v_char / 2 - 1;
-	write_multiline(x, y, axis_label[SECOND_X_AXIS].text, CENTRE, JUST_TOP, 0, axis_label[SECOND_X_AXIS].font);
+	write_multiline(x, y, axis_array[SECOND_X_AXIS].label.text, CENTRE, JUST_TOP, 0, axis_array[SECOND_X_AXIS].label.font);
     }
 /* PLACE TIMEDATE */
     if (*timelabel.text) {
@@ -1298,7 +1314,7 @@ int pcount;			/* count of plots in linked list */
 	switch (this_plot->plot_style) {
 	    /*{{{  IMPULSE */
 	case IMPULSES:
-	    plot_impulses(this_plot, axis_zero[x_axis], axis_zero[y_axis]);
+	    plot_impulses(this_plot, axis_array[x_axis].term_zero, axis_array[y_axis].term_zero);
 	    break;
 	    /*}}} */
 	    /*{{{  LINES */
@@ -1386,7 +1402,7 @@ int pcount;			/* count of plots in linked list */
 	    /*}}} */
 	    /*{{{  BOXXYERROR */
 	case BOXXYERROR:
-	    plot_boxes(this_plot, axis_zero[y_axis]);
+	    plot_boxes(this_plot, axis_array[y_axis].term_zero);
 	    break;
 	    /*}}} */
 	    /*{{{  BOXERROR (falls through to) */
@@ -1397,7 +1413,7 @@ int pcount;			/* count of plots in linked list */
 	    /*}}} */
 	    /*{{{  BOXES */
 	case BOXES:
-	    plot_boxes(this_plot, axis_zero[y_axis]);
+	    plot_boxes(this_plot, axis_array[y_axis].term_zero);
 	    break;
 	    /*}}} */
 	    /*{{{  VECTOR */
@@ -1497,14 +1513,14 @@ int yaxis_x, xaxis_y;
 		break;
 	    }
 	case OUTRANGE:{
-		if (!inrange(plot->points[i].x, min_array[x_axis], max_array[x_axis]))
+		if (!inrange(plot->points[i].x, axis_array[x_axis].min, axis_array[x_axis].max))
 		    continue;
 		x = map_x(plot->points[i].x);
-		if ((min_array[y_axis] < max_array[y_axis] && plot->points[i].y < min_array[y_axis])
-		    || (max_array[y_axis] < min_array[y_axis] && plot->points[i].y > min_array[y_axis]))
-		    y = map_y(min_array[y_axis]);
+		if ((axis_array[y_axis].min < axis_array[y_axis].max && plot->points[i].y < axis_array[y_axis].min)
+		    || (axis_array[y_axis].max < axis_array[y_axis].min && plot->points[i].y > axis_array[y_axis].min))
+		    y = map_y(axis_array[y_axis].min);
 		else
-		    y = map_y(max_array[y_axis]);
+		    y = map_y(axis_array[y_axis].max);
 
 		break;
 	    }
@@ -1817,17 +1833,17 @@ double x, y1, y2;		/* coordinates of vertical line */
     struct termentry *t = term;
     int xm, y1m, y2m;
 
-    if ((y1 < min_array[y_axis] && y2 < min_array[y_axis]) || (y1 > max_array[y_axis] && y2 > max_array[y_axis]) || x < min_array[x_axis] || x > max_array[x_axis])
+    if ((y1 < axis_array[y_axis].min && y2 < axis_array[y_axis].min) || (y1 > axis_array[y_axis].max && y2 > axis_array[y_axis].max) || x < axis_array[x_axis].min || x > axis_array[x_axis].max)
 	return;
 
-    if (y1 < min_array[y_axis])
-	y1 = min_array[y_axis];
-    if (y1 > max_array[y_axis])
-	y1 = max_array[y_axis];
-    if (y2 < min_array[y_axis])
-	y2 = min_array[y_axis];
-    if (y2 > max_array[y_axis])
-	y2 = max_array[y_axis];
+    if (y1 < axis_array[y_axis].min)
+	y1 = axis_array[y_axis].min;
+    if (y1 > axis_array[y_axis].max)
+	y1 = axis_array[y_axis].max;
+    if (y2 < axis_array[y_axis].min)
+	y2 = axis_array[y_axis].min;
+    if (y2 > axis_array[y_axis].max)
+	y2 = axis_array[y_axis].max;
 
     xm = map_x(x);
     y1m = map_y(y1);
@@ -1854,19 +1870,19 @@ double x1, x2, y;		/* coordinates of vertical line */
     struct termentry *t = term;
     int x1m, x2m, ym;
 
-    if ((x1 < min_array[x_axis] && x2 < min_array[x_axis]) ||
-	(x1 > max_array[x_axis] && x2 > max_array[x_axis]) ||
-	 y < min_array[y_axis] || y > max_array[y_axis])
+    if ((x1 < axis_array[x_axis].min && x2 < axis_array[x_axis].min) ||
+	(x1 > axis_array[x_axis].max && x2 > axis_array[x_axis].max) ||
+	 y < axis_array[y_axis].min || y > axis_array[y_axis].max)
 	return;
 
-    if (x1 < min_array[x_axis])
-	x1 = min_array[x_axis];
-    if (x1 > max_array[x_axis])
-	x1 = max_array[x_axis];
-    if (x2 < min_array[x_axis])
-	x2 = min_array[x_axis];
-    if (x2 > max_array[x_axis])
-	x2 = max_array[x_axis];
+    if (x1 < axis_array[x_axis].min)
+	x1 = axis_array[x_axis].min;
+    if (x1 > axis_array[x_axis].max)
+	x1 = axis_array[x_axis].max;
+    if (x2 < axis_array[x_axis].min)
+	x2 = axis_array[x_axis].min;
+    if (x2 > axis_array[x_axis].max)
+	x2 = axis_array[x_axis].max;
 
     ym = map_y(y);
     x1m = map_x(x1);
@@ -1914,13 +1930,13 @@ struct curve_points *plot;
 
 	    /* check to see if in xrange */
 	    x = plot->points[i].x;
-	    if (!inrange(x, min_array[x_axis], max_array[x_axis]))
+	    if (!inrange(x, axis_array[x_axis].min, axis_array[x_axis].max))
 		continue;
 	    xM = map_x(x);
 
 	    /* check to see if in yrange */
 	    y = plot->points[i].y;
-	    if (!inrange(y, min_array[y_axis], max_array[y_axis]))
+	    if (!inrange(y, axis_array[y_axis].min, axis_array[y_axis].max))
 		continue;
 	    yM = map_y(y);
 
@@ -1928,24 +1944,24 @@ struct curve_points *plot;
 	    yhigh = plot->points[i].yhigh;
 	    ylow = plot->points[i].ylow;
 
-	    high_inrange = inrange(yhigh, min_array[y_axis], max_array[y_axis]);
-	    low_inrange = inrange(ylow, min_array[y_axis], max_array[y_axis]);
+	    high_inrange = inrange(yhigh, axis_array[y_axis].min, axis_array[y_axis].max);
+	    low_inrange = inrange(ylow, axis_array[y_axis].min, axis_array[y_axis].max);
 
 	    /* compute the plot position of yhigh */
 	    if (high_inrange)
 		yhighM = map_y(yhigh);
-	    else if (samesign(yhigh - max_array[y_axis], max_array[y_axis] - min_array[y_axis]))
-		yhighM = map_y(max_array[y_axis]);
+	    else if (samesign(yhigh - axis_array[y_axis].max, axis_array[y_axis].max - axis_array[y_axis].min))
+		yhighM = map_y(axis_array[y_axis].max);
 	    else
-		yhighM = map_y(min_array[y_axis]);
+		yhighM = map_y(axis_array[y_axis].min);
 
 	    /* compute the plot position of ylow */
 	    if (low_inrange)
 		ylowM = map_y(ylow);
-	    else if (samesign(ylow - max_array[y_axis], max_array[y_axis] - min_array[y_axis]))
-		ylowM = map_y(max_array[y_axis]);
+	    else if (samesign(ylow - axis_array[y_axis].max, axis_array[y_axis].max - axis_array[y_axis].min))
+		ylowM = map_y(axis_array[y_axis].max);
 	    else
-		ylowM = map_y(min_array[y_axis]);
+		ylowM = map_y(axis_array[y_axis].min);
 
 	    if (!high_inrange && !low_inrange && ylowM == yhighM)
 		/* both out of range on the same side */
@@ -1955,24 +1971,24 @@ struct curve_points *plot;
 	    xhigh = plot->points[i].xhigh;
 	    xlow = plot->points[i].xlow;
 
-	    high_inrange = inrange(xhigh, min_array[x_axis], max_array[x_axis]);
-	    low_inrange = inrange(xlow, min_array[x_axis], max_array[x_axis]);
+	    high_inrange = inrange(xhigh, axis_array[x_axis].min, axis_array[x_axis].max);
+	    low_inrange = inrange(xlow, axis_array[x_axis].min, axis_array[x_axis].max);
 
 	    /* compute the plot position of xhigh */
 	    if (high_inrange)
 		xhighM = map_x(xhigh);
-	    else if (samesign(xhigh - max_array[x_axis], max_array[x_axis] - min_array[x_axis]))
-		xhighM = map_x(max_array[x_axis]);
+	    else if (samesign(xhigh - axis_array[x_axis].max, axis_array[x_axis].max - axis_array[x_axis].min))
+		xhighM = map_x(axis_array[x_axis].max);
 	    else
-		xhighM = map_x(min_array[x_axis]);
+		xhighM = map_x(axis_array[x_axis].min);
 
 	    /* compute the plot position of xlow */
 	    if (low_inrange)
 		xlowM = map_x(xlow);
-	    else if (samesign(xlow - max_array[x_axis], max_array[x_axis] - min_array[x_axis]))
-		xlowM = map_x(max_array[x_axis]);
+	    else if (samesign(xlow - axis_array[x_axis].max, axis_array[x_axis].max - axis_array[x_axis].min))
+		xlowM = map_x(axis_array[x_axis].max);
 	    else
-		xlowM = map_x(min_array[x_axis]);
+		xlowM = map_x(axis_array[x_axis].min);
 
 	    if (!high_inrange && !low_inrange && xlowM == xhighM)
 		/* both out of range on the same side */
@@ -2058,7 +2074,7 @@ struct curve_points *plot;
 
 	    /* check to see if in yrange */
 	    y = plot->points[i].y;
-	    if (!inrange(y, min_array[y_axis], max_array[y_axis]))
+	    if (!inrange(y, axis_array[y_axis].min, axis_array[y_axis].max))
 		continue;
 	    yM = map_y(y);
 
@@ -2066,24 +2082,24 @@ struct curve_points *plot;
 	    xhigh = plot->points[i].xhigh;
 	    xlow = plot->points[i].xlow;
 
-	    high_inrange = inrange(xhigh, min_array[x_axis], max_array[x_axis]);
-	    low_inrange = inrange(xlow, min_array[x_axis], max_array[x_axis]);
+	    high_inrange = inrange(xhigh, axis_array[x_axis].min, axis_array[x_axis].max);
+	    low_inrange = inrange(xlow, axis_array[x_axis].min, axis_array[x_axis].max);
 
 	    /* compute the plot position of xhigh */
 	    if (high_inrange)
 		xhighM = map_x(xhigh);
-	    else if (samesign(xhigh - max_array[x_axis], max_array[x_axis] - min_array[x_axis]))
-		xhighM = map_x(max_array[x_axis]);
+	    else if (samesign(xhigh - axis_array[x_axis].max, axis_array[x_axis].max - axis_array[x_axis].min))
+		xhighM = map_x(axis_array[x_axis].max);
 	    else
-		xhighM = map_x(min_array[x_axis]);
+		xhighM = map_x(axis_array[x_axis].min);
 
 	    /* compute the plot position of xlow */
 	    if (low_inrange)
 		xlowM = map_x(xlow);
-	    else if (samesign(xlow - max_array[x_axis], max_array[x_axis] - min_array[x_axis]))
-		xlowM = map_x(max_array[x_axis]);
+	    else if (samesign(xlow - axis_array[x_axis].max, axis_array[x_axis].max - axis_array[x_axis].min))
+		xlowM = map_x(axis_array[x_axis].max);
 	    else
-		xlowM = map_x(min_array[x_axis]);
+		xlowM = map_x(axis_array[x_axis].min);
 
 	    if (!high_inrange && !low_inrange && xlowM == xhighM)
 		/* both out of range on the same side */
@@ -2160,24 +2176,24 @@ int xaxis_y;
 		}
 
 		/* clip to border */
-		if ((min_array[y_axis] < max_array[y_axis] && dyt < min_array[y_axis])
-		    || (max_array[y_axis] < min_array[y_axis] && dyt > min_array[y_axis]))
-		    dyt = min_array[y_axis];
-		if ((min_array[y_axis] < max_array[y_axis] && dyt > max_array[y_axis])
-		    || (max_array[y_axis] < min_array[y_axis] && dyt < max_array[y_axis]))
-		    dyt = max_array[y_axis];
-		if ((min_array[x_axis] < max_array[x_axis] && dxr < min_array[x_axis])
-		    || (max_array[x_axis] < min_array[x_axis] && dxr > min_array[x_axis]))
-		    dxr = min_array[x_axis];
-		if ((min_array[x_axis] < max_array[x_axis] && dxr > max_array[x_axis])
-		    || (max_array[x_axis] < min_array[x_axis] && dxr < max_array[x_axis]))
-		    dxr = max_array[x_axis];
-		if ((min_array[x_axis] < max_array[x_axis] && dxl < min_array[x_axis])
-		    || (max_array[x_axis] < min_array[x_axis] && dxl > min_array[x_axis]))
-		    dxl = min_array[x_axis];
-		if ((min_array[x_axis] < max_array[x_axis] && dxl > max_array[x_axis])
-		    || (max_array[x_axis] < min_array[x_axis] && dxl < max_array[x_axis]))
-		    dxl = max_array[x_axis];
+		if ((axis_array[y_axis].min < axis_array[y_axis].max && dyt < axis_array[y_axis].min)
+		    || (axis_array[y_axis].max < axis_array[y_axis].min && dyt > axis_array[y_axis].min))
+		    dyt = axis_array[y_axis].min;
+		if ((axis_array[y_axis].min < axis_array[y_axis].max && dyt > axis_array[y_axis].max)
+		    || (axis_array[y_axis].max < axis_array[y_axis].min && dyt < axis_array[y_axis].max))
+		    dyt = axis_array[y_axis].max;
+		if ((axis_array[x_axis].min < axis_array[x_axis].max && dxr < axis_array[x_axis].min)
+		    || (axis_array[x_axis].max < axis_array[x_axis].min && dxr > axis_array[x_axis].min))
+		    dxr = axis_array[x_axis].min;
+		if ((axis_array[x_axis].min < axis_array[x_axis].max && dxr > axis_array[x_axis].max)
+		    || (axis_array[x_axis].max < axis_array[x_axis].min && dxr < axis_array[x_axis].max))
+		    dxr = axis_array[x_axis].max;
+		if ((axis_array[x_axis].min < axis_array[x_axis].max && dxl < axis_array[x_axis].min)
+		    || (axis_array[x_axis].max < axis_array[x_axis].min && dxl > axis_array[x_axis].min))
+		    dxl = axis_array[x_axis].min;
+		if ((axis_array[x_axis].min < axis_array[x_axis].max && dxl > axis_array[x_axis].max)
+		    || (axis_array[x_axis].max < axis_array[x_axis].min && dxl < axis_array[x_axis].max))
+		    dxl = axis_array[x_axis].max;
 
 		xl = map_x(dxl);
 		xr = map_x(dxr);
@@ -2267,7 +2283,7 @@ struct curve_points *plot;
 	points[0] = plot->points[i];
 	points[1].x = plot->points[i].xhigh;
 	points[1].y = plot->points[i].yhigh;
-	if (inrange(points[1].x, min_array[x_axis], max_array[x_axis]) && inrange(points[1].y, min_array[y_axis], max_array[y_axis])) {
+	if (inrange(points[1].x, axis_array[x_axis].min, axis_array[x_axis].max) && inrange(points[1].y, axis_array[y_axis].min, axis_array[y_axis].max)) {
 	    /* to inrange */
 	    points[1].type = INRANGE;
 	    x2 = map_x(points[1].x);
@@ -2337,7 +2353,7 @@ struct curve_points *plot;
 
 	/* check to see if in xrange */
 	x = plot->points[i].x;
-	if (!inrange(x, min_array[x_axis], max_array[x_axis]))
+	if (!inrange(x, axis_array[x_axis].min, axis_array[x_axis].max))
 	    continue;
 	xM = map_x(x);
 
@@ -2347,24 +2363,24 @@ struct curve_points *plot;
 	yclose = plot->points[i].z;
 	yopen = plot->points[i].y;
 
-	high_inrange = inrange(yhigh, min_array[y_axis], max_array[y_axis]);
-	low_inrange = inrange(ylow, min_array[y_axis], max_array[y_axis]);
+	high_inrange = inrange(yhigh, axis_array[y_axis].min, axis_array[y_axis].max);
+	low_inrange = inrange(ylow, axis_array[y_axis].min, axis_array[y_axis].max);
 
 	/* compute the plot position of yhigh */
 	if (high_inrange)
 	    yhighM = map_y(yhigh);
-	else if (samesign(yhigh - max_array[y_axis], max_array[y_axis] - min_array[y_axis]))
-	    yhighM = map_y(max_array[y_axis]);
+	else if (samesign(yhigh - axis_array[y_axis].max, axis_array[y_axis].max - axis_array[y_axis].min))
+	    yhighM = map_y(axis_array[y_axis].max);
 	else
-	    yhighM = map_y(min_array[y_axis]);
+	    yhighM = map_y(axis_array[y_axis].min);
 
 	/* compute the plot position of ylow */
 	if (low_inrange)
 	    ylowM = map_y(ylow);
-	else if (samesign(ylow - max_array[y_axis], max_array[y_axis] - min_array[y_axis]))
-	    ylowM = map_y(max_array[y_axis]);
+	else if (samesign(ylow - axis_array[y_axis].max, axis_array[y_axis].max - axis_array[y_axis].min))
+	    ylowM = map_y(axis_array[y_axis].max);
 	else
-	    ylowM = map_y(min_array[y_axis]);
+	    ylowM = map_y(axis_array[y_axis].min);
 
 	if (!high_inrange && !low_inrange && ylowM == yhighM)
 	    /* both out of range on the same side */
@@ -2406,7 +2422,7 @@ struct curve_points *plot;
 
 	/* check to see if in xrange */
 	x = plot->points[i].x;
-	if (!inrange(x, min_array[x_axis], max_array[x_axis]))
+	if (!inrange(x, axis_array[x_axis].min, axis_array[x_axis].max))
 	    continue;
 	xM = map_x(x);
 
@@ -2416,24 +2432,24 @@ struct curve_points *plot;
 	yclose = plot->points[i].z;
 	yopen = plot->points[i].y;
 
-	high_inrange = inrange(yhigh, min_array[y_axis], max_array[y_axis]);
-	low_inrange = inrange(ylow, min_array[y_axis], max_array[y_axis]);
+	high_inrange = inrange(yhigh, axis_array[y_axis].min, axis_array[y_axis].max);
+	low_inrange = inrange(ylow, axis_array[y_axis].min, axis_array[y_axis].max);
 
 	/* compute the plot position of yhigh */
 	if (high_inrange)
 	    yhighM = map_y(yhigh);
-	else if (samesign(yhigh - max_array[y_axis], max_array[y_axis] - min_array[y_axis]))
-	    yhighM = map_y(max_array[y_axis]);
+	else if (samesign(yhigh - axis_array[y_axis].max, axis_array[y_axis].max - axis_array[y_axis].min))
+	    yhighM = map_y(axis_array[y_axis].max);
 	else
-	    yhighM = map_y(min_array[y_axis]);
+	    yhighM = map_y(axis_array[y_axis].min);
 
 	/* compute the plot position of ylow */
 	if (low_inrange)
 	    ylowM = map_y(ylow);
-	else if (samesign(ylow - max_array[y_axis], max_array[y_axis] - min_array[y_axis]))
-	    ylowM = map_y(max_array[y_axis]);
+	else if (samesign(ylow - axis_array[y_axis].max, axis_array[y_axis].max - axis_array[y_axis].min))
+	    ylowM = map_y(axis_array[y_axis].max);
 	else
-	    ylowM = map_y(min_array[y_axis]);
+	    ylowM = map_y(axis_array[y_axis].min);
 
 	if (!high_inrange && !low_inrange && ylowM == yhighM)
 	    /* both out of range on the same side */
@@ -2525,11 +2541,11 @@ double *ex, *ey;		/* the point where it crosses an edge */
 	    if (oy == -VERYLARGE)
 		return;
 
-	    *ex = min_array[x_axis];
+	    *ex = axis_array[x_axis].min;
 	    return;
 	}
 	/* obviously oy is -VERYLARGE and ox != -VERYLARGE */
-	*ey = min_array[y_axis];
+	*ey = axis_array[y_axis].min;
 	return;
     }
     /*
@@ -2538,26 +2554,26 @@ double *ex, *ey;		/* the point where it crosses an edge */
      */
     if (iy == oy) {
 	/* horizontal line */
-	/* assume inrange(iy, min_array[y_axis], max_array[y_axis]) */
+	/* assume inrange(iy, axis_array[y_axis].min, axis_array[y_axis].max) */
 	*ey = iy;		/* == oy */
 
-	if (inrange(max_array[x_axis], ix, ox))
-	    *ex = max_array[x_axis];
-	else if (inrange(min_array[x_axis], ix, ox))
-	    *ex = min_array[x_axis];
+	if (inrange(axis_array[x_axis].max, ix, ox))
+	    *ex = axis_array[x_axis].max;
+	else if (inrange(axis_array[x_axis].min, ix, ox))
+	    *ex = axis_array[x_axis].min;
 	else {
 	    graph_error("error in edge_intersect");
 	}
 	return;
     } else if (ix == ox) {
 	/* vertical line */
-	/* assume inrange(ix, min_array[x_axis], max_array[x_axis]) */
+	/* assume inrange(ix, axis_array[x_axis].min, axis_array[x_axis].max) */
 	*ex = ix;		/* == ox */
 
-	if (inrange(max_array[y_axis], iy, oy))
-	    *ey = max_array[y_axis];
-	else if (inrange(min_array[y_axis], iy, oy))
-	    *ey = min_array[y_axis];
+	if (inrange(axis_array[y_axis].max, iy, oy))
+	    *ey = axis_array[y_axis].max;
+	else if (inrange(axis_array[y_axis].min, iy, oy))
+	    *ey = axis_array[y_axis].min;
 	else {
 	    graph_error("error in edge_intersect");
 	}
@@ -2565,38 +2581,38 @@ double *ex, *ey;		/* the point where it crosses an edge */
     }
     /* slanted line of some kind */
 
-    /* does it intersect min_array[y_axis] edge */
-    if (inrange(min_array[y_axis], iy, oy) && min_array[y_axis] != iy && min_array[y_axis] != oy) {
-	x = ix + (min_array[y_axis] - iy) * ((ox - ix) / (oy - iy));
-	if (inrange(x, min_array[x_axis], max_array[x_axis])) {
+    /* does it intersect axis_array[y_axis].min edge */
+    if (inrange(axis_array[y_axis].min, iy, oy) && axis_array[y_axis].min != iy && axis_array[y_axis].min != oy) {
+	x = ix + (axis_array[y_axis].min - iy) * ((ox - ix) / (oy - iy));
+	if (inrange(x, axis_array[x_axis].min, axis_array[x_axis].max)) {
 	    *ex = x;
-	    *ey = min_array[y_axis];
+	    *ey = axis_array[y_axis].min;
 	    return;		/* yes */
 	}
     }
-    /* does it intersect max_array[y_axis] edge */
-    if (inrange(max_array[y_axis], iy, oy) && max_array[y_axis] != iy && max_array[y_axis] != oy) {
-	x = ix + (max_array[y_axis] - iy) * ((ox - ix) / (oy - iy));
-	if (inrange(x, min_array[x_axis], max_array[x_axis])) {
+    /* does it intersect axis_array[y_axis].max edge */
+    if (inrange(axis_array[y_axis].max, iy, oy) && axis_array[y_axis].max != iy && axis_array[y_axis].max != oy) {
+	x = ix + (axis_array[y_axis].max - iy) * ((ox - ix) / (oy - iy));
+	if (inrange(x, axis_array[x_axis].min, axis_array[x_axis].max)) {
 	    *ex = x;
-	    *ey = max_array[y_axis];
+	    *ey = axis_array[y_axis].max;
 	    return;		/* yes */
 	}
     }
-    /* does it intersect min_array[x_axis] edge */
-    if (inrange(min_array[x_axis], ix, ox) && min_array[x_axis] != ix && min_array[x_axis] != ox) {
-	y = iy + (min_array[x_axis] - ix) * ((oy - iy) / (ox - ix));
-	if (inrange(y, min_array[y_axis], max_array[y_axis])) {
-	    *ex = min_array[x_axis];
+    /* does it intersect axis_array[x_axis].min edge */
+    if (inrange(axis_array[x_axis].min, ix, ox) && axis_array[x_axis].min != ix && axis_array[x_axis].min != ox) {
+	y = iy + (axis_array[x_axis].min - ix) * ((oy - iy) / (ox - ix));
+	if (inrange(y, axis_array[y_axis].min, axis_array[y_axis].max)) {
+	    *ex = axis_array[x_axis].min;
 	    *ey = y;
 	    return;
 	}
     }
-    /* does it intersect max_array[x_axis] edge */
-    if (inrange(max_array[x_axis], ix, ox) && max_array[x_axis] != ix && max_array[x_axis] != ox) {
-	y = iy + (max_array[x_axis] - ix) * ((oy - iy) / (ox - ix));
-	if (inrange(y, min_array[y_axis], max_array[y_axis])) {
-	    *ex = max_array[x_axis];
+    /* does it intersect axis_array[x_axis].max edge */
+    if (inrange(axis_array[x_axis].max, ix, ox) && axis_array[x_axis].max != ix && axis_array[x_axis].max != ox) {
+	y = iy + (axis_array[x_axis].max - ix) * ((oy - iy) / (ox - ix));
+	if (inrange(y, axis_array[y_axis].min, axis_array[y_axis].max)) {
+	    *ex = axis_array[x_axis].max;
 	    *ey = y;
 	    return;
 	}
@@ -2629,39 +2645,39 @@ struct coordinate GPHUGE *points;	/* the points array */
 int i;				/* line segment from point i-1 to point i */
 double *ex, *ey;		/* the point where it crosses an edge */
 {
-    /* global min_array[x_axis], max_array[x_axis], min_array[y_axis], max_array[x_axis] */
+    /* global axis_array[x_axis].min, axis_array[x_axis].max, axis_array[y_axis].min, axis_array[x_axis].max */
     double ax = points[i - 1].x;
     double ay = points[i - 1].y;
     double bx = points[i].x;
     double by = points[i].y;
 
     if (points[i].type == INRANGE) {	/* from OUTRANGE to INRANG */
-	if (inrange(ay, min_array[y_axis], max_array[y_axis])) {
+	if (inrange(ay, axis_array[y_axis].min, axis_array[y_axis].max)) {
 	    *ey = ay;
-	    if (ax > max_array[x_axis])
-		*ex = max_array[x_axis];
-	    else		/* x < min_array[x_axis] */
-		*ex = min_array[x_axis];
+	    if (ax > axis_array[x_axis].max)
+		*ex = axis_array[x_axis].max;
+	    else		/* x < axis_array[x_axis].min */
+		*ex = axis_array[x_axis].min;
 	} else {
 	    *ex = bx;
-	    if (ay > max_array[y_axis])
-		*ey = max_array[y_axis];
-	    else		/* y < min_array[y_axis] */
-		*ey = min_array[y_axis];
+	    if (ay > axis_array[y_axis].max)
+		*ey = axis_array[y_axis].max;
+	    else		/* y < axis_array[y_axis].min */
+		*ey = axis_array[y_axis].min;
 	}
     } else {			/* from INRANGE to OUTRANGE */
-	if (inrange(bx, min_array[x_axis], max_array[x_axis])) {
+	if (inrange(bx, axis_array[x_axis].min, axis_array[x_axis].max)) {
 	    *ex = bx;
-	    if (by > max_array[y_axis])
-		*ey = max_array[y_axis];
-	    else		/* y < min_array[y_axis] */
-		*ey = min_array[y_axis];
+	    if (by > axis_array[y_axis].max)
+		*ey = axis_array[y_axis].max;
+	    else		/* y < axis_array[y_axis].min */
+		*ey = axis_array[y_axis].min;
 	} else {
 	    *ey = ay;
-	    if (bx > max_array[x_axis])
-		*ex = max_array[x_axis];
-	    else		/* x < min_array[x_axis] */
-		*ex = min_array[x_axis];
+	    if (bx > axis_array[x_axis].max)
+		*ex = axis_array[x_axis].max;
+	    else		/* x < axis_array[x_axis].min */
+		*ex = axis_array[x_axis].min;
 	}
     }
     return;
@@ -2684,39 +2700,39 @@ struct coordinate GPHUGE *points;	/* the points array */
 int i;				/* line segment from point i-1 to point i */
 double *ex, *ey;		/* the point where it crosses an edge */
 {
-    /* global min_array[x_axis], max_array[x_axis], min_array[y_axis], max_array[x_axis] */
+    /* global axis_array[x_axis].min, axis_array[x_axis].max, axis_array[y_axis].min, axis_array[x_axis].max */
     double ax = points[i - 1].x;
     double ay = points[i - 1].y;
     double bx = points[i].x;
     double by = points[i].y;
 
     if (points[i].type == INRANGE) {	/* from OUTRANGE to INRANG */
-	if (inrange(ax, min_array[x_axis], max_array[x_axis])) {
+	if (inrange(ax, axis_array[x_axis].min, axis_array[x_axis].max)) {
 	    *ex = ax;
-	    if (ay > max_array[y_axis])
-		*ey = max_array[y_axis];
-	    else		/* y < min_array[y_axis] */
-		*ey = min_array[y_axis];
+	    if (ay > axis_array[y_axis].max)
+		*ey = axis_array[y_axis].max;
+	    else		/* y < axis_array[y_axis].min */
+		*ey = axis_array[y_axis].min;
 	} else {
 	    *ey = by;
-	    if (bx > max_array[x_axis])
-		*ex = max_array[x_axis];
-	    else		/* x < min_array[x_axis] */
-		*ex = min_array[x_axis];
+	    if (bx > axis_array[x_axis].max)
+		*ex = axis_array[x_axis].max;
+	    else		/* x < axis_array[x_axis].min */
+		*ex = axis_array[x_axis].min;
 	}
     } else {			/* from INRANGE to OUTRANGE */
-	if (inrange(by, min_array[y_axis], max_array[y_axis])) {
+	if (inrange(by, axis_array[y_axis].min, axis_array[y_axis].max)) {
 	    *ey = by;
-	    if (bx > max_array[x_axis])
-		*ex = max_array[x_axis];
-	    else		/* x < min_array[x_axis] */
-		*ex = min_array[x_axis];
+	    if (bx > axis_array[x_axis].max)
+		*ex = axis_array[x_axis].max;
+	    else		/* x < axis_array[x_axis].min */
+		*ex = axis_array[x_axis].min;
 	} else {
 	    *ex = ax;
-	    if (by > max_array[y_axis])
-		*ey = max_array[y_axis];
-	    else		/* y < min_array[y_axis] */
-		*ey = min_array[y_axis];
+	    if (by > axis_array[y_axis].max)
+		*ey = axis_array[y_axis].max;
+	    else		/* y < axis_array[y_axis].min */
+		*ey = axis_array[y_axis].min;
 	}
     }
     return;
@@ -2743,40 +2759,40 @@ struct coordinate GPHUGE *points;	/* the points array */
 int i;				/* line segment from point i-1 to point i */
 double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 {
-    /* global min_array[x_axis], max_array[x_axis], min_array[y_axis], max_array[x_axis] */
+    /* global axis_array[x_axis].min, axis_array[x_axis].max, axis_array[y_axis].min, axis_array[x_axis].max */
     double ax = points[i - 1].x;
     double ay = points[i - 1].y;
     double bx = points[i].x;
     double by = points[i].y;
 
-    if (GPMAX(ax, bx) < min_array[x_axis] || GPMIN(ax, bx) > max_array[x_axis] ||
-	GPMAX(ay, by) < min_array[y_axis] || GPMIN(ay, by) > max_array[y_axis] || ((ay > max_array[y_axis] || ay < min_array[y_axis]) && (bx > max_array[x_axis] || bx < min_array[x_axis]))) {
+    if (GPMAX(ax, bx) < axis_array[x_axis].min || GPMIN(ax, bx) > axis_array[x_axis].max ||
+	GPMAX(ay, by) < axis_array[y_axis].min || GPMIN(ay, by) > axis_array[y_axis].max || ((ay > axis_array[y_axis].max || ay < axis_array[y_axis].min) && (bx > axis_array[x_axis].max || bx < axis_array[x_axis].min))) {
 	return (FALSE);
-    } else if (inrange(ay, min_array[y_axis], max_array[y_axis]) && inrange(bx, min_array[x_axis], max_array[x_axis])) {	/* corner of step inside plotspace */
+    } else if (inrange(ay, axis_array[y_axis].min, axis_array[y_axis].max) && inrange(bx, axis_array[x_axis].min, axis_array[x_axis].max)) {	/* corner of step inside plotspace */
 	*ly++ = ay;
-	if (ax < min_array[x_axis])
-	    *lx++ = min_array[x_axis];
+	if (ax < axis_array[x_axis].min)
+	    *lx++ = axis_array[x_axis].min;
 	else
-	    *lx++ = max_array[x_axis];
+	    *lx++ = axis_array[x_axis].max;
 
 	*lx++ = bx;
-	if (by < min_array[y_axis])
-	    *ly++ = min_array[y_axis];
+	if (by < axis_array[y_axis].min)
+	    *ly++ = axis_array[y_axis].min;
 	else
-	    *ly++ = max_array[y_axis];
+	    *ly++ = axis_array[y_axis].max;
 
 	return (TRUE);
-    } else if (inrange(ay, min_array[y_axis], max_array[y_axis])) {	/* cross plotspace in x-direction */
-	*lx++ = min_array[x_axis];
+    } else if (inrange(ay, axis_array[y_axis].min, axis_array[y_axis].max)) {	/* cross plotspace in x-direction */
+	*lx++ = axis_array[x_axis].min;
 	*ly++ = ay;
-	*lx++ = max_array[x_axis];
+	*lx++ = axis_array[x_axis].max;
 	*ly++ = ay;
 	return (TRUE);
-    } else if (inrange(ax, min_array[x_axis], max_array[x_axis])) {	/* cross plotspace in y-direction */
+    } else if (inrange(ax, axis_array[x_axis].min, axis_array[x_axis].max)) {	/* cross plotspace in y-direction */
 	*lx++ = bx;
-	*ly++ = min_array[y_axis];
+	*ly++ = axis_array[y_axis].min;
 	*lx++ = bx;
-	*ly++ = max_array[y_axis];
+	*ly++ = axis_array[y_axis].max;
 	return (TRUE);
     } else
 	return (FALSE);
@@ -2803,40 +2819,40 @@ struct coordinate GPHUGE *points;	/* the points array */
 int i;				/* line segment from point i-1 to point i */
 double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 {
-    /* global min_array[x_axis], max_array[x_axis], min_array[y_axis], max_array[x_axis] */
+    /* global axis_array[x_axis].min, axis_array[x_axis].max, axis_array[y_axis].min, axis_array[x_axis].max */
     double ax = points[i - 1].x;
     double ay = points[i - 1].y;
     double bx = points[i].x;
     double by = points[i].y;
 
-    if (GPMAX(ax, bx) < min_array[x_axis] || GPMIN(ax, bx) > max_array[x_axis] ||
-	GPMAX(ay, by) < min_array[y_axis] || GPMIN(ay, by) > max_array[y_axis] || ((by > max_array[y_axis] || by < min_array[y_axis]) && (ax > max_array[x_axis] || ax < min_array[x_axis]))) {
+    if (GPMAX(ax, bx) < axis_array[x_axis].min || GPMIN(ax, bx) > axis_array[x_axis].max ||
+	GPMAX(ay, by) < axis_array[y_axis].min || GPMIN(ay, by) > axis_array[y_axis].max || ((by > axis_array[y_axis].max || by < axis_array[y_axis].min) && (ax > axis_array[x_axis].max || ax < axis_array[x_axis].min))) {
 	return (FALSE);
-    } else if (inrange(by, min_array[y_axis], max_array[y_axis]) && inrange(ax, min_array[x_axis], max_array[x_axis])) {	/* corner of step inside plotspace */
+    } else if (inrange(by, axis_array[y_axis].min, axis_array[y_axis].max) && inrange(ax, axis_array[x_axis].min, axis_array[x_axis].max)) {	/* corner of step inside plotspace */
 	*lx++ = ax;
-	if (ay < min_array[y_axis])
-	    *ly++ = min_array[y_axis];
+	if (ay < axis_array[y_axis].min)
+	    *ly++ = axis_array[y_axis].min;
 	else
-	    *ly++ = max_array[y_axis];
+	    *ly++ = axis_array[y_axis].max;
 
 	*ly = by;
-	if (bx < min_array[x_axis])
-	    *lx = min_array[x_axis];
+	if (bx < axis_array[x_axis].min)
+	    *lx = axis_array[x_axis].min;
 	else
-	    *lx = max_array[x_axis];
+	    *lx = axis_array[x_axis].max;
 
 	return (TRUE);
-    } else if (inrange(by, min_array[y_axis], max_array[y_axis])) {	/* cross plotspace in x-direction */
-	*lx++ = min_array[x_axis];
+    } else if (inrange(by, axis_array[y_axis].min, axis_array[y_axis].max)) {	/* cross plotspace in x-direction */
+	*lx++ = axis_array[x_axis].min;
 	*ly++ = by;
-	*lx = max_array[x_axis];
+	*lx = axis_array[x_axis].max;
 	*ly = by;
 	return (TRUE);
-    } else if (inrange(ax, min_array[x_axis], max_array[x_axis])) {	/* cross plotspace in y-direction */
+    } else if (inrange(ax, axis_array[x_axis].min, axis_array[x_axis].max)) {	/* cross plotspace in y-direction */
 	*lx++ = ax;
-	*ly++ = min_array[y_axis];
+	*ly++ = axis_array[y_axis].min;
 	*lx = ax;
-	*ly = max_array[y_axis];
+	*ly = axis_array[y_axis].max;
 	return (TRUE);
     } else
 	return (FALSE);
@@ -2858,7 +2874,7 @@ struct coordinate GPHUGE *points;	/* the points array */
 int i;				/* line segment from point i-1 to point i */
 double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 {
-    /* global min_array[x_axis], max_array[x_axis], min_array[y_axis], max_array[x_axis] */
+    /* global axis_array[x_axis].min, axis_array[x_axis].max, axis_array[y_axis].min, axis_array[x_axis].max */
     int count;
     double ix = points[i - 1].x;
     double iy = points[i - 1].y;
@@ -2905,11 +2921,11 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 	    oy = swap;
 	}
 	/* check actually passes through the graph area */
-	if (ix > max_array[x_axis] && inrange(iy, min_array[y_axis], max_array[y_axis])) {
-	    lx[0] = min_array[x_axis];
+	if (ix > axis_array[x_axis].max && inrange(iy, axis_array[y_axis].min, axis_array[y_axis].max)) {
+	    lx[0] = axis_array[x_axis].min;
 	    ly[0] = iy;
 
-	    lx[1] = max_array[x_axis];
+	    lx[1] = axis_array[x_axis].max;
 	    ly[1] = iy;
 #if 0
 	    fprintf(stderr, "(%g %g) -> (%g %g)", lx[0], ly[0], lx[1], ly[1]);
@@ -2933,12 +2949,12 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 	    oy = swap;
 	}
 	/* check actually passes through the graph area */
-	if (iy > max_array[y_axis] && inrange(ix, min_array[x_axis], max_array[x_axis])) {
+	if (iy > axis_array[y_axis].max && inrange(ix, axis_array[x_axis].min, axis_array[x_axis].max)) {
 	    lx[0] = ix;
-	    ly[0] = min_array[y_axis];
+	    ly[0] = axis_array[y_axis].min;
 
 	    lx[1] = ix;
-	    ly[1] = max_array[y_axis];
+	    ly[1] = axis_array[y_axis].max;
 #if 0
 	    fprintf(stderr, "(%g %g) -> (%g %g)", lx[0], ly[0], lx[1], ly[1]);
 #endif
@@ -2956,7 +2972,7 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
      *
      * The slant line intersections are solved using the parametric form
      * of the equation for a line, since if we test x/y min/max planes explicitly
-     * then e.g. a  line passing through a corner point (min_array[x_axis],min_array[y_axis]) 
+     * then e.g. a  line passing through a corner point (axis_array[x_axis].min,axis_array[y_axis].min) 
      * actually intersects 2 planes and hence further tests would be required 
      * to anticipate this and similar situations.
      */
@@ -2971,17 +2987,17 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
     if (ix == ox) {
 	/* line parallel to y axis */
 
-	/* x coord must be in range, and line must span both min_array[y_axis] and max_array[y_axis] */
-	/* note that spanning min_array[y_axis] implies spanning max_array[y_axis], as both points OUTRANGE */
-	if (!inrange(ix, min_array[x_axis], max_array[x_axis])) {
+	/* x coord must be in range, and line must span both axis_array[y_axis].min and axis_array[y_axis].max */
+	/* note that spanning axis_array[y_axis].min implies spanning axis_array[y_axis].max, as both points OUTRANGE */
+	if (!inrange(ix, axis_array[x_axis].min, axis_array[x_axis].max)) {
 	    return (FALSE);
 	}
-	if (inrange(min_array[y_axis], iy, oy)) {
+	if (inrange(axis_array[y_axis].min, iy, oy)) {
 	    lx[0] = ix;
-	    ly[0] = min_array[y_axis];
+	    ly[0] = axis_array[y_axis].min;
 
 	    lx[1] = ix;
-	    ly[1] = max_array[y_axis];
+	    ly[1] = axis_array[y_axis].max;
 #if 0
 	    fprintf(stderr, "(%g %g) -> (%g %g)", lx[0], ly[0], lx[1], ly[1]);
 #endif
@@ -2993,16 +3009,16 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 	/* already checked case (ix == ox && iy == oy) */
 
 	/* line parallel to x axis */
-	/* y coord must be in range, and line must span both min_array[x_axis] and max_array[x_axis] */
-	/* note that spanning min_array[x_axis] implies spanning max_array[x_axis], as both points OUTRANGE */
-	if (!inrange(iy, min_array[y_axis], max_array[y_axis])) {
+	/* y coord must be in range, and line must span both axis_array[x_axis].min and axis_array[x_axis].max */
+	/* note that spanning axis_array[x_axis].min implies spanning axis_array[x_axis].max, as both points OUTRANGE */
+	if (!inrange(iy, axis_array[y_axis].min, axis_array[y_axis].max)) {
 	    return (FALSE);
 	}
-	if (inrange(min_array[x_axis], ix, ox)) {
-	    lx[0] = min_array[x_axis];
+	if (inrange(axis_array[x_axis].min, ix, ox)) {
+	    lx[0] = axis_array[x_axis].min;
 	    ly[0] = iy;
 
-	    lx[1] = max_array[x_axis];
+	    lx[1] = axis_array[x_axis].max;
 	    ly[1] = iy;
 #if 0
 	    fprintf(stderr, "(%g %g) -> (%g %g)", lx[0], ly[0], lx[1], ly[1]);
@@ -3024,16 +3040,16 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
        diff_y = (oy - iy);
      */
 
-    t[0] = (min_array[x_axis] - ix) / (ox - ix);
-    t[1] = (max_array[x_axis] - ix) / (ox - ix);
+    t[0] = (axis_array[x_axis].min - ix) / (ox - ix);
+    t[1] = (axis_array[x_axis].max - ix) / (ox - ix);
 
     if (t[0] > t[1]) {
 	swap = t[0];
 	t[0] = t[1];
 	t[1] = swap;
     }
-    t[2] = (min_array[y_axis] - iy) / (oy - iy);
-    t[3] = (max_array[y_axis] - iy) / (oy - iy);
+    t[2] = (axis_array[y_axis].min - iy) / (oy - iy);
+    t[3] = (axis_array[y_axis].max - iy) / (oy - iy);
 
     if (t[2] > t[3]) {
 	swap = t[2];
@@ -3057,11 +3073,11 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
      */
     /* FIXME: this is UGLY. Need an 'almost_inrange()' function */
     if (inrange(lx[0],
-		(min_array[x_axis] - 1e-5 * (max_array[x_axis] - min_array[x_axis])),
-		(max_array[x_axis] + 1e-5 * (max_array[x_axis] - min_array[x_axis])))
+		(axis_array[x_axis].min - 1e-5 * (axis_array[x_axis].max - axis_array[x_axis].min)),
+		(axis_array[x_axis].max + 1e-5 * (axis_array[x_axis].max - axis_array[x_axis].min)))
 	&& inrange(ly[0],
-		   (min_array[y_axis] - 1e-5 * (max_array[y_axis] - min_array[y_axis])),
-		   (max_array[y_axis] + 1e-5 * (max_array[y_axis] - min_array[y_axis]))))
+		   (axis_array[y_axis].min - 1e-5 * (axis_array[y_axis].max - axis_array[y_axis].min)),
+		   (axis_array[y_axis].max + 1e-5 * (axis_array[y_axis].max - axis_array[y_axis].min))))
     {
 
 #if 0
@@ -3253,13 +3269,15 @@ const char *what;
     case first_axes:
 	{
 	    double xx = axis_log_value_checked(FIRST_X_AXIS, pos->x, what);
-	    *x = xleft + (xx - min_array[FIRST_X_AXIS]) * scale[FIRST_X_AXIS] + 0.5;
+	    *x = xleft + (xx - axis_array[FIRST_X_AXIS].min)
+		* axis_array[FIRST_X_AXIS].term_scale + 0.5;
 	    break;
 	}
     case second_axes:
 	{
 	    double xx = axis_log_value_checked(SECOND_X_AXIS, pos->x, what);
-	    *x = xleft + (xx - min_array[SECOND_X_AXIS]) * scale[SECOND_X_AXIS] + 0.5;
+	    *x = xleft + (xx - axis_array[SECOND_X_AXIS].min)
+		* axis_array[SECOND_X_AXIS].term_scale + 0.5;
 	    break;
 	}
     case graph:
@@ -3278,13 +3296,15 @@ const char *what;
     case first_axes:
 	{
 	    double yy = axis_log_value_checked(FIRST_Y_AXIS, pos->y, what);
-	    *y = ybot + (yy - min_array[FIRST_Y_AXIS]) * scale[FIRST_Y_AXIS] + 0.5;
+	    *y = ybot + (yy - axis_array[FIRST_Y_AXIS].min)
+		* axis_array[FIRST_Y_AXIS].term_scale + 0.5;
 	    return;
 	}
     case second_axes:
 	{
 	    double yy = axis_log_value_checked(SECOND_Y_AXIS, pos->y, what);
-	    *y = ybot + (yy - min_array[SECOND_Y_AXIS]) * scale[SECOND_Y_AXIS] + 0.5;
+	    *y = ybot + (yy - axis_array[SECOND_Y_AXIS].min)
+		* axis_array[SECOND_Y_AXIS].term_scale + 0.5;
 	    return;
 	}
     case graph:

@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.2.2.3 2000/06/22 12:57:38 broeker Exp $
+ * $Id: axis.h,v 1.2.2.4 2000/07/26 18:52:58 broeker Exp $
  *
  */
 
@@ -133,11 +133,6 @@ typedef void (*tic_callback) __PROTO((AXIS_INDEX, double, char *, struct lp_styl
 #define TICS_MASK      3
 #define TICS_MIRROR    4
 
-/* bit masks for range_flags[]: */
-/* write auto-ed ranges back to variables for autoscale */
-#define RANGE_WRITEBACK 1	
-/* allow auto and reversed ranges */
-#define RANGE_REVERSE   2	
 
 /* Need to allow user to choose grid at first and/or second axes tics.
  * Also want to let user choose circles at x or y tics for polar grid.
@@ -157,59 +152,129 @@ typedef void (*tic_callback) __PROTO((AXIS_INDEX, double, char *, struct lp_styl
 #define GRID_MX2    (1<<8)
 #define GRID_MY2    (1<<9)
 
+/* HBB 20000725: gather all per-axis variables into a struct, and set up
+ * a single large array of such structs */
+/* FIXME 20000725: autoscale and set_autoscale may need their own
+ * typedef, as they're neither really ints, nor TBOOLEAN, but some
+ * kind of 'TWOBITS' instead */
+/* FIXME 20000725: collect some of those various TBOOLEAN fields into
+ * a larger int (or -- shudder -- a bitfield?) */
+typedef struct axis {
+/* range of this axis */
+    int autoscale;		/* Which end(s) are autoscaled? */
+    int set_autoscale;		/* what does 'set' think autoscale to be? */
+    int range_flags;		/* flag bits about autoscale/writeback: */
+    /* write auto-ed ranges back to variables for autoscale */
+#define RANGE_WRITEBACK 1	
+    /* allow auto and reversed ranges */
+#define RANGE_REVERSE   2	
+    TBOOLEAN reverse_range;	/* range [high:low] silently reverted? */
+    double min;			/* 'transient' axis extremal values */
+    double max;
+    double set_min;		/* set/show 'permanent' values */
+    double set_max;
+    double writeback_min;	/* ULIG's writeback implementation */
+    double writeback_max;
+
+/* output-related quantities */
+    int term_lower;		/* low and high end of the axis on output, */
+    int term_upper;		/* ... (in terminal coordinates)*/
+    double term_scale;		/* scale factor: plot --> term coords */
+    unsigned int term_zero;	/* position of zero axis */
+
+/* log axis control */
+    TBOOLEAN log;		/* log axis stuff: flag "islog?" */
+    double base;		/* logarithm base value */
+    double log_base;		/* ln(base), for easier computations */
+
+/* time/date axis control */
+    TBOOLEAN is_timedata;	/* is this a time/date axis? */
+    TBOOLEAN format_is_numeric;	/* format string looks like numeric??? */
+    char timefmt[MAX_ID_LEN+1];	/* format string for input */
+    char formatstring[MAX_ID_LEN+1];
+				/* the format string for output */
+
+/* ticmark control variables */
+    int ticmode;		/* tics on border/axis? mirrored? */
+    struct ticdef ticdef;	/* tic series definition */
+    TBOOLEAN tic_rotate;	/* ticmarks rotated (vertical text)? */
+    int minitics;		/* minor tic mode (none/auto/user)? */
+    double mtic_freq;		/* minitic stepsize */
+
+/* other miscellaneous fields */
+    label_struct label;		/* label string and position offsets */
+    lp_style_type zeroaxis;	/* drawing style for zeroaxis, if any */
+} AXIS;
+
+#define DEFAULT_AXIS_TICDEF {TIC_COMPUTED, {NULL} }
+#define DEFAULT_AXIS_ZEROAXIS {0, -3, 0, 1.0, 1.0}
+#define DEFAULT_AXIS_STRUCT {       					     \
+    DTRUE, DTRUE, 0, FALSE,	/* auto, set_auto, range_flags, rev_range */ \
+	-10.0, 10.0,		/* 3 pairs of min/max */		     \
+	-10.0, 10.0,							     \
+	-10.0, 10.0,							     \
+	0, 0, 0, 0,		/* terminal dependents */		     \
+	FALSE, 0.0, 0.0,	/* log, base, log(base) */		     \
+	0, 1,			/* is_timedata, format_numeric */	     \
+	DEF_FORMAT, TIMEFMT,	/* output format, timefmt */		     \
+	NO_TICS,		/* tic output positions (border, mirror) */  \
+	DEFAULT_AXIS_TICDEF,	/* tic series definition */		     \
+	FALSE, MINI_DEFAULT, 10, /* tic_rotate, minitics, mtic_freq */	     \
+	EMPTY_LABELSTRUCT,	/* axis label */			     \
+	DEFAULT_AXIS_ZEROAXIS}	/* zeroaxis line style */
+
+/* Table of default behaviours --- a subset of the struct above. Only
+ * those fields are present that differ from axis to axis. */
+typedef struct axis_defaults {
+    double min;			/* default axis endpoints */
+    double max;
+    char name[4];		/* axis name, like in "x2" or "t" */
+    int ticmode;		/* tics on border/axis? mirrored? */
+} AXIS_DEFAULTS;
+
+
+
 /* global variables in axis.c */
 
-/* The names of the axes, and a parsing table for reading them. For
- * use by the set/show machinery, mainly */
-extern const char *axisname_array[AXIS_ARRAY_SIZE];
+extern AXIS axis_array[AXIS_ARRAY_SIZE];
+extern AXIS_DEFAULTS axis_defaults[AXIS_ARRAY_SIZE];
+
+/* A parsing table for mapping axis names into axis indices. For use
+ * by the set/show machinery, mainly */
 extern struct gen_table axisname_tbl[AXIS_ARRAY_SIZE+1];
 
-/* min/max of ranges: defaults... */
-extern const double default_axis_min[AXIS_ARRAY_SIZE];
-extern const double default_axis_max[AXIS_ARRAY_SIZE];
-/* set/show 'permanent' status */
-extern double set_axis_min[AXIS_ARRAY_SIZE];
-extern double set_axis_max[AXIS_ARRAY_SIZE];
-/* internal 'transient' values */
-extern double min_array[AXIS_ARRAY_SIZE];
-extern double max_array[AXIS_ARRAY_SIZE];
-/* ULIG's writeback implementation */
-extern double writeback_min[AXIS_ARRAY_SIZE];
-extern double writeback_max[AXIS_ARRAY_SIZE];
-
 /* autoscaling flags*/
-extern TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE];
-extern int auto_array[AXIS_ARRAY_SIZE];
+/*  extern TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE]; */
 
 /* logscaling: set/show status: */
-extern TBOOLEAN log_array[AXIS_ARRAY_SIZE];
-extern double base_array[AXIS_ARRAY_SIZE];
-extern double log_base_array[AXIS_ARRAY_SIZE];
+/*  extern TBOOLEAN log_array[AXIS_ARRAY_SIZE]; */
+/*  extern double base_array[AXIS_ARRAY_SIZE]; */
+/*  extern double log_base_array[AXIS_ARRAY_SIZE]; */
 
 /* scale factors for mapping for each axis */
-extern double scale[AXIS_ARRAY_SIZE];
+/*  extern double scale[AXIS_ARRAY_SIZE]; */
 
 /* low and high end of the axis on output, in terminal coords: */
-extern int axis_graphical_lower[AXIS_ARRAY_SIZE];
-extern int axis_graphical_upper[AXIS_ARRAY_SIZE];
+/*  extern int axis_graphical_lower[AXIS_ARRAY_SIZE]; */
+/*  extern int axis_graphical_upper[AXIS_ARRAY_SIZE]; */
 /* axis' zero positions in terminal coords */
-extern unsigned int axis_zero[AXIS_ARRAY_SIZE];	
+/*  extern unsigned int axis_zero[AXIS_ARRAY_SIZE];	 */
 
 /* if user specifies [10:-10] we use [-10:10] internally, and swap at end */
-extern int reverse_range[AXIS_ARRAY_SIZE];
+/*  extern int reverse_range[AXIS_ARRAY_SIZE]; */
 
 
 /* 'set' options 'writeback' and 'reverse' */
-extern int range_flags[AXIS_ARRAY_SIZE];
+/*  extern int range_flags[AXIS_ARRAY_SIZE]; */
 
 /* tic control variables */
-extern const int default_axis_tics[AXIS_ARRAY_SIZE];
-extern int axis_tics[AXIS_ARRAY_SIZE];
-extern int axis_minitics[AXIS_ARRAY_SIZE];
-extern double axis_mtic_freq[AXIS_ARRAY_SIZE];
-extern TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE];
+/*  extern const int default_axis_tics[AXIS_ARRAY_SIZE]; */
+/*  extern int axis_tics[AXIS_ARRAY_SIZE]; */
+/*  extern int axis_minitics[AXIS_ARRAY_SIZE]; */
+/*  extern double axis_mtic_freq[AXIS_ARRAY_SIZE]; */
+/*  extern TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE]; */
 extern const struct ticdef default_axis_ticdef;
-extern struct ticdef axis_ticdef[AXIS_ARRAY_SIZE];
+/*  extern struct ticdef axis_ticdef[AXIS_ARRAY_SIZE]; */
 extern double ticscale;		/* scale factor for tic marks (was (0..1])*/
 extern double miniticscale;	/* and for minitics */
 extern TBOOLEAN	tic_in;		/* tics to be drawn inward?  */
@@ -217,26 +282,26 @@ extern TBOOLEAN	tic_in;		/* tics to be drawn inward?  */
 
 /* output format strings (numberic or timedata) for tic labels and similar
  * uses */
-extern char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1];
+/*  extern char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1]; */
 /* does the format string look a numeric one, for sprintf()? */
-extern int format_is_numeric[AXIS_ARRAY_SIZE];
+/*  extern int format_is_numeric[AXIS_ARRAY_SIZE]; */
 /* default format for tic mark labels */
 #define DEF_FORMAT "% g"
 
 /* format for date/time for reading time in datafile */
-extern char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1];
+/*  extern char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1]; */
 /* is this axis in 'set {x|...}data time' mode? */
-extern int axis_is_timedata[AXIS_ARRAY_SIZE];
+/*  extern int axis_is_timedata[AXIS_ARRAY_SIZE]; */
 /* default parse timedata string */
 #define TIMEFMT "%d/%m/%y,%H:%M"
 
 /* axis labels */
 extern const label_struct default_axis_label;
-extern label_struct axis_label[AXIS_ARRAY_SIZE];
+/*  extern label_struct axis_label[AXIS_ARRAY_SIZE]; */
 
 /* zeroaxis linetype (flag type==-3 if none wanted) */
 extern const lp_style_type default_axis_zeroaxis;
-extern lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE];
+/*  extern lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE]; */
 
 /* grid drawing control variables */
 extern int grid_selection;
@@ -253,130 +318,149 @@ extern int tic_start, tic_direction, tic_text,
 /* -------- macros using these variables: */
 
 /* Macros to map from user to terminal coordinates and back */
-#define AXIS_MAP(axis, variable)				\
-  (int) ((axis_graphical_lower[axis])				\
-	 + ((variable) - min_array[axis])*scale[axis] + 0.5)
-#define AXIS_MAPBACK(axis, pos)					\
-  (((double)(pos)-axis_graphical_lower[axis])/scale[axis]	\
-   + min_array[axis])
+#define AXIS_MAP(axis, variable)		\
+  (int) ((axis_array[axis].term_lower)		\
+	 + ((variable) - axis_array[axis].min)	\
+	 * axis_array[axis].term_scale + 0.5)
+#define AXIS_MAPBACK(axis, pos)						   \
+  (((double)(pos)-axis_array[axis].term_lower)/axis_array[axis].term_scale \
+   + axis_array[axis].min)
 
 /* these are the old names for these: */
 #define map_x(x) AXIS_MAP(x_axis, x)
 #define map_y(y) AXIS_MAP(y_axis, y)
 
-#define AXIS_SETSCALE(axis, out_low, out_high) \
-    scale[axis] = ((out_high) - (out_low)) / \
-                  (max_array[axis] - min_array[axis])
+#define AXIS_SETSCALE(axis, out_low, out_high)			\
+    axis_array[axis].term_scale = ((out_high) - (out_low))	\
+        / (axis_array[axis].max - axis_array[axis].min)
 
 /* write current min/max_array contents into the set/show status
  * variables */
-#define AXIS_WRITEBACK(axis)				\
-do {							\
-    if (range_flags[axis]&RANGE_WRITEBACK) {		\
-	if (auto_array[axis] & 1)			\
-	    set_axis_min[axis] = min_array[axis];	\
-	if (auto_array[axis] & 2)			\
-	    set_axis_max[axis] = max_array[axis];	\
-    }							\
+#define AXIS_WRITEBACK(axis)					\
+do {								\
+    if (axis_array[axis].range_flags & RANGE_WRITEBACK) {	\
+	if (axis_array[axis].autoscale & 1)			\
+	    axis_array[axis].set_min = axis_array[axis].min;	\
+	if (axis_array[axis].autoscale & 2)			\
+	    axis_array[axis].set_max = axis_array[axis].max;	\
+    }								\
 } while(0)
 
 /* HBB 20000430: New macros, logarithmize a value into a stored
  * coordinate*/ 
-#define AXIS_DO_LOG(axis,value) (log(value) / log_base_array[axis])
-#define AXIS_UNDO_LOG(axis,value) exp((value) * log_base_array[axis])
+#define AXIS_DO_LOG(axis,value) (log(value) / axis_array[axis].log_base)
+#define AXIS_UNDO_LOG(axis,value) exp((value) * axis_array[axis].log_base)
 
 /* HBB 20000430: same, but these test if the axis is log, first: */
-#define AXIS_LOG_VALUE(axis,value) \
-    (log_array[axis] ? AXIS_DO_LOG(axis,value) : (value))
-#define AXIS_DE_LOG_VALUE(axis,coordinate) \
-    (log_array[axis] ? AXIS_UNDO_LOG(axis,coordinate): (coordinate))
+#define AXIS_LOG_VALUE(axis,value)				\
+    (axis_array[axis].log ? AXIS_DO_LOG(axis,value) : (value))
+#define AXIS_DE_LOG_VALUE(axis,coordinate)				  \
+    (axis_array[axis].log ? AXIS_UNDO_LOG(axis,coordinate): (coordinate))
  
 
 /* copy scalar data to arrays. The difference between 3D and 2D
  * versions is: dont know we have to support ranges [10:-10] - lets
  * reverse it for now, then fix it at the end.  */
 /* FIXME HBB 20000426: unknown if this distinction makes any sense... */
-#define AXIS_INIT3D(axis, islog_override, infinite)			\
-do {									\
-    if ((auto_array[axis] = set_axis_autoscale[axis]) == 0		\
-	&& set_axis_max[axis] < set_axis_max[axis]) {			\
-	min_array[axis] = set_axis_max[axis];				\
-	max_array[axis] = set_axis_min[axis]; /* we will fix later */	\
-    } else {								\
-	min_array[axis] = (infinite && (set_axis_autoscale[axis]&1))	\
-	    ? VERYLARGE : set_axis_min[axis];				\
-	max_array[axis] = (infinite && (set_axis_autoscale[axis]&2))	\
-	    ? -VERYLARGE : set_axis_max[axis];				\
-    }									\
-    if (islog_override) {						\
-	log_array[axis] = 0;						\
-	base_array[axis] = 1;						\
-	log_base_array[axis] = 0;					\
-    } else {								\
-	log_base_array[axis] = log(base_array[axis]);			\
-    }									\
+#define AXIS_INIT3D(axis, islog_override, infinite)			   \
+do {									   \
+    if ((axis_array[axis].autoscale = axis_array[axis].set_autoscale) == 0 \
+	&& axis_array[axis].set_max < axis_array[axis].set_min) {	   \
+	axis_array[axis].min = axis_array[axis].set_max;		   \
+	axis_array[axis].max = axis_array[axis].set_min;		   \
+        /* we will fix later */						   \
+    } else {								   \
+	axis_array[axis].min =						   \
+	    (infinite && (axis_array[axis].set_autoscale&1))		   \
+	    ? VERYLARGE : axis_array[axis].set_min;			   \
+	axis_array[axis].max =						   \
+	    (infinite && (axis_array[axis].set_autoscale&2))		   \
+	    ? -VERYLARGE : axis_array[axis].set_max;			   \
+    }									   \
+    if (islog_override) {						   \
+	axis_array[axis].log = 0;					   \
+	axis_array[axis].base = 1;					   \
+	axis_array[axis].log_base = 0;					   \
+    } else {								   \
+	axis_array[axis].log_base = log(axis_array[axis].base);		   \
+    }									   \
 } while(0)
 
-#define AXIS_INIT2D(axis, infinite)					\
-do {									\
-    auto_array[axis] = set_axis_autoscale[axis];			\
-    min_array[axis] = (infinite && (set_axis_autoscale[axis]&1))	\
-	? VERYLARGE : set_axis_min[axis];				\
-    max_array[axis] = (infinite && (set_axis_autoscale[axis]&2))	\
-	? -VERYLARGE : set_axis_max[axis];				\
-    log_base_array[axis] = log(base_array[axis]);			\
+#define AXIS_INIT2D(axis, infinite)					    \
+do {									    \
+    axis_array[axis].autoscale = axis_array[axis].set_autoscale;	    \
+    axis_array[axis].min = (infinite && (axis_array[axis].set_autoscale&1)) \
+	? VERYLARGE : axis_array[axis].set_min;				    \
+    axis_array[axis].max = (infinite && (axis_array[axis].set_autoscale&2)) \
+	? -VERYLARGE : axis_array[axis].set_max;			    \
+    axis_array[axis].log_base = log(axis_array[axis].base);		    \
 } while(0)
 
 /* handle reversed ranges */
-#define CHECK_REVERSE(axis)						\
-do {									\
-    if ((auto_array[axis] == 0)						\
-	&& (max_array[axis] < min_array[axis])				\
-	) {								\
-	double temp = min_array[axis];					\
-	min_array[axis] = max_array[axis];				\
-	max_array[axis] = temp;						\
-	reverse_range[axis] = 1;					\
-    } else								\
-	reverse_range[axis] = (range_flags[axis]&RANGE_REVERSE);	\
+#define CHECK_REVERSE(axis)					\
+do {								\
+    if ((axis_array[axis].autoscale == 0)			\
+	&& (axis_array[axis].max < axis_array[axis].min)	\
+	) {							\
+	double temp = axis_array[axis].min;			\
+	axis_array[axis].min = axis_array[axis].max;		\
+	axis_array[axis].max = temp;				\
+	axis_array[axis].reverse_range = 1;			\
+    } else							\
+	axis_array[axis].reverse_range =			\
+	    (axis_array[axis].range_flags & RANGE_REVERSE);	\
 } while(0)
 
+/* HBB 20000725: new macro, built upon ULIG's SAVE_WRITEBACK(axis),
+ * but easier to use. Code like this occured twice, in plot2d and
+ * plot3d: */
+#define SAVE_WRITEBACK_ALL_AXES					\
+do {								\
+    AXIS_INDEX axis;						\
+								\
+    for (axis = 0; axis < AXIS_ARRAY_SIZE; axis++)		\
+	if(axis_array[axis].range_flags & RANGE_WRITEBACK) {	\
+	    set_writeback_min(axis);				\
+	    set_writeback_max(axis);				\
+	}							\
+} while(0)
+	    
 /* get optional [min:max] */
-#define PARSE_RANGE(axis)						\
-do {									\
-    if (equals(c_token, "[")) {						\
-	c_token++;							\
-	auto_array[axis] =						\
-	    load_range(axis, &min_array[axis], &max_array[axis],	\
-		       auto_array[axis]);				\
-	if (!equals(c_token, "]"))					\
-	    int_error(c_token, "']' expected");				\
-	c_token++;							\
-    }									\
+#define PARSE_RANGE(axis)						   \
+do {									   \
+    if (equals(c_token, "[")) {						   \
+	c_token++;							   \
+	axis_array[axis].autoscale =					   \
+	    load_range(axis, &axis_array[axis].min, &axis_array[axis].max, \
+		       axis_array[axis].autoscale);			   \
+	if (!equals(c_token, "]"))					   \
+	    int_error(c_token, "']' expected");				   \
+	c_token++;							   \
+    }									   \
 } while (0)
 
 /* HBB 20000430: new macro, like PARSE_RANGE, but for named ranges as
  * in 'plot [phi=3.5:7] sin(phi)' */
-#define PARSE_NAMED_RANGE(axis, dummy_token)				\
-do {									\
-    if (equals(c_token, "[")) {						\
-	c_token++;							\
-	if (isletter(c_token)) {					\
-	    if (equals(c_token + 1, "=")) {				\
-		dummy_token = c_token;					\
-		c_token += 2;						\
-	    } 								\
-		/* oops; probably an expression with a variable: act	\
-		 * as if no variable name had been seen, by		\
-		 * fallthrough */ 					\
-	}								\
-	auto_array[axis] = load_range(axis, &min_array[axis],		\
-				      &max_array[axis],			\
-				      auto_array[axis]);		\
-	if (!equals(c_token, "]"))					\
-	    int_error(c_token, "']' expected");				\
-	c_token++;							\
-    }				/* first '[' */				\
+#define PARSE_NAMED_RANGE(axis, dummy_token)				     \
+do {									     \
+    if (equals(c_token, "[")) {						     \
+	c_token++;							     \
+	if (isletter(c_token)) {					     \
+	    if (equals(c_token + 1, "=")) {				     \
+		dummy_token = c_token;					     \
+		c_token += 2;						     \
+	    }								     \
+		/* oops; probably an expression with a variable: act	     \
+		 * as if no variable name had been seen, by		     \
+		 * fallthrough */					     \
+	}								     \
+	axis_array[axis].autoscale = load_range(axis, &axis_array[axis].min, \
+				      &axis_array[axis].max,		     \
+				      axis_array[axis].autoscale);	     \
+	if (!equals(c_token, "]"))					     \
+	    int_error(c_token, "']' expected");				     \
+	c_token++;							     \
+    }				/* first '[' */				     \
 } while (0)
 
 /* parse a position of the form
@@ -384,20 +468,20 @@ do {									\
  * where coords is one of first,second.graph,screen
  * if first or second, we need to take axis_is_timedata into account
  */
-#define GET_NUMBER_OR_TIME(store,axes,axis)			\
-do {								\
-    if (((axes) >= 0) && (axis_is_timedata[(axes)+(axis)])	\
-	&& isstring(c_token)) {					\
-	char ss[80];						\
-	struct tm tm;						\
-	quote_str(ss,c_token, 80);				\
-	++c_token;						\
-	if (gstrptime(ss,timefmt[axis],&tm))			\
-	    (store) = (double) gtimegm(&tm);			\
-    } else {							\
-	struct value value;					\
-	(store) = real(const_express(&value));			\
-    }								\
+#define GET_NUMBER_OR_TIME(store,axes,axis)				\
+do {									\
+    if (((axes) >= 0) && (axis_array[(axes)+(axis)].is_timedata)	\
+	&& isstring(c_token)) {						\
+	char ss[80];							\
+	struct tm tm;							\
+	quote_str(ss,c_token, 80);					\
+	++c_token;							\
+	if (gstrptime(ss,axis_array[axis].timefmt,&tm))			\
+	    (store) = (double) gtimegm(&tm);				\
+    } else {								\
+	struct value value;						\
+	(store) = real(const_express(&value));				\
+    }									\
 } while(0)
 
 /* This is one is very similar to GET_NUMBER_OR_TIME, but has slightly
@@ -419,7 +503,7 @@ do {							\
 #define STORE_WITH_LOG_AND_UPDATE_RANGE(STORE, VALUE, TYPE, AXIS,	  \
 				       OUT_ACTION, UNDEF_ACTION)	  \
 do {									  \
-    if (log_array[AXIS]) {						  \
+    if (axis_array[AXIS].log) {						  \
 	if (VALUE<0.0) {						  \
 	    TYPE = UNDEFINED;						  \
 	    UNDEF_ACTION;						  \
@@ -438,18 +522,18 @@ do {									  \
 	break;  /* don't set y range if x is outrange, for example */	  \
     if ((int)AXIS < 0)							  \
 	break;	/* HBB 20000507: don't check range if not a coordinate */ \
-    if ( VALUE < min_array[AXIS] ) {					  \
-	if (auto_array[AXIS] & 1)					  \
-	    min_array[AXIS] = VALUE;					  \
+    if ( VALUE<axis_array[AXIS].min ) {					  \
+	if (axis_array[AXIS].autoscale & 1)				  \
+	    axis_array[AXIS].min = VALUE;				  \
 	else {								  \
 	    TYPE = OUTRANGE;						  \
 	    OUT_ACTION;							  \
 	    break;							  \
 	}								  \
     }									  \
-    if ( VALUE>max_array[AXIS] ) {					  \
-	if (auto_array[AXIS] & 2)					  \
-	    max_array[AXIS] = VALUE;					  \
+    if ( VALUE>axis_array[AXIS].max ) {					  \
+	if (axis_array[AXIS].autoscale & 2)				  \
+	    axis_array[AXIS].max = VALUE;				  \
 	else {								  \
 	    TYPE = OUTRANGE;						  \
 	    OUT_ACTION;							  \
@@ -463,11 +547,11 @@ do {									  \
 
 /* HBB 20000506: new macro, initializes one variable to the same
  * value, for all axes. */
-#define INIT_AXIS_ARRAY(array, value)		\
+#define INIT_AXIS_ARRAY(_array, value)		\
 do {						\
     int tmp;					\
     for (tmp=0; tmp<AXIS_ARRAY_SIZE; tmp++)	\
-	array[tmp]=value;			\
+	axis_array[tmp]._array=(value);		\
 } while(0)
 
 /* HBB 20000506: new macro to automatically build intializer lists
@@ -479,8 +563,8 @@ do {						\
 /* used by set.c */
 #define SET_DEFFORMAT(axis, flag_array)				\
 	if (flag_array[axis]) {					\
-	    (void) strcpy(axis_formatstring[axis],DEF_FORMAT);	\
-	    format_is_numeric[axis] = 1;			\
+	    (void) strcpy(axis_array[axis].formatstring,DEF_FORMAT);	\
+	    axis_array[axis].format_is_numeric = 1;		\
 	}
 
 

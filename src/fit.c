@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.3 2000/06/22 12:57:38 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.21.2.4 2000/07/26 18:52:58 broeker Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -1252,11 +1252,11 @@ fit_command()
      * We need to check if one of the columns is time data, like
      * in plot2d and plot3d */
 
-    if (axis_is_timedata[FIRST_X_AXIS]) {
+    if (axis_array[FIRST_X_AXIS].is_timedata) {
 	if (columns < 2)
 	    int_error(c_token, "Need full using spec for x time data");
     }
-    if (axis_is_timedata[FIRST_Y_AXIS]) {
+    if (axis_array[FIRST_Y_AXIS].is_timedata) {
 	if (columns < 1)
 	    int_error(c_token, "Need using spec for y time data");
     }
@@ -1284,11 +1284,11 @@ fit_command()
 	    int_error(zrange_token, "Three range-specs not allowed in on-variable fit");
 	else {
 	    /* 2D fit, 2 ranges: second range is for *z*, not y: */
-	    auto_array[FIRST_Z_AXIS] = auto_array[FIRST_Y_AXIS];
-	    if (auto_array[FIRST_Y_AXIS] & 1)
-		min_array[FIRST_Z_AXIS] = min_array[FIRST_Y_AXIS];
-	    if (auto_array[FIRST_Y_AXIS] & 2)
-		max_array[FIRST_Z_AXIS] = max_array[FIRST_Y_AXIS];
+	    axis_array[FIRST_Z_AXIS].autoscale = axis_array[FIRST_Y_AXIS].autoscale;
+	    if (axis_array[FIRST_Y_AXIS].autoscale & 1)
+		axis_array[FIRST_Z_AXIS].min = axis_array[FIRST_Y_AXIS].min;
+	    if (axis_array[FIRST_Y_AXIS].autoscale & 2)
+		axis_array[FIRST_Z_AXIS].max = axis_array[FIRST_Y_AXIS].max;
 	}
     }
     /* defer actually reading the data until we have parsed the rest
@@ -1404,26 +1404,26 @@ fit_command()
 	}
 
 	/* skip this point if it is out of range */
-	if (!(auto_array[FIRST_X_AXIS] & 1)
-	    && (v[0] < min_array[FIRST_X_AXIS]))
+	if (!(axis_array[FIRST_X_AXIS].autoscale & 1)
+	    && (v[0] < axis_array[FIRST_X_AXIS].min))
 	    continue;
-	if (!(auto_array[FIRST_X_AXIS] & 2)
-	    && (v[0] > max_array[FIRST_X_AXIS]))
+	if (!(axis_array[FIRST_X_AXIS].autoscale & 2)
+	    && (v[0] > axis_array[FIRST_X_AXIS].max))
 	    continue;
 	if (is_a_3d_fit) {
-	    if (!(auto_array[FIRST_Y_AXIS] & 1)
-		&& (v[1] < min_array[FIRST_Y_AXIS]))
+	    if (!(axis_array[FIRST_Y_AXIS].autoscale & 1)
+		&& (v[1] < axis_array[FIRST_Y_AXIS].min))
 		continue;
-	    if (!(auto_array[FIRST_Y_AXIS] & 2)
-		&& (v[1] > max_array[FIRST_Y_AXIS]))
+	    if (!(axis_array[FIRST_Y_AXIS].autoscale & 2)
+		&& (v[1] > axis_array[FIRST_Y_AXIS].max))
 		continue;
 	}
 	/* HBB 980401: check *z* range for all fits */
-	if (!(auto_array[FIRST_Z_AXIS] & 1)
-	    && (v[2] < min_array[FIRST_Z_AXIS]))
+	if (!(axis_array[FIRST_Z_AXIS].autoscale & 1)
+	    && (v[2] < axis_array[FIRST_Z_AXIS].min))
 	    continue;
-	if (!(auto_array[FIRST_Z_AXIS] & 2)
-	    && (v[2] > max_array[FIRST_Z_AXIS]))
+	if (!(axis_array[FIRST_Z_AXIS].autoscale & 2)
+	    && (v[2] > axis_array[FIRST_Z_AXIS].max))
 	    continue;
 
 	fit_x[num_data] = v[0];
