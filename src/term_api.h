@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.6 2000/11/02 15:13:38 broeker Exp $
+ * $Id: term_api.h,v 1.7 2000/11/09 16:14:01 broeker Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -44,6 +44,7 @@
 #include "gp_types.h"
 
 #include "color.h"
+#include "tables.h"
 
 /* Type definitions */
 
