@@ -1,6 +1,6 @@
 
 /*
- * $Id: term.h,v 1.4 1998/09/16 11:29:34 lhecking Exp $
+ * $Id: term.h,v 1.5 1998/09/18 19:49:12 lhecking Exp $
  *
  */
 
@@ -163,7 +163,7 @@
 # ifndef X11
 #  define X11
 # endif
-# include "x11.trm"     /* x windows */
+# include "x11.trm"     /* X Window System */
 #endif
 
 /* These terminals can be used on any system */
