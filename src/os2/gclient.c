@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.14 2001/09/03 19:41:16 mikulik Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.15 2001/12/01 13:08:59 amai Exp $" ;
 #endif
 
 /****************************************************************************
@@ -2848,7 +2848,6 @@ void SigHandler( int sig )
     if( sig == SIGTERM ) {
         if( bPersist ) {
             DosKillThread( tidSpawn ) ;
-            signal( SIGTERM, SIG_ACK ) ;
             return ;
             }
         DosEnterCritSec() ;
