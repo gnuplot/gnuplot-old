@@ -1,5 +1,5 @@
 /*
- * $Id: variable.h,v 1.5 1999/08/11 18:07:25 lhecking Exp $
+ * $Id: variable.h,v 1.6 1999/10/01 14:54:38 lhecking Exp $
  *
  */
 
@@ -39,6 +39,8 @@
 
 #ifndef VARIABLE_H
 # define VARIABLE_H
+
+#include "national.h"
 
 /* Generic defines */
 

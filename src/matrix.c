@@ -1,9 +1,9 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: matrix.c,v 1.4 1999/06/19 20:53:42 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: matrix.c,v 1.5 1999/10/01 14:54:33 lhecking Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
-
+ *
  *  The author of this module, Carsten Grammes, has expressed in
  *  personal email that he has no more interest in this code, and
  *  doesn't claim any copyright. He has agreed to put this module
@@ -109,19 +109,6 @@ int n;
 	*v = (double *) gp_realloc(*v, n * sizeof(double), "vec");
     return *v;
 }
-
-void
-redim_ivec(v, n)
-int **v;
-int n;
-{
-    if (n < 1) {
-	*v = NULL;
-	return;
-    }
-    *v = (int *) gp_realloc(*v, n * sizeof(int), "ivec");
-}
-
 
 /* HBB: TODO: is there a better value for 'epsilon'? how to specify
  * 'inline'?  is 'fsign' really not available elsewhere? use

@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.5 1999/06/19 20:55:05 lhecking Exp $
+ * $Id: stdfn.h,v 1.6 1999/10/01 14:54:36 lhecking Exp $
  *
  */
 
@@ -316,5 +316,12 @@ int pclose __PROTO((FILE *));
 # define DEBUG_WHERE     /* nought */
 # define FPRINTF(a)      /* nought */
 #endif /* DEBUG */
+
+/* Prototypes from "stdfn.c" */
+
+char *safe_strncpy __PROTO((char *, const char *, size_t));
+#ifndef HAVE_SLEEP
+unsigned int sleep __PROTO((unsigned int));
+#endif
 
 #endif /* STDFN_H */
