@@ -1,11 +1,12 @@
 # pm3dConvertToImage.awk
-# by Petr Mikulik, mikulik@physics.muni.cz
-# Version: 11. 5. 2000
+# Written by Petr Mikulik, mikulik@physics.muni.cz
+# Code of pm3dImage contributed by Dick Crawford
+# Version: 16. 5. 2000
 #
-# This awk script tries to compress a postscript file created by pm3d or
-# gnuplot with pm3d splotting mode. If the input data formed a rectangular
+# This awk script tries to compress maps in a postscript file created by pm3d
+# or gnuplot with pm3d splotting mode. If the input data formed a rectangular
 # equidistant map (matrix), then its postscript representation is converted
-# into an image operator with 8bit gray (i.e., no more colour). This conversion
+# into an image operator with 256 levels (of gray or colour). This conversion
 # makes the image 20 times smaller.
 #
 # Usage:
@@ -16,19 +17,16 @@
 # Distribution policy: this script belongs to the pm3d and gnuplot programs.
 #
 # Notes:
-#  - works for 8bit grayscale images only
-#  - future versions should make fully use of the 'G' definition.
-#    But how to read data and make the figure? No more use of 'image'
-#    operator, user-made reading? Can a postscript guru help?
-#  - no usage of run length encoding etc. 
+#  - no usage of run length encoding etc.; but if anybody has this written
+#    in awk, then do not hesitate to contribute
 
 BEGIN {
 err = "/dev/stderr"
 
 if (ARGC!=1) {
-  print "pm3dConvertToImage.awk --- (c) Petr Mikulik, Brno. Version 11. 5. 2000" >err
-  print "Compression of matrix-like pm3d .ps files into 8bit gray image. See also header" >err
-  print "of this script for more info." >err
+  print "pm3dConvertToImage.awk --- (c) Petr Mikulik, Brno. Version 16. 5. 2000" >err
+  print "Compression of matrix-like pm3d .ps files into 256 levels image. See also" >err
+  print "header of this script for more info." >err
   print "Usage:\n\t[stdout | ] awk -f pm3dConvertToImage.awk [<inp_file.ps] >out_file.ps" >err
   print "Example for gnuplot:" >err
   print "\tset out \"|awk -f pm3dConvertToImage.awk >smaller.ps\"" >err
@@ -50,6 +48,28 @@ x1=0; y1 = 0; cell_x=0; cell_y=0
 x2=0; y2 = 0; x2last=0; y2last=0
 }
 
+
+########################################
+# Add definition of pm3dImage to the dictionary
+$1=="/BoxFill" && $NF=="def" {
+print
+print "/pm3dImage {/I exch def gsave		% saves the input array"
+print "  /ps 1 string def"
+print "  Color not {/g {setgray} def} if	% avoid stroke in the usual def"
+print "  I 0 get I 1 get translate I 2 get rotate % translate & rotate"
+print "  /XCell I 3 get I 5 get div def	% pixel width"
+print "  /YCell I 4 get I 6 get div def	% pixel height"
+print "  0 1 I 6 get 1 sub {			% loop over rows"
+print "  /Y exch YCell mul def			% save y-coordinate"
+print "  0 1 I 5 get 1 sub {			% loop over columns"
+print "  XCell mul Y moveto XCell 0 rlineto 0 YCell rlineto"
+print "  XCell neg 0 rlineto closepath		% outline pixel"
+print "  currentfile ps readhexstring pop	% read hex value"
+print "  0 get cvi 255 div g			% convert to [0,1]"
+print "  fill } for } for grestore		% fill pixel & close loops"
+print "  } def"
+next
+}
 
 ########################################
 # Start pm3d map region.
@@ -89,32 +109,17 @@ print "\tpoints: " pm3dline "  scans: " scans "  start point: " x1","y1 "  end p
 
 # write image header
 print "%pm3d_image_begin"
-print "gsave"
-print "/readstring {currentfile exch readhexstring pop} bind def"
-print "/picstr " grid_x " string def"
 
-
-if (x1 > x2) { x1+=cell_x; x2+=cell_x; }
+if (x1 > x2) { x1+=cell_x; x2+=cell_x; } # align offset of the image corner by the cell dimension
 if (y1 > y2) { y1+=cell_y; y2+=cell_y; }
 
-if (x1 < x2) {
-  # scansforward case
-  print x1 " " y1 " translate " (x1-x2)*(grid_y/(grid_y-1)) " " (y1-y2)*(grid_x/(grid_x-1)) " scale"
-  print "-90 rotate"
-  printf grid_x " " grid_y " 8 [ "grid_x " 0 0 -"grid_y " 0 0] "
-} else {
-  # scansbackward case
-  print x1 " " y1 " translate " (x1-x2)*(grid_y/(grid_y-1)) " " (y2-y1)*(grid_x/(grid_x-1))  " scale"
-  print "-90 rotate"
-  printf grid_x " " grid_y " 8 [-"grid_x " 0 0 -"grid_y " 0 0] "
-}
+scalex=(x2-x1)*(grid_x/(grid_x-1))
+scaley=(y2-y1)*(grid_y/(grid_y-1))
 
-printf "{picstr readstring} "
-print "image"
-
+print "[ " x1 " " y1 " 0 " scalex " " scaley " " grid_x " " grid_y " ] pm3dImage"
 
 if (scan_pts*scans != pm3dline) {
-  print "ERROR: pm3d image is not a grid, exiting." >err
+  print "ERROR: pm3d image is not grid, exiting." >err
   error=1
   exit(8)
 }
@@ -124,7 +129,6 @@ for (i=1; i<=scans; i++)
   print row[i];
 
 # write the tail of the image environment
-print "grestore"
 print "%pm3d_image_end"
 
 next

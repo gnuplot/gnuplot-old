@@ -3,8 +3,8 @@ colorpts.awk
 	z-coordinate). Try colorpts-demo.gp
 
 pm3dCompress.awk
-	script to shorten postscript files with pm3d splot and regular
-	(grided) data
+	script to shorten postscript files created by the pm3d splot from
+	regular	(grided) data (maps)
 
 pm3dConvertToImage.awk
 	script to shorten postscript files with pm3d splot and matrix-like

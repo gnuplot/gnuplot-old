@@ -1,3 +1,6 @@
+2000-05-16  Petr Mikulik <mikulik@physics.muni.cz>
+	* pm3d/contrib: updated pm3dConvertToImage.awk to support colour images
+
 2000-05-11  Petr Mikulik <mikulik@physics.muni.cz>
 	* pm3d/contrib: added pm3dConvertToImage.awk
 
