@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.58 2001/10/26 12:58:38 mikulik Exp $
+ * $Id: post.trm,v 1.59 2002/02/02 12:03:31 mikulik Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -2183,6 +2183,8 @@ START_HELP(post)
 "?terminal postscript enhanced",
 "?term postscript enhanced",
 "?enhanced_postscript",
+"?enhanced postscript",
+"?Enhanced postscript",
 "@start table - first is interactive cleartext form",
 "  Control      Examples        Explanation",
 "   ^           a^x             superscript",

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.72 2002/01/25 18:02:08 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.73 2002/02/02 12:03:31 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1563,6 +1563,12 @@ set_key()
 		break;
 	    case S_KEY_NOREVERSE:
 		key_reverse = FALSE;
+		break;
+	    case S_KEY_ENHANCED:
+		key_enhanced = TRUE;
+		break;
+	    case S_KEY_NOENHANCED:
+		key_enhanced = FALSE;
 		break;
 	    case S_KEY_BOX:
 		c_token++;
