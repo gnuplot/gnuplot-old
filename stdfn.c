@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.1 1998/04/15 19:43:11 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.2 1998/06/17 18:39:19 lhecking Exp $";
 #endif
 
 
@@ -374,3 +374,4 @@ int n;
 }
 # endif /* !HAVE_STRNCASECMP */
 #endif /* !HAVE_STRNICMP */
+
