@@ -1,3 +1,8 @@
+2000-07-26  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/variable.c (loadpath_handler): in ACTION_CLEAR, make
+	sure 'limit' is properly initialized, too.
+	
 2000-07-25  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* all over the place: restructured axis module global 
