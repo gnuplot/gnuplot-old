@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.8 1998/10/28 21:10:01 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.9 1998/11/03 12:53:59 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -241,7 +241,6 @@ FILE *fp;
 
 # if defined(ATARI) || defined(MTOS)
 #  define special_getc() tos_getch()
-char tos_getch();
 # endif				/* ATARI || MTOS */
 
 #endif /* MSDOS or ATARI or MTOS or _Windows or DOS386 or OSK */
