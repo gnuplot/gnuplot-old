@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.19 1999/02/17 17:55:07 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.20 1999/02/22 15:22:02 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -300,7 +300,7 @@ char *argv[];
     mainloop();
 
     if (persist) {
-	FPRINTF((stderr, "waiting for %d windows\n, windows_open"));
+	FPRINTF((stderr, "waiting for %d windows\n", windows_open));
 	/* read x events until all windows have been quit */
 	while (windows_open > 0) {
 	    XEvent event;
