@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.4 1998/09/21 20:59:38 lhecking Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.5 1998/09/22 15:00:19 lhecking Exp $" ;
 #endif
 
 /****************************************************************************
@@ -77,6 +77,7 @@ static char RCSid[]="$Id: gclient.c,v 1.4 1998/09/21 20:59:38 lhecking Exp $" ;
 #include <stdio.h>
 #include <io.h>
 #include <fcntl.h>
+#include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <process.h>
@@ -2031,7 +2032,6 @@ void FontExpand( char *name )
     }
 
 /*=======================================*/
-#include <math.h>
 static POINTL pCur ;
 static int iLinebegin = 1 ;
 static int iLtype = 0 ;
