@@ -1,5 +1,5 @@
 /*
- * $Id: doc2rtf.c,v 1.4 1998/10/09 14:24:45 lhecking Exp $
+ * $Id: doc2rtf.c,v 1.5 1998/10/16 16:09:57 lhecking Exp $
  *
  */
 
@@ -58,7 +58,7 @@
 #include "stdfn.h"
 #include "xref.h"
 
-/* Replase the previous #ifdef */
+/* Replace the previous #ifdef */
 int single_top_level = 0;
 
 /* We are using the fgets() replacement from termdoc.c */

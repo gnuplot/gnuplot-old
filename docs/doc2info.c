@@ -1,5 +1,5 @@
 /*
- * $Id: doc2info.c,v 1.5 1998/10/12 20:19:35 lhecking Exp $
+ * $Id: doc2info.c,v 1.6 1998/10/16 16:09:29 lhecking Exp $
  *
  */
 
@@ -87,7 +87,7 @@ char ifile[MAX_LINE_LEN+1];
 char ofile[MAX_LINE_LEN+1];
 struct XREFLIST *refhead = NULL;
 
-/* Replase the previous #ifdef */
+/* Replace the previous #ifdef */
 int single_top_level = 0;
 
 /* We are using the fgets() replacement from termdoc.c */

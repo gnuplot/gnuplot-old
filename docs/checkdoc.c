@@ -1,5 +1,5 @@
 /*
- * $Id: checkdoc.c,v 1.5 1998/10/12 20:14:51 lhecking Exp $
+ * $Id: checkdoc.c,v 1.6 1998/10/16 16:09:08 lhecking Exp $
  *
  */
 
@@ -65,7 +65,7 @@
 #define TRUE 1
 #define FALSE 0
 
-/* Replase the previous #ifdef */
+/* Replace the previous #ifdef */
 int single_top_level = 0;
 
 /* In termdoc.c */

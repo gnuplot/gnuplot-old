@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2ipf.c,v 1.5 1998/10/12 20:21:06 lhecking Exp $";
+static char *RCSid = "$Id: doc2ipf.c,v 1.6 1998/10/16 16:09:40 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2ipf.c */
@@ -63,7 +63,7 @@ static char *RCSid = "$Id: doc2ipf.c,v 1.5 1998/10/12 20:21:06 lhecking Exp $";
 #define TRUE 1
 #define FALSE 0
 
-/* Replase the previous #ifdef */
+/* Replace the previous #ifdef */
 int single_top_level = 0;
 
 /* We are using the fgets() replacement from termdoc.c */

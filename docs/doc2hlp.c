@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2hlp.c,v 1.5 1998/10/12 20:17:49 lhecking Exp $";
+static char *RCSid = "$Id: doc2hlp.c,v 1.6 1998/10/16 16:09:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2hlp.c */
@@ -63,7 +63,7 @@ static char *RCSid = "$Id: doc2hlp.c,v 1.5 1998/10/12 20:17:49 lhecking Exp $";
 #define TRUE 1
 #define FALSE 0
 
-/* Replase the previous #ifdef */
+/* Replace the previous #ifdef */
 int single_top_level = 1;
 
 void convert __PROTO((FILE * a, FILE * b));

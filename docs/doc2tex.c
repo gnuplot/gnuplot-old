@@ -1,5 +1,5 @@
 /*
- * $Id: doc2tex.c,v 1.6 1998/10/09 14:24:47 lhecking Exp $
+ * $Id: doc2tex.c,v 1.7 1998/10/16 16:10:02 lhecking Exp $
  *
  */
 
@@ -79,7 +79,7 @@ void section __PROTO((char *line, FILE * b));
 void puttex __PROTO((char *str, FILE * file));
 void finish __PROTO((FILE * b));
 
-/* Replace the previous */
+/* Replace the previous #ifdef */
 int single_top_level = 0;
 
 /* We are using the fgets() replacement from termdoc.c */

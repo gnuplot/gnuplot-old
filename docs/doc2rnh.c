@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2rnh.c,v 1.4 1998/10/09 14:24:44 lhecking Exp $";
+static char *RCSid = "$Id: doc2rnh.c,v 1.5 1998/10/16 16:09:53 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2rnh.c */
@@ -88,7 +88,7 @@ void putrnh __PROTO((char *s, FILE * file));
 void putrnh_ __PROTO((char *s, FILE * file));
 void finish __PROTO((FILE * b));
 
-/* Replase the previous #ifdef */
+/* Replace the previous #ifdef */
 int single_top_level = 1;
 
 /* We are using the fgets() replacement from termdoc.c */
