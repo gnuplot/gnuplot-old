@@ -1,9 +1,7 @@
 #
-# $Id: makefile.st,v 1.5 1998/10/09 14:31:33 lhecking Exp $
+# $Id: makefile.st,v 1.6 1999/03/12 21:45:21 lhecking Exp $
 #
-
-#
-# GNUPLOT makefile for GCC-ST 1.x and 2.x
+# GNUPLOT Makefile for GCC-ST 1.x and 2.x
 # in a cross development environment (unix) or a native TOS environment
 # (see configuration section)
 #

@@ -1,9 +1,7 @@
 #
-# $Id: makefile.vms,v 1.4 1998/10/09 14:31:37 lhecking Exp $
+# $Id: makefile.vms,v 1.5 1999/03/12 21:45:31 lhecking Exp $
 #
-#
-# GNUPLOT Makefile
-# for VMS
+# GNUPLOT Makefile for VMS
 # 
 # use with the MAKE that was posted by Tony Ivanov (tony@gvgpvd.GVG.TEK.COM)
 # in comp.os.vms on 5 December 1988

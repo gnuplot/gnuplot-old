@@ -1,4 +1,8 @@
-# make file for Zortech C++ 3.x
+#
+# $Id: makefile.ztc,v 1.4 1999/03/12 21:45:44 lhecking Exp $
+#
+# GNUPLOT Makefile for Zortech C++ 3.x
+#
 
 # where to place gnuplot.gih helpfile
 HELPFILE = gnuplot.gih

@@ -1,4 +1,8 @@
-# This file is for GRASS, a geographic information system. 
+#
+# $Id: makefile.g,v 1.5 1999/03/12 21:44:45 lhecking Exp $
+#
+# GNUPLOT Makefile for GRASS, a geographic information system. 
+#
 # To compile, make modifications below (if necessary) then
 # % gmake4.1
 # % MAKELINKS

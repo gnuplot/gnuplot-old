@@ -1,5 +1,7 @@
 #
-# GNUPLOT makefile for GCC-ST 1.x and 2.x
+# $Id: makefile.mto,v 1.5 1999/03/12 21:45:03 lhecking Exp $
+#
+# GNUPLOT Makefile for GCC-ST 1.x and 2.x
 # in a cross development environment (unix) or a native TOS environment
 # (see configuration section)
 #

@@ -1,7 +1,8 @@
 #
-# Make file for use with emx-0.8f/gcc and ndmake 4.5
-# for compiling for MS-DOS
-# 
+# $Id: makefile.emx,v 1.5 1999/03/12 21:44:41 lhecking Exp $
+#
+# GNUPLOT Makefile for use with emx-0.8f/gcc and ndmake 4.5 on MS-DOS
+#
 # This version has had very little testing.
 
 EMXPATH = c:/emx

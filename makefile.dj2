@@ -1,6 +1,10 @@
-# make file for gnuplot 3.7 / DOS / DJGPP version 2
 #
-# compile it by   make -f makefile.dj2 in the main gnuplot directory
+# $Id: makefile.dj2,v 1.8 1999/03/12 21:44:32 lhecking Exp $
+#
+# GNUPLOT Makefile for DJGPP version 2 on DOS
+#
+# Usage:
+#       make -f makefile.dj2 in the main gnuplot directory
 #
 #
 # AUTHORS : several ... including Edzer Pebesma <pebesma@metoor.frw.uva.nl>
