@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.62 2003/07/16 04:17:32 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.63 2003/10/06 22:26:16 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -172,13 +172,6 @@ struct curve_points *cp;
 	cp = next;
     }
 }
-
-
-/* use this instead empty macro arguments to work around NeXT cpp bug */
-/* if this fails on any system, we might use ((void)0) */
-#define NOOP			/* */
-
-
 
 /*
  * In the parametric case we can say plot [a= -4:4] [-2:2] [-1:1] sin(a),a**2

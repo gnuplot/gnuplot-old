@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: interpol.c,v 1.27 2002/09/09 22:48:08 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: interpol.c,v 1.28 2003/10/06 22:26:16 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - interpol.c */
@@ -180,11 +180,6 @@ do {						\
     if (TEST)					\
 	(OLD) = AXIS_DE_LOG_VALUE(AXIS,NEW);	\
 } while(0)
-
-/* use this instead empty macro arguments to work around NeXT cpp bug */
-/* if this fails on any system, we might use ((void)0) */
-
-#define NOOP			/* */
 
 #define spline_coeff_size 4
 typedef double spline_coeff[spline_coeff_size];
