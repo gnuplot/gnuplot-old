@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.40.2.5 2000/06/04 12:53:19 joze Exp $
+C RCS $Id: gnuplot.doc,v 1.40.2.6 2000/06/09 07:33:04 joze Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -5392,8 +5392,9 @@ C ... and restart the table:
                   { maxcolors <maxcolors> }
                   { nocb | cbdefault | cbuser }
                   { cbvertical | set cbhorizontal }
-                  { cbat <user position --- not implemented> }
-                  { cbsize <user size --- not implemented> }
+                  { origin x, y }
+                  { size x, y }
+		  { noborder | bdefault | border [line style] }
                 }
        show palette
        show palette palette <n>
@@ -5461,16 +5462,31 @@ C ... and restart the table:
 
  The colour scheme, i.e. the gradient of the smooth colour with min_z and max_z
  values of pm3d, is drawn in a colour box unless `nocb`.  Its position can be
- `cbdefault` or `cbuser`.  The latter is not implemented, see `cbat` and
- `cbsize`.
+ `cbdefault` or `cbuser`.  If the latter is specified the values as given
+ with the `origin` and `size` subcommands are used.
 
  `cbvertical` and `cbhorizontal` switches the orientation of the colour
  gradient.
 
- `cbat <position>` and `cbsize <size>` are planned for positioning and sizing 
- of the colour box. Their parameters should be `coordvals` similarly to `set 
- label at` or `set arrow from to`. This feature waits for someone to implement
- it...
+ `origin x, y` and `size x, y` are used only in combination with the `cbuser`
+ option. The x and y values must be given in screen coordinates (as everything
+ else did not seem to make sense) that is between [0 - 1]. Try for example:
+     set pal cbh cbuser origin .1,.02 size .8,.04
+ which will draw a horizontal gradient somewhere at the bottom of the graph.
+
+ `border` turns the border on (this is the default). `noborder` turns the border
+ off. If an positive integer argument is given after `border`, it is used as
+ a line style tag which is used for drawing the border, e.g.:
+     set style line 2604 linetype -1 linewidth .4
+     set pal border 2604
+ will use line style `2604`, a thin line with the default border color (-1)
+ for drawing the border. `bdefault` (which is the default) will use the default
+ border line style for drawing the border of the color box.
+
+ Currently for horizontal color boxes (cbhorizontal) the labels are drawn
+ above the box, if the box is at the bottom of the graph, and below the
+ box, if the box is at the top of the graph. If someone does not like this,
+ he/she could yet add more options for controlling how the box is drawn!
 
  see also `help pm3d`, `help x11 pm3d`, `help vgagl`
   
