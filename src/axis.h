@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.2.2.4 2000/07/26 18:52:58 broeker Exp $
+ * $Id: axis.h,v 1.2.2.5 2000/07/26 20:40:45 broeker Exp $
  *
  */
 
@@ -503,6 +503,9 @@ do {							\
 #define STORE_WITH_LOG_AND_UPDATE_RANGE(STORE, VALUE, TYPE, AXIS,	  \
 				       OUT_ACTION, UNDEF_ACTION)	  \
 do {									  \
+    /* HBB 20000726: new check, to avoid crashes with axis index -1 */	  \
+    if (AXIS==-1)							  \
+	break;								  \
     if (axis_array[AXIS].log) {						  \
 	if (VALUE<0.0) {						  \
 	    TYPE = UNDEFINED;						  \

@@ -1,3 +1,8 @@
+2000-07-26 Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/axis.h (STORE_WITH_LOG_AND_UPDATE_RANGE): don't store
+	if AXIS argument is -1, which means 'invalid'.
+	
 2000-07-26  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/variable.c (loadpath_handler): in ACTION_CLEAR, make
