@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.34 2003/12/26 22:59:12 vanzandt Exp $
+ * $Id: axis.h,v 1.35 2004/03/04 16:49:16 broeker Exp $
  *
  */
 
@@ -523,6 +523,12 @@ do {									  \
     /* HBB 20000726: new check, to avoid crashes with axis index -1 */	  \
     if (AXIS==-1)							  \
 	break;								  \
+    /* HBB 20040304: new check to avoid storing infinities and NaNs */	  \
+    if (! (VALUE > -VERYLARGE && VALUE < VERYLARGE)) {			  \
+	TYPE = UNDEFINED;						  \
+	UNDEF_ACTION;							  \
+	break;								  \
+    }									  \
     if (axis_array[AXIS].log) {						  \
 	if (VALUE<0.0) {						  \
 	    TYPE = UNDEFINED;						  \
