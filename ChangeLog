@@ -1,5 +1,9 @@
 2001-01-03  Johannes Zellner  <johannes@zellner.org>
 
+	* src/pm3d.c:  repaired 'pm3d zrange' for the column patch
+
+2001-01-03  Johannes Zellner  <johannes@zellner.org>
+
 	* term/post.trm:  PS_make_palette() made it working with
 	negative palette values R/G/B.
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.3 2000/12/26 20:08:38 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.4 2001/01/03 20:42:58 joze Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -73,22 +73,32 @@ set_pm3d_zminmax(struct surface_points* plots, int pcount)
     int surface;
     int minmax_is_set = 0;
     /* loop over all plots and get the maximum and minimum
-     * color value (if colors are specified via columns */
-    for (this_plot = plots, surface = 0; surface < pcount;
-	this_plot = this_plot->next_sp, surface++) {
-	if (this_plot->pm3d_color_from_column) {
-	    if (!minmax_is_set) {
-		minmax_is_set = 1;
-		used_pm3d_zmin = this_plot->color_min;
-		used_pm3d_zmax = this_plot->color_max;
-	    } else {
-		if (this_plot->color_min < used_pm3d_zmin)
+     * color value (if colors are specified via columns.
+     * Has only to be done, if at least one of the limits
+     * is autoscaled. */
+    if (!pm3d.pm3d_zmin || !pm3d.pm3d_zmax) {
+	for (this_plot = plots, surface = 0; surface < pcount;
+	    this_plot = this_plot->next_sp, surface++) {
+	    if (this_plot->pm3d_color_from_column) {
+		if (!minmax_is_set) {
+		    minmax_is_set = 1;
 		    used_pm3d_zmin = this_plot->color_min;
-		if (this_plot->color_max > used_pm3d_zmax)
 		    used_pm3d_zmax = this_plot->color_max;
+		} else {
+		    if (this_plot->color_min < used_pm3d_zmin)
+			used_pm3d_zmin = this_plot->color_min;
+		    if (this_plot->color_max > used_pm3d_zmax)
+			used_pm3d_zmax = this_plot->color_max;
+		}
 	    }
 	}
     }
+    /* eventually overwrite the limits which were just set
+     * with the user supplied 'pm3d zrange [zmin:zmax] */
+    if (pm3d.pm3d_zmin)
+	used_pm3d_zmin = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmin, "pm3d z-min");
+    if (pm3d.pm3d_zmax)
+	used_pm3d_zmax = axis_log_value_checked(FIRST_Z_AXIS, pm3d.zmax, "pm3d z-max");
     if (!minmax_is_set) {
 #endif
 	if (!pm3d.pm3d_zmin)
