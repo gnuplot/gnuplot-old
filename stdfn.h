@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.6 1998/09/16 11:30:22 lhecking Exp $
+ * $Id: stdfn.h,v 1.7 1998/09/21 21:05:10 lhecking Exp $
  *
  */
 
@@ -130,6 +130,10 @@ double strtod();
 extern int errno;
 #endif
 
+#ifndef NO_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+
 #ifndef NO_SYS_STAT_H
 #include <sys/stat.h>
 
@@ -203,10 +207,6 @@ extern int errno;
 
 #endif /* ! NO_SYS_STAT_H */
 
-#ifndef NO_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-
 #ifndef NO_LIMITS_H
 #include <limits.h>
 #else
@@ -276,6 +276,10 @@ int strnicmp __PROTO((char *, char *, int));
 #  define GP_SLEEP(delay) sleep ((unsigned int) (delay))
 # endif
 #endif
+
+/* Misc. defines */
+/* Null character */
+#define NUL ('\0')
 
 /* Definitions for debugging */
 /* #define NDEBUG */
