@@ -1,4 +1,6 @@
-/* $Id: graphics.h,v 1.11 2000/02/11 19:17:19 lhecking Exp $ */
+/*
+ * $Id: graphics.h,v 1.12 2000/05/02 18:41:08 lhecking Exp $
+ */
 
 /* GNUPLOT - graphics.h */
 
@@ -70,11 +72,7 @@ struct clipbox {
 
 /* function prototypes */
 
-#if defined(VA_START) && defined(ANSI_C)
-extern void graph_error __PROTO((const char *, ...));
-#else
-extern void graph_error __PROTO(());
-#endif
+extern void graph_error __PROTO((const char *));
 extern void fixup_range __PROTO((int, const char *));
 int nearest_label_tag(int x, int y, struct termentry* t,
     void (*map_func)(struct position * pos, unsigned int *x,
