@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.12 1998/10/20 19:46:21 lhecking Exp $
+ * $Id: stdfn.h,v 1.13 1998/10/28 21:10:48 lhecking Exp $
  *
  */
 
@@ -117,7 +117,7 @@ double strtod();
 # endif
 #endif /* HAVE_UNISTD_H */
 
-#if VMS
+#ifdef VMS
 # ifndef HAVE_SLEEP
 #  define HAVE_SLEEP
 # endif
