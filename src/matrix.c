@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: matrix.c,v 1.5 1999/10/01 14:54:33 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: matrix.c,v 1.6 1999/10/29 18:47:19 lhecking Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -36,10 +36,10 @@ static char *RCSid() { return RCSid("$Id: matrix.c,v 1.5 1999/10/01 14:54:33 lhe
  */
 
 #include "plot.h"
+#include "alloc.h"
 #include "fit.h"
 #include "matrix.h"
 #include "stdfn.h"
-#include "alloc.h"
 
 /*****************************************************************/
 

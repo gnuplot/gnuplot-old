@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.14 1999/10/17 19:13:18 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.15 1999/10/29 18:47:20 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -50,8 +50,11 @@ static char *RCSid() { return RCSid("$Id: readline.c,v 1.14 1999/10/17 19:13:18 
  */
 
 #include <signal.h>
-/* get prototype for alloc and gpfaralloc */
+
 #include "plot.h"
+#include "alloc.h"
+#include "readline.h"
+#include "util.h"
 
 #if defined(READLINE) && !defined(HAVE_LIBREADLINE)
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: alloc.c,v 1.7 1999/09/14 15:25:05 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: alloc.c,v 1.8 1999/10/29 18:47:16 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - alloc.c */
@@ -41,7 +41,9 @@ static char *RCSid() { return RCSid("$Id: alloc.c,v 1.7 1999/09/14 15:25:05 lhec
  *
  */
 
-#include "plot.h"		/* includes "alloc.h" */
+#include "plot.h"
+#include "alloc.h"
+#include "util.h"
 
 #if defined(MSDOS) && defined(__TURBOC__) && !defined(DOSX286)
 # include <alloc.h>		/* for farmalloc, farrealloc */

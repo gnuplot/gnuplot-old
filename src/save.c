@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.4 1999/10/01 14:50:44 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.5 1999/10/29 18:47:20 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -35,7 +35,15 @@ static char *RCSid() { return RCSid("$Id: save.c,v 1.4 1999/10/01 14:50:44 lheck
 ]*/
 
 #include "plot.h"
+#include "command.h"
+#include "eval.h"
+#include "fit.h"
+#include "gp_time.h"
+#include "graphics.h"
+#include "hidden3d.h"
+#include "save.h"
 #include "setshow.h"
+#include "util.h"
 
 /* HBB 990825 FIXME: how come these strings are only used for
  * _displaying_ encodings (-->no use in set.c) ? */

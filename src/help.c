@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: help.c,v 1.9 1999/10/17 19:12:21 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: help.c,v 1.10 1999/10/29 18:47:18 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - help.c */
@@ -35,7 +35,9 @@ static char *RCSid() { return RCSid("$Id: help.c,v 1.9 1999/10/17 19:12:21 lheck
 ]*/
 
 #include "plot.h"
+#include "alloc.h"
 #include "help.h"		/* values passed back */
+#include "util.h"
 
 /* 
  ** help -- help subsystem that understands defined keywords
