@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.12 1998/10/28 21:07:29 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.13 1998/11/12 17:10:17 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -280,6 +280,10 @@ char *argv[];
 #ifdef OSK
     /* malloc large blocks, otherwise problems with fragmented mem */
     _mallocmin(102400);
+#endif
+#ifdef __EMX__
+    /* close open file handles */
+    fcloseall();
 #endif
 
     FPRINTF((stderr, "gnuplot_X11 starting up\n"));
