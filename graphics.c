@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.23 1998/12/07 22:10:41 lhecking Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.24 1999/01/12 14:02:37 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -76,7 +76,7 @@ static double largest_polar_circle;
  * index with FIRST_X_AXIS etc
  * global because used in gen_tics, which graph3d also uses
  */
-char ticfmt[8][25];
+char ticfmt[8][MAX_ID_LEN+1]; /* HBB 990106: fix buffer overrun */
 int timelevel[8];
 double ticstep[8];
 
