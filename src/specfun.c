@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: specfun.c,v 1.7 1999/11/08 19:24:33 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: specfun.c,v 1.8 2000/11/01 18:57:33 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - specfun.c */
@@ -45,7 +45,7 @@ static char *RCSid() { return RCSid("$Id: specfun.c,v 1.7 1999/11/08 19:24:33 lh
 #include "specfun.h"
 
 #include "internal.h"
-#include "setshow.h"	
+/*  #include "setshow.h" */
 #include "util.h"
 
 #define ITMAX   200

@@ -1,5 +1,5 @@
 /*
- * $Id: interpol.h,v 1.4 2000/10/31 19:59:31 joze Exp $
+ * $Id: interpol.h,v 1.5 2000/11/01 18:57:33 broeker Exp $
  */
 
 /* GNUPLOT - interpol.h */
@@ -39,7 +39,8 @@
 
 /* #if... / #include / #define collection: */
 
-#include "plot.h"
+#include "syscfg.h"
+#include "graphics.h"
 
 /* Type definitions */
 

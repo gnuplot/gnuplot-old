@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: winmain.c,v 1.5 2000/10/31 19:59:32 joze Exp $";
+static char *RCSid = "$Id: winmain.c,v 1.6 2000/11/01 18:57:34 broeker Exp $";
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -95,18 +95,11 @@ LPSTR szMenuName;
 #define HELPFILE "wgnuplot.hlp"
 #endif
 
-#if 0 /* HBB 990914: new names, and now decl'd in plot.h... */
-extern char version[];
-extern char patchlevel[];
-extern char date[];
-#endif /* 1/0 */
-/*extern char *authors[];*/
 char *authors[]={
-                 "Colin Kelly",
+                 "Colin Kelley",
                  "Thomas Williams"
                 };
  
-/* extern char gnuplot_copyright[]; */ /* HBB 990914: now decl'd in plot.h */
 void WinExit(void);
 int gnu_main(int argc, char *argv[], char *env[]);
 

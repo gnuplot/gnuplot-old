@@ -1,11 +1,11 @@
 /*
- * $Id: help.h,v 1.7 2000/11/01 18:57:32 broeker Exp $
+ * $Id: version.h,v 1.2 2000/11/01 18:57:34 broeker Exp $
  */
 
-/* GNUPLOT - help.h */
+/* GNUPLOT - version.h */
 
 /*[
- * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
+ * Copyright 2000   Thomas Williams, Colin Kelley
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted,
@@ -34,23 +34,22 @@
  * to the extent permitted by applicable law.
 ]*/
 
+#ifndef GNUPLOT_VERSION_H
+#define GNUPLOT_VERSION_H
 
-#ifndef GNUPLOT_HELP_H
-# define GNUPLOT_HELP_H
+#include "syscfg.h"
 
-#include "gp_types.h"
+extern const char gnuplot_version[];
+extern const char gnuplot_patchlevel[];
+extern const char gnuplot_date[];
+extern const char gnuplot_copyright[];
+extern const char faq_location[];
+extern const char bug_email[];
+extern const char help_email[];
 
-/* Exit status returned by help() */
-#define	H_FOUND		0	/* found the keyword */
-#define	H_NOTFOUND	1	/* didn't find the keyword */
-#define	H_ERROR		(-1)	/* didn't find the help file */
+extern char os_name[];
+extern char os_rel[];
 
-/* Prototypes from file "help.c" */
 
-int  help __PROTO((char *keyword, char *path, TBOOLEAN *subtopics));
-void FreeHelp __PROTO((void));
-void StartOutput __PROTO((void));
-void OutLine __PROTO((const char *line));
-void EndOutput __PROTO((void));
 
-#endif /* GNUPLOT_HELP_H */
+#endif /* GNUPLOT_VERSION_H */

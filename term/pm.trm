@@ -1,5 +1,5 @@
 /*
- * $Id: pm.trm,v 1.23 2000/10/31 19:59:32 joze Exp $
+ * $Id: pm.trm,v 1.24 2000/11/01 18:57:34 broeker Exp $
  */
 
 /* GNUPLOT - pm.trm */
@@ -166,7 +166,7 @@ static char PM_term_title[128] = "";
 
 int mouseGnupmdrv = 0; //PM set to 1 if we are connected to a mouseable gnupmdrv
 
-FILE *fopen();
+/*  FILE *fopen(); --- HBB 20000725: this decl. cannot possibly make sense */
 FILE *PM_pipe = NULL;
 static FILE *PM_savepipe = NULL;
 
