@@ -10,7 +10,7 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-dnl $Id: aclocal.m4,v 1.8 1998/09/23 19:54:37 lhecking Exp $
+dnl $Id: aclocal.m4,v 1.9 1998/09/25 15:25:56 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -318,7 +318,7 @@ AC_DEFUN(gp_FIND_SELECT_ARGTYPES,
 #ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
 #endif
-extern select ($arg_size_t,$arg_fdset_p,$arg_fdset_p,$arg_fdset_p,$arg_timeval_p);],[int empty_declaration;],
+extern select ($arg_size_t,$arg_fdset_p,$arg_fdset_p,$arg_fdset_p,$arg_timeval_p);],,
     [break 3])
    done
   done
