@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.11 1999/02/17 17:55:36 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.12 1999/02/23 17:28:13 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -81,8 +81,8 @@ static char *RCSid = "$Id: readline.c,v 1.11 1999/02/17 17:55:36 lhecking Exp $"
  * all other characters are ignored
  */
 
-#ifdef __linux__
-/* HBB: to get prototype for ioctl() */
+#ifdef HAVE_SYS_IOCTL_H
+/* For ioctl() prototype under Linux (and BeOS?) */
 # include <sys/ioctl.h>
 #endif
 
