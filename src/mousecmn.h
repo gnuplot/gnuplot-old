@@ -1,5 +1,5 @@
 /*
- * $Id: mousecmn.h,v 1.9 2004/06/04 06:29:32 mikulik Exp $
+ * $Id: mousecmn.h,v 1.10 2004/11/01 01:17:59 sfeam Exp $
  */
 
 /* GNUPLOT - mousecnm.h */
@@ -87,7 +87,7 @@ enum { /* special keys with "usual well-known" keycodes */
     GP_KP_Enter = 0x0A,
     GP_Return = 0x0D,
     GP_Escape = 0x1B,
-    GP_Delete = 127,
+    GP_Delete = 127
 };
 
 enum { /* other special keys */
