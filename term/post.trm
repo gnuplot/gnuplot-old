@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.39.2.4 2000/08/04 14:01:29 joze Exp $
+ * $Id: post.trm,v 1.39.2.5 2000/10/24 10:02:37 mikulik Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -1807,7 +1807,7 @@ if (sm_palette.ps_allcF == 0) { /* print only those 3 used formulae */
 fprintf(gpoutfile,"Color %s and { %% COLOUR vs. GRAY map\n",
   (sm_palette.colorMode == SMPAL_COLOR_MODE_RGB) ? "true" : "false"
   );
-fprintf(gpoutfile,"  /g {dup ");
+fprintf(gpoutfile,"  /g {stroke dup ");
 if (R < 0) fprintf(gpoutfile, "1 exch sub "); /* negate */
 fprintf(gpoutfile,"cF%i exch dup ", abs(R));
 if (G < 0) fprintf(gpoutfile, "1 exch sub "); /* negate */
@@ -1817,14 +1817,19 @@ if (B < 0) fprintf(gpoutfile, "1 exch sub "); /* negate */
 fprintf(gpoutfile,"cF%i ", abs(B));
 fprintf(gpoutfile,"setrgbcolor} bind def\n");
 fprintf(gpoutfile, "  /h {rlineto rlineto rlineto fill} bind def\n");
-fprintf(gpoutfile, "  /G {currentrgbcolor 3 index stroke g} bind def\n");
-fprintf(gpoutfile, "  /H {h setrgbcolor pop} bind def\n");
+/*
+fprintf(gpoutfile, "%%  /G {currentrgbcolor 3 index stroke g} bind def\n");
+fprintf(gpoutfile, "%%  /H {h setrgbcolor pop} bind def\n");
+*/
 fprintf(gpoutfile, "  /F {rlineto fill setrgbcolor pop} bind def\n");
 fprintf(gpoutfile, "}{\n");
-fprintf(gpoutfile, "  /g {currentgray exch stroke setgray} bind def\n");
+fprintf(gpoutfile, "  /g {stroke setgray} bind def\n");
 fprintf(gpoutfile, "  /h {rlineto rlineto rlineto fill setgray} bind def\n");
-fprintf(gpoutfile, "  /G {currentgray exch stroke g} bind def\n");
-fprintf(gpoutfile, "  /H {h setgray} bind def\n");
+/*
+fprintf(gpoutfile, "%%  /g {currentgray exch stroke setgray} bind def\n");
+fprintf(gpoutfile, "%%  /G {currentgray exch stroke g} bind def\n");
+fprintf(gpoutfile, "%%  /H {h setgray} bind def\n");
+*/
 fprintf(gpoutfile, "  /F {rlineto fill setgray} bind def\n");
 fprintf(gpoutfile, "} ifelse\n");
 fprintf(gpoutfile, "/N {newpath moveto} def\n");
@@ -1857,14 +1862,15 @@ pm3d_ps_color = gray;
 pm3d_last_color = gray;
 #endif
 /* printing the gray with 4 digits and without the leading 0 ... saving space */
-if (gray <= 0) fprintf(gpoutfile, "0 G "); else
-if (gray >= 1) fprintf(gpoutfile, "1 G "); else {
+if (gray <= 0) fprintf(gpoutfile, "0 g "); else
+if (gray >= 1) fprintf(gpoutfile, "1 g "); else {
    char s[15];
    gray = 0.0001*(int)(gray*10000+0.5); /* round it to 4 digits */
-   sprintf(s,"%.4g G ",gray);
+   sprintf(s,"%.4g g ",gray);
    if (s[0] == '0' && s[1] == '.') fprintf(gpoutfile, "%s", &(s[1]));
      else fprintf(gpoutfile, "%s", s);
   }
+PS_relative_ok = FALSE; /* "M" required because "g" forces stroke */
 }
 
 TERM_PUBLIC void PS_filled_polygon ( int points, gpiPoint *corners )
@@ -1876,7 +1882,7 @@ TERM_PUBLIC void PS_filled_polygon ( int points, gpiPoint *corners )
      */
     fprintf(gpoutfile, "%i %i N", corners[0].x, corners[0].y);
     if (points == 4) /* shorter version */
-	fprintf(gpoutfile, " %i %i %i %i %i %i H\n",
+	fprintf(gpoutfile, " %i %i %i %i %i %i h\n",
 	    corners[3].x-corners[2].x, corners[3].y-corners[2].y,
 	    corners[2].x-corners[1].x, corners[2].y-corners[1].y,
 	    corners[1].x-corners[0].x, corners[1].y-corners[0].y

@@ -18,10 +18,12 @@ supported terminals are:
 	OS/2 Presentation Manager
 	X11
 	Linux VGA
+	GGI
+	Win
 	PostScript
 	pslatex, pstex, epslatex
 	GIF
-	Xfig
+	Fig
 
 You are welcome to run pm3d demo. Please use "help set pm3d" and "help set 
 palette" for further information.

@@ -1,4 +1,11 @@
 
+2000-10-24  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* trm/post.trm: "g" makes stroke + set(gray/rgb), "G" and "H" removed;
+	  finally supporting 'with l lt pal' too
+
+	* docs/gnuplot.doc, pm3d/README: say PM3D works under Win too
+
 2000-10-24  Johannes Zellner <johannes@zellner.org>
 
 	* term/ggi.trm: increased the speed of ggi command line
