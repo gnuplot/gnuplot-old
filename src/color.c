@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.5 2000/11/02 19:07:16 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.6 2000/11/03 01:15:04 joze Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -47,6 +47,7 @@ static char *RCSid() { return RCSid("$Id: color.c,v 1.5 2000/11/02 19:07:16 lhec
 #include "graphics.h"
 #include "term_api.h"
 #include "util3d.h"
+#include "alloc.h"
 /* need to access used_pm3d_zmin, used_pm3d_zmax; */
 
 /* COLOUR MODES - GLOBAL VARIABLES */
