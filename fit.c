@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.18 1998/11/20 22:19:39 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.19 1998/12/02 18:37:50 lhecking Exp $";
 #endif
 
 /*
@@ -265,9 +265,10 @@ void error_ex()
 {
     char *sp;
 
-    safe_strncpy(fitbuf, "         ", 9);	/* start after GNUPLOT> */
-    sp = strchr(fitbuf, '\0');
-    while (*--sp == '\n');
+    strncpy(fitbuf, "         ", 9);		/* start after GNUPLOT> */
+    sp = strchr(fitbuf, NUL);
+    while (*--sp == '\n')
+	;
     strcpy(sp + 1, "\n\n");	/* terminate with exactly 2 newlines */
     fprintf(STANDARD, fitbuf);
     if (log_f) {
