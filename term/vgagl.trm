@@ -1,5 +1,5 @@
 /*
- * $Id: vgagl.trm,v 1.1.2.1 2000/05/01 00:17:20 joze Exp $
+ * $Id: vgagl.trm,v 1.1.2.2 2000/05/04 14:41:39 joze Exp $
  */
 
 #if defined(USE_MOUSE) && defined(PM3D)
@@ -40,11 +40,11 @@
  *
  * This terminal driver supports SVGA in the following modes:
  * 
- *  G1280x1024x256,
  *  G1024x768x256,
  *  G800x600x256,
  *  G640x480x256,
  *  G320x200x256,
+ *  G1280x1024x256,
  *  G1152x864x256,
  *  G1360x768x256,
  *  G1600x1200x256,
@@ -57,7 +57,7 @@
  */
 
 /*
- * Compile with -lthreeDKit -lvgagl -lvga
+ * Compile with -l3kit -lvgagl -lvga
  */
 
 #define VGAGL_DEBUGGING
@@ -166,7 +166,7 @@ static unsigned char VGAGL_palette[0x100][3];
 #include <unistd.h>
 #include <vga.h>
 #include <vgagl.h>
-#include <triangle.h>
+#include <3dkit.h>
 #include <vgamouse.h>
 #include <vgakeyboard.h>
 static int VGAGL_processing_graphics_events = no;
@@ -631,11 +631,11 @@ VGAGL_get_mode(void)
     static int default_modes[] = {
 	0, /* to be filled with the user defined mode */
 	0, /* to be filled with the default mode */
-	G1280x1024x256,
-	G1024x768x256,
+	G1024x768x256, /* hopefully available on all modern graphics boards */
 	G800x600x256,
 	G640x480x256,
 	G320x200x256,
+	G1280x1024x256,
 #ifdef G1152x864x256
 	G1152x864x256,
 #endif
@@ -1590,11 +1590,11 @@ START_HELP(vgagl)
 "  - the driver which was supplied when setting vgagl, e.g. `set term vgagl",
 "    G1024x768x256` would first check, if the G1024x768x256 mode is available.",
 "  - the environment variable SVGALIB_DEFAULT_MODE",
-"  - G1280x1024x256",
 "  - G1024x768x256",
 "  - G800x600x256",
 "  - G640x480x256",
 "  - G320x200x256",
+"  - G1280x1024x256",
 "  - G1152x864x256",
 "  - G1360x768x256",
 "  - G1600x1200x256",

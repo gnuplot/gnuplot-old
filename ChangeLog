@@ -1,5 +1,11 @@
 
+2000-05-04  Johannes Zellner <johannes@zellner.org>
+
+	* reimplemented the Linux vgagl terminal driver with
+	mouse and pm3d support (uses the lib3dkit library)
+
 2000-05-03  Johannes Zellner <johannes@zellner.org>
+
 	* merged pre-pm3d - pre-pm3d-01 from the MAIN trunk.
 
 2000-05-02  Lars Hecking  <lhecking@nmrc.ucc.ie>
@@ -43,6 +49,7 @@
 	Alexander Mai.
 
 2000-05-01  Johannes Zellner <johannes@zellner.org>
+
 	* branched off pm3d
 
 2000-05-01  Johannes Zellner <johannes@zellner.org>

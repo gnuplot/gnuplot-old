@@ -138,6 +138,9 @@
 /* Define if you have the vfprintf function.  */
 #undef HAVE_VFPRINTF
 
+/* Define if you have the <3dkit.h> header file.  */
+#undef HAVE_3DKIT_H
+
 /* Define if you have the <errno.h> header file.  */
 #undef HAVE_ERRNO_H
 
@@ -216,6 +219,9 @@
 /* Define if you have the <values.h> header file.  */
 #undef HAVE_VALUES_H
 
+/* Define if you have the <vgagl.h> header file.  */
+#undef HAVE_VGAGL_H
+
 /* Define if you have the m library (-lm).  */
 #undef HAVE_LIBM
 
@@ -267,7 +273,7 @@
 /*  Define if the vgagl libray is present.  */
 #undef VGAGL
 
-/*  Define if the threedkit libray is present.  */
+/*  Define if the 3dkit libray is present.  */
 #undef THREEDKIT
 
 /*  Define if color information should be passed for each vertex.  */

@@ -1,12 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.83.2.2 2000/05/03 21:22:16 joze Exp $
+dnl $Id: configure.in,v 1.83.2.3 2000/05/04 14:41:38 joze Exp $
 dnl
 AC_INIT(src/graphics.c)
 AM_CONFIG_HEADER(config.h:config.hin)
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.83.2.2 $)
+AC_REVISION($Revision: 1.83.2.3 $)
 
 VERSION="`cat $srcdir/VERSION`"
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -285,29 +285,57 @@ fi
 dnl check for installed linux vgagl lib if
 dnl both pm3d and linux_vga are defined.
 if test "$with_linux_vga" = yes -a "$enable_pm3d" = yes; then
-  AC_MSG_CHECKING(for vgagl library)
+  dnl save $LIBS
+  olibs=$LIBS
+  dnl make shure LIBS contains -lvga
+  LIBS="${TERMLIBS} ${LIBS}"
+  AC_MSG_CHECKING(for the vgagl library)
   AC_CHECK_LIB(vgagl, gl_hline,
-     [  
-	AC_DEFINE(VGAGL, 1, [ Define if the vgagl libray is present. ])
-	dnl yup, we've the libvgagl.
-	dnl check now, if libthreedkit is found.
-	AC_ARG_WITH(threedkit,dnl
-	[  --with-threedkit        where to look for libthreedkit])
-	oflags=$LDFLAGS
-	LDFLAGS="$LDFLAGS -L$with_threedkit"
-	AC_CHECK_LIB(threedkit, gl_striangle,
-	   [
-	      AC_DEFINE(THREEDKIT, 1, [ Define if the threedkit libray is present. ])
-	      AC_DEFINE(EXTENDED_COLOR_SPECS, 1,
-		 [ Define if color information should be passed for each vertex. ])
-	      VGAGLLIB="-L$with_threedkit -lthreedkit -lvgagl"
-	      with_vgagl=yes
-	   ], # <-- threedkit is present / not present -->
-	   [with_vgagl=no]
-	)
-      ], # <-- vgagl is present / not present -->
-      [with_vgagl=no]
+    [
+      dnl add -lvgagl to LIBS
+      LIBS="-lvgagl ${TERMLIBS} ${LIBS}"
+      AC_CHECK_HEADERS(vgagl.h,
+	[
+	  AC_DEFINE(VGAGL, 1, [ Define if the vgagl libray is present. ])
+	  dnl yup, we've the libvgagl.
+	  dnl check now, if lib3dkit is found.
+	  AC_CHECK_LIB(3dkit, gl_striangle,
+	    [
+	      AC_CHECK_HEADERS(3dkit.h,
+		[
+		  dnl success! If we're here, all checks for
+		  dnl the vgagl terminal driver succeeded.
+		  AC_DEFINE(THREEDKIT, 1, [ Define if the 3dkit libray is present. ])
+		  AC_DEFINE(EXTENDED_COLOR_SPECS, 1,
+		     [ Define if color information should be passed for each vertex. ])
+		  VGAGLLIB="-l3dkit -lvgagl"
+		  with_vgagl=yes
+		],dnl <-- 3dkit.h found
+		[
+		  with_vgagl=no
+		  AC_MSG_RESULT([unable to find 3dkit.h])
+		]dnl <-- 3dkit.h not found
+	      )
+	    ],dnl <-- 3dkit is present
+	    [
+	      with_vgagl=no
+	      AC_MSG_RESULT([unable to find lib3dkit])
+	    ]dnl <-- 3dkit is not present
+	  )
+	],dnl <-- vgagl.h is present
+        [
+	  with_vgagl=no
+	  AC_MSG_RESULT([unable to find vgagl.h])
+	]dnl <-- vgagl.h is not present
+      )
+    ],dnl <-- libvgagl was found
+    [
+      with_vgagl=no
+      AC_MSG_RESULT([unable to find libvgagl])
+    ]dnl <-- libvgagl was not found
   )
+  dnl restore LIBS
+  LIBS=$olibs
 fi
 
 TERMLIBS="$VGAGLLIB $TERMLIBS"
