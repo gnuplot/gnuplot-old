@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.11 1998/10/28 21:07:40 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.12 1998/11/06 22:10:31 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -600,7 +600,7 @@ int ExecuteMacro(char *argv, int namelength)
     short sRc;
     int rc;
 
-    safe_strncpy(pszName, argv, sizeof(pszname));
+    safe_strncpy(pszName, argv, sizeof(pszName));
     MAKERXSTRING(rxRc, pszRc, 256);
     MAKERXSTRING(rxArg, argv, strlen(argv));
     rc = RexxStart(1,
