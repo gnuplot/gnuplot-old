@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2gih.c,v 1.11 2002/12/17 20:50:49 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2gih.c,v 1.12 2004/02/23 13:35:00 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - doc2gih.c */
@@ -89,7 +89,7 @@ main (int argc, char **argv)
 
     convert(infile, outfile);
 
-    exit(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }
 
 

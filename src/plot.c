@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.66 2004/02/12 09:08:40 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.67 2004/02/23 13:34:59 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -278,8 +278,8 @@ gnu_main(argc, argv)
 int
 main(argc, argv)
 #endif
-int argc;
-char **argv;
+    int argc;
+    char **argv;
 {
     int i;
 #ifdef LINUXVGA
@@ -643,7 +643,9 @@ char **argv;
     if (aesid > -1)
 	atexit(appl_exit);
 #endif
-    exit(exit_status);
+    /* HBB 20040223: Not all compilers like exit() to end main() */
+    /* exit(exit_status); */
+    return exit_status;    
 }
 
 

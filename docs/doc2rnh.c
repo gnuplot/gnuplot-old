@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2rnh.c,v 1.12 2002/12/16 14:16:52 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2rnh.c,v 1.13 2004/02/23 13:35:00 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - doc2rnh.c */
@@ -104,7 +104,7 @@ main (int argc, char **argv)
 	if ((infile = fopen(argv[1], "r")) == (FILE *) NULL) {
 	    fprintf(stderr, "%s: Can't open %s for reading\n",
 		    argv[0], argv[1]);
-	    exit(EXIT_SUCCESS);
+	    exit(EXIT_FAILURE);
 	}
     }
     if (argc == 3) {
@@ -117,7 +117,7 @@ main (int argc, char **argv)
     init(outfile);
     convert(infile, outfile);
     finish(outfile);
-    exit(EXIT_SUCCESS);
+    return EXIT_SUCCESS;
 }
 
 
