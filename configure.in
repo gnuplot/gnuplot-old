@@ -10,10 +10,10 @@ dnl [Lars: this is no longer necessary. I have cut out this stuff
 dnl  out of configure.in and reduced the size of configure by 30k!
 dnl  The necessery definitions are now in syscfg.h]
 dnl
-dnl $Id: configure.in,v 1.27 1998/11/17 20:55:37 lhecking Exp $
+dnl $Id: configure.in,v 1.28 1998/11/20 12:20:46 lhecking Exp $
 dnl
 AC_PREREQ(2.1)
-AC_REVISION($Revision: 1.27 $)
+AC_REVISION($Revision: 1.28 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -221,8 +221,8 @@ AC_TYPE_SIGNAL
 dnl Functions. ANSI first, then others
 
 dnl sunos 4 has on_exit() in place of atexit()
-AC_CHECK_FUNCS(atexit on_exit memcpy bcopy memset bzero setvbuf strerror \
-  strchr index strrchr rindex strstr)
+AC_CHECK_FUNCS(atexit on_exit memcpy memmove memset bcopy bzero setvbuf \
+  strerror strchr index strrchr rindex strstr)
 
 dnl gamma is called lgamma on apollos and linux
 dnl we prefer lgamma over gamma, see specfun.c
