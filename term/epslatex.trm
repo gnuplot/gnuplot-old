@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: epslatex.trm,v 1.27 2004/09/16 00:22:29 sfeam Exp $
+ * $Id: epslatex.trm,v 1.28 2004/10/19 00:24:08 sfeam Exp $
  */
 
 /* GNUPLOT - epslatex.trm */
@@ -829,7 +829,7 @@ EPSL_linewidth(double linewidth)
 TERM_PUBLIC void
 EPSL_pointsize(double ptsize)
 {
-    fprintf(gpoutfile, "%.3f Gpsetpointsize\n", ptsize);
+    fprintf(gpoutfile, "%.3f Gpsetpointsize\n", ptsize < 0. ? 1. : ptsize);
 }
 
 TERM_PUBLIC void
