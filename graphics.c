@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.14 1998/10/12 20:21:07 lhecking Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.15 1998/10/13 20:31:40 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -796,13 +796,13 @@ int count;
 
     /* ylabel */
     if (*ylabel.text && can_rotate)
-	ylabel_textwidth = (int) ((ylablin + ylabel.xoffset) * (t->h_char));
+	ylabel_textwidth = (int) ((ylablin + ylabel.xoffset) * (t->v_char));
     else
 	ylabel_textwidth = 0;
 
     /* timestamp */
     if (*timelabel.text && vertical_timelabel)
-	timelabel_textwidth = (int) ((timelin + timelabel.xoffset) * (t->h_char));
+	timelabel_textwidth = (int) ((timelin + timelabel.xoffset) * (t->v_char));
     else
 	timelabel_textwidth = 0;
 
