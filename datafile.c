@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: datafile.c,v 1.15 1999/03/12 21:43:25 lhecking Exp $";
+static char *RCSid = "$Id: datafile.c,v 1.16 1999/03/26 15:20:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -698,7 +698,7 @@ int max_using;
     /*}}} */
 
     /* filename cannot be static array! */
-    gp_expand_tilde (filename, MAX_LINE_LEN+1);
+    gp_expand_tilde (&filename, MAX_LINE_LEN+1);
 
 /*{{{  open file */
 #if defined(PIPES)
