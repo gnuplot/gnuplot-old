@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.21 1999/03/01 21:16:37 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.22 1999/03/04 20:49:26 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -875,7 +875,7 @@ int length;
     struct termentry *t = NULL;
 
     for (i = 0; i < TERMCOUNT; i++) {
-	if (!strncmp(name, term_tbl[i].name, length)) {
+	if (STREQN(name, term_tbl[i].name, length)) {
 	    if (t)
 		return (NULL);	/* ambiguous */
 	    t = term_tbl + i;
@@ -911,7 +911,7 @@ int length;
 	term->linewidth = null_linewidth;
 
     /* Special handling for unixplot term type */
-    if (!strncmp("unixplot", name, 8)) {
+    if (STREQN("unixplot", name, 8)) {
 	UP_redirect(2);		/* Redirect actual stdout for unixplots */
     } else if (unixplot) {
 	UP_redirect(3);		/* Put stdout back together again. */
@@ -961,14 +961,14 @@ void init_terminal()
 #ifdef NEXT
 	env_term = getenv("TERM");
 	if (term_name == (char *) NULL
-	    && env_term != (char *) NULL && STREQ(term, "next"))
+	    && env_term != (char *) NULL && STREQ(env_term, "next"))
 	    term_name = "next";
 #endif /* NeXT */
 
 #ifdef __BEOS__
 	env_term = getenv("TERM");
 	if (term_name == (char *) NULL
-	    && env_term != (char *) NULL && STREQ(term, "beterm"))
+	    && env_term != (char *) NULL && STREQ(env_term, "beterm"))
 	    term_name = "be";
 #endif /* BeOS */
 
