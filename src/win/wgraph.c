@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.31 2003/04/18 20:42:36 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.32 2003/04/24 21:38:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -872,16 +872,11 @@ drawgraph(LPGW lpgw, HDC hdc, LPRECT rect)
 		    cur_penstruct.lopnWidth.x *= line_width;
 		lpgw->hapen = CreatePenIndirect((LOGPEN FAR *) &cur_penstruct);
 		DeleteObject(SelectObject(hdc, lpgw->hapen));
-#if 1
-		/* PM 7.7.2002: support color text */
-		SetTextColor(hdc, lpgw->colorpen[cur_pen].lopnColor);
-#else
-		/* previous code */
-		if (lpgw->color && isColor)
-		    SetTextColor(hdc, lpgw->colorpen[0].lopnColor);
-#endif
-		pen = curptr->x;
+
+		pen = cur_pen;
 		SelectObject(hdc, lpgw->colorbrush[pen]);
+		/* PM 7.7.2002: support color text */
+		SetTextColor(hdc, lpgw->colorpen[pen].lopnColor);
 	    }
 	break;
 	    
