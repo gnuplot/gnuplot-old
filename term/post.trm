@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.39.4.2 2000/10/18 16:43:04 broeker Exp $
+ * $Id: post.trm,v 1.39.4.3 2000/10/24 18:58:13 broeker Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -1450,9 +1450,8 @@ int overprint;
 		ovp = (float)strtod(p,&p);
 		if (ovp)
 		    overprint_voffset = ovp*f;
-		else
-		    *--p;
 	    }
+	    --p;		/* HBB 20001021: bug fix: 10^{2} broken */
 
 	    if (*++p == '/') {
 		/* then parse a fontname, optional fontsize */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.8 2000/10/18 16:30:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.9 2000/10/24 18:58:12 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -450,15 +450,6 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     mat_scale(surface_scale / 2.0, surface_scale / 2.0, surface_scale / 2.0, mat);
     mat_mult(trans_mat, trans_mat, mat);
 
-#if 0
-    /* HBB 19990609: this is *not* the way to implement 'set view' <z_scale> */
-    /* modify min_z/max_z so it will zscale properly. */
-    ztemp = (axis_array[FIRST_Z_AXIS].max - axis_array[FIRST_Z_AXIS].min) / (2.0 * surface_zscale);
-    temp = (axis_array[FIRST_Z_AXIS].max + axis_array[FIRST_Z_AXIS].min) / 2.0;
-    axis_array[FIRST_Z_AXIS].min = temp - ztemp;
-    axis_array[FIRST_Z_AXIS].max = temp + ztemp;
-#endif /* 0 */
-
     /* The extrema need to be set even when a surface is not being
      * drawn.   Without this, gnuplot used to assume that the X and
      * Y axis started at zero.   -RKC
@@ -475,30 +466,30 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
      */
 
     /* If we are to draw the bottom grid make sure zmin is updated properly. */
-    if (axis_array[FIRST_X_AXIS].ticmode || axis_array[FIRST_Y_AXIS].ticmode || grid_selection) {
-	base_z = axis_array[FIRST_Z_AXIS].min
-	    - (axis_array[FIRST_Z_AXIS].max - axis_array[FIRST_Z_AXIS].min) * ticslevel;
+    if (X_AXIS.ticmode || Y_AXIS.ticmode || grid_selection) {
+	base_z = Z_AXIS.min
+	    - (Z_AXIS.max - Z_AXIS.min) * ticslevel;
 	if (ticslevel >= 0)
 	    floor_z = base_z;
 	else
-	    floor_z = axis_array[FIRST_Z_AXIS].min;
+	    floor_z = Z_AXIS.min;
 
 	if (ticslevel < -1)
 	    ceiling_z = base_z;
 	else
-	    ceiling_z = axis_array[FIRST_Z_AXIS].max;
+	    ceiling_z = Z_AXIS.max;
     } else {
-	floor_z = base_z = axis_array[FIRST_Z_AXIS].min;
-	ceiling_z = axis_array[FIRST_Z_AXIS].max;
+	floor_z = base_z = Z_AXIS.min;
+	ceiling_z = Z_AXIS.max;
     }
 
     /*  see comment accompanying similar tests of x_min/x_max and y_min/y_max
      *  in graphics.c:do_plot(), for history/rationale of these tests */
-    if (axis_array[FIRST_X_AXIS].min == axis_array[FIRST_X_AXIS].max)
+    if (X_AXIS.min == X_AXIS.max)
 	graph_error("x_min3d should not equal x_max3d!");
-    if (axis_array[FIRST_Y_AXIS].min == axis_array[FIRST_Y_AXIS].max)
+    if (Y_AXIS.min == Y_AXIS.max)
 	graph_error("y_min3d should not equal y_max3d!");
-    if (axis_array[FIRST_Z_AXIS].min == axis_array[FIRST_Z_AXIS].max)
+    if (Z_AXIS.min == Z_AXIS.max)
 	graph_error("z_min3d should not equal z_max3d!");
 
 #ifndef LITE
@@ -538,8 +529,8 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 
     /* SCALE FACTORS */
     zscale3d = 2.0 / (ceiling_z - floor_z) * surface_zscale;
-    yscale3d = 2.0 / (axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min);
-    xscale3d = 2.0 / (axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min);
+    yscale3d = 2.0 / (Y_AXIS.max - Y_AXIS.min);
+    xscale3d = 2.0 / (X_AXIS.max - X_AXIS.min);
 
     term_apply_lp_properties(&border_lp);	/* border linetype */
 
@@ -556,7 +547,7 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 	time_t now;
 	unsigned int x = t->v_char + timelabel.xoffset * t->h_char;
 	unsigned int y = timelabel_bottom
-	    ? yoffset * axis_array[FIRST_Y_AXIS].max + (timelabel.yoffset + 1) * t->v_char
+	    ? yoffset * Y_AXIS.max + (timelabel.yoffset + 1) * t->v_char
 	    : ytop + (timelabel.yoffset - 1) * t->v_char;
 
 	time(&now);
@@ -1029,13 +1020,13 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     /* finally, store the 2d projection of the x and y axis, to enable zooming by mouse */
     {
 	unsigned int o_x, o_y, x, y;
-	map3d_xy(axis_array[FIRST_X_AXIS].min, axis_array[FIRST_Y_AXIS].min, base_z, &o_x, &o_y);
+	map3d_xy(X_AXIS.min, Y_AXIS.min, base_z, &o_x, &o_y);
 	axis3d_o_x = (int)o_x;
 	axis3d_o_y = (int)o_y;
-	map3d_xy(axis_array[FIRST_X_AXIS].max, axis_array[FIRST_Y_AXIS].min, base_z, &x, &y);
+	map3d_xy(X_AXIS.max, Y_AXIS.min, base_z, &x, &y);
 	axis3d_x_dx = (int)x - axis3d_o_x;
 	axis3d_x_dy = (int)y - axis3d_o_y;
-	map3d_xy(axis_array[FIRST_X_AXIS].min, axis_array[FIRST_Y_AXIS].max, base_z, &x, &y);
+	map3d_xy(X_AXIS.min, Y_AXIS.max, base_z, &x, &y);
 	axis3d_y_dx = (int)x - axis3d_o_x;
 	axis3d_y_dy = (int)y - axis3d_o_y;
     }
@@ -1071,12 +1062,12 @@ struct surface_points *plot;
 		{
 		    map3d_xy(points[i].x, points[i].y, points[i].z, &x, &y);
 
-		    if (inrange(0.0, axis_array[FIRST_Z_AXIS].min, axis_array[FIRST_Z_AXIS].max)) {
+		    if (inrange(0.0, Z_AXIS.min, Z_AXIS.max)) {
 			map3d_xy(points[i].x, points[i].y, 0.0, &xx0, &yy0);
-		    } else if (inrange(axis_array[FIRST_Z_AXIS].min, 0.0, points[i].z)) {
-			map3d_xy(points[i].x, points[i].y, axis_array[FIRST_Z_AXIS].min, &xx0, &yy0);
+		    } else if (inrange(Z_AXIS.min, 0.0, points[i].z)) {
+			map3d_xy(points[i].x, points[i].y, Z_AXIS.min, &xx0, &yy0);
 		    } else {
-			map3d_xy(points[i].x, points[i].y, axis_array[FIRST_Z_AXIS].max, &xx0, &yy0);
+			map3d_xy(points[i].x, points[i].y, Z_AXIS.max, &xx0, &yy0);
 		    }
 
 		    clip_move(xx0, yy0);
@@ -1086,30 +1077,30 @@ struct surface_points *plot;
 		}
 	    case OUTRANGE:
 		{
-		    if (!inrange(points[i].x, axis_array[FIRST_X_AXIS].min, axis_array[FIRST_X_AXIS].max) ||
-			!inrange(points[i].y, axis_array[FIRST_Y_AXIS].min, axis_array[FIRST_Y_AXIS].max))
+		    if (!inrange(points[i].x, X_AXIS.min, X_AXIS.max) ||
+			!inrange(points[i].y, Y_AXIS.min, Y_AXIS.max))
 			break;
 
-		    if (inrange(0.0, axis_array[FIRST_Z_AXIS].min, axis_array[FIRST_Z_AXIS].max)) {
+		    if (inrange(0.0, Z_AXIS.min, Z_AXIS.max)) {
 			/* zero point is INRANGE */
 			map3d_xy(points[i].x, points[i].y, 0.0, &xx0, &yy0);
 
-			/* must cross z = axis_array[FIRST_Z_AXIS].min or axis_array[FIRST_Z_AXIS].max limits */
-			if (inrange(axis_array[FIRST_Z_AXIS].min, 0.0, points[i].z) &&
-			    axis_array[FIRST_Z_AXIS].min != 0.0 && axis_array[FIRST_Z_AXIS].min != points[i].z) {
-			    map3d_xy(points[i].x, points[i].y, axis_array[FIRST_Z_AXIS].min, &x, &y);
+			/* must cross z = Z_AXIS.min or Z_AXIS.max limits */
+			if (inrange(Z_AXIS.min, 0.0, points[i].z) &&
+			    Z_AXIS.min != 0.0 && Z_AXIS.min != points[i].z) {
+			    map3d_xy(points[i].x, points[i].y, Z_AXIS.min, &x, &y);
 			} else {
-			    map3d_xy(points[i].x, points[i].y, axis_array[FIRST_Z_AXIS].max, &x, &y);
+			    map3d_xy(points[i].x, points[i].y, Z_AXIS.max, &x, &y);
 			}
 		    } else {
 			/* zero point is also OUTRANGE */
-			if (inrange(axis_array[FIRST_Z_AXIS].min, 0.0, points[i].z) &&
-			    inrange(axis_array[FIRST_Z_AXIS].max, 0.0, points[i].z)) {
-			    /* crosses z = axis_array[FIRST_Z_AXIS].min or axis_array[FIRST_Z_AXIS].max limits */
-			    map3d_xy(points[i].x, points[i].y, axis_array[FIRST_Z_AXIS].max, &x, &y);
-			    map3d_xy(points[i].x, points[i].y, axis_array[FIRST_Z_AXIS].min, &xx0, &yy0);
+			if (inrange(Z_AXIS.min, 0.0, points[i].z) &&
+			    inrange(Z_AXIS.max, 0.0, points[i].z)) {
+			    /* crosses z = Z_AXIS.min or Z_AXIS.max limits */
+			    map3d_xy(points[i].x, points[i].y, Z_AXIS.max, &x, &y);
+			    map3d_xy(points[i].x, points[i].y, Z_AXIS.min, &xx0, &yy0);
 			} else {
-			    /* doesn't cross z = axis_array[FIRST_Z_AXIS].min or axis_array[FIRST_Z_AXIS].max limits */
+			    /* doesn't cross z = Z_AXIS.min or Z_AXIS.max limits */
 			    break;
 			}
 		    }
@@ -1486,8 +1477,8 @@ struct gnuplot_contours *cntr;
 /* map xmin | xmax to 0 | 1 and same for y
  * 0.1 avoids any rounding errors
  */
-#define MAP_HEIGHT_X(x) ( (int) (((x)-axis_array[FIRST_X_AXIS].min)/(axis_array[FIRST_X_AXIS].max-axis_array[FIRST_X_AXIS].min)+0.1) )
-#define MAP_HEIGHT_Y(y) ( (int) (((y)-axis_array[FIRST_Y_AXIS].min)/(axis_array[FIRST_Y_AXIS].max-axis_array[FIRST_Y_AXIS].min)+0.1) )
+#define MAP_HEIGHT_X(x) ( (int) (((x)-X_AXIS.min)/(X_AXIS.max-X_AXIS.min)+0.1) )
+#define MAP_HEIGHT_Y(y) ( (int) (((y)-Y_AXIS.min)/(Y_AXIS.max-Y_AXIS.min)+0.1) )
 
 /* if point is at corner, update height[][] and depth[][]
  * we are still assuming that extremes of surfaces are at corners,
@@ -1501,8 +1492,8 @@ double depth[2][2];
 {
     if (p->type != INRANGE)
 	return;
-    if ((fabs(p->x - axis_array[FIRST_X_AXIS].min) < zero || fabs(p->x - axis_array[FIRST_X_AXIS].max) < zero) &&
-	(fabs(p->y - axis_array[FIRST_Y_AXIS].min) < zero || fabs(p->y - axis_array[FIRST_Y_AXIS].max) < zero)) {
+    if ((fabs(p->x - X_AXIS.min) < zero || fabs(p->x - X_AXIS.max) < zero) &&
+	(fabs(p->y - Y_AXIS.min) < zero || fabs(p->y - Y_AXIS.max) < zero)) {
 	unsigned int x = MAP_HEIGHT_X(p->x);
 	unsigned int y = MAP_HEIGHT_Y(p->y);
 	if (height[x][y] < p->z)
@@ -1518,27 +1509,27 @@ setup_3d_box_corners()
 {
     int quadrant = surface_rot_z / 90;
     if ((quadrant + 1) & 2) {
-	zaxis_x = axis_array[FIRST_X_AXIS].max;
-	right_x = axis_array[FIRST_X_AXIS].min;
-	back_y  = axis_array[FIRST_Y_AXIS].min;
-	front_y  = axis_array[FIRST_Y_AXIS].max;
+	zaxis_x = X_AXIS.max;
+	right_x = X_AXIS.min;
+	back_y  = Y_AXIS.min;
+	front_y  = Y_AXIS.max;
     } else {
-	zaxis_x = axis_array[FIRST_X_AXIS].min;
-	right_x = axis_array[FIRST_X_AXIS].max;
-	back_y  = axis_array[FIRST_Y_AXIS].max;
-	front_y  = axis_array[FIRST_Y_AXIS].min;
+	zaxis_x = X_AXIS.min;
+	right_x = X_AXIS.max;
+	back_y  = Y_AXIS.max;
+	front_y  = Y_AXIS.min;
     }
 
     if (quadrant & 2) {
-	zaxis_y = axis_array[FIRST_Y_AXIS].max;
-	right_y = axis_array[FIRST_Y_AXIS].min;
-	back_x  = axis_array[FIRST_X_AXIS].max;
-	front_x  = axis_array[FIRST_X_AXIS].min;
+	zaxis_y = Y_AXIS.max;
+	right_y = Y_AXIS.min;
+	back_x  = X_AXIS.max;
+	front_x  = X_AXIS.min;
     } else {
-	zaxis_y = axis_array[FIRST_Y_AXIS].min;
-	right_y = axis_array[FIRST_Y_AXIS].max;
-	back_x  = axis_array[FIRST_X_AXIS].min;
-	front_x  = axis_array[FIRST_X_AXIS].max;
+	zaxis_y = Y_AXIS.min;
+	right_y = Y_AXIS.max;
+	back_x  = X_AXIS.min;
+	front_x  = X_AXIS.max;
     }
 
     if (surface_rot_x > 90) {
@@ -1676,12 +1667,12 @@ draw_3d_graphbox(plot, plot_num)
     } /* if (draw_border) */
 
     /* Draw ticlabels and axis labels. x axis, first:*/
-    if (axis_array[FIRST_X_AXIS].ticmode || *axis_array[FIRST_X_AXIS].label.text) {
+    if (X_AXIS.ticmode || *X_AXIS.label.text) {
 	vertex v0, v1;
 	double other_end =
-	    axis_array[FIRST_Y_AXIS].min + axis_array[FIRST_Y_AXIS].max - xaxis_y;
+	    Y_AXIS.min + Y_AXIS.max - xaxis_y;
 	double mid_x =
-	    (axis_array[FIRST_X_AXIS].max + axis_array[FIRST_X_AXIS].min) / 2;
+	    (X_AXIS.max + X_AXIS.min) / 2;
 
 	map3d_xyz(mid_x, xaxis_y, base_z, &v0);
 	map3d_xyz(mid_x, other_end, base_z, &v1);
@@ -1697,12 +1688,12 @@ draw_3d_graphbox(plot, plot_num)
 		tic_unitx = tic_unity = 0;
 	    }
 	}
-	if (axis_array[FIRST_X_AXIS].ticmode) {
+	if (X_AXIS.ticmode) {
 	    gen_tics(FIRST_X_AXIS, grid_selection & (GRID_X | GRID_MX),
 		     xtick_callback);
 	}
 
-	if (*axis_array[FIRST_X_AXIS].label.text) {
+	if (*X_AXIS.label.text) {
 	    /* label at xaxis_y + 1/4 of (xaxis_y-other_y) */
 	    double step = (xaxis_y - other_end) / 4;
 	    unsigned int x1, y1;
@@ -1713,22 +1704,22 @@ draw_3d_graphbox(plot, plot_num)
 		v1.y -= tic_unity * ticscale * (t->v_tic);
 	    }
 	    TERMCOORD(&v1, x1, y1);
-	    x1 += axis_array[FIRST_X_AXIS].label.xoffset * t->h_char;
-	    y1 += axis_array[FIRST_X_AXIS].label.yoffset * t->v_char;
+	    x1 += X_AXIS.label.xoffset * t->h_char;
+	    y1 += X_AXIS.label.yoffset * t->v_char;
 	    /* write_multiline mods it */
-	    write_multiline(x1, y1, axis_array[FIRST_X_AXIS].label.text,
+	    write_multiline(x1, y1, X_AXIS.label.text,
 			    CENTRE, JUST_TOP, 0,
-			    axis_array[FIRST_X_AXIS].label.font);
+			    X_AXIS.label.font);
 	}
     }
 
     /* y axis: */
-    if (axis_array[FIRST_Y_AXIS].ticmode || *axis_array[FIRST_Y_AXIS].label.text) {
+    if (Y_AXIS.ticmode || *Y_AXIS.label.text) {
 	vertex v0, v1;
 	double other_end =
-	    axis_array[FIRST_X_AXIS].min + axis_array[FIRST_X_AXIS].max - yaxis_x;
+	    X_AXIS.min + X_AXIS.max - yaxis_x;
 	double mid_y =
-	    (axis_array[FIRST_Y_AXIS].max + axis_array[FIRST_Y_AXIS].min) / 2;
+	    (Y_AXIS.max + Y_AXIS.min) / 2;
 
 	map3d_xyz(yaxis_x, mid_y, base_z, &v0);
 	map3d_xyz(other_end, mid_y, base_z, &v1);
@@ -1744,11 +1735,11 @@ draw_3d_graphbox(plot, plot_num)
 		tic_unitx = tic_unity = 0;
 	    }
 	}
-	if (axis_array[FIRST_Y_AXIS].ticmode) {
+	if (Y_AXIS.ticmode) {
 	    gen_tics(FIRST_Y_AXIS, grid_selection & (GRID_Y | GRID_MY),
 		     ytick_callback);
 	}
-	if (*axis_array[FIRST_Y_AXIS].label.text) {
+	if (*Y_AXIS.label.text) {
 	    double step = (other_end - yaxis_x) / 4;
 	    unsigned int x1, y1;
 
@@ -1758,59 +1749,59 @@ draw_3d_graphbox(plot, plot_num)
 		v1.y -= tic_unity * ticscale * (t->v_tic);
 	    }
 	    TERMCOORD(&v1, x1, y1);
-	    x1 += axis_array[FIRST_Y_AXIS].label.xoffset * t->h_char;
-	    y1 += axis_array[FIRST_Y_AXIS].label.yoffset * t->v_char;
+	    x1 += Y_AXIS.label.xoffset * t->h_char;
+	    y1 += Y_AXIS.label.yoffset * t->v_char;
 	    /* write_multiline mods it */
-	    write_multiline(x1, y1, axis_array[FIRST_Y_AXIS].label.text,
+	    write_multiline(x1, y1, Y_AXIS.label.text,
 			    CENTRE, JUST_TOP, 0,
-			    axis_array[FIRST_Y_AXIS].label.font);
+			    Y_AXIS.label.font);
 	}
     }
 
     /* do z tics */
-    if (axis_array[FIRST_Z_AXIS].ticmode
+    if (Z_AXIS.ticmode
 	&& (draw_surface || (draw_contour & CONTOUR_SRF))) {
 	gen_tics(FIRST_Z_AXIS, grid_selection & (GRID_Z | GRID_MZ),
 		 ztick_callback);
     }
-    if ((axis_array[FIRST_Y_AXIS].zeroaxis.l_type >= -2)
-	&& !axis_array[FIRST_X_AXIS].log
-	&& inrange(0, axis_array[FIRST_X_AXIS].min, axis_array[FIRST_X_AXIS].max)
+    if ((Y_AXIS.zeroaxis.l_type >= -2)
+	&& !X_AXIS.log
+	&& inrange(0, X_AXIS.min, X_AXIS.max)
 	) {
 	vertex v1, v2;
 
 	/* line through x=0 */
-	map3d_xyz(0.0, axis_array[FIRST_Y_AXIS].min, base_z, &v1);
-	map3d_xyz(0.0, axis_array[FIRST_Y_AXIS].max, base_z, &v2);
-	draw3d_line(&v1, &v2, &axis_array[FIRST_Y_AXIS].zeroaxis);
+	map3d_xyz(0.0, Y_AXIS.min, base_z, &v1);
+	map3d_xyz(0.0, Y_AXIS.max, base_z, &v2);
+	draw3d_line(&v1, &v2, &Y_AXIS.zeroaxis);
     }
-    if ((axis_array[FIRST_X_AXIS].zeroaxis.l_type >= -2)
-	&& !axis_array[FIRST_Y_AXIS].log
-	&& inrange(0, axis_array[FIRST_Y_AXIS].min, axis_array[FIRST_Y_AXIS].max)
+    if ((X_AXIS.zeroaxis.l_type >= -2)
+	&& !Y_AXIS.log
+	&& inrange(0, Y_AXIS.min, Y_AXIS.max)
 	) {
 	vertex v1, v2;
 
-	term_apply_lp_properties(&axis_array[FIRST_X_AXIS].zeroaxis);
+	term_apply_lp_properties(&X_AXIS.zeroaxis);
 	/* line through y=0 */
-	map3d_xyz(axis_array[FIRST_X_AXIS].min, 0.0, base_z, &v1);
-	map3d_xyz(axis_array[FIRST_X_AXIS].max, 0.0, base_z, &v2);
-	draw3d_line(&v1, &v2, &axis_array[FIRST_X_AXIS].zeroaxis);
+	map3d_xyz(X_AXIS.min, 0.0, base_z, &v1);
+	map3d_xyz(X_AXIS.max, 0.0, base_z, &v2);
+	draw3d_line(&v1, &v2, &X_AXIS.zeroaxis);
     }
     /* PLACE ZLABEL - along the middle grid Z axis - eh ? */
-    if (*axis_array[FIRST_Z_AXIS].label.text
+    if (*Z_AXIS.label.text
 	&& (draw_surface || (draw_contour & CONTOUR_SRF))
 	) {
 	map3d_xy(zaxis_x, zaxis_y,
-		 axis_array[FIRST_Z_AXIS].max
-		 + (axis_array[FIRST_Z_AXIS].max - base_z) / 4,
+		 Z_AXIS.max
+		 + (Z_AXIS.max - base_z) / 4,
 		 &x, &y);
 
-	x += axis_array[FIRST_Z_AXIS].label.xoffset * t->h_char;
-	y += axis_array[FIRST_Z_AXIS].label.yoffset * t->v_char;
+	x += Z_AXIS.label.xoffset * t->h_char;
+	y += Z_AXIS.label.yoffset * t->v_char;
 
-	write_multiline(x, y, axis_array[FIRST_Z_AXIS].label.text,
+	write_multiline(x, y, Z_AXIS.label.text,
 			CENTRE, CENTRE, 0,
-			axis_array[FIRST_Z_AXIS].label.font);
+			Z_AXIS.label.font);
     }
 }
 
@@ -1824,7 +1815,7 @@ struct lp_style_type grid;	/* linetype or -2 for none */
     vertex v1, v2;
     double scale = (text ? ticscale : miniticscale);
     double other_end =
-	axis_array[FIRST_Y_AXIS].min + axis_array[FIRST_Y_AXIS].max - xaxis_y;
+	Y_AXIS.min + Y_AXIS.max - xaxis_y;
     int dirn = tic_in ? 1 : -1;
     register struct termentry *t = term;
 
@@ -1834,9 +1825,9 @@ struct lp_style_type grid;	/* linetype or -2 for none */
 	map3d_xyz(place, other_end, base_z, &v2);
 	draw3d_line(&v1, &v2, &grid);
     }
-    if ((axis_array[FIRST_X_AXIS].ticmode & TICS_ON_AXIS)
-	&& !axis_array[FIRST_Y_AXIS].log
-	&& inrange (0.0, axis_array[FIRST_Y_AXIS].min, axis_array[FIRST_Y_AXIS].max)
+    if ((X_AXIS.ticmode & TICS_ON_AXIS)
+	&& !Y_AXIS.log
+	&& inrange (0.0, Y_AXIS.min, Y_AXIS.max)
 	) {
 	map3d_xyz(place, 0.0, base_z, &v1);
     }
@@ -1868,7 +1859,7 @@ struct lp_style_type grid;	/* linetype or -2 for none */
 	clip_put_text_just(x2, y2, text, just);
     }
 
-    if (axis_array[FIRST_X_AXIS].ticmode & TICS_MIRROR) {
+    if (X_AXIS.ticmode & TICS_MIRROR) {
 	map3d_xyz(place, other_end, base_z, &v1);
 	v2.x = v1.x - tic_unitx * scale * (t->h_tic) * dirn;
 	v2.y = v1.y - tic_unity * scale * (t->v_tic) * dirn;
@@ -1887,7 +1878,7 @@ struct lp_style_type grid;
     vertex v1, v2;
     double scale = (text ? ticscale : miniticscale);
     double other_end =
-	axis_array[FIRST_X_AXIS].min + axis_array[FIRST_X_AXIS].max - yaxis_x;
+	X_AXIS.min + X_AXIS.max - yaxis_x;
     int dirn = tic_in ? 1 : -1;
     register struct termentry *t = term;
 
@@ -1896,9 +1887,9 @@ struct lp_style_type grid;
 	map3d_xyz(other_end, place, base_z, &v2);
 	draw3d_line(&v1, &v2, &grid);
     }
-    if (axis_array[FIRST_Y_AXIS].ticmode & TICS_ON_AXIS
-	&& !axis_array[FIRST_X_AXIS].log
-	&& inrange (0.0, axis_array[FIRST_X_AXIS].min, axis_array[FIRST_Y_AXIS].max)
+    if (Y_AXIS.ticmode & TICS_ON_AXIS
+	&& !X_AXIS.log
+	&& inrange (0.0, X_AXIS.min, Y_AXIS.max)
 	) {
 	map3d_xyz(0.0, place, base_z, &v1);
     }
@@ -1929,7 +1920,7 @@ struct lp_style_type grid;
 	clip_put_text_just(x2, y2, text, just);
     }
 
-    if (axis_array[FIRST_Y_AXIS].ticmode & TICS_MIRROR) {
+    if (Y_AXIS.ticmode & TICS_MIRROR) {
 	map3d_xyz(other_end, place, base_z, &v1);
 	v2.x = v1.x - tic_unitx * scale * (t->h_tic) * dirn;
 	v2.y = v1.y - tic_unity * scale * (t->v_tic) * dirn;
@@ -1972,7 +1963,7 @@ struct lp_style_type grid;
 	clip_put_text_just(x1, y1, text, RIGHT);
     }
 
-    if (axis_array[FIRST_Z_AXIS].ticmode & TICS_MIRROR) {
+    if (Z_AXIS.ticmode & TICS_MIRROR) {
 	map3d_xyz(right_x, right_y, place, &v1);
 	v2.x = v1.x - len / xscaler;
 	v2.y = v1.y;
@@ -1997,8 +1988,7 @@ double* zpos;
 	*xpos = axis_log_value_checked(FIRST_X_AXIS, *xpos, what);
 	break;
     case graph:
-	*xpos = axis_array[FIRST_X_AXIS].min +
-	    *xpos * (axis_array[FIRST_X_AXIS].max - axis_array[FIRST_X_AXIS].min);
+	*xpos = X_AXIS.min + *xpos * (X_AXIS.max - X_AXIS.min);
 	break;
     case screen:
 	++screens;
@@ -2010,8 +2000,7 @@ double* zpos;
 	*ypos = axis_log_value_checked(FIRST_Y_AXIS, *ypos, what);
 	break;
     case graph:
-	*ypos = axis_array[FIRST_Y_AXIS].min +
-	    *ypos * (axis_array[FIRST_Y_AXIS].max - axis_array[FIRST_Y_AXIS].min);
+	*ypos = Y_AXIS.min + *ypos * (Y_AXIS.max - Y_AXIS.min);
 	break;
     case screen:
 	++screens;
@@ -2023,8 +2012,7 @@ double* zpos;
 	*zpos = axis_log_value_checked(FIRST_Z_AXIS, *zpos, what);
 	break;
     case graph:
-	*zpos = axis_array[FIRST_Z_AXIS].min +
-	    *zpos * (axis_array[FIRST_Z_AXIS].max - axis_array[FIRST_Z_AXIS].min);
+	*zpos = Z_AXIS.min + *zpos * (Z_AXIS.max - Z_AXIS.min);
 	break;
     case screen:
 	++screens;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.6 2000/10/18 16:30:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.29.2.7 2000/10/24 18:58:12 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -810,7 +810,7 @@ eval_plots()
 	if (is_definition(c_token)) {
 	    define();
 	} else {
-	    int x_axis = 0, y_axis = 0;
+	    /* int x_axis = 0, y_axis = 0; */ /* HBB 20000520: have global in axis.c now */
 	    int specs = 0;
 
 	    /* for datafile plot, record datafile spec for title */
@@ -987,17 +987,17 @@ eval_plots()
 	    /* we can now do some checks that we deferred earlier */
 
 	    if (this_plot->plot_type == DATA) {
-		if (!(uses_axis[x_axis] & 1) && axis_array[x_axis].autoscale) {
-		    if (axis_array[x_axis].autoscale & 1)
-			axis_array[x_axis].min = VERYLARGE;
-		    if (axis_array[x_axis].autoscale & 2)
-			axis_array[x_axis].max = -VERYLARGE;
+		if (!(uses_axis[x_axis] & 1) && X_AXIS.autoscale) {
+		    if (X_AXIS.autoscale & 1)
+			X_AXIS.min = VERYLARGE;
+		    if (X_AXIS.autoscale & 2)
+			X_AXIS.max = -VERYLARGE;
 		}
-		if (axis_array[x_axis].is_timedata) {
+		if (X_AXIS.is_timedata) {
 		    if (specs < 2)
 			int_error(c_token, "Need full using spec for x time data");
 		}
-		if (axis_array[y_axis].is_timedata) {
+		if (Y_AXIS.is_timedata) {
 		    if (specs < 1)
 			int_error(c_token, "Need using spec for y time data");
 		}
@@ -1147,8 +1147,9 @@ eval_plots()
 	    if (is_definition(c_token)) {
 		define();
 	    } else {
-		int x_axis = this_plot->x_axis;
-		int y_axis = this_plot->y_axis;
+	    	/* HBB 20000820: now globals in 'axis.c' */
+		x_axis = this_plot->x_axis;
+		y_axis = this_plot->y_axis;
 
 		plot_num++;
 		if (!isstring(c_token)) {	/* function to plot */
@@ -1159,8 +1160,8 @@ eval_plots()
 		    plot_func.at = temp_at();	/* reparse function */
 
 		    if (!parametric && !polar) {
-			t_min = axis_array[x_axis].min;
-			t_max = axis_array[x_axis].max;
+			t_min = X_AXIS.min;
+			t_max = X_AXIS.max;
 			axis_unlog_interval(x_axis, &t_min, &t_max, 1);
 			t_step = (t_max - t_min) / (samples_1 - 1);
 		    }
@@ -1170,7 +1171,7 @@ eval_plots()
 			double t = t_min + i * t_step;
 			/* parametric/polar => NOT a log quantity */
 			double x = (!parametric && !polar &&
-				    axis_array[x_axis].log) ? pow(axis_array[x_axis].base, t) : t;
+				    X_AXIS.log) ? pow(X_AXIS.base, t) : t;
 
 			(void) Gcomplex(&plot_func.dummy_values[0], x, 0.0);
 			evaluate_at(plot_func.at, &a);

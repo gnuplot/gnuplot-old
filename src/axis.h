@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.2.2.5 2000/07/26 20:40:45 broeker Exp $
+ * $Id: axis.h,v 1.2.2.6 2000/10/24 18:58:12 broeker Exp $
  *
  */
 
@@ -243,65 +243,25 @@ extern AXIS_DEFAULTS axis_defaults[AXIS_ARRAY_SIZE];
  * by the set/show machinery, mainly */
 extern struct gen_table axisname_tbl[AXIS_ARRAY_SIZE+1];
 
-/* autoscaling flags*/
-/*  extern TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE]; */
 
-/* logscaling: set/show status: */
-/*  extern TBOOLEAN log_array[AXIS_ARRAY_SIZE]; */
-/*  extern double base_array[AXIS_ARRAY_SIZE]; */
-/*  extern double log_base_array[AXIS_ARRAY_SIZE]; */
-
-/* scale factors for mapping for each axis */
-/*  extern double scale[AXIS_ARRAY_SIZE]; */
-
-/* low and high end of the axis on output, in terminal coords: */
-/*  extern int axis_graphical_lower[AXIS_ARRAY_SIZE]; */
-/*  extern int axis_graphical_upper[AXIS_ARRAY_SIZE]; */
-/* axis' zero positions in terminal coords */
-/*  extern unsigned int axis_zero[AXIS_ARRAY_SIZE];	 */
-
-/* if user specifies [10:-10] we use [-10:10] internally, and swap at end */
-/*  extern int reverse_range[AXIS_ARRAY_SIZE]; */
-
-
-/* 'set' options 'writeback' and 'reverse' */
-/*  extern int range_flags[AXIS_ARRAY_SIZE]; */
-
-/* tic control variables */
-/*  extern const int default_axis_tics[AXIS_ARRAY_SIZE]; */
-/*  extern int axis_tics[AXIS_ARRAY_SIZE]; */
-/*  extern int axis_minitics[AXIS_ARRAY_SIZE]; */
-/*  extern double axis_mtic_freq[AXIS_ARRAY_SIZE]; */
-/*  extern TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE]; */
 extern const struct ticdef default_axis_ticdef;
-/*  extern struct ticdef axis_ticdef[AXIS_ARRAY_SIZE]; */
+
 extern double ticscale;		/* scale factor for tic marks (was (0..1])*/
 extern double miniticscale;	/* and for minitics */
 extern TBOOLEAN	tic_in;		/* tics to be drawn inward?  */
 
 
-/* output format strings (numberic or timedata) for tic labels and similar
- * uses */
-/*  extern char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1]; */
-/* does the format string look a numeric one, for sprintf()? */
-/*  extern int format_is_numeric[AXIS_ARRAY_SIZE]; */
 /* default format for tic mark labels */
 #define DEF_FORMAT "% g"
 
-/* format for date/time for reading time in datafile */
-/*  extern char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1]; */
-/* is this axis in 'set {x|...}data time' mode? */
-/*  extern int axis_is_timedata[AXIS_ARRAY_SIZE]; */
 /* default parse timedata string */
 #define TIMEFMT "%d/%m/%y,%H:%M"
 
 /* axis labels */
 extern const label_struct default_axis_label;
-/*  extern label_struct axis_label[AXIS_ARRAY_SIZE]; */
 
 /* zeroaxis linetype (flag type==-3 if none wanted) */
 extern const lp_style_type default_axis_zeroaxis;
-/*  extern lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE]; */
 
 /* grid drawing control variables */
 extern int grid_selection;
@@ -314,6 +274,14 @@ extern double polar_grid_angle; /* angle step in polar grid in radians */
 
 extern int tic_start, tic_direction, tic_text,
     rotate_tics, tic_hjust, tic_vjust, tic_mirror;
+
+/* axes being used by the current plot */
+extern AXIS_INDEX x_axis, y_axis, z_axis;
+/* macros to reduce code clutter caused by the array notation, mainly
+ * in graphics.c and fit.c */
+#define X_AXIS axis_array[x_axis]
+#define Y_AXIS axis_array[y_axis]
+#define Z_AXIS axis_array[z_axis]
 
 /* -------- macros using these variables: */
 
@@ -550,11 +518,11 @@ do {									  \
 
 /* HBB 20000506: new macro, initializes one variable to the same
  * value, for all axes. */
-#define INIT_AXIS_ARRAY(_array, value)		\
+#define INIT_AXIS_ARRAY(field, value)		\
 do {						\
     int tmp;					\
     for (tmp=0; tmp<AXIS_ARRAY_SIZE; tmp++)	\
-	axis_array[tmp]._array=(value);		\
+	axis_array[tmp].field=(value);		\
 } while(0)
 
 /* HBB 20000506: new macro to automatically build intializer lists
@@ -581,18 +549,19 @@ do {						\
 
 	
 /* ------------ functions exported by axis.c */
-extern TBOOLEAN load_range __PROTO((AXIS_INDEX, double *a, double *b, TBOOLEAN autosc));
-extern void axis_unlog_interval __PROTO((AXIS_INDEX, double *, double *, TBOOLEAN checkrange));
-extern void axis_revert_and_unlog_range __PROTO((AXIS_INDEX));
-extern double axis_log_value_checked __PROTO((AXIS_INDEX, double, const char *));
-extern void axis_checked_extend_empty_range __PROTO((AXIS_INDEX, const char *mesg));
+TBOOLEAN load_range __PROTO((AXIS_INDEX, double *a, double *b, TBOOLEAN autosc));
+void axis_unlog_interval __PROTO((AXIS_INDEX, double *, double *, TBOOLEAN checkrange));
+void axis_revert_and_unlog_range __PROTO((AXIS_INDEX));
+double axis_log_value_checked __PROTO((AXIS_INDEX, double, const char *));
+void axis_checked_extend_empty_range __PROTO((AXIS_INDEX, const char *mesg));
 void   timetic_format __PROTO((AXIS_INDEX, double, double));
-extern double set_tic __PROTO((double, int));
-extern void setup_tics __PROTO((AXIS_INDEX, int));
-extern void gen_tics __PROTO((AXIS_INDEX, int, tic_callback));
-extern void axis_output_tics __PROTO((AXIS_INDEX, int *, AXIS_INDEX, int, tic_callback));
-extern void axis_set_graphical_range __PROTO((AXIS_INDEX, unsigned int lower, unsigned int upper));
-extern TBOOLEAN axis_position_zeroaxis __PROTO((AXIS_INDEX));
+double set_tic __PROTO((double, int));
+void setup_tics __PROTO((AXIS_INDEX, int));
+void gen_tics __PROTO((AXIS_INDEX, int, tic_callback));
+void gprintf __PROTO((char *, size_t, char *, double, double));
+void axis_output_tics __PROTO((AXIS_INDEX, int *, AXIS_INDEX, int, tic_callback));
+void axis_set_graphical_range __PROTO((AXIS_INDEX, unsigned int lower, unsigned int upper));
+TBOOLEAN axis_position_zeroaxis __PROTO((AXIS_INDEX));
 void axis_draw_2d_zeroaxis __PROTO((AXIS_INDEX, AXIS_INDEX));
 
 double get_writeback_min __PROTO((AXIS_INDEX));

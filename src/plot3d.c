@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.5 2000/10/18 16:30:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.20.2.6 2000/10/24 18:58:12 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -86,9 +86,6 @@ static void sp_replace __PROTO((struct surface_points *sp, int num_samp_1, int n
 /* the curves/surfaces of the plot */
 struct surface_points *first_3dplot = NULL;
 static struct udft_entry plot_func;
-
-/* some file-wide variables to store which axis we are using */
-static int x_axis, y_axis, z_axis;
 
 int plot3d_num=0;
 

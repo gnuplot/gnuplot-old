@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.c,v 1.2.2.4 2000/07/26 18:52:58 broeker Exp $
+ * $Id: axis.c,v 1.2.2.5 2000/10/24 18:58:12 broeker Exp $
  *
  */
 
@@ -71,48 +71,6 @@ AXIS_DEFAULTS axis_defaults[AXIS_ARRAY_SIZE] = {
 };
 
 
-/* HBB 20000507: for the range/autoscale variables, there are two
- * copies of each variable. One is for manipulatio by 'set', the other
- * is initialized with that, but may be updated by an explicit range
- * in the 'plot' command. These copies of 'min' and 'max' also receive
- * the effects of autoscaling. */
- 
-/* range endpoints: default/startup values first: */
-/*    z    y1    x1     t    z2    y2    x2     r     u     v   */
-/*  #define DEFAULT_AXIS_MIN						\ */
-/*  {   -10.0,-10.0,-10.0,- 5.0,-10.0,-10.0,-10.0,- 0.0,- 5.0,- 5.0 } */
-/*  #define DEFAULT_AXIS_MAX						\ */
-/*  {    10.0, 10.0, 10.0,  5.0, 10.0, 10.0, 10.0, 10.0,  5.0,  5.0	} */
-/* store defaults in variable, for access by 'reset' */
-/*  const double default_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN; */
-/*  const double default_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX; */
-/* values handled by 'set/show/save/unset': */
-/*  double set_axis_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN; */
-/*  double set_axis_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX; */
-/* in writeback mode, copy autoscaled, tic-expanded values into here: */
-/*  double writeback_min[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MIN; */
-/*  double writeback_max[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_MAX; */
-
-/* autoscaling flags */
-/* FIXME HBB 20000507: make new type 'double boolean' for these */
-/*  TBOOLEAN set_axis_autoscale[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(DTRUE); */
-
-/* logscaling */
-/*  TBOOLEAN log_array[AXIS_ARRAY_SIZE]; */
-/*  double base_array[AXIS_ARRAY_SIZE]; */
-/* log(base) is stored, for quicker calculations: */
-/*  double log_base_array[AXIS_ARRAY_SIZE]; */
-
-/* internal variables in graphics.c: */
-/* scale factors for mapping for each axis */
-/*  double scale[AXIS_ARRAY_SIZE]; */
-
-/* low and high end of the axis on output, in terminal coords: */
-/*  int axis_graphical_lower[AXIS_ARRAY_SIZE]; */
-/*  int axis_graphical_upper[AXIS_ARRAY_SIZE]; */
-/* axis' zero positions in terminal coords */
-/*  unsigned int axis_zero[AXIS_ARRAY_SIZE];	 */
-
 /* either xformat etc or invented time format
  * index with FIRST_X_AXIS etc
  * global because used in gen_tics, which graph3d also uses
@@ -121,15 +79,9 @@ static char ticfmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1];
 static int timelevel[AXIS_ARRAY_SIZE];
 static double ticstep[AXIS_ARRAY_SIZE];
 
-/* const char *axisname_array[AXIS_ARRAY_SIZE] = { */
-/*     "z", "y", "x", "t", */
-/*     "z2", "y2", "x2", "r", */
-/*     "u",  "v" */
-/* }; */
-
 /* HBB 20000506 new variable: parsing table for use with the table
  * module, to help generalizing set/show/unset/save, where possible */
-struct gen_table axisname_tbl[] =
+struct gen_table axisname_tbl[AXIS_ARRAY_SIZE + 1] =
 {
     { "z", FIRST_Z_AXIS},
     { "y", FIRST_Y_AXIS},
@@ -154,53 +106,17 @@ struct gen_table axisname_tbl[] =
 /* static */ int tic_start, tic_direction, tic_text,
     rotate_tics, tic_hjust, tic_vjust, tic_mirror;
 
-/* if user specifies [10:-10] we use [-10:10] internally, and swap at end */
-/*  int reverse_range[AXIS_ARRAY_SIZE]; */
-
-/* from set.c:*/
-/* assert that AXIS_ARRAY_SIZE is still 10, as the next thing assumes: */
-/*  #if AXIS_ARRAY_SIZE != 10 */
-/*  # define AXIS_ARRAY_SIZE  AXIS_ARRAY_SIZE_not_defined */
-/*  #endif */
-
-/* do formats look like times - never saved or shown ...  */
-/*  int format_is_numeric[AXIS_ARRAY_SIZE] = { */
-/*    1, 1, 1, 1, 1, 1, 1, 1, 1, 1  */
-/*  }; */
-
-/*  int range_flags[AXIS_ARRAY_SIZE];  */
-
-/* array of flags telling if an axis is formatted as time/date, on
- * output (--> 'set xdata time') */
-/*  int axis_is_timedata[AXIS_ARRAY_SIZE]; */
-
-/* lots of tic control variables */
-/*  const int default_axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS; */
-/*  int axis_tics[AXIS_ARRAY_SIZE] = DEFAULT_AXIS_TICS; */
-
 const struct ticdef default_axis_ticdef = DEFAULT_AXIS_TICDEF;
-/*  struct ticdef axis_ticdef[AXIS_ARRAY_SIZE] */
-/*      = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_TICDEF); */
 
-/*  TBOOLEAN axis_tic_rotate[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(FALSE); */
-/*  int axis_minitics[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(MINI_DEFAULT); */
-/*  double axis_mtic_freq[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(10); */
-/*  char axis_formatstring[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(DEF_FORMAT); */
 double ticscale = 1.0;		/* scale factor for tic mark */
 double miniticscale = 0.5;	/* and for minitics */
 TBOOLEAN tic_in = TRUE;		/* tics on inside of coordinate box? */
 
-/* format for date/time for reading time in datafile */
-/*  char timefmt[AXIS_ARRAY_SIZE][MAX_ID_LEN+1] = AXIS_ARRAY_INITIALIZER(TIMEFMT); */
-
 /* axis labels */
 const label_struct default_axis_label = EMPTY_LABELSTRUCT;
-/*  label_struct axis_label[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(EMPTY_LABELSTRUCT); */
 
 /* zeroaxis drawing */
 const lp_style_type default_axis_zeroaxis = DEFAULT_AXIS_ZEROAXIS;
-/*  lp_style_type axis_zeroaxis[AXIS_ARRAY_SIZE] */
-/*  = AXIS_ARRAY_INITIALIZER(DEFAULT_AXIS_ZEROAXIS); */
 
 /* grid drawing */  
 int grid_selection = GRID_OFF;
@@ -210,10 +126,16 @@ struct lp_style_type grid_lp   = DEFAULT_GRID_LP;
 struct lp_style_type mgrid_lp  = DEFAULT_GRID_LP;
 double polar_grid_angle = 0;	/* nonzero means a polar grid */
 
+/* axes being used by the current plot */
+/* These are mainly convenience variables, replacing separate copies of
+ * such variables originally found in the 2D and 3D plotting code */
+AXIS_INDEX x_axis = FIRST_X_AXIS;
+AXIS_INDEX y_axis = FIRST_Y_AXIS;
+AXIS_INDEX z_axis = FIRST_Z_AXIS;
+
 
 /* --------- internal prototypes ------------------------- */
 static double dbl_raise __PROTO((double x, int y));
-static void   gprintf __PROTO((char *, size_t, char *, double, double));
 static double make_ltic __PROTO((int, double));
 static double make_tics __PROTO((AXIS_INDEX, int));
 static void   mant_exp __PROTO((double log10_base, double x, int scientific, double *m, int *p));
@@ -549,7 +471,7 @@ int *p;				/* results */
 
 /*{{{  gprintf */
 /* extended s(n)printf */
-static void
+void
 gprintf(dest, count, format, log10_base, x)
 char *dest, *format;
 size_t count;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.6 2000/10/18 16:30:01 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.7 2000/10/24 18:58:12 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -64,25 +64,11 @@ static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.6 2000/10/18 16:30:01 b
 
 #include <ctype.h>		/* for isdigit() */
 
-/*
- * global variables to hold status of 'set' options
- *
- * IMPORTANT NOTE:
- * ===============
- * If you change the default values of one of the variables below, or if
- * you add another global variable, make sure that the change you make is
- * done in reset_command() as well (if that makes sense).
- */
-/* HBB 20000521: Moved these to their respective modules, or the new
- * 'global status' keeping module, where no other single source module
- * could be associated with a variable, meaningfully */
-
 static void set_angles __PROTO((void));
 static void set_arrow __PROTO((void));
 static int assign_arrow_tag __PROTO((void));
 static void set_autoscale __PROTO((void));
 static void set_bars __PROTO((void));
-
 static void set_border __PROTO((void));
 static void set_boxwidth __PROTO((void));
 static void set_clabel __PROTO((void));
@@ -156,6 +142,7 @@ static int assign_linestyle_tag __PROTO((void));
 static int looks_like_numeric __PROTO((char *));
 static void reset_lp_properties __PROTO((struct lp_style_type *arg));
 static int set_tic_prop __PROTO((AXIS_INDEX));
+static char *fill_numbers_into_string __PROTO((char *pattern));
 
 /* Backwards compatibility ... */
 static void set_nolinestyle __PROTO((void));
@@ -1471,30 +1458,52 @@ set_label()
 	text = gp_alloc (token_len(c_token), "text_label->text");
 	quote_str(text, c_token, token_len(c_token));
 	c_token++;
+
+	/* HBB 20001021: new functionality. If next token is a ','
+	 * treat it as a numeric expression whose value is to be
+	 * sprintf()ed into the label string (which contains an
+	 * appropriate %f format string) */
+	if (!END_OF_COMMAND && equals(c_token, ",")) 
+	    text = fill_numbers_into_string(text);
+
 	set_text = TRUE;
     } else
 	set_text = FALSE; /* default no text */
 
     /* get justification - what the heck, let him put it here */
-    if (!END_OF_COMMAND && !equals(c_token, "at") && !equals(c_token, "font")
-	&& !almost_equals(c_token, "rot$ate") && !almost_equals(c_token, "norot$ate")
-	&& !equals(c_token, "front") && !equals(c_token, "back")) {
+    if (!END_OF_COMMAND
+#if 0 /* HBB 20001021: unnecessary checks */
+	&& !equals(c_token, "at")
+	&& !equals(c_token, "font")
+	&& !almost_equals(c_token, "rot$ate")
+	&& !almost_equals(c_token, "norot$ate")
+	&& !equals(c_token, "front")
+	&& !equals(c_token, "back")
+#endif
+	) {
 	if (almost_equals(c_token, "l$eft")) {
 	    just = LEFT;
+	    c_token++;
+	    set_just = TRUE;
 	} else if (almost_equals(c_token, "c$entre")
 		   || almost_equals(c_token, "c$enter")) {
 	    just = CENTRE;
+	    c_token++;
+	    set_just = TRUE;
 	} else if (almost_equals(c_token, "r$ight")) {
 	    just = RIGHT;
-	} else
-	    int_error(c_token, "bad syntax in set label");
 	c_token++;
 	set_just = TRUE;
+#if 0 /* HBB 20001021: with the above change, this is not an error */
+	} else {
+	    int_error(c_token, "bad syntax in set label");
+#endif
+	}
     }
+
     /* get position */
     if (!END_OF_COMMAND && equals(c_token, "at")) {
 	c_token++;
-
 	get_position(&pos);
 	set_position = TRUE;
     } else {
@@ -1505,47 +1514,75 @@ set_label()
 
     /* get justification */
     if (!END_OF_COMMAND
-	&& !almost_equals(c_token, "rot$ate") && !almost_equals(c_token, "norot$ate")
-	&& !equals(c_token, "front") && !equals(c_token, "back")
+#if 0 /* HBB 20001021: none of these are needed */
+	&& !almost_equals(c_token, "rot$ate")
+	&& !almost_equals(c_token, "norot$ate")
+	&& !equals(c_token, "front")
+	&& !equals(c_token, "back")
 	&& !equals(c_token, "font")
 	&& !almost_equals(c_token, "po$intstyle")
-	&& !almost_equals(c_token, "nopo$intstyle")) {
+	&& !almost_equals(c_token, "nopo$intstyle")
+#endif
+	) {
 	if (set_just)
 	    int_error(c_token, "only one justification is allowed");
 	if (almost_equals(c_token, "l$eft")) {
 	    just = LEFT;
+	    c_token++;
+	    set_just = TRUE;
 	} else if (almost_equals(c_token, "c$entre")
 		   || almost_equals(c_token, "c$enter")) {
 	    just = CENTRE;
+	    c_token++;
+	    set_just = TRUE;
 	} else if (almost_equals(c_token, "r$ight")) {
 	    just = RIGHT;
-	} else
-	    int_error(c_token, "bad syntax in set label");
-
 	c_token++;
 	set_just = TRUE;
+#if 0 /* HBB 20001021: not an error, in this version */
+	} else {
+	    int_error(c_token, "bad syntax in set label");
+#endif
+	}
+
     }
+
     /* get rotation (added by RCC) */
-    if (!END_OF_COMMAND && !equals(c_token, "font")
-	&& !equals(c_token, "front") && !equals(c_token, "back")
+    if (!END_OF_COMMAND
+#if 0 /* HBB 20001021: no need to check all these */
+	&& !equals(c_token, "font")
+	&& !equals(c_token, "front")
+	&& !equals(c_token, "back")
 	&& !almost_equals(c_token, "po$intstyle")
-	&& !almost_equals(c_token, "nopo$intstyle")) {
+	&& !almost_equals(c_token, "nopo$intstyle")
+#endif
+	) {
 	if (almost_equals(c_token, "rot$ate")) {
 	    rotate = TRUE;
+	    c_token++;
+	    set_rot = TRUE;
 	} else if (almost_equals(c_token, "norot$ate")) {
 	    rotate = FALSE;
-	} else
-	    int_error(c_token, "bad syntax in set label");
-
 	c_token++;
 	set_rot = TRUE;
+#if 0 /* HBB 20001021: not an error, in this version */
+	} else {
+	    int_error(c_token, "bad syntax in set label");
+#endif
     }
+    }
+
     /* get font */
+    /* Entry font added by DJL */
     set_font = FALSE;
-    if (!END_OF_COMMAND && equals(c_token, "font") &&
-	!equals(c_token, "front") && !equals(c_token, "back")
+    if (!END_OF_COMMAND	&& equals(c_token, "font")
+#if 0 /* HBB 20001021: the followin cannot possibly happen... */
+	&& !equals(c_token, "front")
+	&& !equals(c_token, "back")
 	&& !almost_equals(c_token, "po$intstyle")
-	&& !almost_equals(c_token, "nopo$intstyle")) {
+	&& !almost_equals(c_token, "nopo$intstyle")
+#endif /* 1/0 HBB 20001021 */
+	) {
 	c_token++;
 	if (END_OF_COMMAND)
 	    int_error(c_token, "font name and size expected");
@@ -1558,20 +1595,27 @@ set_label()
 	    int_error(c_token, "'fontname,fontsize' expected");
 
 	c_token++;
-    }				/* Entry font added by DJL */
+    }
+
     /* get front/back (added by JDP) */
     set_layer = FALSE;
-    if (!END_OF_COMMAND
-	&& equals(c_token, "back") && !equals(c_token, "front")
+    if (!END_OF_COMMAND	&& equals(c_token, "back")
+#if 0 /* HBB 20001021: none of these can happen */
+	&& !equals(c_token, "front")
 	&& !almost_equals(c_token, "po$intstyle")
-	&& !almost_equals(c_token, "nopo$intstyle")) {
+	&& !almost_equals(c_token, "nopo$intstyle")
+#endif
+	) {
 	layer = 0;
 	c_token++;
 	set_layer = TRUE;
     }
     if(!END_OF_COMMAND && equals(c_token, "front")
+#if 0 /* HBB 20001021: none of these can happen */
 	&& !almost_equals(c_token, "po$intstyle")
-	&& !almost_equals(c_token, "nopo$intstyle")) {
+	&& !almost_equals(c_token, "nopo$intstyle")
+#endif
+       ) {
 	if (set_layer)
 	    int_error(c_token, "only one of front or back expected");
 	layer = 1;
@@ -1588,7 +1632,6 @@ set_label()
 #define POINT_TYPES 6 /* compare with term.c */
 	    pointstyle %= POINT_TYPES;
     }
-
     if(!END_OF_COMMAND && almost_equals(c_token, "nopo$intstyle")) {
 	pointstyle = -1; /* UNSET */
 	c_token++;
@@ -3199,3 +3242,67 @@ static void set_nolinestyle()
 }
 
 
+/* HBB 20001021: new function: make label texts decoratable with numbers */
+static char *
+fill_numbers_into_string(pattern)
+     char *pattern;
+{
+    size_t pattern_length = strlen(pattern) + 1;
+    size_t newlen = pattern_length;
+    char *output = gp_alloc(newlen, "fill_numbers output buffer");
+    size_t output_end = 0;
+
+    do {			/* loop over string/value pairs */
+	struct value a;
+	double value;
+	
+	if (isstring(++c_token)) {
+	    free(output); 
+	    free(pattern); 
+	    int_error(c_token, "constant expression expected");
+	}
+
+	/* assume it's a numeric expression, concatenate it to output
+	 * string: parse value, enlarge output buffer, and gprintf()
+	 * it. */
+	value = real(const_express(&a));
+	newlen += pattern_length + 30;
+	output = gp_realloc(output, newlen, "fill_numbers next number");
+	gprintf(output + output_end, newlen - output_end,
+		pattern, 1.0, value);
+	output_end += strlen(output + output_end);
+
+	/* allow a string to follow, after another comma: */
+	if (END_OF_COMMAND || !equals(c_token, ",")) {
+	    /* no comma followed the number --> we're done. Jump out
+	     * directly, as falling out of the while loop means
+	     * something slightly different. */
+	    free(pattern);
+	    return output;
+	}
+	c_token++;
+
+	if (!END_OF_COMMAND && isstring(c_token)) {
+	    size_t length = token_len(c_token);
+	    
+	    if (length >= pattern_length)
+		pattern = gp_realloc(pattern, pattern_length = length,
+				     "fill_numbers resize pattern");
+	    quote_str(pattern, c_token, length);
+	    c_token++;
+	} else {
+	    free(pattern);
+	    free(output);
+	    int_error(c_token, "string expected");
+	} /* if (string after comma) */
+    } while (!END_OF_COMMAND && equals(c_token, ","));
+	
+    /* came out here --> the last element was a string, not a number.
+     * that means that there is a string in pattern which was not yet
+     * copied to 'output' */
+    output = gp_realloc(output, newlen += pattern_length,
+			"fill_numbers closing");
+    strcpy(output + output_end, pattern);
+    free(pattern);
+    return output;
+}
