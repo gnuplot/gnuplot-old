@@ -1,5 +1,5 @@
 /*
- * $Id: pm.trm,v 1.21.2.1 2000/05/01 00:17:20 joze Exp $
+ * $Id: pm.trm,v 1.21.2.2 2000/07/13 06:57:03 mikulik Exp $
  */
 
 /* GNUPLOT - pm.trm */
@@ -659,39 +659,35 @@ PM_linewidth(double linewidth)
 
 #ifdef PM3D
 
-/* note: gvpm sources have also limit 256, is it limit of PM palette?
-   I suppose yes, thus let colours passed as unsigned char through the pipe
-   But there must be 16 subtracted since nColors = 16 in gclient.c ... colours
-   of the default palette which has to be kept
+/* Note: gvpm sources have also limit 256, is it limit of PM palette?
+   I suppose yes, thus let colours passed as unsigned char through the pipe.
+   Gray interval [0;1] will be mapped to interval [0;255] whose r,g,b
+   components are mapped by the array below.
 */
-/* gray interval [0;1] will be mapped to interval [0;255]
-   those r,g,b components are mapped by the array below */
 
 TERM_PUBLIC int PM_make_palette (t_sm_palette *palette)
 {
-    int i, r, g, b;
+    int i;
     int rc;
-    static int PM_nColors = -1;
-    ULONG cbR;
-    unsigned long rgbTable[256];
-    // unsigned long *rgbTable; // [256-16];
+    ULONG cbR, r, g, b, rgbTable[256];
     putc(GR_MAKE_PALETTE, PM_pipe);
     if (palette == NULL) {
 	/* return maximal number of colours in palette */
+	int PM_nColors;
 	putc(0, PM_pipe);
 	fflush(PM_pipe);
 	rc = DosRead(fileno(PM_pipe), &PM_nColors, sizeof(int), &cbR);
 	return PM_nColors; // usually = 256-18;
     }
-    if (PM_nColors > 256) fprintf(stderr,"It will crash: >256 colors?!\n");
     putc(1, PM_pipe);
-    for (i = 0; i < PM_nColors; i++) {
+    for (i = 0; i < sm_palette.colors; i++) {
 	r = (int)( palette->color[i].r * 255 + 0.5 );
 	g = (int)( palette->color[i].g * 255 + 0.5 );
 	b = (int)( palette->color[i].b * 255 + 0.5 );
 	rgbTable[i] = (r<<16) + (g<<8) + b; // PM API likes this form
     }
-    fwrite(&rgbTable, sizeof(rgbTable), 1, PM_pipe);
+    fwrite(&sm_palette.colors, sizeof(int), 1, PM_pipe);
+    fwrite(&rgbTable, sizeof(rgbTable[0])*sm_palette.colors, 1, PM_pipe);
     return 0;
 }
 
@@ -714,8 +710,8 @@ int pm_color = -1;
 
 TERM_PUBLIC void PM_set_color (double gray)
 {
-    unsigned char c = 16 + (unsigned char)( gray * (255-16) + 0.5 );
-    /* map [0;1] to interval [16;255] */
+    unsigned char c = (int)( gray * (sm_palette.colors-1) + 0.5 );
+    /* map [0;1] to interval [0;smooth_colors-1] */
 #if 0 // color caching
     if (c == pm_color) return;
     pm_color = c;

@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.8.2.1 2000/05/01 00:17:20 joze Exp $" ;
+static char RCSid[]="$Id: gclient.c,v 1.8.2.2 2000/07/13 06:57:03 mikulik Exp $" ;
 #endif
 
 /****************************************************************************
@@ -153,6 +153,10 @@ static long bkColor = -1;
 
 #define nColors 16
 static LONG alColourTable[ nColors+2  ] ;
+/* Note that there are 16 colours used for drawing. The two more entries in
+   this array were added by Ilya to avoid drawing white line on white
+   background.
+*/
 
 #define   GNUBUF    1024        /* buffer for gnuplot commands */
 #define   PIPEBUF   4096        /* size of pipe buffers */
@@ -1764,20 +1768,20 @@ HPS InitScreenPS()
     GpiSetPageViewport( hpsScreen, &rectClient ) ;
     if( !bColours ) {
         int i ;
-        for( i=0; i<8; i++ ) alColourTable[i] = 0 ;
-        for( i=8; i<16; i++ ) alColourTable[i] = 0 ;
-        alColourTable[0] = 0xFFFFFF ;
-        nColour = 16 ;
-        }
+	for( i=0; i<8; i++ ) alColourTable[i] = 0 ;
+	for( i=8; i<16; i++ ) alColourTable[i] = 0 ;
+	alColourTable[0] = 0xFFFFFF ;
+	nColour = 16 ;
+	}
     GpiCreateLogColorTable( hpsScreen,
-                            LCOL_RESET,
-                            LCOLF_CONSECRGB,
-                            0, nColour, alColourTable ) ;
+			    LCOL_RESET,
+			    LCOLF_CONSECRGB,
+			    0, nColour, alColourTable ) ;
     if (!lCols_init) { // Ilya: avoid white line on white background
 	int i = -1;
 	lCols_init = 1;
 	GpiQueryLogColorTable( hpsScreen, 0, 0, 16, alColourTable + 2 ) ;
-	alColourTable[2+CLR_WHITE] = 0xffffff;		// -2 
+	alColourTable[2+CLR_WHITE] = 0xffffff;		// -2
 	alColourTable[2+CLR_BLACK] = 0;			// -1
 	bkColor = alColourTable[2+CLR_BACKGROUND];
 	while (i++ < 16) {
@@ -2466,21 +2470,15 @@ lOldLine=lt ;
 
 #ifdef PM3D
 	       case 'p': { // GR_MAKE_PALETTE
-/* 
+/*
 Implementation problems (I haven't understood that from .INF doc):
 what is the difference between GpiCreateLogColorTable and
 GpiCreatePalette?
 */
 		    char c;
 		    int i;
+		    int smooth_colors;
 		    LONG lRetCount;
-		      /* must be equal to that from InitScreenPS() and
-			 must be synchronized with:
-			   * the value in pm.trm: PM_make_palette (otherwise
-			     this values would have to be piped there, but
-			     nowadays exactly 16 is used
-			   * with the offset SetColor in GR_FILLED_POLYGON
-		      */
 		    ULONG rgbTable[256];
 		    /* read switch */
 		    BufRead(hRead, &c, sizeof(c), &cbR);
@@ -2492,16 +2490,20 @@ GpiCreatePalette?
 		      }
 		    /* retrieve the current table */
 		    lRetCount = GpiQueryLogColorTable(hps, 0L, 0L, nColors, alColourTable);
-// {FILE *ff; ff=fopen("deb","a");
-// fprintf(ff,"lret=%i  ncol=%i\n",(int)lRetCount,(int)nColors);fclose(ff);}
+//{FILE *ff; ff=fopen("deb","a");
+//fprintf(ff,"\n*** lRetCount=%i while nColors=%i\n",(int)lRetCount,(int)nColors);fclose(ff);}
 		    if (lRetCount>0 && lRetCount!=nColors) // ring for developers!
 		      DosBeep(880,777);
 		    for (i=0; i<nColors; i++)
 		      rgbTable[i] = alColourTable[i];
+		    /* read the number of colours for the palette */
+		    BufRead(hRead, &smooth_colors, sizeof(int), &cbR ) ;
 		    /* append new RGB table after */
-		    BufRead(hRead, &rgbTable[nColors], (256-nColors)*sizeof(rgbTable[0]), &cbR);
+		    BufRead(hRead, &rgbTable[nColors], smooth_colors*sizeof(rgbTable[0]), &cbR);
+//{FILE *ff; ff=fopen("deb","a");
+//fprintf(ff,"\n*** nColors=%i  alloc=%i\n",(int)nColors,(int)smooth_colors);fclose(ff);}
 		    if (pm3d_hpal != 0) GpiDeletePalette( pm3d_hpal );
-		    pm3d_hpal = GpiCreatePalette(hab,0L,LCOLF_CONSECRGB, 256L, rgbTable);
+		    pm3d_hpal = GpiCreatePalette(hab,0L,LCOLF_CONSECRGB, (long)(nColors+smooth_colors), rgbTable);
 		    pm3d_hpal_old = GpiSelectPalette( hps, pm3d_hpal );
 		    }
 		    break ;
@@ -2517,7 +2519,7 @@ GpiCreatePalette?
 	       case 'C': { // GR_SET_COLOR
 		    unsigned char c;
 		    BufRead(hRead,&c, 1, &cbR) ;
-		    pm3d_color = c;
+		    pm3d_color = c + nColors;
 		    }
 		    break ;
 	       case 'f': { // GR_FILLED_POLYGON
@@ -2529,8 +2531,6 @@ GpiCreatePalette?
 		    // GpiSetBackMix(hps,BM_OVERPAINT);
 		    GpiSetColor( hps, pm3d_color);
 		    // using colours defined in the palette
-// FILE *ff;ff=fopen("deb","a");
-//fprintf(ff,"f --- GpiSetColor %li\n",pm3d_color); fclose(ff);}
 		    GpiBeginArea( hps, BA_BOUNDARY | BA_ALTERNATE);
 		    for (i = 0; i < points; i++) {
 		      BufRead(hRead,&x, sizeof(x), &cbR) ;

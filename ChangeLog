@@ -1,3 +1,8 @@
+2000-07-13  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* pm3d: src/os2/gclient.c, term/pm.trm: bugfix for color palette
+	allocation ('set palette maxcolors' was ignored)
+
 2000-07-10  Petr Mikulik  <mikulik@physics.muni.cz>
 
 	* src/color.c: boundary around the color box is drawn by move&line
