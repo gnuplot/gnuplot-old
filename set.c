@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: set.c,v 1.10 1998/06/30 16:46:16 lhecking Exp $";
+static char *RCSid = "$Id: set.c,v 1.11 1998/09/18 19:49:39 lhecking Exp $";
 #endif
 
 /* GNUPLOT - set.c */
@@ -2781,7 +2781,7 @@ register enum PLOT_STYLE ps=LINES; /* HBB: initial value, for 'gcc -W} */
 		ps = FSTEPS;
 	else if (almost_equals(c_token,"his$teps"))
 		ps = HISTEPS;
-	else if (almost_equals(c_token,"vec$tors"))   /* HBB: minor cosmetic change */
+	else if (almost_equals(c_token,"vec$tor"))   /* HBB: minor cosmetic change */
 		ps = VECTOR;
 	else if (almost_equals(c_token, "fin$ancebars"))
 		ps = FINANCEBARS;
