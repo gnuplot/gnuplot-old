@@ -1,4 +1,4 @@
-$Id: CodeStyle,v 1.1 1998/04/15 19:16:26 lhecking Exp $
+$Id: CodeStyle,v 1.2 1998/09/21 21:07:29 lhecking Exp $
 
 The following things have be observed when writing new code for gnuplot:
 (this file is currently under construction)  Some of the following is
@@ -228,6 +228,14 @@ and /*}}}*/  are markers left by my folding editor when I am forced
 to fold up particularly long functions when trying to understand the
 logic. I tend to leave these markers in when I finally figure it out,
 though perhaps I should not.
+
+
+Source code is intended to be read and maintained by humans. As such,
+readability is prefered over elegance. Please separate all operators
+from operands with a space, ie. instead of x+=3, use x += 3. The former
+is not only less readable, it may also break older compilers! This rule
+should also be followed for simple assignments, ie. in for (;;) loops.
+Unary operators should be writen as usual, ie i++.
 
 
 [more to come]
