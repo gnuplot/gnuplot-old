@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.116 2003/11/22 04:49:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.117 2003/12/01 16:15:52 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -313,7 +313,7 @@ show_command()
 	show_margin();
 	break;
 
-    case S_OUTPUT:
+    case SET_OUTPUT:
 	show_output();
 	break;
     case S_PARAMETRIC:
