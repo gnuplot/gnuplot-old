@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.19 1999/01/26 13:48:45 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.20 1999/01/28 14:29:01 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -72,6 +72,12 @@ extern smg$create_key_table();
 #  define SIGINT 2		/* for MSC */
 # endif
 #endif /* _Windows */
+
+/* GNU readline stuff */
+#ifdef GNU_READLINE
+# include <readline/readline.h>
+# include <readline/history.h>
+#endif
 
 extern FILE *gpoutfile;
 
@@ -343,7 +349,7 @@ char **argv;
     }
 #endif
 
-#ifdef apollo
+#ifdef APOLLO
     apollo_pfm_catch();
 #endif
 
