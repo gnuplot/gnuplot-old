@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot3d.c,v 1.14 1998/11/25 21:02:25 lhecking Exp $";
+static char *RCSid = "$Id: plot3d.c,v 1.15 1998/12/09 15:24:25 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1394,7 +1394,7 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 	    /* Make sure this one can be contoured. */
 	    if (!this_plot->has_grid_topology) {
 		this_plot->contours = NULL;
-		fprintf(stderr, "Notice: cannot contour non grid data!\n");
+		fputs("Notice: cannot contour non grid data!\n", stderr);
 		/* changed from int_error by recommendation of
 		 * rkc@xn.ll.mit.edu
 		 */

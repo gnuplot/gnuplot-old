@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: time.c,v 1.4 1998/11/06 22:07:34 lhecking Exp $";
+static char *RCSid = "$Id: time.c,v 1.5 1998/12/09 15:25:54 lhecking Exp $";
 #endif
 
 /* GNUPLOT - time.c */
@@ -809,7 +809,7 @@ char *argv[];
     char output[80];
 
     if (argc < 2) {
-	fprintf(stderr, "usage : test 'format' ['time']\n");
+	fputs("usage : test 'format' ['time']\n", stderr);
 	exit(EXIT_FAILURE);
     }
     if (argc == 2) {

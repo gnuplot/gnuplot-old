@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot2d.c,v 1.15 1998/11/25 21:02:17 lhecking Exp $";
+static char *RCSid = "$Id: plot2d.c,v 1.16 1998/12/09 15:24:20 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -324,7 +324,7 @@ struct curve_points *this_plot;
 	col = 3;
 
     if (df_no_use_specs > col)
-	fprintf(stderr, "warning : too many using specs for this style\n");
+	fputs("warning : too many using specs for this style\n", stderr);
 
     i = 0;
     while ((j = df_readline(v, col)) != DF_EOF) {
@@ -716,9 +716,10 @@ int plot_num;
 		    : this_plot->points[i].type == OUTRANGE ? 'o'
 		    : 'u');
 	}
-	fprintf(gpoutfile, "\n");
+	fputc('\n', gpoutfile);
     }
-    fprintf(gpoutfile, "\n");	/* two blank lines between plots in table output */
+/* two blank lines between plots in table output */
+    fputc('\n', gpoutfile);
     fflush(gpoutfile);
 }
 

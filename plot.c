@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.17 1998/12/03 22:23:18 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.18 1998/12/09 15:24:14 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -367,7 +367,7 @@ char **argv;
      * ignore the return : its probably not a big deal
      */
     if (setvbuf(stdout, (char *) NULL, _IOLBF, (size_t) 1024) != 0)
-	fprintf(stderr, "Could not linebuffer stdout\n");
+	fputs("Could not linebuffer stdout\n", stderr);
 #endif
 
     gpoutfile = stdout;
@@ -434,7 +434,7 @@ char **argv;
 		/* couldn't reopen it so try opening it instead */
 		if ((stdout = fopen("SYS$OUTPUT", "w")) == NULL) {
 		    /* don't use int_error here - causes infinite loop! */
-		    fprintf(stderr, "Error opening SYS$OUTPUT as stdout\n");
+		    fputs("Error opening SYS$OUTPUT as stdout\n", stderr);
 		}
 	    }
 	    gpoutfile = stdout;

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: help.c,v 1.7 1998/12/03 22:24:06 lhecking Exp $";
+static char *RCSid = "$Id: help.c,v 1.8 1998/12/09 15:23:49 lhecking Exp $";
 #endif
 
 /* GNUPLOT - help.c */
@@ -654,7 +654,7 @@ char *line;
     /* built-in dumb pager */
     /* leave room for prompt line */
     if (pagelines >= SCREENSIZE - 2) {
-	fprintf(stderr, "Press return for more: ");
+	fputs("Press return for more: ", stderr);
 #if defined(ATARI) || defined(MTOS)
 	do
 	    c = tos_getch();
