@@ -1,5 +1,5 @@
 /*
- * $Id: ggi.trm,v 1.1.6.1 2000/10/20 18:41:59 lhecking Exp $
+ * $Id: ggi.trm,v 1.1.6.2 2003/08/22 13:47:01 lhecking Exp $
  *
  */
 
@@ -78,7 +78,9 @@ TERM_PUBLIC void GGI_vector __PROTO((unsigned int,unsigned int));
 #ifdef TERM_BODY
 
 #include <ggi/ggi.h>
-#include <ggi/wmh.h>
+#ifdef HAVE_GGI_WMH_H
+# include <ggi/wmh.h>
+#endif
 
 /* First to some global variables
  *

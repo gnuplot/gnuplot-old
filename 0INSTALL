@@ -138,6 +138,7 @@ $ ./configure --help
   --with-lasergnu         install lasergnu printer script
   --with-linux-vga        use the Linux SVGA console driver
                           (requires /usr/lib/libvga)
+  --with-ggi[=DIR]        enable the ggi driver (EXPERIMENTAL)
   --with-readline (*)     use the builtin minimal readline function (default)
   --without-readline      do not use the builtin readline function
   --with-readline=gnu     use the GNU readline library
@@ -151,7 +152,6 @@ $ ./configure --help
                           (requires PDFLib)
   --with-cwdrc            check current directory for .gnuplot file,
                           normally disabled for security reasons
-  --enable-ggi            enable ggi driver (EXPERIMENTAL)
   --enable-iris           enable IRIS terminal (IRIS4D only)
   --enable-mgr            enable MGR terminal
   --enable-rgip           enable Redwood Graphics Interface Protocol

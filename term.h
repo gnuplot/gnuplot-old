@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.12.2.6 2002/03/12 19:10:47 broeker Exp $
+ * $Id: term.h,v 1.12.2.7 2003/08/22 13:47:01 lhecking Exp $
  *
  */
 
@@ -223,7 +223,7 @@
 
 
 /* GGI */
-#ifdef HAVE_GGI
+#ifdef USE_GGI_DRIVER
 # include "ggi.trm"
 #endif
 
