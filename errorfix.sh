@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: errorfix.sh,v 1.3 1998/04/22 18:56:26 lhecking Exp $
+# $Id: errorfix.sh,v 1.4 1998/11/19 10:38:54 lhecking Exp $
 #
 # shell script to change #error and #warn cpp statements. This is necessary
 # for the crippled non-ANSI compiler that HP ships with it's standard
@@ -38,7 +38,7 @@ for i in `cd $dir;find . \( -name "*.c" -o -name "*.h" -o -name "*.trm" \) -prin
     else
       suffix=`echo $i | awk -F\. '{print $NF}'`
       if [ $suffix = h ]; then
-        mv $dir/$i $dir/$i.dist
+        test -r $dir/$i && mv $dir/$i $dir/$i.dist
         mv .tmp $dir/$i
       else
       mv .tmp $i
