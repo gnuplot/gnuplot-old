@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.114 2004/09/15 11:13:04 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.115 2004/10/03 19:08:34 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -1017,6 +1017,11 @@ delete_plot(plot_struct *plot)
     for (i = 0; i < plot->ncommands; ++i)
 	free(plot->commands[i]);
     plot->ncommands = 0;
+    if (plot->commands)
+	free(plot->commands);
+    plot->commands = NULL;
+    plot->max_commands = 0;
+    
 
     /* Free up memory for window title. */
     if (plot->titlestring) {
