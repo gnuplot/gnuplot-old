@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.41 2000/12/05 19:03:02 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.41.2.1 2000/12/21 19:04:07 joze Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -1498,6 +1498,9 @@ int pcount;			/* count of plots in linked list */
 	    plot_c_bars(this_plot);
 	    break;
 	    /*}}} */
+	case PM3D_SURFACE:
+	    fprintf(stderr, "** warning: can't use pm3d for 2d plots\n");
+	    break;
 	}
 
 

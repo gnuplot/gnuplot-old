@@ -1,5 +1,10 @@
 2000-12-21  Johannes Zellner  <johannes@zellner.org>
 
+	* src/graphics.c, src/plot3d.c: repaired function plotting
+	with lt pal or pm3d
+
+2000-12-21  Johannes Zellner  <johannes@zellner.org>
+
 	* new syntax
 	   splot 'a.dat' with pm3d
 	and the plots are plotted in the correct order.

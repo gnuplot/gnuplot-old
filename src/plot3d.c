@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.2 2000/12/21 16:06:24 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.3 2000/12/21 19:04:07 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -111,6 +111,10 @@ int num_samp_1, num_iso_1, num_samp_2, num_iso_2;
     sp->contours = NULL;
     sp->iso_crvs = NULL;
     sp->num_iso_read = 0;
+
+#ifdef PM3D_COLUMN
+    sp->pm3d_color_from_column = 0;
+#endif
 
     if (num_iso_2 > 0 && num_samp_1 > 0) {
 	int i;
@@ -685,7 +689,7 @@ struct surface_points *this_plot;
 	struct coordinate GPHUGE *cp;
 	double x, y, z;
 #ifdef PM3D_COLUMN
-	double color;
+	double color = HUGE;
 	double color_min = HUGE;
 	double color_max = -HUGE;
 	int pm3d_color_from_column = 0;
