@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.34 2002/10/20 21:19:50 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.35 2003/04/14 20:59:27 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -2143,7 +2143,7 @@ turn_ruler_off(void)
 {
     if (ruler.on) {
 	ruler.on = FALSE;
-	if (term && *term->set_ruler) {
+	if (term && term->set_ruler) {
 	    (*term->set_ruler) (-1, -1);
 	}
     }
