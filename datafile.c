@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: datafile.c,v 1.5 1998/08/24 16:41:18 lhecking Exp $";
+static char    *RCSid = "$Id: datafile.c,v 1.6 1998/09/16 11:33:01 lhecking Exp $";
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -728,14 +728,26 @@ int max_using;
 		data_fp=lf_top();
 		if(!data_fp) data_fp=stdin;
 		mixed_data_fp=TRUE; /* don't close command file */
-	} else
+	} else {
+	        char msg[MAX_LINE_LEN];
+#ifndef NO_SYS_STAT_H
+		struct stat statbuf;
+
+		if (stat(filename,&statbuf) < 0) {
+		        fprintf(stderr,"(%s)\n\n", strerror(errno));
+		}
+                 else if (!(S_ISREG(statbuf.st_mode) || S_ISFIFO(statbuf.st_mode))) {
+                        sprintf(msg, "data file \"%s\" not a regular file or pipe", filename);
+                        os_error(msg, name_token);
+                }
+#endif /* NO_SYS_STAT_H */
 		if ((data_fp = fopen(filename, df_binary ? "rb" : "r")) == (FILE *) NULL)
 		{
 			/* one day we will have proper printf-style error reporting fns */
-			char msg[160];
 			sprintf(msg, "can't read data file \"%s\"", filename);
 			os_error(msg, name_token);
 		}
+	}
 /*}}}*/
 
 	return df_no_use_specs;
