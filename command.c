@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: command.c,v 1.18 1998/12/01 20:15:51 lhecking Exp $";
+static char *RCSid = "$Id: command.c,v 1.19 1998/12/03 22:23:10 lhecking Exp $";
 #endif
 
 /* GNUPLOT - command.c */
@@ -562,7 +562,13 @@ static int command()
 	    int_error("expecting filename", c_token);
 	else {
 	    quote_str(sv_file, c_token, MAX_LINE_LEN);
-	    load_file(fp = fopen(sv_file, "r"), sv_file, FALSE);
+	    /* load_file(fp=fopen(sv_file, "r"), sv_file, FALSE); OLD
+	     * DBT 10/6/98 handle stdin as special case
+	     * passes it on to load_file() so that it gets
+	     * pushed on the stack and recusion will work, etc
+	     */
+	    fp = strcmp(sv_file, "-") ? fopen(sv_file, "r") : stdin; 
+	    load_file(fp, sv_file, FALSE);
 	    /* input_line[] and token[] now destroyed! */
 	    c_token = num_tokens = 0;
 	}
