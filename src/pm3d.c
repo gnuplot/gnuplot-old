@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.16 2001/06/11 16:47:59 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.17 2001/12/16 18:41:28 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -416,13 +416,7 @@ pm3d_plot(struct surface_points *this_plot, char at_which_z)
 
 /*
    Now the implementation of the filled colour contour plot
-
-contours_where: equals either CONTOUR_SRF or CONTOUR_BASE
-
-Note: z2gray() uses used_pm3d_zmin, used_pm3d_zmax
-Check that if accessing this routine otherwise then via `set pm3d at`
-code block in graph3d.c
- */
+*/
 
 void
 filled_color_contour_plot(this_plot, contours_where)
@@ -516,7 +510,5 @@ pm3d_draw_all(struct surface_points *plots, int pcount)
     if (term->previous_palette)
 	term->previous_palette();
 }
-
-/* eof pm3d.c */
 
 #endif
