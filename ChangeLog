@@ -5,7 +5,7 @@
 	* term/emf.trm:  Add option 'set term emf {linewidth <factor>}'
 
 	* src/graphics.c (boundary): When estimating the length and height
-	of labels, increase the number of lines by one if we're in enhanced text
+	of xlabel, increase the number of lines by one if we're in enhanced text
 	mode and there seems to be a subscript. This test can be fooled if the
 	label has disabled enhanced text processing.
 
