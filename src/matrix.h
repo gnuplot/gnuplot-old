@@ -1,4 +1,4 @@
-/* $Id: matrix.h,v 1.1 1999/03/26 21:48:23 lhecking Exp $ */
+/* $Id: matrix.h,v 1.2 1999/06/09 12:08:44 lhecking Exp $ */
 
 /*  NOTICE: Change of Copyright Status
  *
@@ -58,4 +58,4 @@ EXT void    Givens __PROTO((double **C, double *d, double *x,
 			double *r, int N, int n, int want_r)); 
 EXT void    Invert_RtR __PROTO((double **R, double **I, int n));
 
-#endif
+#endif /* MATRIX_H */

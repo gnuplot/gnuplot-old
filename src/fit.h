@@ -1,4 +1,4 @@
-/* $Id: fit.h,v 1.1 1999/03/26 21:47:49 lhecking Exp $ */
+/* $Id: fit.h,v 1.2 1999/06/09 12:08:44 lhecking Exp $ */
 
 /*  NOTICE: Change of Copyright Status
  *
@@ -70,4 +70,4 @@ EXT char    fitbuf[256];
 
 EXT void error_ex __PROTO((void));
 
-#endif
+#endif /* FIT_H */
