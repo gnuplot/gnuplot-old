@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.12 1998/11/12 17:09:02 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.13 1998/11/17 20:52:47 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -824,8 +824,16 @@ struct termentry term_tbl[] =
 };
 
 #define TERMCOUNT (sizeof(term_tbl)/sizeof(struct termentry))
+/* also make this be a function so we can get the number of
+ *  terminals in help.c   DBT 10-7-98
+ */
+int term_count(void)
+{
+    return TERMCOUNT;
+}
 
-
+#if 0
+/***** move list_terms() to help.c where paging functions are declared static */
 void list_terms()
 {
     register int i;
@@ -836,6 +844,7 @@ void list_terms()
 		term_tbl[i].name, term_tbl[i].description);
     (void) putc('\n', stderr);
 }
+#endif /* 0 */
 
 
 /* set_term: get terminal number from name on command line */

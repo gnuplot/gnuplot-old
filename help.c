@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: help.c,v 1.5 1998/11/03 12:55:22 lhecking Exp $";
+static char *RCSid = "$Id: help.c,v 1.6 1998/11/17 20:52:42 lhecking Exp $";
 #endif
 
 /* GNUPLOT - help.c */
@@ -509,6 +509,32 @@ TBOOLEAN *subtopics;		/* (in) - subtopics only? */
     }
     ShowSubtopics(key, subtopics);
     OutLine("\n");
+
+    EndOutput();
+}
+
+/* 
+ * DBT 10-7-98    have output of list_terms() go thru pager
+ * I tried to do the paging the same way PrintHelp() does so as to
+ * minimize unintended side effects.  list_terms() had to
+ * move to help.c because the paging functions are static here
+ */
+extern struct termentry term_tbl[];
+void list_terms()
+{
+    register int i;  
+    int num_terms = term_count();
+    char line_buffer[BUFSIZ];
+
+    StartOutput();
+    sprintf(line_buffer,"\nAvailable terminal types:\n");
+    OutLine(line_buffer);
+
+    for (i = 0; i < term_count(); i++) {
+	sprintf(line_buffer,"  %15s  %s\n",
+		term_tbl[i].name, term_tbl[i].description);
+	OutLine(line_buffer);
+    }
 
     EndOutput();
 }
