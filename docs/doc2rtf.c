@@ -1,5 +1,5 @@
 /*
- * $Id: doc2rtf.c,v 1.6 1998/10/19 13:17:56 lhecking Exp $
+ * $Id: doc2rtf.c,v 1.7 1999/03/30 15:19:13 lhecking Exp $
  *
  */
 
@@ -91,7 +91,7 @@ char **argv;
     }
     parse(infile);
     convert(infile, outfile);
-    exit(EXIT_SUCCESS);
+    return (EXIT_SUCCESS);
 }
 
 /* generate an RTF footnote with reference char c and text s */
