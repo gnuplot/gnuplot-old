@@ -1,4 +1,4 @@
-/* $Id: matrix.h,v 1.1.1.3 1998/06/23 12:38:15 lhecking Exp $ */
+/* $Id: matrix.h,v 1.1.1.4 1998/06/23 14:11:13 lhecking Exp $ */
 
 /*
  *	Header file: public functions in matrix.c

@@ -1,4 +1,4 @@
-/* $Id: fit.h,v 1.1.1.3 1998/06/23 12:37:52 lhecking Exp $ */
+/* $Id: fit.h,v 1.1.1.4 1998/06/23 14:10:58 lhecking Exp $ */
 
 /*
  *	Header file: public functions in fit.c
