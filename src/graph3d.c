@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.9 2000/10/24 18:58:12 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.26.2.10 2000/10/29 15:11:33 vanzandt Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1948,7 +1948,7 @@ struct lp_style_type grid;
 	draw3d_line(&v1, &v2, &grid);
 	draw3d_line(&v2, &v3, &grid);
     }
-    v2.x = v1.x + len / xscaler;
+    v2.x = v1.x + len / (double)xscaler;
     v2.y = v1.y;
     v2.z = v1.z;
     draw3d_line(&v1, &v2, &border_lp);
