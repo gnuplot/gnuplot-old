@@ -1,3 +1,8 @@
+2003-02-14  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* docs/gnuplot.doc (fit): Mention that 'thru' doesn't apply to
+ 	'fit' datafile processing.
+
 2003-01-24  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	A patch from Allin Cottrell <cottrell@wfu.edu> to fix unreadable
