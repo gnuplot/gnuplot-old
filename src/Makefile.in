@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.4 1999/03/31 19:50:01 lhecking Exp $
+# $Id: Makefile.in,v 1.5 1999/04/04 17:30:51 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -363,6 +363,9 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+
+# Empty target
+check:
 
 clean:
 	-rm -f gnuplot gnuplot_x11 bf_test *.o core *~
