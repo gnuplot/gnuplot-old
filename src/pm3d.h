@@ -1,5 +1,5 @@
 /*
- * $Id: pm3d.h,v 1.6.2.1 2000/12/20 18:33:35 joze Exp $
+ * $Id: pm3d.h,v 1.6.2.2 2000/12/21 16:06:24 joze Exp $
  */
 
 /* GNUPLOT - pm3d.h */
@@ -111,6 +111,7 @@ int set_pm3d_zminmax __PROTO((struct surface_points* plots, int pcount));
 void pm3d_plot __PROTO((struct surface_points * plot, char at_which_z));
 void filled_color_contour_plot __PROTO((struct surface_points *plot, int contours_where));
 void pm3d_reset __PROTO((void));
+void pm3d_draw_one __PROTO((struct surface_points* plots));
 void pm3d_draw_all __PROTO((struct surface_points* plots, int pcount));
 double z2gray __PROTO((double z));
 void

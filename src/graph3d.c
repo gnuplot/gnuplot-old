@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.37.2.1 2000/12/20 18:33:35 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.37.2.2 2000/12/21 16:06:24 joze Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -560,6 +560,8 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
     if (!quick) {
 	int palette = 0;
 	if (!pm3d.where[0]) {
+	    /* if pm3d is off, check if at least one
+	     * of the plots has 'linetype palette' */
 	    for (this_plot = plots, surface = 0; surface < pcount;
 		this_plot = this_plot->next_sp, surface++) {
 		if (this_plot->lp_properties.use_palette) {
@@ -577,7 +579,9 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 		whichgrid = BACKGRID;
 		draw_3d_graphbox(plots, pcount);
 	    }
+#if 0
 	    pm3d_draw_all(plots, pcount);
+#endif
 	}
 
 	if (can_pm3d) {
@@ -907,18 +911,27 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 			    (*t->point) (xl + key_point_offset, yl, -1);
 			    /* (*t->point)(xl+2*(t->h_char),yl, -1); */
 			}
-		}
-		if (!(hidden3d && draw_surface)) {
+		    }
+		    if (!(hidden3d && draw_surface)) {
 #ifdef PM3D
-		    if (use_palette)
-			plot3d_points_pm3d(this_plot, -1);
-		    else
+			if (use_palette)
+			    plot3d_points_pm3d(this_plot, -1);
+			else
 #endif
-			plot3d_points(this_plot, -1);
+			    plot3d_points(this_plot, -1);
 		    }
 
 		    break;
 
+#ifdef PM3D
+		case PM3D_SURFACE:
+#if 1
+		    if (can_pm3d) {
+			pm3d_draw_one(this_plot);
+		    }
+#endif
+		    break;
+#endif
 
 		}			/* switch(plot-style) */
 
@@ -971,6 +984,10 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 		    case DOTS:
 			key_sample_point(xl, yl, -1);
 			break;
+#ifdef PM3D
+		    case PM3D_SURFACE: /* ignored */
+			break;
+#endif
 		    }
 		    NEXT_KEY_LINE();
 		}
@@ -1014,6 +1031,10 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 			    case DOTS:
 				key_sample_point(xl, yl, -1);
 				break;
+#ifdef PM3D
+			    case PM3D_SURFACE: /* ignored */
+				break;
+#endif
 			    }	/* switch */
 
 			    NEXT_KEY_LINE();
@@ -1055,6 +1076,10 @@ int quick;		 	/* !=0 means plot only axes etc., for quick rotation */
 		    case DOTS:
 			cntr3d_dots(cntrs);
 			break;
+#ifdef PM3D
+		    case PM3D_SURFACE: /* ignored */
+			break;
+#endif
 		    }		/*switch */
 
 		    cntrs = cntrs->next;

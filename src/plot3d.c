@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.1 2000/12/20 18:33:35 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.2 2000/12/21 16:06:24 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1132,14 +1132,14 @@ eval_3dplots()
 		this_plot->plot_type = DATA3D;
 		this_plot->plot_style = data_style;
 
+		/* parses all datafile-specific modifiers */
+		/* we will load the data after parsing title,with,... */
+
 #ifdef PM3D_COLUMN
 		specs = df_open(4);
 #else
 		specs = df_open(3);
 #endif
-		/* parses all datafile-specific modifiers */
-		/* we will load the data after parsing title,with,... */
-
 		/* for capture to key */
 		this_plot->token = end_token = c_token - 1;
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.18 2000/12/12 13:25:27 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.18.2.1 2000/12/21 16:06:24 joze Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -364,6 +364,9 @@ struct gen_table plotstyle_tbl[] =
     { "vec$tor", VECTOR },
     { "fin$ancebars", FINANCEBARS },
     { "can$dlesticks", CANDLESTICKS },
+#ifdef PM3D
+    { "pm$3d", PM3D_SURFACE },
+#endif
     { NULL, -1 }
 };
 

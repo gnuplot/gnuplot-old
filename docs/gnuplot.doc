@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.62.2.1 2000/12/20 18:33:34 joze Exp $
+C RCS $Id: gnuplot.doc,v 1.62.2.2 2000/12/21 16:06:24 joze Exp $
 C 3 December 1998
 C Copyright (C) 1986 - 1993, 1998   Thomas Williams, Colin Kelley
 C
@@ -2951,7 +2951,7 @@ C ... and restart the table:
  `dots`, `steps`, `fsteps`, `histeps`, `errorbars`, `xerrorbars`,
  `yerrorbars`, `xyerrorbars`, `errorlines`, `xerrorlines`, `yerrorlines`,
  `xyerrorlines`, `boxes`, `boxerrorbars`, `boxxyerrorbars`,
- `financebars`, `candlesticks` or `vector`. Some of these styles
+ `financebars`, `candlesticks`, `vector` or `pm3d`. Some of these styles
  require additional information. See `set style <style>` for details of
  each style.
 
@@ -5433,14 +5433,14 @@ C ... and restart the table:
        set style line 100 lt 5 lw 0.5
        unset hidden3d
        unset surf
-       splot x*x+y*y
+       splot x*x+y*y with pm3d
 
  If a the surface should be colored from a value different than the z-value,
  you must give two or four coordinates to the splot command. In this case the
  last value -- the supplementary dimension -- is used for mapping the color.
  Example:
 
-       splot 'lola.dat' u 1:2:3:4
+       splot 'lola.dat' u 1:2:3:4 with pm3d
 
  this will color the surface with values from the fourth data column.
 
@@ -6105,6 +6105,15 @@ C  The `lines` style connects adjacent points with straight line segments.
  ends of the error bar (unless `set bars` is used---see `set bars` for
  details).
 ^<a href="http://www.nas.nasa.gov/~woo/gnuplot/errorbar/errorbar.html"> See demo. </a>
+4 pm3d
+?commands set style pm3d
+?set style pm3d
+?style pm3d
+?pm3d
+ The `pm3d` style is only valid for splots. It draws a surface which is colored
+ according to the `pm3d` and `palette` settings.
+
+ Please see `set pm3d` and `set palette`.
 3 surface
 ?commands set surface
 ?commands set nosurface

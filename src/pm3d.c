@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.1 2000/12/20 18:33:35 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.14.2.2 2000/12/21 16:06:24 joze Exp $"); }
 #endif
 
 /* GNUPLOT - pm3d.c */
@@ -534,6 +534,45 @@ pm3d_reset(void)
     pm3d.zmax = 100.0;
     pm3d.hidden3d_tag = 0;
     pm3d.solid = 0;
+}
+
+/* DRAW /ONE/ PM3D COLOUR SURFACE */
+void
+pm3d_draw_one(struct surface_points *plot)
+{
+    int i = 0;
+
+    if (!pm3d.where[0]) {
+	return;
+    }
+
+    /* for pm3dCompress.awk */
+    if (postscript_gpoutfile)
+	fprintf(gpoutfile, "%%pm3d_map_begin\n");
+
+    for (; pm3d.where[i]; i++) {
+	pm3d_plot(plot, pm3d.where[i]);
+    }
+
+    if (strchr(pm3d.where, 'C') != NULL) {
+	/* !!!!! CONTOURS, UNDOCUMENTED
+	   !!!!! LATER CHANGE TO STH LIKE (if_filled_contours_requested)
+	   !!!!! ... */
+	if (draw_contour & CONTOUR_SRF)
+	    filled_color_contour_plot(plot, CONTOUR_SRF);
+	if (draw_contour & CONTOUR_BASE)
+	    filled_color_contour_plot(plot, CONTOUR_BASE);
+    }
+
+    /* for pm3dCompress.awk */
+    if (postscript_gpoutfile)
+	fprintf(postscript_gpoutfile, "%%pm3d_map_end\n");
+
+    /* release the palette we have made use of (some terminals may need this)
+       ...no, remove this, also remove it from plot.h !!!!
+    if (term->previous_palette)
+	term->previous_palette();
+     */
 }
 
 /* DRAW PM3D ALL COLOUR SURFACES */

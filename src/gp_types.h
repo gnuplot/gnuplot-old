@@ -1,5 +1,5 @@
 /*
- * $Id: gp_types.h,v 1.3.2.1 2000/12/20 18:33:35 joze Exp $
+ * $Id: gp_types.h,v 1.3.2.2 2000/12/21 16:06:24 joze Exp $
  */
 
 /* GNUPLOT - gp_types.h */
@@ -80,7 +80,10 @@ typedef enum PLOT_STYLE {
 	FINANCEBARS  = 16*8 + 1,
 	XERRORLINES  = 17*8 + 7,
 	YERRORLINES  = 18*8 + 7,
-	XYERRORLINES = 19*8 + 7
+	XYERRORLINES = 19*8 + 7,
+#ifdef PM3D
+	PM3D_SURFACE = 20*8 + 0
+#endif
 } PLOT_STYLE;
 
 typedef enum PLOT_SMOOTH { 
