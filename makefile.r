@@ -1,11 +1,11 @@
 
-# $Id: makefile.r,v 1.1.1.2 1998/04/22 13:37:46 lhecking Exp $
+# $Id: makefile.r,v 1.1.1.3 1998/06/17 18:32:58 lhecking Exp $
 #
 # $Log: makefile.r,v $
-# Revision 1.1.1.2  1998/04/22 13:37:46  lhecking
-# Import of beta 344.
+# Revision 1.1.1.3  1998/06/17 18:32:58  lhecking
+# Import of beta 345.
 #
-# Revision 1.7  1998/04/14  00:15:55  drd
+# Revision 1.7  1998/04/14 00:15:55  drd
 # HBB, Lars : latest mega monster patches. (Yes, this was supposed
 #             to be frozen...)
 #
