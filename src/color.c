@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.17 2001/04/03 16:14:46 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.18 2001/06/11 16:47:59 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -630,10 +630,10 @@ draw_color_smooth_box()
     /* draw tics */
     if (axis_array[COLOR_AXIS].ticmode) {
 	/* setup tics, but avoid changing CB_AXIS.min, max */
-	int i = CB_AXIS.autoscale;
-	CB_AXIS.autoscale = 0;
+	int saved_autoscale = CB_AXIS.autoscale;
+	CB_AXIS.autoscale = AUTOSCALE_NONE;
 	setup_tics(COLOR_AXIS, 20);
-	CB_AXIS.autoscale = i;
+	CB_AXIS.autoscale = saved_autoscale;
 	term_apply_lp_properties(&border_lp); /* border linetype */
 	CB_AXIS.log = axis_array[FIRST_Z_AXIS].log; /* use log scaling from z-axis */
 	CB_AXIS.base = axis_array[FIRST_Z_AXIS].base;
