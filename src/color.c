@@ -33,19 +33,14 @@
 
 #ifdef PM3D
 
-#define _COLOR_C /* must be done before including pm3d.h */
-
 #include "plot.h"
 #include "setshow.h"
 #include "graphics.h"
+#include "graph3d.h"
 #include "pm3d.h"
 #include "graphics.h"
 #include "term_api.h"
 /* need to access used_pm3d_zmin, used_pm3d_zmax; */
-
-/* defined in graph3d.c */
-void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned int *yt));
-void map3d_position __PROTO((struct position* pos, unsigned int *xt, unsigned int *yt, const char* what));
 
 /* COLOUR MODES - GLOBAL VARIABLES */
 
@@ -72,6 +67,9 @@ color_box_struct color_box = {
     1, 1  /* size */
 };
 
+#ifdef EXTENDED_COLOR_SPECS
+int supply_extended_color_specs = 0;
+#endif
 
 /********************************************************************
   ROUTINES

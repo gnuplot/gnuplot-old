@@ -22,14 +22,14 @@ of palettes between terminals and making palette routines.
 
 
 /** NOTICE: currently, this file is included only if PM3D is defined **/
+#ifndef COLOR_H
+#define COLOR_H
+
 #ifdef HAVE_CONFIG_H
 #   include "config.h"
 #endif
 
 #ifdef PM3D
-
-#ifndef COLOR_H
-#define COLOR_H
 
 
 /* Contains a colour in RGB scheme.
@@ -156,6 +156,10 @@ typedef struct {
 
 extern t_sm_palette sm_palette;
 
+#ifdef EXTENDED_COLOR_SPECS
+extern int supply_extended_color_specs;
+#endif
+
 /*
 Position of the colour smooth box that shows the colours used.
 Currently, everything is default (I haven't figured out how to make it
@@ -237,7 +241,7 @@ void filled_quadrangle ( gpdPoint *corners );
    Makes mapping from real 3D coordinates, passed as coords array,
    to 2D terminal coordinates, then draws filled polygon
 */
-void filled_polygon_3dcoords ( int points, struct coordinate GPHUGE *coords );
+void filled_polygon_3dcoords ( int points, struct coordinate *coords );
 
 /*
    Makes mapping from real 3D coordinates, passed as coords array, but at z coordinate
@@ -254,8 +258,8 @@ void draw_color_smooth_box();
 /* in getcolor.c */
 double GetColorValueFromFormula __PROTO((int formula, double x));
 
-#endif
-
 #endif /* PM3D */
+
+#endif /* COLOR_H */
 
 /* eof color.h */

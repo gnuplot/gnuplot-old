@@ -25,13 +25,6 @@
 
 #define PM3D_VERSION "gp38c-pm3d"
 
-#ifdef EXTENDED_COLOR_SPECS
-#ifdef _COLOR_C
-int supply_extended_color_specs = 0;
-#else
-extern int supply_extended_color_specs;
-#endif
-#endif
 
 
 /****

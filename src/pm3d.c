@@ -18,6 +18,7 @@
 #ifdef PM3D
 
 #include "plot.h"
+#include "graph3d.h"
 #include "pm3d.h"
 #include "setshow.h" /* for surface_rot_z */
 #include "term_api.h" /* for lp_use_properties() */
@@ -57,8 +58,6 @@ int pm3d_map_rotate_ylabel = 0;
 /* declare variables and routines from external files */
 extern struct surface_points *first_3dplot;
 
-void map3d_xy(double x, double y, double z, /* from graph3d.c */
-    unsigned int *xt, unsigned int *yt);
 
 extern double min_array[], max_array[];
 

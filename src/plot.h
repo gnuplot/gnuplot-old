@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29.2.7 2000/10/23 04:35:27 joze Exp $
+ * $Id: plot.h,v 1.29.2.8 2000/10/23 18:57:54 joze Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -612,7 +612,6 @@ struct position {
 	enum position_type scalex,scaley,scalez;
 	double x,y,z;
 };
-
 
 #ifdef PM3D
 /* color.h is included here, since it requires the definition of `coordinate' */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.7 2000/10/23 04:35:27 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.8 2000/10/23 18:57:54 joze Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -96,10 +96,9 @@ WHICHGRID whichgrid = ALLGRID;
 
 #ifndef PM3D
 /* *not* static, we use it in color.c (joze) */
-static
+/* HBB 20000813: provide either static prototype here, or non-static in graph3d.h */
+static void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned int *yt));
 #endif
-void map3d_xy __PROTO((double x, double y, double z, unsigned int *xt, unsigned int *yt));
-/* static int map3d_z __PROTO((double x, double y, double z)); */
 
 static void plot3d_impulses __PROTO((struct surface_points * plot));
 static void plot3d_points __PROTO((struct surface_points * plot, int p_type));
@@ -950,6 +949,7 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 #endif
 			plot3d_points(this_plot, this_plot->lp_properties.p_type);
 		}
+
 		break;
 
 	    case DOTS:
