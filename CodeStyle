@@ -1,4 +1,4 @@
-$Id: CodeStyle,v 1.2 1998/09/21 21:07:29 lhecking Exp $
+$Id: CodeStyle,v 1.3 1998/09/23 19:45:15 lhecking Exp $
 
 The following things have be observed when writing new code for gnuplot:
 (this file is currently under construction)  Some of the following is
@@ -201,7 +201,8 @@ putting   set ts=4  into your ~/.exrc file.
 
   Unfortunately, gnu indent does not seem to recognise this
 as a layout style. If it did, I'd have run all sources
-through it long ago.
+through it long ago. [GNU indent -kr -cp0 -lps comes
+pretty close, though. Lars]
 
 
 
