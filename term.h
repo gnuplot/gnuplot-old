@@ -1,6 +1,6 @@
 
 /*
- * $Id: term.h,v 1.6 1998/09/23 19:57:00 lhecking Exp $
+ * $Id: term.h,v 1.7 1998/09/25 15:18:21 lhecking Exp $
  *
  */
 
@@ -159,7 +159,7 @@
 #include "xlib.trm"
 #endif /* !MSDOS && !OS2 && !_Windows && !_ATARI && !_MTOS && !AMIGA */
 
-#if defined(X11) || !defined(X_DISPLAY_MISSING)
+#ifdef X11
 # include "x11.trm"     /* X Window System */
 #endif
 
