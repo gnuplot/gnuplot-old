@@ -1,5 +1,5 @@
 /*
- * $Id: xref.h,v 1.2 1998/10/19 13:19:28 lhecking Exp $
+ * $Id: xref.h,v 1.3 2000/11/02 19:05:10 lhecking Exp $
  *
  */
 
@@ -60,7 +60,7 @@ struct LIST {
 EXTERN void parse __PROTO((FILE * a));
 EXTERN struct LIST *lookup __PROTO((char *));
 EXTERN struct LIST *lkup_by_number __PROTO((int line));
-EXTERN void list_free __PROTO(());
+EXTERN void list_free __PROTO((void));
 EXTERN void refs __PROTO((int l, FILE * f, char *start, char *end, char *format));
 
 #ifdef PROTOTYPES
