@@ -1,5 +1,5 @@
 /*
- * $Id: dynarray.h,v 1.5 2000/11/01 18:57:28 broeker Exp $
+ * $Id: dynarray.h,v 1.5.2.1 2001/03/03 21:40:17 joze Exp $
  */
 
 /* GNUPLOT - dynarray.h */
@@ -53,7 +53,7 @@ void init_dynarray __PROTO((dynarray * array, size_t element, long size, long in
 void free_dynarray __PROTO((dynarray * array));
 void extend_dynarray __PROTO((dynarray * array, long increment));
 void resize_dynarray __PROTO((dynarray * array, long newsize));
-GPHUGE void *nextfrom_dynarray __PROTO((dynarray * array));
+void GPHUGE *nextfrom_dynarray __PROTO((dynarray * array));
 void droplast_dynarray __PROTO((dynarray * array));
 
 #endif /* DYNARRAY_H */

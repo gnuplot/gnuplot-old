@@ -1,5 +1,5 @@
 /*
- * $Id: ggi.trm,v 1.10.2.1 2000/12/26 20:08:38 joze Exp $
+ * $Id: ggi.trm,v 1.10.2.2 2001/03/03 21:40:18 joze Exp $
  */
 
 /* GNUPLOT - ggi.trm */
@@ -547,28 +547,30 @@ GGI_close()
 {
     ggiFlush(GGIvisual);
     /* DETACH EXTENSIONS */
-#if HAVE_WMH_H
+#ifdef ENABLE_XMI
+    xmiDetach(GGIvisual);
+#endif
+#if HAVE_GGI_WMH_H
     if(GGI_use_whm) {
 	ggiWmhDetach(GGIvisual);
     }
-#endif
-#ifdef ENABLE_XMI
-    xmiDetach(GGIvisual);
 #endif
 
     ggiClose(GGIvisual); 
     GGIvisual = (ggi_visual_t)0;
 
     /* EXIT EXTENSIONS */
-#if HAVE_WMH_H
+#ifdef ENABLE_XMI
+    xmiExit();	
+#endif
+#if HAVE_GGI_WMH_H
     if(GGI_use_whm) {
 	ggiWmhExit();
 	GGI_use_whm = 0;
     }
 #endif
-#ifdef ENABLE_XMI
-    xmiExit();	
-#endif
+
+    ggiExit();
 }
 
 /* Called when terminal is terminated i.e.

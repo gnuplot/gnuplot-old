@@ -1,3 +1,526 @@
+2001-03-02  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/term.h [HAVE_LIBPNG]: Include new PDF terminal driver.
+
+2001-03-01  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/pdf.trm: New terminal driver for Adobe PDF (Portable
+	Document Format) files.
+	
+	* configure.in: Added detection code for PDFLib library, needed
+	to compile term/pdf.trm.
+
+2001-02-28  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/term_api.h (DEFAULT_LP_STYLE_TYPE): New macro, to help
+ 	initializing lp_style_type struct variables directly.
+
+	* src/gadgets.c (DEFAULT_BORDER_LP): New macro to hold the default
+ 	lp_style_type for the graph border.
+	(default_border_lp): New global constant variable. Used to
+ 	re-initialize the border linetype by struct assignment.
+	
+	* src/gadgets.h: Declaration for default_border_lp added.
+
+	* src/unset.c (reset_command): Assign border_lp from
+ 	default_border_lp instead of calling set_lp_properties().
+
+	* src/set.c (set_arrow, set_linestyle): Initialize local variable
+ 	from new macro DEFAULT_LP_STYLE_TYPE instead of calling
+ 	reset_lp_properties().
+	(set_border): Assign border_lp from default_border_lp instead of
+ 	calling set_lp_properties().
+	(reset_lp_properties, set_lp_properties): Functions no longer
+ 	used. Removed them.
+	
+	* src/setshow.h (set_lp_properties): Removed prototype.
+
+2001-02-28  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/emf.trm (EMF_text, EMF_reset): Reset emf_graphics flag to
+ 	FALSE to fix bug reported by J.Bollinger.
+
+	* term/emf.trm (EMF_STOCK_OBJECT_FLAG,
+ 	EMF_STOCK_OBJECT_WHITE_BRUSH, EMF_STOCK_OBJECT_BLACK_PEN,
+ 	EMF_STOCK_OBJECT_DEFAULT_FONT): New mnemonic macros to replace
+ 	magic numbers.
+	(EMF_setfont, EMF_text, EMF_dashtype): Use them.
+
+	* src/win/wgraph.c (LoadCursors): Use default cursor IDC_CROSS
+ 	instead of home-grown ptrcross.cur.
+	(CopyPrint): Codestyle: indented and commented #if/#else/#endif
+ 	lines.
+	
+	* src/win/ptrcross.cur: File removed.
+
+	* src/win/wgnuplib.rc: Reference to ptrcross.cur deleted.
+
+	* src/win/wresourc.h (IDC_SCALING): Removed #define for
+ 	IDC_CROSSHAIR
+
+	* src/win/scaling.cur, src/win/rotating.cur: Binary files replaced
+ 	by new, much nicer versions.
+	
+	* src/set.c (set_terminal): Codestyle: call gp_strdup() instead of
+ 	strdup().
+
+	* src/readline.h: The readline_ipc() prototype is now here, since
+ 	the functions is in readline.c, too.
+
+	* src/ipc.h: Moved readline_ipc() prototype away from here.
+
+	* src/command.c (com_line): Codestyle: #if's indented and
+ 	commented.
+
+2001-02-27  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* config/makefile.mgw: added a configuration section for easier setup
+	of compilation options.
+
+2001-02-23  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/syscfg.h: Removed section defining VERYLARGE.
+
+	* src/stdfn.h: Moved blurb to define VERYLARGE macro from syscfg.h
+ 	to here. It needs <float.h> to have been included before it can do
+ 	its own part. Fixes endless loop bug in timefmt axes with a "set
+ 	xtics <incr>" type of tic placement lacking fixed endpoints.
+
+2001-02-21  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* src/win/wgraph.c: call GE_plotdone when graph drawn (otherwise
+	rotate-and-scale-by-mouse was not working); fixed set cursor
+	positioning typo ('set mouse zoomjump').
+
+2001-02-19  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/win/wgraph.c (ruler, zoombox): Gave anonymous structs a
+ 	name.
+	(zoombox): Added string pointers for texts to be shown at corners
+ 	of the rubberband rectangle while zooming.
+	(everywhere): Lots of prototypes for static functions
+ 	added. Flagged all internal functions as 'static'. Comments added
+ 	and cleaned up. Stylistic changes.
+	(GWOPMAX): Moved here, from wgnuplot.h; only used inside this
+ 	module.
+	(GraphOp, Graph_put_tmptext, Graph_set_clipboard): Turned string
+ 	argument into to LPCSTR, i.e. pointers to const char, in Windows
+ 	parlance.
+	(GraphEnd) [USE_MOUSE]: Don't call DrawRuler from here.
+	(MakePens): Removed code no longer needed since the PM3D stuff
+ 	forced dynamic pen creation.
+	(Wnd_GetTextSize): New function. Isolated fragment from
+ 	MakeFont(), for re-use by mouseing functions.
+	(MakeFonts): Call new Wnd_GetTextSize().
+	(MakeFonts): Use TRUE and FALSE instead of 1 and 0 to asssing
+ 	states of lpgw->rotate.
+	(DestroyCursors): Replaced missing implementation by single
+ 	'return;' statement: the function has nothing to do, as it turns
+ 	out.
+	(drawgraph): If 'hdc' is a handle of a Metafile, GetDeviceCaps()
+ 	reports wrong results, leading to monochrome-only clipboard
+ 	contents. Assume colored output unless 'color' element in LPGW is
+ 	FALSE, for Metafiles.
+	(Wnd_exec_event): Compute difference of GetMessageTime() results
+ 	from one call to the next, so we should be able to tell
+ 	doubleclicks from single ones. Removed now-pointless parameter
+ 	'par2'.
+	(WndGraphProc): Moved static variable last_modifier_mask up to
+ 	function scope. It has to be visible to from different message
+ 	handling cases.
+	(WndGraphProc) [USE_MOUSE + WM_KEYUP]: Handle key-up events of
+ 	modifier keys, too.
+	(WndGraphProc) [USE_MOUSE + WM_KEYDOWN]: <Shift> and <Ctrl>
+ 	checking repaired. I haven't tested <Alt> yet.
+	(WndGraphProc) [WM_COMMAND + USE_MOUSE]: Don't call DrawRuler()
+ 	from here.
+	(WndGraphProc) [WM_PAINT + USE_MOUSE]: Re-paint all mouse
+ 	decorations of the plotwindow here, directly after the call to
+ 	drawgraph() has overwritten window contents.
+	(Graph_put_tmptext): Implemented cases 1 and 2 of the 'where'
+ 	argument by strdup'ing the texts over into the zoombox struct.
+  	Update by calling DrawZoombox() before and after that.
+	(Graph_set_clipboard): Implemented.
+	(Draw_XOR_Text): New function. Implements true XOR text output via
+ 	a temporary bitmap, and an XOR-ing BitBlt() operation.
+	(DisplayStatusLine): Replaced previous, half-cooked version by
+ 	call of Draw_XOR_Text(). Removed argument 'erase'.
+	(UpdateStatusLine) [ENABLE_STATUS_LINE_RESIZE]: Threw out all the
+ 	chunks of this #ifdef version. This should be implemented in the
+ 	gnuplot core, instead.
+	(DrawZoomBox): Added implementation of corner label strings for
+ 	the zoom box. Uses Draw_XOR_Text() twice for each two-line string.
+  	Also found and implemented a way to draw the zoombox in dashed
+ 	lines --- actually: in 'linetype 0', which is normally used for
+ 	zeroaxes and gridlines.
+	
+	* src/win/wgnuplib.h (WGNUPLOTVERSION): Internal protocol version
+ 	number bumped by 0.1, with timestamp of yesterday, for all the
+ 	mouseing stuff and some other change I made while being at it.
+	(all over the place): Comments added and cleaned up.
+	(GWOPMAX): Moved out of here, over to wgraph.c.
+	(struct GW): Removed unused elements numsolid, hbpen, hpen[] and
+ 	hsolidpen[].
+	(GraphOp, Graph_put_tmptext, Graph_set_clipboard): Prototype
+ 	updated.
+
+	* src/gpexecute.c: Changed all PIPE_IPC || WIN_IPC conditionals
+ 	into PIPE_IPC, only. Windows doesn't actually use the stack of
+ 	mouse events implemented by these hungs.
+	(gp_exec_event) [WIN_IPC]: A big FIXME comment regarding
+ 	separation issues between wgnuplot.dll and wgnuplot.exe.
+
+	* src/command.c (winsystem) [_Windows] : made local variable 'p' a
+ 	pointer to constant char. That's LPCSTR, in Windows jargon.
+
+	* src/color.h (filled_polygon_3dcoords): GPHUGE attribute
+ 	specifier added to prototype
+
+	* term/svg.trm (SVG_PathLimit): Prototype added.
+
+2001-02-15  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/win/wtext.h: Added #include <stdarg.h> needed to declare
+ 	va_list for prototypes.
+
+	* src/win/wgraph.c: Bracketed all mouse-specific within #ifdef
+ 	USE_MOUSE, as they should be. Removed some remains of the old
+ 	'numsolid' stuff.
+	(Wnd_exec_event): Pass message timestamp to gp_exec_event(),
+ 	replacing the fourth input parameter.
+	(WndGraphProc) [WM_MOUSEMOVE]: Rewrite and uncomment the Cursor
+ 	shape call. Also for the section used regardless of 'set mouse
+ 	off'.
+	(WndGraphProc) [WM_CHAR]: moved all the "special" keys into a new
+ 	WM_KEYDOWN case --- they don't generate WM_CHAR messages.
+	(WndGraphProc) [WM_KEYDOWN]: have all keys immediately call
+ 	Wnd_exec_event, so the default action can fall through to the
+ 	default handler.  Handled some open ends introduced by Petr.
+	(WndGraphProc) [WM_KEYDOWN]: Moved the modifier key status check
+ 	to before the individual keys, and translated it from OS/2 to
+ 	Windows API. Code #ifdef'ed out for now, because it doesn't work,
+ 	yet.
+
+	* src/win/ptrcross.cur, src/win/scaling.cur, src/win/rotating.cur:
+	New files.
+
+	* src/win/wgnuplib.rc: Added definition of new cursor resources
+	for interactive mousing by reference to files.
+
+	* src/mouse.c (event_buttonrelease): Fixed FPRINTF() debugging
+ 	call.
+
+	* src/graphics.c (plot_vectors): Removed GPHUGE attribute.
+
+	* src/dynarray.c (nextfrom_dynarray): Corrected position of GPHUGE
+ 	attribute of the returned type.
+
+	* src/dynarray.h (nextfrom_dynarray): Prototype updated.
+
+	* config/makefile.win (CFLAGS) [WIN32]: Added -DVFPRINTF,
+ 	-DWIN_IPC and -DUSE_MOUSE to the list of flags.
+	(CFLAGS, CAUXFLAGS) [!WIN32]: Added -DVFPRINTF.
+	(DLLOBJS): Added gpexecute.obj.
+	(wgnupl32.exe): Added gpexecute to list of input files.
+	(DLLCC): Added -DUSE_MOUSE and -DWIN_IPC
+
+2001-02-15  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/axis.c (axis_position_zeroaxis): Fixed behaviour for
+ 	reversed axes if 0.0 is not inside the range.
+	
+	* src/graphics.c (histeps_vertical, histeps_horizontal): Added
+ 	code to handle clipping lines on reversed axes. Renamed parameters
+ 	'xl' and 'yl' to 'cur_x' and 'cur_y', in order to avoid confusion
+ 	with 'x1' and 'y1'.
+
+2001-02-14  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/plot2d.c (get_data): For BOXES plots, don't set z_axis of
+ 	the plot to x_axis. That element is only used for a marker, not
+ 	for an actual x value.
+	(store2d_point): If z_axis of current plot is unused (-1), simply
+ 	store 'width' argument as the z value, without any of the usual
+ 	processing by STORE_WITH_LOG_AND_UPDATE_RANGE.
+	(eval_plots): Catch plot styles that don't work for functions.
+  	Prints a warning and reverts to 'with points'
+	
+	* src/plot3d.c (eval_3dplots): Catch plot styles that don't work
+ 	for functions.  Prints a warning and reverts to 'with points'
+
+	* src/set.c (set_command): In 'set function style' handler, check
+ 	that plot style is applicable to function plots. If it isn't,
+ 	issue an error message and keep previous value.
+	(set_style): dito, for 'set style function' handler.
+
+2001-02-12  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/win/wtext.h (MyVFPrintF): Fix typo: missing semicolon after
+ 	prototype.
+
+2001-02-10  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* src/win/wgraph.c: two more calls to DrawRuler() to draw the ruler
+	after the graph window has been de-minimized or replotted by gnuplot
+	after 'replot' or 'plot ...'; added remapping of VK_ key codes to
+	gnuplot key codes GP_.
+
+2001-02-09  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/term.c (term_set_output): add code to work around an MSDOS
+ 	bug: 'set output' to the already open file causes file system
+ 	corruption. Solved by closing the file before opening it again.
+	
+2001-02-09  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/win/wgraph.c (ruler, zoombox): struct element 'on' made
+ 	TBOOLEAN.
+	(hptrDefault and friends): Uncommented Petr's suggestion, changed
+ 	type.
+	(GetMousePosViewport and friends): Internal prototypes updated.
+	(all over the place): Removed commented-out code blocks dealing
+ 	with the 'numsolid' and dynamic pen creation changes, for good.
+	(all over the place): changed // comments to /* ... */
+	(LoadCursors): New function. Loads cursor images from the system
+ 	or the resource file so cursor can change shape as different mouse
+ 	operations take place.
+	(DestroyCursors): New function, not implemented yet. Unloads all
+ 	the cursors registered by LoadCursors, to free the resources.
+	(drawgraph): Removed mouse_hdc initialization.
+	(Wnd_exec_event): New function, may no longer be needed. A wrapper
+ 	around gp_exec_event that records mouse position before calling
+ 	it.
+	(Wnd_refresh_zoombox): New function, used to be a code block in
+ 	WndGraphProc().
+	(WndGraphProc): Mouse position querying moved to helper functions
+ 	Wnd_exec_event and Wnd_refresh_zoombox --- only do the query if
+ 	the result is needed.  Put an #ifdef USE_MOUSE around the code
+ 	added by Petr.
+	(WndGraphProc) [WM_CREATE]: call LoadCursors().
+	(WndGraphProc) [WM_DESTORY]: call DestroyCursors().
+	(Graph_set_cursor): Added LPGW parameter, implemented by
+ 	translating OS/2 sample code into Windows API calls.
+	(Graph_set_ruler): dito.
+	(Graph_put_tmptext): dito --- but implementation not complete,
+ 	yet.
+	(Graph_set_clipboard): Added LPGW parameter. Not implemented, yet.
+	(GetMousePosViewport): Added LPGW parameter. Removed Macros
+ 	WIN_XMAX and WIN_YMAX: query lpgw instead. Removed debugging
+ 	fprintf() to file.
+	(DisplayStatusLine): Added LPGW parameter. Implementation
+ 	rewritten almost from scratch, needing a new TBOOLEAN flag 'erase'
+ 	because of Windows API limitations.
+	(UpdateStatusLine): Added LPGW parameter.
+	(DrawRuler): Added LPGW parameter, turned OS/2 code outline into
+	Windows API implementation.
+	(DrawZoomBox): dito.
+
+	* term/win.trm (WIN_put_tmptext): pass LPGW pointer to graphwin
+ 	struct as additional parameter.
+	(WIN_set_ruler): dito.
+	(WIN_set_cursor): dito.
+	(WIN_set_clipboard): dito.
+
+	* src/win/wresourc.h (IDC_CROSSHAIR, IDC_SCALING, IDC_ROTATINT):
+ 	added resource identifier macros for mouse cursors.
+	
+	* src/win/wgnuplib.h: Updated prototypes of mouse functions.
+	
+2001-02-08  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	Several cleanups suggested by reading an MSVC compilation logfile:
+	
+	* term/win.trm: added prototype for WIN_filledbox, and spread
+ 	warning notices all over the places regarding integer size
+ 	mismatch between the unsigned ints passed into the terminal API
+ 	and the WORD parameter accepted by GraphOp().
+	
+	* src/win/winmain.c (MyVFPrintF): add 'const' qualifier.
+	(MyFPrintF): dito.
+	(MyFPutS): dito.
+
+	* src/win/wtext.h (MyFWrite): added 'const' qualifier.
+ 	(MyPrintF): dito.
+ 	(MyFPutS): dito.
+	(MyVFPrintF): prototype added.
+	(vfprintf): #define added, points to MyVFPrintF.
+
+	* src/win/wgraph.c (GraphOp): added 'const' qualifier to 'str' argument.
+
+	* src/win/wgnuplib.h: dito.
+
+	* src/command.c (winsystem): add 'const' qualifier to argument.
+
+2001-02-07  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/fit.c (fit_command): Bugfix for 2D fits with a fixed yrange.
+  	Local copying of range endpoints over to zrange was not done.
+
+2001-02-06  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* src/win/wgraph.c src/win/wgnuplib.h term/win.trm: partial
+	implementation of mouse support for Windows. It should be finished
+	according to my notes in the source code and on stderr.
+
+2001-02-05  Petr Mikulik  <mikulik@physics.muni.cz>
+
+	* config/makefile.mgw, src/gpexecute.h, gpexecute.c, mousecmn.h,
+	src/win/wgraph.c: WIN_IPC, an IPC for Windows. Hotkeys in the
+	windows terminal are now working.
+
+2001-02-01  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/*.c, term/*.trm: Fixed incorrect usage of <ctype.h> macros.
+  	If you pass a char to any of those, you *have* to cast it to
+	(unsigned char). Not to (int), but really unsigned char. The only
+ 	exception would be ints holding the result of an fgetc() or
+ 	similar call, but those don't occur in gnuplot.
+
+	* CodeStyle: added a paragraph describing this rule.
+
+2001-02-01  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/set.c (set_command): Fix incorrect c_token movement in 'set
+ 	xdata {time}'.
+
+2001-01-30  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/show.c (show_command): Fix broken 'show ticslevel' and 'show
+ 	ticscale' commands (from Pieter-Tjerk de Boer).
+
+2001-01-22  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	I had a look across all usages of [safe_]strncpy(), and patched
+	several: 
+	
+	* src/fit.c (backup_file): Off-by-one error in use of safe_strncpy
+	fixed.
+
+	* src/gplt_x11.c (ErrorHandler): cast 'display' argument to void
+	to silence a compiler warning.
+
+	* src/command.c (replotrequest): Replace strncpy call by memcpy
+	iff the 'size' argument of strncpy was hand-tailored to the length
+	of the 'from' string.  In that case, the result is exactly the
+	same as with memcpy, but strncpy is inherently slower.
+
+	* src/fit.c (error_ex): dito.
+	(splitpath): dito.
+	(setvar): dito.
+	
+	* src/gplt_x11.c (record): dito.
+
+	* src/plot.c (gp_expand_tilde): dito.
+
+	* src/set.c (set_pm3d): dito.
+
+	* src/fit.c (fit_interrupt): Replace sprintf() call with
+	user-specified string by safe_strncpy, to avoid format string
+	vulnerability.
+
+2001-01-22  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/contour.c (fuzzy_equal): Removed use of 'zero' as a fudge
+ 	term. Avoid division-by-zero in another way. This also removed the
+ 	need for the private ABS() macro in this source. Removed.
+
+	* src/axis.c (mant_exp): Added code to change results like 10.0e0
+ 	to the result got from sprintf: 1.0e1, for number very close, but
+ 	not equal to 10.0.  Takes the mantissa format string as a new
+ 	argument, to decide how close 'very close' should be.
+	(mant_exp): Also try to avoid calls to the pow() function wherever
+ 	possible.
+	(mant_exp): Changed type of 'scientific' flag to TBOOLEAN.
+	(gprintf): Now stores exponent found as a byproduct when
+ 	mant_exp() is called for the mantissa, to avoid another call to
+ 	mant_exp() for the exponent alone, later.  Shuffled some code
+ 	lines to build starting conditions for mat_exp() correctly.
+  	CAVEAT: this only works well if the mantissa is output _before_
+ 	the exponent, or the mantissa format has zero digits of precision.
+	(gprintf): Moved some repeated code out of the individual cases of
+ 	the main switch statement to behind it.
+	(gprintf): Avoids division of negative integers: the result would
+ 	be platform-dependant!
+	(gen_tics): Repaired numerically silly condition that would remove
+ 	all inner tics for axes shorter than DBL_EPSILON, i.e. about
+ 	1e-16.
+
+2001-01-18  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/graphics.c (boundary): fix rounding errors in multiplot
+	placement by adding 0.5 to ytop, ybot, xleft and xright initial
+	values.
+
+2001-01-18  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* INSTALL [HP-UX 10.x]: change recommendations regarding GCC on
+	HP-UX 10.x and higher.
+
+	* src/graph3d.c (xtick_callback, ytick_callback, ztick_callback):
+ 	remove 'static' attribute to avoid bug in HP-UX assembler. This
+ 	was the root of the long-standing compilation problems with GCC on
+ 	HP-UX 10 and higher.
+
+	* src/graphics.c (widest2d_callback, xtick2d_callback): dito
+	(ytick2d_callback): dito.
+
+2001-01-16  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/term.h: add testing of THREEDKIT macro before activating
+ 	VGAGL terminal driver.
+
+	* src/interpol.c (cp_approx_spline, cp_tridiag, do_cubic):
+ 	streamline checks for logscaling and AXIS_UNDO_LOG calls into
+ 	AXIS_DE_LOG_VALUE calls.
+
+	* src/plot2d.c (eval_plots): dito.
+
+	* src/axis.h (AXIS_INIT3D, AXIS_INIT2D, CHECK_REVERSE): new
+ 	macro-local variable 'this' for more readable coding.
+	(AXIS_INIT3D, AXIS_INIT2D): only calculate log_base element if
+ 	logscaling is active for that axis, to avoid SIGFPE.
+
+	* src/axis.c (gen_tics): use AXIS_UNDO_LOG instead of explicit
+ 	coding.
+	(axis_output_tics): fix multiline x-axis label positioning.
+
+2001-01-16  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	New PNG feature from <Juergen.vonHagen@etec.uni-karlsruhe.de>:
+	
+	* term/png.trm (PNG_id, PNG_opts): new option 'picsize' added to
+ 	table.
+	(PNG_options): handle new case PNG_PICSIZE by resizing the
+ 	drawable area handled by the 'bitmap' module.
+	(PNG_options): add output of option picsize.
+	(PNG_graphics): use new variable output sizes instead of fixed
+ 	constants.
+	(PNG terminal docs): document new option 'picsize'
+
+2001-01-16  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/win/wpause.c (PauseBox): Change window style of Pause window
+ 	to make it show up in the taskbar and have it pop up on top of all
+ 	others.
+	(PauseBox): Insert WaitMessage() call to reduce CPU load while
+ 	gnuplot waits for the user to click away the pause window.
+
+	* term/win.trm (WIN_filledbox): New function, implements 'clear'
+ 	command for this terminal. Added entry to terminal API definition.
+
+	* src/win/wgnuplib.h (W_filledbox): define new message number.
+
+	* src/win/wgraph.c (drawgraph): handle new message W_filledbox to
+	draw blanked-out box.
+
+2001-01-11  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/graphics.c (apply_head_properties): make temps unsigned to
+ 	match arguments of map_position().
+
+	* term/svg.trm (SVG_point): add missing TERM_PUBLIC stamp to
+ 	definition.
+
 2001-01-04  Johannes Zellner  <johannes@zellner.org>
 
 	* src/pm3d.c, src/pm3d.h, src/color.c:  corrected

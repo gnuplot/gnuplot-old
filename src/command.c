@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.47 2000/12/15 10:10:31 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.47.2.1 2001/03/03 21:40:17 joze Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -111,7 +111,7 @@ int thread_rl_RetCode = -1; /* return code from readline in a thread */
 #ifndef _Windows
 # include "help.h"
 #else
-static int winsystem __PROTO((char *));
+static int winsystem __PROTO((const char *));
 #endif /* _Windows */
 
 #ifdef _Windows
@@ -239,6 +239,7 @@ com_line()
 {
 #ifdef OS2_IPC
 static char *input_line_SharedMem = NULL;
+
     if (input_line_SharedMem == NULL) {  /* get shared mem only once */
     if (DosGetNamedSharedMem((PVOID) &input_line_SharedMem,
 		mouseSharedMemName, PAG_WRITE | PAG_READ))
@@ -260,7 +261,7 @@ static char *input_line_SharedMem = NULL;
 	if (read_line(PROMPT))
 	    return (1);
 #else
-#ifdef OS2_IPC
+# ifdef OS2_IPC
 	ULONG u;
         if (thread_rl_Running == 0) {
 	    int res = _beginthread(thread_read_line,NULL,32768,NULL);
@@ -288,20 +289,20 @@ static char *input_line_SharedMem = NULL;
 		input_line_SharedMem[0] = 0; /* discard the whole command line */
 		return (0);
 	    }
-#if 0
+#  if 0
 	    fprintf(stderr,"shared mem received: |%s|\n",input_line_SharedMem);
 	    if (*input_line_SharedMem && input_line_SharedMem[strlen(input_line_SharedMem)-1] != '\n') fprintf(stderr,"\n");
-#endif
+#  endif
 	    strcpy(input_line, input_line_SharedMem);
 	    input_line_SharedMem[0] = 0;
 	    thread_rl_RetCode = 0;
 	}
 	if (thread_rl_RetCode)
 	    return (1);
-#else
+# else /* OS2_IPC */
 	if (read_line(PROMPT))
 	    return (1);
-#endif /* OS2_IPC */
+# endif /* OS2_IPC */
 #endif /* USE_MOUSE */
     }
 
@@ -328,7 +329,7 @@ do_line()
     char *inlptr = input_line;
 
     /* Skip leading whitespace */
-    while (isspace((int) *inlptr))
+    while (isspace((unsigned char) *inlptr))
 	inlptr++;
 
     if (inlptr != input_line) {
@@ -1347,7 +1348,7 @@ replotrequest()
 	 * make space for replot_line */
 	memmove(input_line+replot_len,input_line,rest_len+1);
 	/* copy previous plot command to start of input line */
-	strncpy(input_line, replot_line, replot_len);
+	memcpy(input_line, replot_line, replot_len);
     } else {
 	char *replot_args = NULL;	/* else m_capture will free it */
 	int last_token = num_tokens - 1;
@@ -2060,6 +2061,7 @@ const char *prompt;
     if (interactive)
 	PUT_STRING(prompt);
 # endif				/* no READLINE */
+
     do {
 	/* grab some input */
 # if defined(READLINE) || defined(HAVE_LIBREADLINE)
@@ -2124,11 +2126,11 @@ const char *prompt;
    use, so we will invoke the command interpreter and use it to execute the 
    commands */
 static int
-winsystem(char *s)
+winsystem(const char *s)
 {
     LPSTR comspec;
     LPSTR execstr;
-    LPSTR p;
+    LPCSTR p;
 
     /* get COMSPEC environment variable */
 # ifdef WIN32

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.48.2.1 2000/12/26 20:08:38 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.48.2.2 2001/03/03 21:40:18 joze Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -149,7 +149,6 @@ static void load_offsets __PROTO((double *a, double *b, double *c, double *d));
 static void set_linestyle __PROTO((void));
 static int assign_linestyle_tag __PROTO((void));
 static int looks_like_numeric __PROTO((char *));
-static void reset_lp_properties __PROTO((struct lp_style_type *arg));
 static int set_tic_prop __PROTO((AXIS_INDEX));
 static char *fill_numbers_into_string __PROTO((char *pattern));
 
@@ -194,8 +193,14 @@ set_command()
 	    int_warn(c_token, "deprecated syntax, use \"set style function\"");
         if (!almost_equals(++c_token,"s$tyle"))
             int_error(c_token,"expecting keyword 'style'");
-	else
-	    func_style = get_style();
+	else {
+	    enum PLOT_STYLE temp_style = get_style();
+	
+	    if (temp_style & 4)
+		int_error(c_token, "style not usable for function plots, left unchanged");
+	    else
+		func_style = temp_style;
+	}
     } else if (almost_equals(c_token,"li$nestyle") || equals(c_token, "ls" )) {
 	if (interactive)
 	    int_warn(c_token, "deprecated syntax, use \"set style line\"");
@@ -443,13 +448,17 @@ set_command()
 	    set_timedata(FIRST_X_AXIS);
 	    /* HBB 20000506: the old cod this this, too, although it
 	     * serves no useful purpose, AFAICS */
-	    set_timedata(T_AXIS);
-	    set_timedata(U_AXIS);
+	    /* HBB 20010201: Changed implementation to fix bug
+	     * (c_token advanced too far) */
+	    axis_array[T_AXIS].is_timedata
+	      = axis_array[U_AXIS].is_timedata
+	      = axis_array[FIRST_X_AXIS].is_timedata;
 	    break;
 	case S_YDATA:
 	    set_timedata(FIRST_Y_AXIS);
 	    /* dito */
-	    set_timedata(V_AXIS);
+	    axis_array[V_AXIS].is_timedata
+	      = axis_array[FIRST_X_AXIS].is_timedata;
 	    break;
 	case S_ZDATA:
 	    set_timedata(FIRST_Z_AXIS);
@@ -564,7 +573,7 @@ set_arrow()
     struct arrow_def *new_arrow = NULL;
     struct arrow_def *prev_arrow = NULL;
     struct position spos, epos, headsize;
-    struct lp_style_type loc_lp;
+    struct lp_style_type loc_lp = DEFAULT_LP_STYLE_TYPE;
     int tag;
     TBOOLEAN set_start, set_end, head = 1;
     TBOOLEAN set_line = 0, set_headsize = 0, set_layer = 0;
@@ -573,9 +582,6 @@ set_arrow()
     headsize.x = 0; /* length being zero means the default head size */
 
     c_token++;
-
-    /* Init struct lp_style_type loc_lp */
-    reset_lp_properties (&loc_lp);
 
     /* get tag */
     if (!END_OF_COMMAND
@@ -844,7 +850,7 @@ set_border()
      * for any other solution, currently */
     /* not for long, I hope. Lars */
     if(END_OF_COMMAND) {
-	set_lp_properties(&border_lp, 0, -2, 0, 1.0, 1.0);
+	border_lp = default_border_lp;
     } else {
 	lp_parse(&border_lp, 1, 0, -2, 0);
     }
@@ -2140,7 +2146,7 @@ set_output()
 	m_quote_capture(&testfile,c_token, c_token); /* reallocs store */
 	gp_expand_tilde(&testfile);
 	/* Skip leading whitespace */
-	while (isspace((int)*testfile))
+	while (isspace((unsigned char)*testfile))
 	    testfile++;
 	c_token++;
 	term_set_output(testfile);
@@ -2374,7 +2380,7 @@ set_pm3d()
 		    int_error(c_token,"ignoring so many redrawings");
 		    return /* (TRUE) */;
 		}
-		strncpy(pm3d.where, input_line + token[c_token].start_index, token[c_token].length);
+		memcpy(pm3d.where, input_line + token[c_token].start_index, token[c_token].length);
 		pm3d.where[ token[c_token].length ] = 0;
 		for (c = pm3d.where; *c; c++) {
 		    if (*c != 'C') /* !!!!! CONTOURS, UNDOCUMENTED, THIS LINE IS TEMPORARILY HERE !!!!! */
@@ -2614,9 +2620,14 @@ set_style()
 
     if (almost_equals(c_token, "d$ata"))
 	data_style = get_style();
-    else if (almost_equals(c_token, "f$unction"))
-	func_style = get_style();
-    else if (almost_equals(c_token, "l$ine")) {
+    else if (almost_equals(c_token, "f$unction")) {
+	enum PLOT_STYLE temp_style = get_style();
+
+	if (temp_style & 4)
+	    int_error(c_token, "style not usable for function plots, left unchanged");
+	else 
+	    func_style = temp_style;
+    } else if (almost_equals(c_token, "l$ine")) {
 	set_linestyle();
     } else
 	int_error(c_token, "expecting 'data', 'function', or 'line'");
@@ -2654,7 +2665,7 @@ set_terminal()
 		if (push_term_opts != NULL) free(push_term_opts);
 		if (push_term) {
 		    memcpy((void*)&push_term[0], (void*)term, sizeof(struct termentry));
-		    push_term_opts = strdup(term_options);
+		    push_term_opts = gp_strdup(term_options);
 		    fprintf(stderr, "\tpushed terminal %s %s\n", term->name, push_term_opts);
 		}
 	    } else
@@ -2958,14 +2969,14 @@ set_range(axis)
 	} else if (almost_equals(c_token, "norev$erse")) {
 	    ++c_token;
 	    axis_array[axis].range_flags &= ~RANGE_REVERSE;
-}
+	}
 	if (almost_equals(c_token, "wr$iteback")) {
 	    ++c_token;
 	    axis_array[axis].range_flags |= RANGE_WRITEBACK;
 	} else if (almost_equals(c_token, "nowri$teback")) {
 	    ++c_token;
 	    axis_array[axis].range_flags &= ~RANGE_WRITEBACK;
-}
+	}
 }
   }
 
@@ -3218,13 +3229,10 @@ set_linestyle()
     struct linestyle_def *this_linestyle = NULL;
     struct linestyle_def *new_linestyle = NULL;
     struct linestyle_def *prev_linestyle = NULL;
-    struct lp_style_type loc_lp;
+    struct lp_style_type loc_lp = DEFAULT_LP_STYLE_TYPE;
     int tag;
 
     c_token++;
-
-    /* Init struct lp_style_type loc_lp */
-    reset_lp_properties (&loc_lp);
 
     /* get tag */
     if (!END_OF_COMMAND) {
@@ -3583,32 +3591,6 @@ struct position *pos;
 	pos->scalez = type;	/* same as y */
     }
 }
-
-void
-set_lp_properties(arg, allow_points, lt, pt, lw, ps)
-struct lp_style_type *arg;
-int allow_points, lt, pt;
-double lw, ps;
-{
-    arg->pointflag = allow_points;
-    arg->l_type = lt;
-    arg->p_type = pt;
-    arg->l_width = lw;
-    arg->p_size = ps;
-}
-
-static void
-reset_lp_properties(arg)
-struct lp_style_type *arg;
-{
-    /* See plot.h for struct lp_style_type */
-    arg->pointflag = arg->l_type = arg->p_type = 0;
-    arg->l_width = arg->p_size = 1.0;
-#ifdef PM3D
-    arg->use_palette = 0;
-#endif
-}
-
 
 /*
  * Backwards compatibility ...

@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.12 2000/12/18 08:21:17 mikulik Exp $
+ * $Id: term.h,v 1.12.2.1 2001/03/03 21:40:18 joze Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -181,7 +181,7 @@
 #endif
 
 /* Linux VGAGL */
-#ifdef VGAGL
+#if defined(VGAGL) && defined (THREEDKIT)
 # include "vgagl.trm"
 #endif
 
@@ -328,6 +328,12 @@
 
 /* portable bit map */
 #include "pbm.trm"
+
+/* Adobe Portable Document Format (PDF) */
+/* NOTE THAT PDF REQUIRES A SEPARATE LIBRARY : see term/pdf.trm */
+#ifdef HAVE_LIBPDF
+# include "pdf.trm"
+#endif
 
 /* NOTE THAT PNG REQUIRES A SEPARATE LIBRARY : see term/png.trm */
 #ifdef HAVE_LIBPNG

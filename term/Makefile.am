@@ -13,11 +13,11 @@ dxy.trm eepic.trm emf.trm emxvga.trm epslatex.trm epson.trm excl.trm \
 fg.trm fig.trm ggi.trm gif.trm gnugraph.trm gpic.trm gpr.trm grass.trm \
 hp26.trm hp2648.trm hp500c.trm hpgl.trm hpljii.trm hppj.trm imagen.trm \
 iris4d.trm kyo.trm latex.trm linux.trm mac.trm metafont.trm metapost.trm \
-mgr.trm mif.trm multitos.trm next.trm openstep.trm pbm.trm pc.trm pm.trm \
-png.trm post.trm pslatex.trm pstricks.trm qms.trm regis.trm rgip.trm \
-sun.trm t410x.trm table.trm tek.trm texdraw.trm tgif.trm tkcanvas.trm \
-tpic.trm unixpc.trm unixplot.trm v384.trm vgagl.trm vws.trm win.trm \
-x11.trm xlib.trm 
+mgr.trm mif.trm multitos.trm next.trm openstep.trm pbm.trm pc.trm pdf.trm \
+pm.trm png.trm post.trm pslatex.trm pstricks.trm qms.trm regis.trm \
+rgip.trm sun.trm svg.trm t410x.trm table.trm tek.trm texdraw.trm tgif.trm \
+tkcanvas.trm tpic.trm unixpc.trm unixplot.trm v384.trm vgagl.trm vws.trm \
+win.trm x11.trm xlib.trm 
 ##trm-files-end
 
 Makefile.am: Makefile.am.in
@@ -29,5 +29,4 @@ Makefile.am: Makefile.am.in
 	sed -n '/^##trm-files-end/,$$p' Makefile.am.in >> $@t
 	chmod a-w $@t
 	mv $@t $@
-
 

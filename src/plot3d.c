@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.3 2000/12/21 19:04:07 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.4 2001/03/03 21:40:18 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1258,6 +1258,12 @@ eval_3dplots()
 
 	    if (almost_equals(c_token, "w$ith")) {
 		this_plot->plot_style = get_style();
+	        if ((this_plot->plot_type == FUNC3D)
+                    && (this_plot->plot_style & 4))
+                    {
+                        int_warn(c_token, "This plot style is only for datafiles , reverting to \"points\"");
+                        this_plot->plot_style = POINTSTYLE;
+                    }
 	    }
 	    /* pick up line/point specs
 	     * - point spec allowed if style uses points, ie style&2 != 0

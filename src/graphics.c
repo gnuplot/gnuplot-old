@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.41.2.1 2000/12/21 19:04:07 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.41.2.2 2001/03/03 21:40:17 joze Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -136,9 +136,10 @@ static void boundary __PROTO((TBOOLEAN scaling, struct curve_points * plots, int
 /* widest2d_callback keeps longest so far in here */
 static int widest_tic;
 
-static void widest2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
-static void ytick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
-static void xtick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
+/* HBB 20010118: these should be static, but can't --- HP-UX assembler bug */
+void widest2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
+void ytick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
+void xtick2d_callback __PROTO((AXIS_INDEX, double place, char *text, struct lp_style_type grid));
 
 static void get_arrow __PROTO((struct arrow_def* arrow, unsigned int* sx, unsigned int* sy, unsigned int* ex, unsigned int* ey));
 static void map_position_double __PROTO((struct position* pos, double* x, double* y, const char* what));
@@ -227,13 +228,16 @@ int count, *kcnt;
 /* we determine widest tick label by getting gen_ticks to call this
  * routine with every label
  */
+/* HBB 20010118: all the *_callback() functions made non-static. This
+ * is necessary to work around a bug in HP's assembler shipped with
+ * HP-UX 10 and higher, if GCC tries to use it */
 
-static void
+void
 widest2d_callback(axis, place, text, grid)
-AXIS_INDEX axis;
-double place;
-char *text;
-struct lp_style_type grid;
+    AXIS_INDEX axis;
+    double place;
+    char *text;
+    struct lp_style_type grid;
 {
     if (text) {			/* minitics have no text at all */
 	int len = label_width(text, NULL);
@@ -398,7 +402,8 @@ boundary(scaling, plots, count)
     /* compute ytop from the various components
      *     unless tmargin is explicitly specified  */
 
-    ytop = (int) ((ysize + yoffset) * (t->ymax));
+    /* HBB 20010118: fix round-off bug */
+    ytop = (int) (0.5 + (ysize + yoffset) * (t->ymax));
 
     if (tmargin < 0) {
 	int top_margin = x2label_textheight + title_textheight;
@@ -487,7 +492,7 @@ boundary(scaling, plots, count)
     /* compute ybot from the various components
      *     unless bmargin is explicitly specified  */
 
-    ybot = (int) ((t->ymax) * yoffset);
+    ybot = (int) (0.5 + (t->ymax) * yoffset);
 
     if (bmargin < 0) {
 	ybot += xtic_height + xtic_textheight;
@@ -657,7 +662,7 @@ boundary(scaling, plots, count)
     /* compute xleft from the various components
      *     unless lmargin is explicitly specified  */
 
-    xleft = (int) ((t->xmax) * xoffset);
+    xleft = (int) (0.5 + (t->xmax) * xoffset);
 
     if (lmargin < 0) {
 	xleft += (timelabel_textwidth > ylabel_textwidth ? timelabel_textwidth : ylabel_textwidth)
@@ -721,7 +726,7 @@ boundary(scaling, plots, count)
     /* compute xright from the various components
      *     unless rmargin is explicitly specified  */
 
-    xright = (int) ((t->xmax) * (xsize + xoffset));
+    xright = (int) (0.5 + (t->xmax) * (xsize + xoffset));
 
     if (rmargin < 0) {
 	/* xright -= y2label_textwidth + y2tic_width + y2tic_textwidth; */
@@ -965,7 +970,7 @@ apply_head_properties(struct position* headsize)
 {
     curr_arrow_headlength = 0;
     if (headsize->x > 0) { /* set head length+angle for term->arrow */
-	int itmp, x1, x2;
+	unsigned int itmp, x1, x2;
 	double savex = headsize->x;
 
 	curr_arrow_headangle = headsize->y;
@@ -1850,6 +1855,8 @@ struct curve_points *plot;
 	    ++goodcount;
 	}
 /* sort the data */
+    /* FIXME HBB 20010214: should replace home-grown bubblesort by
+     * call of qsort(), or at least insertion sort ... */
     for (bigi = i = 1; i < goodcount;) {
 	if (plot->points[gl[i]].x < plot->points[gl[i - 1]].x) {
 	    hold = gl[i];
@@ -1894,35 +1901,64 @@ struct curve_points *plot;
  * Draw vertical line for the histeps routine.
  * Performs clipping.
  */
+/* HBB 20010214: renamed parameters. xl vs. x1 is just _too_ easy to
+ * mis-read */
 static void
-histeps_vertical(xl, yl, x, y1, y2)
-int *xl, *yl;			/* keeps track of "cursor" position */
-double x, y1, y2;		/* coordinates of vertical line */
+histeps_vertical(cur_x, cur_y, x, y1, y2)
+    int *cur_x, *cur_y;		/* keeps track of "cursor" position */
+    double x, y1, y2;		/* coordinates of vertical line */
 {
     struct termentry *t = term;
     int xm, y1m, y2m;
 
-    if ((y1 < Y_AXIS.min && y2 < Y_AXIS.min) || (y1 > Y_AXIS.max && y2 > Y_AXIS.max) || x < X_AXIS.min || x > X_AXIS.max)
-	return;
+    /* FIXME HBB 20010215: wouldn't it be simpler to call
+     * draw_clip_line() instead? And in histeps_horizontal(), too, of
+     * course? */
 
-    if (y1 < Y_AXIS.min)
-	y1 = Y_AXIS.min;
-    if (y1 > Y_AXIS.max)
-	y1 = Y_AXIS.max;
-    if (y2 < Y_AXIS.min)
-	y2 = Y_AXIS.min;
-    if (y2 > Y_AXIS.max)
-	y2 = Y_AXIS.max;
+    /* HBB 20010215: reversed axes need special treatment, here: */
+    if (X_AXIS.min <= X_AXIS.max) {
+	if ((x < X_AXIS.min) || (x > X_AXIS.max))
+	    return;
+    } else {
+	if ((x < X_AXIS.max) || (x > X_AXIS.min))
+	    return;
+    }
 
+    if (Y_AXIS.min <= Y_AXIS.max) {
+	if ((y1 < Y_AXIS.min && y2 < Y_AXIS.min)
+	    || (y1 > Y_AXIS.max && y2 > Y_AXIS.max))
+	    return;
+	if (y1 < Y_AXIS.min)
+	    y1 = Y_AXIS.min;
+	if (y1 > Y_AXIS.max)
+	    y1 = Y_AXIS.max;
+	if (y2 < Y_AXIS.min)
+	    y2 = Y_AXIS.min;
+	if (y2 > Y_AXIS.max)
+	    y2 = Y_AXIS.max;
+    } else {	
+	if ((y1 < Y_AXIS.max && y2 < Y_AXIS.max)
+	    || (y1 > Y_AXIS.min && y2 > Y_AXIS.min))
+	    return;
+
+	if (y1 < Y_AXIS.max)
+	    y1 = Y_AXIS.max;
+	if (y1 > Y_AXIS.min)
+	    y1 = Y_AXIS.min;
+	if (y2 < Y_AXIS.max)
+	    y2 = Y_AXIS.max;
+	if (y2 > Y_AXIS.min)
+	    y2 = Y_AXIS.min;
+    }
     xm = map_x(x);
     y1m = map_y(y1);
     y2m = map_y(y2);
 
-    if (y1m != *yl || xm != *xl)
+    if (y1m != *cur_y || xm != *cur_x)
 	(*t->move) (xm, y1m);
     (*t->vector) (xm, y2m);
-    *xl = xm;
-    *yl = y2m;
+    *cur_x = xm;
+    *cur_y = y2m;
 
     return;
 }
@@ -1932,36 +1968,59 @@ double x, y1, y2;		/* coordinates of vertical line */
  * Performs clipping.
  */
 static void
-histeps_horizontal(xl, yl, x1, x2, y)
-int *xl, *yl;			/* keeps track of "cursor" position */
-double x1, x2, y;		/* coordinates of vertical line */
+histeps_horizontal(cur_x, cur_y, x1, x2, y)
+    int *cur_x, *cur_y;		/* keeps track of "cursor" position */
+    double x1, x2, y;		/* coordinates of vertical line */
 {
     struct termentry *t = term;
     int x1m, x2m, ym;
 
-    if ((x1 < X_AXIS.min && x2 < X_AXIS.min) ||
-	(x1 > X_AXIS.max && x2 > X_AXIS.max) ||
-	 y < Y_AXIS.min || y > Y_AXIS.max)
-	return;
+    /* HBB 20010215: reversed axes need special treatment, here: */
 
-    if (x1 < X_AXIS.min)
-	x1 = X_AXIS.min;
-    if (x1 > X_AXIS.max)
-	x1 = X_AXIS.max;
-    if (x2 < X_AXIS.min)
-	x2 = X_AXIS.min;
-    if (x2 > X_AXIS.max)
-	x2 = X_AXIS.max;
+    if (Y_AXIS.min <= Y_AXIS.max) {
+	if ((y < Y_AXIS.min) || (y > Y_AXIS.max))
+	    return;
+    } else {
+	if ((y < Y_AXIS.max) || (y > Y_AXIS.min))
+	    return;
+    }
 
+    if (X_AXIS.min <= X_AXIS.max) {
+	if ((x1 < X_AXIS.min && x2 < X_AXIS.min)
+	    || (x1 > X_AXIS.max && x2 > X_AXIS.max))
+	    return;
+
+	if (x1 < X_AXIS.min)
+	    x1 = X_AXIS.min;
+	if (x1 > X_AXIS.max)
+	    x1 = X_AXIS.max;
+	if (x2 < X_AXIS.min)
+	    x2 = X_AXIS.min;
+	if (x2 > X_AXIS.max)
+	    x2 = X_AXIS.max;
+    } else {
+	if ((x1 < X_AXIS.max && x2 < X_AXIS.max)
+	    || (x1 > X_AXIS.min && x2 > X_AXIS.min))
+	    return;
+
+	if (x1 < X_AXIS.max)
+	    x1 = X_AXIS.max;
+	if (x1 > X_AXIS.min)
+	    x1 = X_AXIS.min;
+	if (x2 < X_AXIS.max)
+	    x2 = X_AXIS.max;
+	if (x2 > X_AXIS.min)
+	    x2 = X_AXIS.min;
+    }
     ym = map_y(y);
     x1m = map_x(x1);
     x2m = map_x(x2);
 
-    if (x1m != *xl || ym != *yl)
+    if (x1m != *cur_x || ym != *cur_y)
 	(*t->move) (x1m, ym);
     (*t->vector) (x2m, ym);
-    *xl = x2m;
-    *yl = ym;
+    *cur_x = x2m;
+    *cur_y = ym;
 
     return;
 }
@@ -2338,13 +2397,13 @@ struct curve_points *plot;
  */
 static void
 plot_vectors(plot)
-struct curve_points *plot;
+    struct curve_points *plot;
 {
     int i;
     int x1, y1, x2, y2;
     struct termentry *t = term;
     TBOOLEAN head;
-    struct coordinate GPHUGE points[2];
+    struct coordinate points[2];
     double ex, ey;
     double lx[2], ly[2];
 
@@ -2474,7 +2533,7 @@ struct curve_points *plot;
  */
 static void
 plot_c_bars(plot)
-struct curve_points *plot;
+    struct curve_points *plot;
 {
     int i;			/* point index */
     struct termentry *t = term;
@@ -3159,9 +3218,13 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
     return (FALSE);
 }
 
+/* HBB 20010118: all the *_callback() functions made non-static. This
+ * is necessary to work around a bug in HP's assembler shipped with
+ * HP-UX 10 and higher, if GCC tries to use it */
+
 /* display a x-axis ticmark - called by gen_ticks */
 /* also uses global tic_start, tic_direction, tic_text and tic_just */
-static void
+void
 xtick2d_callback(axis, place, text, grid)
 AXIS_INDEX axis;
 double place;
@@ -3235,7 +3298,7 @@ struct lp_style_type grid;	/* linetype or -2 for no grid */
 
 /* display a y-axis ticmark - called by gen_ticks */
 /* also uses global tic_start, tic_direction, tic_text and tic_just */
-static void
+void
 ytick2d_callback(axis, place, text, grid)
 AXIS_INDEX axis;
 double place;
