@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.13 1998/10/05 12:40:04 lhecking Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.14 1998/10/12 20:21:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -511,9 +511,9 @@ int count;
 	label_width(timelabel.text, &timelin);
     /*}}} */
 
-    /*{{{  preliminary ytop  calculation
+    /*{{{  preliminary ytop  calculation */
 
-     *     first compute heights of things to be written in the margin /*
+     /*     first compute heights of things to be written in the margin */
 
      /* title */
     if (titlelin)
