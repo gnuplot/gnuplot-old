@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.6 1999/05/19 11:03:35 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.7 1999/05/20 18:42:03 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -921,6 +921,13 @@ set ticscale %g %g\n",
 
     fprintf(fp, "set locale \"%s\"\n", cur_locale);
 
+    fputs("set loadpath ",fp);
+    {
+	char *s;
+	while ((s=save_loadpath()) != NULL)
+	    fprintf(fp, "\"%s\" ",s);
+	fputc('\n',fp);
+    }
 }
 
 static void save_tics(fp, where, axis, tdef, rotate, text)

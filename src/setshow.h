@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.4 1999/05/19 11:03:45 lhecking Exp $
+ * $Id: setshow.h,v 1.5 1999/05/20 18:42:04 lhecking Exp $
  *
  */
 
@@ -40,6 +40,8 @@
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
+
+#include "variable.h"
 
 #ifndef DEFAULT_TIMESTAMP_FORMAT
 #define DEFAULT_TIMESTAMP_FORMAT "%a %b %d %H:%M:%S %Y" /* asctime() format */

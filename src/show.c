@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.6 1999/05/19 11:03:45 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.7 1999/05/20 18:42:04 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -312,6 +312,10 @@ static TBOOLEAN
     } else if (almost_equals(c_token, "loca$le")) {
 	(void) putc('\n', stderr);
 	show_locale();
+	c_token++;
+    } else if (almost_equals(c_token, "loa$dpath")) {
+	(void) putc('\n', stderr);
+	show_loadpath();
 	c_token++;
     } else if (almost_equals(c_token, "xzero$axis")) {
 	(void) putc('\n', stderr);
@@ -631,6 +635,7 @@ static TBOOLEAN
 	show_datatype("zdata", FIRST_Z_AXIS);
 	show_timefmt();
 	show_locale();
+	show_loadpath();
 	show_zero();
 	show_missing();
 	show_plot();

@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.2 1999/05/14 19:43:27 lhecking Exp $
+ * $Id: syscfg.h,v 1.3 1999/05/20 18:42:04 lhecking Exp $
  *
  */
 
@@ -218,7 +218,7 @@
 
 #ifndef HELPFILE
 # define HELPFILE "docs/gnuplot.gih"
-#endif /* !HELPFILE */
+#endif
 
 #ifndef HOME
 # define HOME "HOME"
