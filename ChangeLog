@@ -1,3 +1,22 @@
+2003-01-20  Lars Hecking  <lhecking@nmrc.ucc.ie>
+
+	* 0FAQ, syscfg.h, docs/gnuplot.doc, docs/gnuplot.texi: The name of
+	the FAQ file on the web/ftp sites has changed!
+
+	* Makefile.in, makefile.all: Remove commitvers.
+
+	* makefile.cyg: Add W32/cygwin include and library locations as
+	suggested by Petr.
+
+	* docs/Makefile.in: Some updates backported from devel branch.
+
+	* term/mac.trm, term/pdf.trm, term/svg.trm: Fix formatting of
+	help section.
+
+2003-01-20  Shigeharu TAKENO  <shige@iee.niit.ac.jp>
+
+	* term/cgm.trm, term/eepic.trm, term/hpgl.trm: Fix further misprints.
+
 2003-01-17  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* plot.h (cliptorange): New macro to simplify clipping in the
