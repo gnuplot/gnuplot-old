@@ -1,3 +1,12 @@
+2003-08-22  Lars Hecking  <lhecking@nmrc.ucc.ie>
+
+	* configure.in: Fix quoting to allow use of autoconf 2.5x.
+
+	* 0INSTALL, configure.in, term.h, term/ggi.trm: Use ggi configure
+	test from development branch.
+
+	* docs/gnuplot.doc: Fix typo.
+
 2003-06-23  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	Implemented path compression for SVG terminal drivers: avoid
