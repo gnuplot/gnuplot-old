@@ -1,10 +1,10 @@
-C RCS $Id: gnuplot.doc,v 1.230 2004/07/05 03:48:33 sfeam Exp $
+C RCS $Id: gnuplot.doc,v 1.226.2.1 2004/07/08 12:57:59 broeker Exp $
 C 18 September 2001
 C Copyright (C) 1986 - 1993, 1998, 1999, 2000, 2001, 2004   Thomas Williams, Colin Kelley et al.
 C
 ^ <h2> An Interactive Plotting Program </h2><p>
 ^ <h2>  Thomas Williams & Colin Kelley</h2><p>
-^ <h2>   Version 4.1 organized by Hans-Bernhard Broeker and others</h2><p>
+^ <h2>   Version 4.0 organized by Hans-Bernhard Broeker and others</h2><p>
 ^ <h2>Major contributors (alphabetic order):</h2>
 ^<ul><h3>
 ^<li>  Hans-Bernhard Broeker
@@ -564,42 +564,6 @@ C
  be given as a quoted time string according to the `timefmt` format string.
  See `set xdata` and `set timefmt`.  `gnuplot` will also accept an integer
  expression, which will be interpreted as seconds from 1 January 2000.
-2 Datastrings
-?datastrings
- The configuration option --enable-datastrings (currently EXPERIMENTAL) allows
- gnuplot to read and process text fields in datafiles. A text field consists 
- of either an arbitrary string of printable characters containing no whitespace
- or an arbitrary string of characters, possibly including whitespace, delimited
- by double quotes. The following sample line from a datafile is interpreted to
- contain four columns, with a text field in column 3:
-
-   1.000 2.000 "Third column is all of this text" 4.00
- 
- Text fields can be positioned within a 2-D or 3-D plot using the commands:
-   
-   plot 'datafile' using 1:2:4 with labels
-   splot 'datafile using 1:2:3:4 with labels
-
- A column of text data can also be used to label the ticmarks along one or more
- of the plot axes. The example below plots a line through a series of points
- with (X,Y) coordinates taken from columns 3 and 4 of the input datafile.
- However, rather than generating regularly spaced tics along the x axis
- labeled numerically, gnuplot will position a tic mark along the x axis at the
- X coordinate of each point and label the tic mark with text taken from column
- 1 of the input datafile.
-
-   set xtics
-   plot 'datafile' using 3:4:xticlabels(1) with linespoints
-
- There is also an option that will interpret the first entry in a column of
- input data as a text field, and use it as the key title for data plotted from
- that column. The example given below will use the first entry in column 2 to
- generate a title in the key box, while processing the remainder of columns 
- 2 and 4 to draw the required line:
-
-   plot 'datafile' using 1:(f($2)/$4) title 2 with lines
-
- See `set style labels`, `using xticlabels`, `plot title`, `using`.
 2 Environment
 ?environment
  A number of shell environment variables are understood by `gnuplot`.  None of
@@ -3052,54 +3016,6 @@ C ... and restart the table:
 ^ <a href="http://www.gnuplot.info/demo/using.html">
  Feeble using demos.
 ^ </a>
-
- If gnuplot is built with configuration option --enable-datastrings, then
- additional modifiers to `using` can specify handling of text fields in the 
- datafile. See `datastrings`, `using xticlabels`, `using title`.
-5 using title
-?using title
-?plot using title
- If gnuplot is built with configuration option --enable-datastrings, then
- the first entry of a column of the input data file can be used as a string
- to provide the plot title in the key box.  The column containing specified
- is independent of the column[s] used for the plot itself.
-
-    plot 'data' using 1:($2/$3) title 2 
-
- In this case the entry in the first row of column 2 will be used for the 
- key entry of the plot constructed from dividing column 2 by column 3.
- The entry in the first row of column 3 will be ignored.
- 
-5 xticlabels
-?using xticlabels
-?plot using xticlabels
- If gnuplot is built with configuration option --enable-datastrings, then
- a column of the input data file can be used to label axis tic marks in a 2-D
- plot command. The format of such a plot command is
-
-   plot 'datafile' using <xcol>:<ycol>:xticlabels(<labelcol>) with <plotstyle>
-
- The `xticlabels(<val>)` option must be the final entry of the `using` column 
- specifications. For each point which has a valid pair of X,Y coordinates,
- the text field found in column <labelcol> is added to the list of xtic labels
- at the same X coordinate as the point it belongs to. `xticlabels(<labelcol>)`
- may be shortened to `xtic(<labelcol>)`.
-5 x2ticlabels
-?using x2ticlabels
-?plot using x2ticlabels
- See plot using xticlabels.
-5 yticlabels
-?using yticlabels
-?plot using yticlabels
- See plot using xticlabels.
-5 y2ticlabels
-?using y2ticlabels
-?plot using y2ticlabels
- See plot using xticlabels.
-5 zticlabels
-?using zticlabels
-?plot using zticlabels
- See plot using xticlabels.
 3 errorbars
 ?commands plot errorbars
 ?commands splot errorbars
@@ -3362,9 +3278,9 @@ C ... and restart the table:
                     }
 
  where <style> is either `lines`, `points`, `linespoints`, `impulses`,
- `dots`, `steps`, `fsteps`, `histeps`, `errorbars`, `labels`, `xerrorbars`,
+ `dots`, `steps`, `fsteps`, `histeps`, `errorbars`, `xerrorbars`,
  `yerrorbars`, `xyerrorbars`, `errorlines`, `xerrorlines`, `yerrorlines`,
- `xyerrorlines`, `boxes`, `histograms`, `filledcurves`, `boxerrorbars`,
+ `xyerrorlines`, `boxes`, `filledcurves`, `boxerrorbars`,
  `boxxyerrorbars`, `financebars`, `candlesticks`, `vectors` or `pm3d`. Some
  of these styles require additional information. See `plotting styles` for
  details of each style.  `fill` is relevant only to certain 2D plots
@@ -4067,7 +3983,7 @@ C ... and restart the table:
 ?show boxwidth
 ?boxwidth
  The `set boxwidth` command is used to set the default width of boxes in the
- `boxes`, `boxerrorbars`, `candlesticks` and `histogram` styles.
+ `boxes`, `boxerrorbars` and `candlesticks` styles.
 
  Syntax:
        set boxwidth {<width>} {absolute|relative}
@@ -4232,8 +4148,7 @@ C ... and restart the table:
  integers in the range from 2 (linear) to 10.
 
  `levels`--- Selection of contour levels,  controlled by `auto` (default),
- `discrete`, `incremental`, and <n>, number of contour levels, limited to
-  MAX_DISCRETE_LEVELS as defined in plot.h (30 is standard.)
+ `discrete`, `incremental`, and <n>, number of contour levels.
 
  For `auto`, <n> specifies a nominal number of levels; the actual number will
  be adjusted to give simple labels. If the surface is bounded by zmin and zmax,
@@ -5251,11 +5166,10 @@ C ... and restart the table:
        set key {on|off} {default}
                {left | right | top | bottom | outside | below | <position>}
                {Left | Right} {{no}reverse}
-               {{no}invert}
                {samplen <sample_length>} {spacing <vertical_spacing>}
                {width <width_increment>}
                {height <height_increment>}
-               {{no}autotitle {columnheader}}
+               {{no}autotitles}
                {title "<text>"} {{no}enhanced}
                {{no}box { {linestyle | ls <line_style>}
                           | {linetype | lt <line_type>}
@@ -5276,12 +5190,6 @@ C ... and restart the table:
  box can be drawn around the key (`box {...}`) in a specified `linetype`
  and `linewidth`, or a user-defined `linestyle`. Note that not all
  terminal drivers support linewidth selection, though.
-
- By default the first plot label is at the top of the key and successive labels
- are entered below it. The `invert` option causes the first label to be placed
- at the bottom of the key, with successive labels entered above it. This option
- is useful to force the vertical ordering of labels in the key to match the
- order of box types in a stacked histogram.
 
  The length of the sample line can be controlled by `samplen`.  The sample
  length is computed as the sum of the tic length and <sample_length> times the
@@ -5310,14 +5218,6 @@ C ... and restart the table:
  suppressed by `noautotitles`; then only those titles explicitly defined
  by `(s)plot ... title ...` will be drawn.
 
- The `set key autotitle columnheader` option is available if gnuplot was built
- with --enable-datastrings. This command causes the first entry in each column
- of plotted data to be interpreted as a text string and used as a title for
- the corresponding plot. If the quantity being plotted is a function of data
- from several columns, gnuplot may be confused as to which column to draw the
- title from. In this case it is necessary to specify the column explicitly in
- the plot command, e.g. `plot "datafile" using (($2+$3)/$4) title 3 with lines`.
-
  A title can be put on the key (`title "<text>"`)---see also `syntax` for the
  distinction between text in single- or double-quotes.  The key title uses the
  same justification as do the plot titles.
@@ -5327,9 +5227,9 @@ C ... and restart the table:
  This default behavior can be switched off by the `noenhanced` option.
 
  The defaults for `set key` are `on`, `right`, `top`, `Right`, `noreverse`,
- `noinvert`, `samplen 4`, `spacing 1.25`, `title ""`, and `nobox`.  
- The default <linetype> is the same as that used for the plot borders.
- Entering `set key default` returns the key to its default configuration.
+ `samplen 4`, `spacing 1.25`, `title ""`, and `nobox`.  The default <linetype>
+ is the same as that used for the plot borders.  Entering `set key default` 
+ returns the key to its default configuration.
 
  The <position> can be a simple x,y,z as in previous versions, but these can
  be preceded by one of four keywords (`first`, `second`, `graph`, `screen`)
@@ -6855,7 +6755,6 @@ C ... and restart the table:
  Syntax:
        set style arrow <n> <arrowstyle>
        set style fill <fillstyle>
-       set style histogram <histogram style options>
        set style line <n> <linestyle>
 
 4 set style arrow
@@ -6956,8 +6855,8 @@ C ... and restart the table:
 ?set style fill
 ?show style fill
 ?fillstyle
- The `set style fill` command is used to set the style of boxes,
- histograms or candlesticks.
+ The `set style fill` command is used to set the style of boxes
+ or candlesticks.
 
  Syntax:
        set style fill {empty | solid {<density>} | pattern {<n>}}
@@ -7097,10 +6996,6 @@ C ... and restart the table:
  of the `steps` styles can be used with `splot`s. If an inappropriate style
  is specified, it will be changed to `points`.
 
- The above caveat does not apply to `plot with labels`, for which the third
- column specifies a data source rather than coordinate information.
- See `set style labels`.
-
  For 2-d data with more than two columns, `gnuplot` is picky about the
  allowed `errorbars` and `errorlines` styles. The `using` option on the
  `plot` command can be used to set up the correct columns for the style
@@ -7108,7 +7003,7 @@ C ... and restart the table:
  a column in the data file and an entry in the `using` list.)
 
  For three columns, only `xerrorbars`, `yerrorbars` (or `errorbars`),
- `xerrorlines`, `yerrorlines` (or `errorlines`), `boxes`,
+ `xerrorlines`, `yerrorlines` (or `errorlines`), `boxes` 
  and `boxerrorbars` are allowed. If another plot style is used, the style
  will be changed to `yerrorbars`. The `boxerrorbars` style will
  calculate the boxwidth automatically.
@@ -7212,127 +7107,16 @@ C ... and restart the table:
  x11, windows, pm, postscript, fig, pbm, png, gif, hpdj, hppj, hpljii, hp500c,
  jpeg, nec_cp6, epson_180dpi, epson_60dpi, epson_lx800, okidata, starc and
  tandy_60dpi. The BeOS driver (`be`) is untested.
-5 histograms
-?commands set style histograms
-?set style histograms
-?style histograms
-?histograms
- The `histograms` style is only relevant to 2-d plotting.  It produces a bar
- chart from a sequence of data columns in parallel. Each element of the 
- `plot` command must specify a single input data source (e.g. one column of 
- the input file), possibly with associated tic values or key titles.
- Three styles of histogram layout are currently supported. 
- 
-       set style histogram clustered {gap <gapsize>}
-       set style histogram rowstacked
-       set style histogram columnstacked
- 
- The default style corresponds to `set style histogram clustered gap 2`. 
- Each set of parallel data values is collected into a group of boxes clustered
- at the x-axis coordinate corresponding to their sequential position (row #)
- in the selected datafile columns.  Thus if <n> datacolumns are selected, the
- first cluster is centered about x=1, and contains <n> boxes whose heights are
- taken from the first entry in the corresponding <n> data columns. This
- is followed by a gap and then a second cluster of boxes centered about x=2
- corresponding to the second entry in the respective data columns, and so on.
- The default gap width of 2 indicates that the empty space between clusters is
- equivalent to the width of 2 boxes.  All boxes derived from any one column
- are given the same fill color and/or pattern (see `set style fill`).
-
- Each cluster of boxes is derived from a single row of the input data file.
- It is common in such input files that the first element of each row is a
- label. Labels from this column may be placed along the x-axis underneath
- the appropriate cluster of boxes with the `xticlabels` option to `using`.
-
- Two styles of stacked histogram are supported, chosen by the command
- `set style histogram {rowstacked|columnstacked}`.  In these styles the data
- values from the selected columns are collected into stacks of boxes.
- The default stacking mode is `rowstacked`.
-
- The `rowstacked` style places a box resting on the x-axis for each
- data value in the first selected column; the first data value results in 
- a box a x=1, the second at x=2, and so on.  Boxes corresponding to the
- second and subsequent data columns are layered on top of these, resulting
- in a stack of boxes at x=1 representing the first data value from each
- column, a stack of boxes at x=2 representing the second data value from
- each column, and so on.  All boxes derived from any one column are given the 
- same fill color and/or pattern (see `set style fill`).
-
- The `columnstacked` style is similar, except that each stack of boxes is
- built up from a single data column. Each data value from the first specified
- column yields a box in the stack at x=1, each data value from the second
- specified column yields a box in the stack at x=2, and so on.  In this style
- the color of each box is taken from the row number, rather than the column
- number, of the corresponding data field.
-
- Box widths may be modified using the `set boxwidth` command.
- Box fill styles may be set using the `set style fill` command.
-
- Examples:
-
- To plot a data file containing multiple columns of data as a histogram
- of clustered boxes (the default style):
-
-       set boxwidth 0.9 relative
-       set style data histograms
-       set style fill solid 1.0 border -1
-       plot 'file.dat' using 2, '' using 4, '' using 3 
-
- This will produce a plot with clusters of three boxes (vertical bars) centered
- at each integral value on the x axis. If the first column of the input file
- contains labels, they may be placed along the x-axis using the variant command
-
-       plot 'file.dat' using 2, '' using 4, '' using 3:xticlabels(1) 
-
- To plot the same data as a rowstacked histogram:
-
-       set style histogram rows
-       plot 'file.dat' using 2, '' using 4, '' using 3:xtic(1) 
-
- This will produce a plot in which each vertical bar contains a stack of three
- segments, corresponding in height to the values found in columns 2, 4 and 3
- of the datafile.
-
- Finally, the commands
-
-       set style histogram columnstacked
-       plot 'file.dat' using 2, '' using 4, '' using 3 
-
- will produce three vertical stacks. The stack at x=1 will contain a box for
- each entry in column 2 of the datafile.  The stack at x=2 will contain a box
- for each parallel entry in column 4 of the datafile, and the stack at x=3 a
- box for each entry of column 3.  
-
- More than one set of histograms can appear in a single plot. In this case you
- can force a gap between them, and a separate label for each set, by using the
- `newhistogram { "title" } { <linestyle> }` plot command.  For example
-       set style histogram  cluster
-       plot newhistogram "Set A", 'a' using 1, '' using 2, '' using 3, \
-            newhistogram "Set B", 'b' using 1, '' using 2, '' using 3
-
- The labels "Set A" and "Set B" will appear beneath the respective sets of 
- histograms, under the overall x axis label.
-
- The newhistogram command can also be used to force histogram coloring to
- begin with a specific color (linetype). By default colors will continue to
- increment successively even across histogram boundaries. Here is an example
- using the same coloring for multiple histograms
-       plot newhistogram "Set A" lt 4, 'a' using 1, '' using 2, '' using 3, \
-            newhistogram "Set B" lt 4, 'b' using 1, '' using 2, '' using 3
- 
-
 5 filledcurves
 ?commands set style filledcurves
 ?set style filledcurves
 ?plotting styles filledcurves
 ?style filledcurves
 ?filledcurves
- The `filledcurves` style is only relevant to 2-d plotting. Three variants
- are possible. The default is `closed`, which treats the curve itself as a
- closed polygon. The second option is to fill the area between the curve and
- a given axis, horizontal or vertical line, or a point.
- The third option requires three columns of input data: the x coordinate and
- two corresponding y coordinates; the area between the two curves is filled.
+ The `filledcurves` style is only relevant to 2-d plotting. It draws either
+ the current curve closed and filled, or the region between the current curve
+ and a given axis, horizontal or vertical line, or a point, filled with the
+ current drawing color.
 
  Syntax:
 
@@ -7341,7 +7125,7 @@ C ... and restart the table:
 
  where the option can be
 
-     [closed | {above | below} {x1 | x2 | y1 | y2}[=<a>] | xy=<x>,<y>]
+     [closed | {x1 | x2 | y1 | y2}[=<a>] | xy=<x>,<y>]
 
  The area is filled between the current curve and
      filledcurves closed   ... just filled closed curve,
@@ -7350,10 +7134,6 @@ C ... and restart the table:
      filledcurves y1=0     ... line y=0 (at y1 axis) ie parallel to x1 axis,
      filledcurves y2=42    ... line y=42 (at y2 axis) ie parallel to x2, etc,
      filledcurves xy=10,20 ... point 10,20 of x1,y1 axes (arc-like shape).
-
- The `above` and `below` options apply only to commands of the form
-     ... filledcurves above {x1|x2|y1|y2}=<val>
- and limit the filled area to one side of the bounding line.
 
  Note: filling is supported on filled-polygon capable terminals, see help of
  `set pm3d` for their list.
@@ -7490,29 +7270,6 @@ C ... and restart the table:
 ?impulses
  The `impulses` style displays a vertical line from the x axis (not the graph
  border), or from the grid base for `splot`, to each point.
-5 labels
-?commands set style labels
-?set style labels
-?plotting styles labels
-?style labels
-?labels
- The `labels` style is available only if gnuplot is built with configuration 
- option --enable-datastrings. For a 2-D plot with labels you must specify
- 3 input data columns; the text string found in the third column is printed at
- the X and Y coordinates generated by the first two column specifiers. The 
- font, color, rotation angle and other properties of the printed text may be
- specified as additional command options (see `set label`). The example below
- will generate a 2-D plot with text labels taken from column 4 of the input
- file (`tc lt 2` is shorthand for `textcolor linetype 2`, which is green).
-
-   plot 'datafile' using 1:(0.5 * $2):4 with labels font "arial,11" tc lt 2
-
- The `labels` style can also be used in 3-D plots. In this case four input
- column specifiers are required, corresponding to X Y Z and text.
-
-   splot 'datafile' using 1:2:3:4 with labels
-
- See also `datastrings`, `set style data`.
 5 lines
 ?commands set style lines
 ?set style lines

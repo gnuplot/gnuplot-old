@@ -26,7 +26,7 @@
 
             An Interactive Plotting Program
              Thomas Williams & Colin Kelley
-          Version 4.1 organized by: Hans-Bernhard Broeker
+          Version 4.0 organized by: Lars Hecking
 
  Copyright (C) 1986 - 1993, 1998, 2004   Thomas Williams, Colin Kelley
 
@@ -42,7 +42,7 @@ Major contributors (alphabetic order):
 
 @c ^ <h2> An Interactive Plotting Program </h2><p>
 @c ^ <h2>  Thomas Williams & Colin Kelley</h2><p>
-@c ^ <h2>   Version 4.1 organized by Hans-Bernhard Broeker and others</h2><p>
+@c ^ <h2>   Version 4.0 organized by Hans-Bernhard Broeker and others</h2><p>
 @c ^ <h2>Major contributors (alphabetic order):</h2>
 
 @itemize @bullet
@@ -693,7 +693,7 @@ The Atari version of readline defines some additional key aliases:
       Ctrl Home       - same as ^E.
       Esc             - same as ^U.
       Help            - @ref{help} plus return.
-      Ctrl Help       - `help `.
+      Ctrl Help       - @ref{help}.
 
 @end example
 
@@ -5569,11 +5569,7 @@ data.)  This option is relevant for `bspline` mode only.  Allowed values are
 integers in the range from 2 (linear) to 10.
 
 `levels`--- Selection of contour levels,  controlled by `auto` (default),
-`discrete`, `incremental`, and <n>, number of contour levels, limited to
-@example
- MAX_DISCRETE_LEVELS as defined in plot.h (30 is standard.)
-
-@end example
+`discrete`, `incremental`, and <n>, number of contour levels.
 
 For `auto`, <n> specifies a nominal number of levels; the actual number will
 be adjusted to give simple labels. If the surface is bounded by zmin and zmax,
