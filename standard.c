@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: standard.c,v 1.3 1998/04/22 18:57:03 lhecking Exp $";
+static char *RCSid = "$Id: standard.c,v 1.4 1998/10/28 21:08:24 lhecking Exp $";
 #endif
 
 /* GNUPLOT - standard.c */
@@ -69,7 +69,7 @@ static double ry1 __PROTO((double x));
  * These bessel functions are accurate to about 1e-13
  */
 
-#if (defined (ATARI) && defined(__PUREC__)) || (defined (MTOS) && defined(__PUREC__))
+#if (defined (ATARI) || defined (MTOS)) && defined(__PUREC__)
 /* Sorry. But PUREC bugs here.
  * These bessel functions are NOT accurate to about 1e-13
  */
@@ -480,7 +480,7 @@ static double GPFAR qyone[] = {
 	0.1e+1
 };
 
-#endif /* ATARI && __PUREC__  ||  MTOS && __PUREC__*/
+#endif /* (ATARI || MTOS) && __PUREC__ */
 
 void f_real()
 {
