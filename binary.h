@@ -1,4 +1,4 @@
-/* $Id: binary.h,v 1.1.1.2 1998/04/15 19:22:04 lhecking Exp $ */
+/* $Id: binary.h,v 1.2.2.1 2002/01/31 21:20:15 lhecking Exp $ */
 
 /* GNUPLOT - binary.h */
 
@@ -32,11 +32,8 @@
  * to the extent permitted by applicable law.
 ]*/
 
-
-/* Copied from command.c -- this should be put in a shared macro file */
-#ifndef inrange
-#define inrange(z,min,max) ((min<max) ? ((z>=min)&&(z<=max)) : ((z>=max)&&(z<=min)) )
-#endif
+#ifndef GNUPLOT_BINARY_H
+# define GNUPLOT_BINARY_H
 
 /* Routines for interfacing with command.c */
 float GPFAR *vector __PROTO(( int nl, int nh));
@@ -52,3 +49,5 @@ int fread_matrix __PROTO((FILE *fin, float GPFAR * GPFAR * GPFAR *ret_matrix, in
 int fwrite_matrix __PROTO(( FILE *fout, float GPFAR * GPFAR *m, int nrl, int nrh, int ncl, int nch, float GPFAR *row_title, float GPFAR *column_title));
 float GPFAR * GPFAR *convert_matrix __PROTO((float GPFAR *a, int nrl, int nrh, int ncl, int nch));
 void free_convert_matrix __PROTO((float GPFAR* GPFAR *b, int nrl, int nrh, int ncl, int nch));
+
+#endif /* GNUPLOT_BINARY_H */
