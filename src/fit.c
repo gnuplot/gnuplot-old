@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.4 1999/05/31 18:37:07 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.5 1999/06/06 18:26:42 lhecking Exp $";
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -933,7 +933,8 @@ struct value data;
 	    gp_alloc((unsigned int) sizeof(struct udvt_entry), "fit setvar");
 	udv_ptr->next_udv = NULL;
     }
-    safe_strncpy(udv_ptr->udv_name, varname, sizeof(udv_ptr->udv_name));
+    udv_ptr->udv_name = gp_realloc(udv_ptr->udv_name, strlen(varname)+1, "user var");
+    safe_strncpy(udv_ptr->udv_name, varname, strlen(varname)+1);
     udv_ptr->udv_value = data;
     udv_ptr->udv_undef = FALSE;
 }
