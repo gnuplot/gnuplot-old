@@ -1,4 +1,15 @@
 
+2000-10-24  Johannes Zellner <johannes@zellner.org>
+
+	* term/ggi.trm: increased the speed of ggi command line
+	input by redrawing ruler / statusline coordinates / zoombox
+	only if they've changed.
+
+	* term/ggi.trm: masking also key repeat events
+
+	* term/ggi.trm: 'q' closes the terminal, so it's
+	compatible with X11 and vgagl.
+
 2000-10-23  Johannes Zellner <johannes@zellner.org>
 
 	* repaired `pm3d hidden'
