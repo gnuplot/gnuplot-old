@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.16 1999/06/19 20:52:07 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.17 1999/07/20 15:33:36 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -276,8 +276,6 @@ char *missing_val = NULL;
 /*** other things we need *****/
 
 /* input data, parsing variables */
-
-extern TBOOLEAN is_3d_plot;
 
 /* From plot2d.c */
 extern struct curve_points *first_plot;
