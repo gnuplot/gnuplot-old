@@ -1,4 +1,4 @@
-dnl $Id: acinclude.m4,v 1.10 1998/10/09 14:35:50 lhecking Exp $
+dnl $Id: acinclude.m4,v 1.11 1998/10/13 20:30:59 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -126,7 +126,7 @@ fi
 AC_DEFUN(gp_MSDOS,
 [AC_MSG_CHECKING(for MS-DOS/djgpp/libGRX)
 AC_EGREP_CPP(yes,
-[#ifdef __DJGPP__ && __DJGPP__ == 2
+[#if __DJGPP__ && __DJGPP__ == 2
   yes
 #endif
 ], AC_MSG_RESULT(yes)
@@ -153,7 +153,7 @@ AC_EGREP_CPP(yes,
 AC_DEFUN(gp_NEXT,
 [AC_MSG_CHECKING(for NeXT)
 AC_EGREP_CPP(yes,
-[#ifdef __NeXT__
+[#if __NeXT__
   yes
 #endif
 ], AC_MSG_RESULT(yes)
