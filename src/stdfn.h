@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.28 2004/11/10 23:30:30 sfeam Exp $
+ * $Id: stdfn.h,v 1.29 2005/01/26 16:16:06 broeker Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -462,10 +462,10 @@ int gp_strnicmp __PROTO((const char *, const char *, size_t));
 #endif /* VERYLARGE */
 
 /* _POSIX_PATH_MAX is too small for practical purposes */
+#ifdef HAVE_SYS_PARAM_H
+# include <sys/param.h>
+#endif
 #ifndef PATH_MAX
-# ifdef HAVE_SYS_PARAM_H
-#  include <sys/param.h>
-# endif
 # ifndef MAXPATHLEN
 #  define PATH_MAX 1024
 # else
