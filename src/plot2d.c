@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot2d.c,v 1.5 1999/05/31 18:37:09 lhecking Exp $";
+static char *RCSid = "$Id: plot2d.c,v 1.6 1999/06/02 17:07:35 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1184,7 +1184,8 @@ do{ assert(!polar && !parametric); \
 	    else
 		break;
 	}
-
+	/* when step debugging, set breakpoint here to get through
+	 * the 'read function' loop above quickly */
 	if (parametric) {
 	    /* Now actually fix the plot pairs to be single plots */
 	    /* also fixes up polar&&parametric fn plots */
