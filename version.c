@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: version.c,v 1.10 1998/11/16 13:06:49 lhecking Exp $";
+static char *RCSid = "$Id: version.c,v 1.11 1998/11/21 18:07:16 lhecking Exp $";
 #endif
 
 /* GNUPLOT - version.c */
@@ -37,8 +37,8 @@ static char *RCSid = "$Id: version.c,v 1.10 1998/11/16 13:06:49 lhecking Exp $";
 #include "plot.h"
 
 char version[] = "3.5 (pre 3.6)";
-char patchlevel[] = "beta 347pl6";
-char date[] = "Mon Jun 22 13:22:33 BST 1998"; 
+char patchlevel[] = "beta 347pl7";
+char date[] = "Sat Nov 21 18:03:42 BST 1998"; 
 char gnuplot_copyright[] = "Copyright(C) 1986 - 1993, 1998";
 
 char faq_location[] = FAQ_LOCATION;
