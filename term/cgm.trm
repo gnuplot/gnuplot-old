@@ -1,5 +1,5 @@
 /* Hey Emacs this is -*- C -*-
- * $Id: cgm.trm,v 1.18 1999/03/11 13:00:31 lhecking Exp $
+ * $Id: cgm.trm,v 1.19 1999/05/13 18:51:53 lhecking Exp $
  */
 
 /* GNUPLOT - cgm.trm */
@@ -443,7 +443,7 @@ double width;
 {
     int new_linewidth;
 
-    assert(width >= 1.);
+    assert(width >= 0);
     new_linewidth = width * cgm_linewidth_pt * CGM_PT;
     if (new_linewidth == cgm_linewidth)
 	return;
