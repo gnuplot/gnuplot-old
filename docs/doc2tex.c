@@ -1,5 +1,5 @@
 /*
- * $Id: doc2tex.c,v 1.1 1998/04/15 19:16:44 lhecking Exp $
+ * $Id: doc2tex.c,v 1.2 1998/06/17 19:20:47 lhecking Exp $
  *
  */
 
@@ -43,14 +43,9 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <ctype.h>
-
 #include "ansichek.h"
+#include "stdfn.h"
 
-#ifndef NO_STDLIB_H
-#include <stdlib.h>
-#endif
 
 #define MAX_NAME_LEN	256
 #define MAX_LINE_LEN	256
@@ -70,10 +65,10 @@ typedef int boolean;
 boolean intable = FALSE;
 boolean verb = FALSE;
 
-#ifndef ALL_TERM
-#define ALL_TERM
+#ifndef ALL_TERM_DOC
+#define ALL_TERM_DOC
 #endif
-#define GOT_DRIVER_H
+#define TERM_DRIVER_H
 #include "termdoc.c"
 
 int
@@ -146,7 +141,9 @@ void process_line(line, b)
 				verb=FALSE;
 			 } 
 			 (void) fputs("\n\\begin{center}\n", b);
-			 (void) fputs("\\begin{tabular}{|ccl|} \\hline\n", b);
+			 /* moved to gnuplot.doc by RCC
+                         (void) fputs("\\begin{tabular}{|ccl|} \\hline\n", b);
+                         */
 			 intable = TRUE;
 		  }
 		  /* ignore rest of line */
