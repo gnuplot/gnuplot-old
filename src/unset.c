@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.9.2.1 2000/05/01 00:17:20 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.9.2.2 2000/05/25 06:02:05 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1140,10 +1140,12 @@ unset_pm3d()
 {
     c_token++;
     pm3d.where[0] = 0;
+#ifdef X11
     if (!strcmp(term->name, "x11")) {
 	extern void X11_unset_pm3d __PROTO((void)); /* defined in x11.trm */
 	X11_unset_pm3d();
     }
+#endif
 }
 #endif
 

@@ -1,3 +1,6 @@
+2000-05-25  Petr Mikulik <mikulik@physics.muni.cz>
+	* pm3d: unset.c: #ifdef X11 .. #endif missing in unset_pm3d()
+
 2000-05-24  Lars Hecking  <lhecking@nmrc.ie>
 
 	* configure.in: configure should always exit with an exit code
