@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.36 2002/01/25 18:02:09 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.37 2002/08/19 16:21:51 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -429,7 +429,7 @@ expecting 'lines', 'points', 'linespoints', 'dots', 'impulses',\n\
 expecting 'lines', 'points', 'linespoints', 'dots', 'impulses',\n\
 \t'yerrorbars', 'xerrorbars', 'xyerrorbars', 'steps', 'fsteps',\n\
 \t'histeps', 'filledcurves', 'boxes', 'boxerrorbars', 'boxxyerrorbars',\n\
-\t'vector', 'financebars', 'candlesticks', 'errorlines', 'xerrorlines',\n\
+\t'vectors', 'financebars', 'candlesticks', 'errorlines', 'xerrorlines',\n\
 \t'yerrorlines', 'xyerrorlines', 'pm3d'");
 #endif /* USE_ULIG_FILLEDBOXES */
 	ps = LINES;
