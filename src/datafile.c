@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: datafile.c,v 1.2 1999/05/14 19:40:40 lhecking Exp $";
+static char *RCSid = "$Id: datafile.c,v 1.3 1999/05/30 17:11:30 lhecking Exp $";
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -103,7 +103,7 @@ static char *RCSid = "$Id: datafile.c,v 1.2 1999/05/14 19:40:40 lhecking Exp $";
  *
  * if no spec given, we return number of consecutive columns we parsed.
  * 
- * if we are processing indexes, seperated by 'n' blank lines,
+ * if we are processing indexes, separated by 'n' blank lines,
  * we will return n-1 blank lines before noticing the index change
  *
  *   void df_close()
@@ -723,7 +723,7 @@ int max_using;
 	    os_error(msg, name_token);
 	}
 #endif /* HAVE_SYS_STAT_H */
-	if ((data_fp = fopen(filename, df_binary ? "rb" : "r")) == (FILE *) NULL) {
+	if ((data_fp = loadpath_fopen(filename, df_binary ? "rb" : "r")) == (FILE *) NULL) {
 	    /* one day we will have proper printf-style error reporting fns */
 	    sprintf(msg, "can't read data file \"%s\"", filename);
 	    os_error(msg, name_token);
