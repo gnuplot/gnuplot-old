@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.33 2002/03/30 13:15:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.34 2002/05/22 11:37:24 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1083,7 +1083,7 @@ unset_palette()
 
 
 /* reset colorbox to default settings */
-void
+static void
 reset_colorbox()
 {
     color_box.where = SMCOLOR_BOX_DEFAULT;
