@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: bf_test.c,v 1.7 1998/11/19 10:38:13 lhecking Exp $";
+static char *RCSid = "$Id: bf_test.c,v 1.8 1998/11/30 21:50:42 lhecking Exp $";
 #endif
 
 
@@ -16,7 +16,12 @@ static char *RCSid = "$Id: bf_test.c,v 1.7 1998/11/19 10:38:13 lhecking Exp $";
  * as a whole. (I think.)
  */
 
-#include "plot.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include "ansichek.h"
+#include "stdfn.h"
 #define GPFAR /**/
 #include "binary.h"
 #include "alloc.h"
