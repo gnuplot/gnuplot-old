@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.17 1998/11/17 20:54:01 lhecking Exp $
+ * $Id: plot.h,v 1.18 1998/12/07 22:09:52 lhecking Exp $
  *
  */
 
@@ -306,6 +306,11 @@ typedef double coordval;
 /* Some older platforms, namely SunOS 4.x, don't define this. */
 #ifndef DBL_EPSILON
 # define DBL_EPSILON     2.2204460492503131E-16
+#endif
+
+/* The XOPEN ln(10) macro */
+#ifndef M_LN10
+#  define M_LN10    2.3025850929940456840e0 
 #endif
 
 /* argument: char *fn */
