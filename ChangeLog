@@ -1,3 +1,8 @@
+2001-03-07  Johannes Zellner  <johannes@zellner.org>
+
+	* src/pm3d.c: code cleanup
+	* src/plot3d.c: included stdfn.h so that HUGE is defined
+
 2001-03-02  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/term.h [HAVE_LIBPNG]: Include new PDF terminal driver.

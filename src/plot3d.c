@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.4 2001/03/03 21:40:18 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.5 2001/03/07 14:30:42 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -51,6 +51,7 @@ static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.23.2.4 2001/03/03 21:40:1
 /*  #include "setshow.h" */
 #include "term_api.h"
 #include "util.h"
+#include "stdfn.h" /* HUGE */
 
 #ifdef THIN_PLATE_SPLINES_GRID
 #include "matrix.h"
