@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.27 2003/01/25 10:35:31 mikulik Exp $
+ * $Id: axis.h,v 1.28 2003/01/27 09:30:28 mikulik Exp $
  *
  */
 
@@ -173,8 +173,8 @@ typedef enum e_autoscale {
     AUTOSCALE_MIN = 1<<0,
     AUTOSCALE_MAX = 1<<1,
     AUTOSCALE_BOTH = (1<<0 | 1 << 1),
-    AUTOSCALE_FIXMIN = AUTOSCALE_MIN | 1<<2,
-    AUTOSCALE_FIXMAX = AUTOSCALE_MAX | 1<<3
+    AUTOSCALE_FIXMIN = 1<<2,
+    AUTOSCALE_FIXMAX = 1<<3
 } t_autoscale;
 
 
