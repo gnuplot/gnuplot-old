@@ -1,10 +1,10 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.51 1999/03/10 21:27:18 lhecking Exp $
+dnl $Id: configure.in,v 1.52 1999/03/11 13:02:22 lhecking Exp $
 dnl
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.51 $)
+AC_REVISION($Revision: 1.52 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*version.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 PATCHLVL=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
@@ -511,8 +511,8 @@ if test "$with_linux_vga" = yes; then
   AC_MSG_RESULT([    gnuplot is installed suid root!])
 fi
 
-if test "$enable_thin_splines" = yes && \
-  AC_MSG_RESULT([  Enable thin plate splines (EXPERIMENTAL])
+test "$enable_thin_splines" = yes && \
+  AC_MSG_RESULT([  Enable thin plate splines (EXPERIMENTAL)])
 
 test "$enable_iris" = yes && \
   AC_MSG_RESULT([  Enable IRIS terminal])
