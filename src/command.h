@@ -1,5 +1,5 @@
 /*
- * $Id: command.h,v 1.33 2004/09/01 15:53:46 mikulik Exp $
+ * $Id: command.h,v 1.34 2004/11/06 21:18:45 sfeam Exp $
  */
 
 /* GNUPLOT - command.h */
@@ -71,6 +71,10 @@ extern TBOOLEAN is_3d_plot;
 
 #ifdef WITH_IMAGE
 extern TBOOLEAN is_cb_plot;
+#endif
+
+#ifdef GP_MACROS
+extern TBOOLEAN expand_macros;
 #endif
 
 /* output file for the print command */
