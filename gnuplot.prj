@@ -1,5 +1,5 @@
 ;
-;  $Id: gnuplot.prj,v 1.1 1998/04/15 19:16:29 lhecking Exp $
+;  $Id: gnuplot.prj,v 1.1.1.1 1998/04/15 19:16:29 lhecking Exp $
 ;
 ; gnuplot.prj - this project can be used for both PureC and TurboC on the
 ; Atari. It is currently set up for PureC, but if you change all lines

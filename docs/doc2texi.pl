@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 #
-# $Id: doc2texi.pl,v 1.1 1998/04/15 19:16:44 lhecking Exp $
+# $Id: doc2texi.pl,v 1.1.1.1 1998/04/15 19:16:44 lhecking Exp $
 #
 # doc2texi.pl : Converts Gnuplot .doc files to Texinfo format.
 #

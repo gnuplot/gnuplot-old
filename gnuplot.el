@@ -1,5 +1,5 @@
 ;;
-;; $Id: gnuplot.el,v 1.1 1998/04/15 19:16:29 lhecking Exp $
+;; $Id: gnuplot.el,v 1.1.1.1 1998/04/15 19:16:29 lhecking Exp $
 ;;
 ;;
 ; 

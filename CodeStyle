@@ -1,4 +1,4 @@
-$Id: CodeStyle,v 1.1 1998/04/15 19:16:26 lhecking Exp $
+$Id: CodeStyle,v 1.1.1.1 1998/04/15 19:16:26 lhecking Exp $
 
 The following things have be observed when writing new code for gnuplot:
 (this file is currently under construction)  Some of the following is

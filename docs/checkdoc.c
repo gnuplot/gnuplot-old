@@ -1,5 +1,5 @@
 /*
- * $Id: checkdoc.c,v 1.1 1998/04/15 19:16:43 lhecking Exp $
+ * $Id: checkdoc.c,v 1.1.1.1 1998/04/15 19:16:43 lhecking Exp $
  *
  */
 

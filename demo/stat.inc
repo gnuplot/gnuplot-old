@@ -1,5 +1,5 @@
 #
-# $Id: stat.inc,v 1.1 1998/04/15 19:16:43 lhecking Exp $
+# $Id: stat.inc,v 1.1.1.1 1998/04/15 19:16:43 lhecking Exp $
 #
 # Library of Statistical Functions version 3.0
 #

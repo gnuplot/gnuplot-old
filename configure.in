@@ -10,10 +10,10 @@ dnl a macro is the usual case : this saves having to update
 dnl countless makefiles when new tests are added. By usual case
 dnl I guess ansi compiler on posix system or something like that
 dnl
-dnl $Id: configure.in,v 1.1 1998/04/15 19:16:28 lhecking Exp $
+dnl $Id: configure.in,v 1.1.1.1 1998/04/15 19:16:28 lhecking Exp $
 dnl
 AC_PREREQ(2.1)
-AC_REVISION($Revision: 1.1 $)
+AC_REVISION($Revision: 1.1.1.1 $)
 AC_INIT(graphics.c)
 AC_CONFIG_HEADER(config.h:config.hin)
 

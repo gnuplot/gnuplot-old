@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: makefile.os9,v 1.1 1998/04/15 19:16:32 lhecking Exp $
+# $Id: makefile.os9,v 1.1.1.1 1998/04/15 19:16:32 lhecking Exp $
 #
 # GNUPLOT 3.6 makefile (X11 support) for OS-9 and Ultra C
 #   by Martijn Schipper 18-6-1996

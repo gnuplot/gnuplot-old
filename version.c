@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: version.c,v 1.1 1998/04/15 19:16:36 lhecking Exp $";
+static char *RCSid = "$Id: version.c,v 1.1.1.1 1998/04/15 19:16:36 lhecking Exp $";
 #endif
 
 /* GNUPLOT - version.c */
@@ -64,8 +64,8 @@ static char *RCSid = "$Id: version.c,v 1.1 1998/04/15 19:16:36 lhecking Exp $";
  * do not agree with the one in the log. I hope to fix this some time soon.
  *
  * $Log: version.c,v $
- * Revision 1.1  1998/04/15 19:16:36  lhecking
- * Initial revision
+ * Revision 1.1.1.1  1998/04/15 19:16:36  lhecking
+ * Initial import of beta340.
  *
  * Revision 1.340  1997/11/25  23:03:09  drd
  * Alexander Mai: fix show output for non-auto x range

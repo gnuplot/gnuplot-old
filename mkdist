@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: mkdist,v 1.1 1998/04/15 19:16:33 lhecking Exp $
+# $Id: mkdist,v 1.1.1.1 1998/04/15 19:16:33 lhecking Exp $
 #
 # script to create a tar.gz of a development version. This script will not be
 # in any `real' distribution

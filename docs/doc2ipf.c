@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2ipf.c,v 1.1 1998/04/15 19:16:44 lhecking Exp $";
+static char *RCSid = "$Id: doc2ipf.c,v 1.1.1.1 1998/04/15 19:16:44 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2ipf.c */

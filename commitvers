@@ -1,6 +1,6 @@
 #! /usr/bin/perl
 #
-# $Id: commitvers,v 1.1 1998/04/15 19:16:28 lhecking Exp $
+# $Id: commitvers,v 1.1.1.1 1998/04/15 19:16:28 lhecking Exp $
 #
 # update version.c and commit gnuplot
 #

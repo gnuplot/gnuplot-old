@@ -1,6 +1,6 @@
 #!/bin/csh -f
 #
-# $Id: lasergnu,v 1.1 1998/04/15 19:16:31 lhecking Exp $
+# $Id: lasergnu,v 1.1.1.1 1998/04/15 19:16:31 lhecking Exp $
 #
 # Print gnuplot output on an Imagen or Postscript laser printer.
 

@@ -1,5 +1,5 @@
 #
-# $Id: fit.dem,v 1.1 1998/04/15 19:16:41 lhecking Exp $
+# $Id: fit.dem,v 1.1.1.1 1998/04/15 19:16:41 lhecking Exp $
 #
 
 print "Some examples how data fitting using nonlinear least squares fit"

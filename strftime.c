@@ -1,7 +1,7 @@
 #define NOTIMEZONE
 
 #ifndef lint
-static char *RCSid="$Id: strftime.c,v 1.1 1998/04/15 19:16:34 lhecking Exp $";
+static char *RCSid="$Id: strftime.c,v 1.1.1.1 1998/04/15 19:16:34 lhecking Exp $";
 #endif
 
 /*

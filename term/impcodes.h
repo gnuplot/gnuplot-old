@@ -1,5 +1,5 @@
 /*
- * $Id: impcodes.h,v 1.1 1998/04/15 19:16:49 lhecking Exp $
+ * $Id: impcodes.h,v 1.1.1.1 1998/04/15 19:16:49 lhecking Exp $
  */
 
 /*

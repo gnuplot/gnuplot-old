@@ -1,5 +1,5 @@
 #
-# $Id: makefile,v 1.1 1998/04/15 19:16:45 lhecking Exp $
+# $Id: makefile,v 1.1.1.1 1998/04/15 19:16:45 lhecking Exp $
 #
 #
 # Makefile for GNUPLOT documentation
@@ -16,7 +16,7 @@
 #   or
 #    make "TROFF=itroff" troff    (for troff; use your troff here)
 #
-# $Id: makefile,v 1.1 1998/04/15 19:16:45 lhecking Exp $
+# $Id: makefile,v 1.1.1.1 1998/04/15 19:16:45 lhecking Exp $
 
 # usually overridden by ../Makefile
 HELPDEST = /usr/local/lib

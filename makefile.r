@@ -1,9 +1,9 @@
 
-# $Id: makefile.r,v 1.1 1998/04/15 19:16:32 lhecking Exp $
+# $Id: makefile.r,v 1.1.1.1 1998/04/15 19:16:32 lhecking Exp $
 #
 # $Log: makefile.r,v $
-# Revision 1.1  1998/04/15 19:16:32  lhecking
-# Initial revision
+# Revision 1.1.1.1  1998/04/15 19:16:32  lhecking
+# Initial import of beta340.
 #
 # Revision 1.6  1996/01/28  16:31:40  drd
 # drd: take out defunct atari.trm from some makefiles

@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: vms.c,v 1.1 1998/04/15 19:16:36 lhecking Exp $";
+static char    *RCSid = "$Id: vms.c,v 1.1.1.1 1998/04/15 19:16:36 lhecking Exp $";
 #endif
 
 /* drop in popen() / pclose() for VMS

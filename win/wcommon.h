@@ -1,5 +1,5 @@
 /*
- * $Id: wcommon.h,v 1.1 1998/04/15 19:16:38 lhecking Exp $
+ * $Id: wcommon.h,v 1.1.1.1 1998/04/15 19:16:38 lhecking Exp $
  */
 
 /* GNUPLOT - wcommon.h */

@@ -1,4 +1,4 @@
-/* $Id: type.h,v 1.1 1998/04/15 19:16:35 lhecking Exp $ */
+/* $Id: type.h,v 1.1.1.1 1998/04/15 19:16:35 lhecking Exp $ */
 
 /*
  *	Header file: commonly used types

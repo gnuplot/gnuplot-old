@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: upd_make.sh,v 1.1 1998/04/15 19:16:35 lhecking Exp $
+# $Id: upd_make.sh,v 1.1.1.1 1998/04/15 19:16:35 lhecking Exp $
 #
 # shell script to update all makefiles which include makefile.all
 # after makefile.all has changed.

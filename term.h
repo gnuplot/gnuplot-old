@@ -1,6 +1,6 @@
 
 /*
- * $Id: term.h,v 1.1 1998/04/15 19:16:34 lhecking Exp $
+ * $Id: term.h,v 1.1.1.1 1998/04/15 19:16:34 lhecking Exp $
  *
  */
 

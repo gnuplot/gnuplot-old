@@ -1,6 +1,6 @@
 /* gnushell header file */
 /*
-** static char RCSid[]="$Id: gnupmdrv.h,v 1.1 1998/04/15 19:16:38 lhecking Exp $" ;
+** static char RCSid[]="$Id: gnupmdrv.h,v 1.1.1.1 1998/04/15 19:16:38 lhecking Exp $" ;
 */
 
 /*

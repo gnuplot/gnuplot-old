@@ -1,5 +1,5 @@
 #
-# $Id: contours.dem,v 1.1 1998/04/15 19:16:41 lhecking Exp $
+# $Id: contours.dem,v 1.1.1.1 1998/04/15 19:16:41 lhecking Exp $
 #
 set samples 20
 set isosamples 21
