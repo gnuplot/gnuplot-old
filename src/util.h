@@ -1,5 +1,5 @@
 /*
- * $Id: util.h,v 1.22 2004/10/26 04:31:12 sfeam Exp $
+ * $Id: util.h,v 1.23 2005/01/12 00:05:42 sfeam Exp $
  */
 
 /* GNUPLOT - util.h */
@@ -112,5 +112,7 @@ void lower_case __PROTO((char *));
 void squash_spaces __PROTO((char *));
 
 TBOOLEAN existdir __PROTO((const char *));
+
+char *getusername __PROTO((void));
 
 #endif /* GNUPLOT_UTIL_H */
