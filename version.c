@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: version.c,v 1.5 1998/09/23 19:59:25 lhecking Exp $";
+static char *RCSid = "$Id: version.c,v 1.6 1998/10/03 20:15:46 lhecking Exp $";
 #endif
 
 /* GNUPLOT - version.c */
@@ -46,8 +46,8 @@ static char *RCSid = "$Id: version.c,v 1.5 1998/09/23 19:59:25 lhecking Exp $";
  * do not agree with the one in the log. I hope to fix this some time soon.
  *
  * $Log: version.c,v $
- * Revision 1.5  1998/09/23 19:59:25  lhecking
- * Bump version to 347pl3.
+ * Revision 1.6  1998/10/03 20:15:46  lhecking
+ * Add faq_location.
  *
  * Revision 1.347  1998/06/22 12:24:56  ddenholm
  * dd : retrieve fit.*, matrix.*, docs/latextut/makefile from earlier vsns
@@ -1622,5 +1622,6 @@ char patchlevel[] = "beta 347pl3";
 char date[] = "Mon Jun 22 13:22:33 BST 1998"; 
 char gnuplot_copyright[] = "Copyright(C) 1986 - 1993, 1998";
 
+char faq_location[] = FAQ_LOCATION;
 char bug_email[] = CONTACT;
 char help_email[] = HELPMAIL;
