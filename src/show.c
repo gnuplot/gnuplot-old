@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.69 2002/01/24 13:55:27 amai Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.70 2002/01/25 18:02:08 joze Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1400,6 +1400,9 @@ show_styles(name, style)
     case CANDLESTICKS:
 	fputs("candlesticks\n", stderr);
 	break;
+    case PM3DSURFACE:
+	fputs("pm3d\n", stderr);
+	break;
     }
 }
 
@@ -1927,6 +1930,7 @@ static void show_pm3d()
     } else {
 	fprintf(stderr,"\tsurface is transparent for borders, tics and labels\n");
     }
+    fprintf(stderr,"\t%s", PM3D_IMPLICIT == pm3d.implicit ? "implicit" : "explicit");
 }
 
 #endif
