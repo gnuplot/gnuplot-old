@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.17 1998/11/20 12:19:12 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.18 1998/11/20 22:19:39 lhecking Exp $";
 #endif
 
 /*
@@ -73,7 +73,7 @@ static char *RCSid = "$Id: fit.c,v 1.17 1998/11/20 12:19:12 lhecking Exp $";
 
 #if defined(ATARI) || defined(MTOS)
 # define getchx() Crawcin()
-int kbhit(void);
+static int kbhit(void);
 #endif
 
 #define STANDARD    stderr	/* compatible with gnuplot philosophy */
@@ -1580,7 +1580,7 @@ void do_fit()
 }
 
 #if defined(ATARI) || defined(MTOS)
-int kbhit()
+static int kbhit()
 {
     fd_set rfds;
     struct timeval timeout;
