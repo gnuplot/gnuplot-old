@@ -1,12 +1,12 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot 3.7 on Unix.
 dnl
-dnl $Id: configure.in,v 1.62 1999/04/27 11:46:19 lhecking Exp $
+dnl $Id: configure.in,v 1.63 1999/05/27 20:58:04 lhecking Exp $
 dnl
 AC_INIT(src/graphics.c)
 AM_CONFIG_HEADER(config.h:config.hin)
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.62 $)
+AC_REVISION($Revision: 1.63 $)
 
 VERSION="`cat $srcdir/VERSION`.`cat $srcdir/PATCHLEVEL`"
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -149,16 +149,15 @@ fi
 dnl Operating systems.
 dnl FIXME AC_DEFINE(ISC22)
 dnl FIXME AC_DEFINE(KSR)
-dnl Check for MSDOS and djgpp, NeXT, BeOS
+dnl Check for MSDOS and djgpp, NeXT, Apple MacOsX (NeXT like), BeOS
 gp_MSDOS
 gp_NEXT
+gp_APPLE
 gp_BEOS
 AC_SUBST(GNUPLOT_BE)
 
 dnl this has to be after -lsys_s on NeXT
-dnl FIXME test for a math function that is actually needed
-LIBS="$LIBS -lm"
-
+AC_CHECK_LIB(m,sin)
 
 dnl Header files. ANSI first
 dnl We prefer that the absense of a macro is the norm, so in syscfg.h
