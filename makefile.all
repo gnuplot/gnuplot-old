@@ -1,7 +1,7 @@
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: makefile.all,v 1.5 1998/06/19 19:57:01 lhecking Exp $
+# $Id: makefile.all,v 1.6 1998/06/19 20:16:00 lhecking Exp $
 #
 ########################################################
 #
@@ -65,7 +65,7 @@ CORETERM = $(T)aed.trm $(T)ai.trm $(T)amiga.trm $(T)apollo.trm \
 	   $(T)impcodes.h $(T)iris4d.trm $(T)kyo.trm $(T)latex.trm \
 	   $(T)linux.trm $(T)metafont.trm $(T)mgr.trm $(T)mif.trm \
 	   $(T)multitos.trm $(T)next.trm $(T)object.h \
-	   $(T)pbm.trm $(T)pc.trm $(T)pm.trm $(T)png.trm $(T)post.trm
+	   $(T)pbm.trm $(T)pc.trm $(T)pm.trm $(T)png.trm $(T)post.trm \
 	   $(T)pslatex.trm $(T)pstricks.trm $(T)qms.trm $(T)regis.trm \
 	   $(T)rgip.trm $(T)sun.trm $(T)t410x.trm $(T)table.trm \
 	   $(T)tek.trm $(T)texdraw.trm $(T)tgif.trm $(T)tkcanvas.trm \
