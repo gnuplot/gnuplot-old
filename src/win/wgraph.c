@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgraph.c,v 1.1 1999/03/26 22:11:15 lhecking Exp $";
+static char *RCSid = "$Id: wgraph.c,v 1.2 1999/11/24 12:50:53 lhecking Exp $";
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -366,7 +366,8 @@ MakePens(LPGW lpgw, HDC hdc)
 		for (i=0; i<WGNUMPENS; i++)
 		{
 			lpgw->hpen[i] = CreatePenIndirect((LOGPEN FAR *)&lpgw->monopen[i+2]);
-			}
+			lpgw->hsolidpen[i] = CreatePenIndirect((LOGPEN FAR *)&lpgw->monopen[2]);
+		}
 		/* find number of solid, unit width line styles */
 		for (i=0; i<WGNUMPENS && lpgw->monopen[i+2].lopnStyle==PS_SOLID
 			&& lpgw->monopen[i+2].lopnWidth.x==1; i++) ;
