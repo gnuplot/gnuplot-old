@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.34 2004/09/15 11:13:04 mikulik Exp $
+ * $Id: term_api.h,v 1.35 2004/11/27 02:38:36 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -205,11 +205,10 @@ typedef struct TERMENTRY {
        one palette for the whole plot don't need this routine.
      */
 
-    void (*set_color) __PROTO((double gray));
-    /* gray is from [0;1], terminal uses its palette or another way
-       to transform in into gray or r,g,b
-       This routine (for each terminal separately) remembers or not
-       this colour so that it can apply it for the subsequent drawings
+    void (*set_color) __PROTO((t_colorspec *));
+    /* EAM November 2004 - revised to take a pointer to struct rgb_color,
+       so that a palette gray value is not the only option for
+       specifying color.
      */
     void (*filled_polygon) __PROTO((int points, gpiPoint *corners));
 #endif
