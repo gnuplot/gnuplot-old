@@ -1,7 +1,7 @@
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: makefile.all,v 1.34 1999/03/19 21:05:02 lhecking Exp $
+# $Id: makefile.all,v 1.35 1999/03/23 12:27:57 lhecking Exp $
 #
 ########################################################
 #
@@ -165,7 +165,7 @@ DOCS  = $(DOCS1) $(DOCS2) $(DOCS3) $(DOCS4) $(DOCS5)
 LISP =  $(E)ChangeLog $(E)Makefile.dst $(E)Makefile.in $(E)README \
 	$(E)aclocal.m4 $(E)configure $(E)/configure.in $(E)dot.el \
 	$(E)dotemacs $(E)gnuplot-gui.el $(E)gnuplot.el $(E)gpelcard.tex \
-	$(E)info-look.20.2.el $(E)info-look.20.3.el $(E)old/gnuplot.el
+	$(E)info-look.20.2.el $(E)info-look.20.3.el $(E)gnuplot.el.old
 
 #########################################################################
 # Simple Dependencies
