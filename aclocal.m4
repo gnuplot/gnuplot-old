@@ -10,7 +10,7 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-dnl $Id: aclocal.m4,v 1.13 1998/10/09 14:36:00 lhecking Exp $
+dnl $Id: aclocal.m4,v 1.14 1998/10/13 20:31:08 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
@@ -121,7 +121,7 @@ fi
 AC_DEFUN(gp_MSDOS,
 [AC_MSG_CHECKING(for MS-DOS/djgpp/libGRX)
 AC_EGREP_CPP(yes,
-[#ifdef __DJGPP__ && __DJGPP__ == 2
+[#if __DJGPP__ && __DJGPP__ == 2
   yes
 #endif
 ], AC_MSG_RESULT(yes)
@@ -144,7 +144,7 @@ AC_EGREP_CPP(yes,
 AC_DEFUN(gp_NEXT,
 [AC_MSG_CHECKING(for NeXT)
 AC_EGREP_CPP(yes,
-[#ifdef __NeXT__
+[#if __NeXT__
   yes
 #endif
 ], AC_MSG_RESULT(yes)
