@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: term.c,v 1.19 1998/12/09 15:25:32 lhecking Exp $";
+static char *RCSid = "$Id: term.c,v 1.20 1999/02/17 17:55:47 lhecking Exp $";
 #endif
 
 /* GNUPLOT - term.c */
@@ -961,14 +961,14 @@ void init_terminal()
 #ifdef NEXT
 	env_term = getenv("TERM");
 	if (term_name == (char *) NULL
-	    && env_term != (char *) NULL && strcmp(term, "next") == 0)
+	    && env_term != (char *) NULL && STREQ(term, "next"))
 	    term_name = "next";
 #endif /* NeXT */
 
 #ifdef SUN
 	env_term = getenv("TERM");	/* try $TERM */
 	if (term_name == (char *) NULL
-	    && env_term != (char *) NULL && strcmp(env_term, "sun") == 0)
+	    && env_term != (char *) NULL && STREQ(env_term, "sun"))
 	    term_name = "sun";
 #endif /* SUN */
 
@@ -991,7 +991,7 @@ void init_terminal()
 #ifdef X11
 	env_term = getenv("TERM");	/* try $TERM */
 	if (term_name == (char *) NULL
-	    && env_term != (char *) NULL && strcmp(env_term, "xterm") == 0)
+	    && env_term != (char *) NULL && STREQ(env_term, "xterm"))
 	    term_name = "x11";
 	display = getenv("DISPLAY");
 	if (term_name == (char *) NULL && display != (char *) NULL)

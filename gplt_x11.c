@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.18 1999/02/10 16:49:34 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.19 1999/02/17 17:55:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -515,7 +515,7 @@ void mainloop()
 	if (xe.type == ClientMessage && xe.xclient.window == message_window) {
 	    if (xe.xclient.message_type == None &&
 		xe.xclient.format == 8 &&
-		strcmp(xe.xclient.data.b, "die gnuplot die") == 0) {
+		STREQ(xe.xclient.data.b, "die gnuplot die")) {
 		FPRINTF((stderr, "quit message from ast\n"));
 		return;
 	    } else {

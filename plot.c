@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.23 1999/02/14 18:15:52 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.24 1999/02/17 17:55:14 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -401,7 +401,7 @@ char **argv;
 #endif
 
     gpoutfile = stdout;
-    (void) Gcomplex(&udv_pi.udv_value, Pi, 0.0);
+    (void) Gcomplex(&udv_pi.udv_value, M_PI, 0.0);
 
     init_memory();
 
@@ -517,7 +517,7 @@ char **argv;
 		noend = 1;
 	    else
 #endif
-	    if (strcmp(*argv, "-") == 0) {
+	    if (STREQ(*argv, "-")) {
 		/* DBT 10-7-98  go interactive if "-" on command line */
 
 		interactive = TRUE;

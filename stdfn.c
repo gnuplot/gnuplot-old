@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.7 1998/11/20 12:17:18 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.8 1999/02/17 17:55:42 lhecking Exp $";
 #endif
 
 
@@ -153,7 +153,7 @@ const char *cs, *ct;
   len = strlen(ct);
   while (*cs)
     {
-      if (strncmp(cs, ct, len)==0)
+      if (STREQN(cs, ct, len))
 	return (char *)cs;
       cs++;
     }

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: help.c,v 1.8 1998/12/09 15:23:49 lhecking Exp $";
+static char *RCSid = "$Id: help.c,v 1.9 1999/02/17 17:58:07 lhecking Exp $";
 #endif
 
 /* GNUPLOT - help.c */
@@ -369,7 +369,7 @@ static void sortkeys()
 static int keycomp(a, b)
 KEY *a, *b;
 {
-    return (strcmp(a->key, b->key));
+    return (STREQ(a->key, b->key));
 }
 
 /* Free the help file from memory. */
@@ -418,7 +418,7 @@ char *keyword;			/* string we look for */
     int compare;
 
     for (key = keys, compare = 1; key->key != NULL && compare > 0; key++) {
-	compare = strncmp(keyword, key->key, len);
+	compare = STREQN(keyword, key->key, len);
 	if (compare == 0)	/* we have a match! */
 	    if (!Ambiguous(key, len)) {
 		/* non-ambiguous abbreviation */
@@ -452,7 +452,7 @@ int len;
 
     for (prev = first = key->key, compare = 0, key++;
 	 key->key != NULL && compare == 0; key++) {
-	compare = strncmp(first, key->key, len);
+	compare = STREQN(first, key->key, len);
 	if (compare == 0) {
 	    /* So this key matches the first one, up to len.
 	     * But is it different enough from the previous one
@@ -536,7 +536,7 @@ TBOOLEAN *subtopics;		/* (out) are there any subtopics */
 
     for (subkey = key + 1; subkey->key != NULL; subkey++) {
 	int ispacelen = 0;
-	if (strncmp(subkey->key, key->key, len) == 0) {
+	if (STREQN(subkey->key, key->key, len)) {
 	    /* find this subtopic name */
 	    start = subkey->key + len;
 	    if (len > 0) {
