@@ -1,5 +1,5 @@
 /*
- * $Id: cgi.trm,v 1.1 1998/04/15 19:16:47 lhecking Exp $
+ * $Id: cgi.trm,v 1.2 1998/04/15 19:59:38 lhecking Exp $
  *
  */
 
@@ -310,8 +310,7 @@ START_HELP(cgi)
 " The `cgi` and `hcgi` terminal drivers support SCO CGI drivers.  `hcgi` is for",
 " printers; the environment variable CGIPRNT must be set.  `cgi` may be used",
 " for either a display or hardcopy; if the environment variable CGIDISP is set,",
-
-" then that display is used.  Otherwise CGIPRNT is used."
+" then that display is used.  Otherwise CGIPRNT is used.",
 "",
 " These terminals have no options."
 END_HELP(cgi)
