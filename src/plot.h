@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.1 1999/03/26 21:48:33 lhecking Exp $
+ * $Id: plot.h,v 1.2 1999/05/12 13:49:25 lhecking Exp $
  *
  */
 
@@ -171,7 +171,6 @@ typedef int TBOOLEAN;
 #define LEVELS_AUTO		0		/* How contour levels are set */
 #define LEVELS_INCREMENTAL	1		/* user specified start & incremnet */
 #define LEVELS_DISCRETE		2		/* user specified discrete levels */
-#define MAX_DISCRETE_LEVELS   30
 
 #define ANGLES_RADIANS	0
 #define ANGLES_DEGREES	1
