@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: print.c,v 1.2 1998/08/24 16:36:12 lhecking Exp $" ;
+static char RCSid[]="$Id: print.c,v 1.3 1998/12/17 22:10:44 lhecking Exp $" ;
 #endif
 
 /****************************************************************************
@@ -488,7 +488,7 @@ int FindPrinter( char *szName, PPRQINFO3 piPrinter )
     {
     PPRQINFO3 pprq = NULL ;
     PDRIVDATA pdriv = NULL ;
-    ULONG np ;
+    LONG np ;
     
     if( *szName && (strcmp( szName, piPrinter->pszName ) == 0) ) return 0 ;
     if( GetPrinters( &pprq , &np ) == 0 ) return 1 ;
