@@ -1,5 +1,5 @@
 /*
- * $Id: termdoc.c,v 1.7 1998/10/28 21:04:22 lhecking Exp $
+ * $Id: termdoc.c,v 1.8 1998/11/03 12:47:57 lhecking Exp $
  *
  */
 
@@ -182,6 +182,25 @@ FILE *fp;
 	line = -1;
     }
     return buffer;
+}
+
+
+/* Safe, '\0'-terminated version of strncpy()
+ * safe_strncpy(dest, src, n), where n = sizeof(dest)
+ * This is basically the old fit.c(copy_max) function
+ */
+
+char *safe_strncpy(d, s, n)
+char *d, *s;
+size_t n;
+{
+    char *ret;
+
+    ret = strncpy(d, s, n);
+    if (strlen(s) >= n)
+        d[n-1] = NUL;
+
+    return ret;
 }
 
 
