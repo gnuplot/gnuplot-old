@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.27 1998/10/20 19:41:52 lhecking Exp $
+# $Id: Makefile.in,v 1.28 1998/10/28 21:06:56 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -49,7 +49,7 @@ INCLUDES = -I. -I$(top_srcdir)
 CFLAGS = @CFLAGS@
 LDFLAGS = @LDFLAGS@
 
-COMPILE = $(CC) $(DEFS) $(CPPFLAGS) $(INCLUDES) $(CFLAGS)
+COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
 LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
 
 # This stuff is obsolete now. Use the appropriate configure options!
@@ -164,7 +164,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.27 1998/10/20 19:41:52 lhecking Exp $
+# $Id: Makefile.in,v 1.28 1998/10/28 21:06:56 lhecking Exp $
 #
 ########################################################
 #
@@ -375,8 +375,8 @@ uninstall:
 gnuplot: $(OBJS) version.o
 	$(LINK) $(OBJS) version.o $(TERMLIBS) $(TERMXLIBS) $(LIBS)
 
-gnuplot_x11: gplt_x11.o
-	$(LINK) gplt_x11.o $(XLIBS) $(LIBS)
+gnuplot_x11: gplt_x11.o stdfn.o
+	$(LINK) gplt_x11.o stdfn.o $(XLIBS) $(LIBS)
 
 docs/allterm.h: $(CORETERM)
 	cat $(T)*.trm > docs/allterm.h
