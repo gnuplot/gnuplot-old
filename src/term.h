@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.12 2000/12/18 08:21:17 mikulik Exp $
+ * $Id: term.h,v 1.13 2001/01/16 20:56:09 broeker Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -181,7 +181,7 @@
 #endif
 
 /* Linux VGAGL */
-#ifdef VGAGL
+#if defined(VGAGL) && defined (THREEDKIT)
 # include "vgagl.trm"
 #endif
 
