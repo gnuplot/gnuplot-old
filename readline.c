@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.4 1998/08/18 16:33:42 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.5 1998/08/19 11:07:14 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -85,15 +85,13 @@ static char *RCSid = "$Id: readline.c,v 1.4 1998/08/18 16:33:42 lhecking Exp $";
 #endif
 
 /* replaces the previous klugde in configure */
-#ifdef HAVE_TERMIOS_H
-# ifdef HAVE_TCGETATTR
-#  define TERMIOS
-# endif
-#else
+#if defined(HAVE_TERMIOS_H) && defined(HAVE_TCGETATTR)
+# define TERMIOS
+#else /* not HAVE_TERMIOS_H && HAVE_TCGETATTR */
 # ifdef HAVE_SGTTY_H
 #  define SGTTY
 # endif
-#endif
+#endif /* not HAVE_TERMIOS_H && HAVE_TCGETATTR */
 
 #if !defined(MSDOS) && !defined(ATARI) && !defined(MTOS) && !defined(_Windows) && !defined(DOS386) && !defined(OSK)
 
