@@ -249,6 +249,9 @@
 /*  Define if <errno.h> declares errno.  */
 #undef EXTERN_ERRNO
 
+/*  Define if we have sigsetjmp().  */
+#undef HAVE_SIGSETJMP
+
 /*  Define if you do have the popen and pclose functions.  */
 #undef PIPES
 
@@ -314,4 +317,7 @@
 
 /*  Define if you want to use the experimental Enhanced Metafile Format driver.  */
 #undef USE_EMF_DRIVER
+
+/*  Define if you want to use the experimental epslatex driver.  */
+#undef USE_EPSLATEX_DRIVER
 

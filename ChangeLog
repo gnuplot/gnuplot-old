@@ -3,16 +3,38 @@
 	* src/set.c (set_arrow): don't accept 'first' and 'second' as keywords
  	before 'from' or 'to'.
 	
-2000-09-21  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+2000-10-06  Johannes Zellner <johannes@zellner.org>
 
-	* graphics.c, graph3d.c: bugfix found by Petr Mikulik
-	which may be the reason for the famous HPUX misbehaviours.
+	* implemented finally configurable offsets for
+	set label "xy" at x, y pointsize 1 offset 2.0, 3.0
+	Useful for placing labels slightly offset from data
+	points. This was one of the points left from implementing
+	the mouse stuff.
+
+2000-09-21  Petr Mikulik <mikulik@physics.muni.cz>
+	* src/graphics.c src/graph3d.c: bugfix "if ((*t->pointsize))"
+	changed to "if (t->pointsize)
+
+2000-09-20  Johannes Zellner <johannes@zellner.org>
+
+	* relative arrows:
+	  set arrow from start_x, start_y rto delta_x, delta_y
+	* if front was given, the arrow head stuff wasn't applied.
+	  I repaired this. (also for 3d plots).
 
 2000-09-14  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* graphics.c (map_position), graph3d.c (map_position): Fix
  	off-by-one bug in treatment of term->{x,y}max when translating
  	'screen' coordinates.
+
+2000-08-02  Petr Mikulik <mikulik@physics.muni.cz>
+	* src/graph3d.c src/graphics.c src/set.c src/show.c src/term.c
+	  src/plot.h docs/gnuplot.doc term/fig.trm:
+	allow setting arrow head(s) sizes --- new keywords `heads` and
+	`{size <length>,<angle>}` for `set arrow`.
+	Note: not implemented for TeX-like terminals, which draw arrows
+	by their own method.
 
 2000-07-26 Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
@@ -24,6 +46,23 @@
 	* src/variable.c (loadpath_handler): in ACTION_CLEAR, make
 	sure 'limit' is properly initialized, too.
 	
+2000-07-25  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* src/graphics.c src/plot.c src/plot2d.c src/plot3d.c src/plot.h
+	  src/graph3d.c src/os2/gclient.c term/pm.trm term/post.trm:
+	avoid writing filenames in keys as enhanced text in enhanced-text
+	capable terminals (postscript and Presentation Manager); i.e., don't 
+	write file "a_123.dat" with '1' as subscript of 'a'.
+	  The method used sets a new flag `this_plot->title_no_enhanced = 1;`
+	if the title of filename or function cannot be enhanced. When keys are
+	typeset, then new global global variable `ignore_enhanced_text` is set.
+	Then enhanced terminals decide whether to use normal-text or
+	enhanced-text writing method. 
+	  Note: There was another method proposed to solve this problem: all
+	escape characters to be backslashed on reading of the title. However,
+	this would not work if the same plot is replotted subsequently on
+	enhanced and non-enhanced terminals.
+
 2000-07-25  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* all over the place: restructured axis module global 
@@ -46,6 +85,11 @@
 	to exist even in hidden3d plot. The new hidden3d routine
 	can cope with that case, too (after some fiddling).
 	
+2000-06-23  Johannes Zellner <johannes@zellner.org>
+
+	* src/gplt_x11.c: repaired `selection' (by left mouse).
+	I really don't know when and how this got broken!
+
 2000-06-22  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
 	* src/graph3d.c, src/util3d.c, src/hidden3d.c: implemented
@@ -55,6 +99,38 @@
 
 	* src/graph3d.c, src/util3d.c, src/hidden3d.c: implemented
 	hiddenlining for tic labels, axes and grid lines, again.
+
+2000-06-15  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/cgm.trm(CGM_option): reject linewidth zero to avoid
+	infinite looping in CGM_dashed_vector(), later
+
+2000-06-13  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/datafile.c(df_gets): prompt visibly for inline data, if
+	in interactive mode.
+
+	* src/set.c(reset_command): set grid linewidth to 1.0, like the
+	startup value (was 0.5, incorrectly).
+
+2000-06-10  Lars Hecking  <lhecking@nmrc.ucc.ie>
+
+	* GNUmakefile, Makefile.am: Move pre-dist target from Makefile.am.
+
+	* configure.in: New --enable-epslatex option. Cleanups.
+
+	* src/term.h: Add epslatex support.
+
+	* term/ggi.trm: New GGI driver, contributed by Cesar Crusius
+	<crusius@leland.stanford.edu>. Support not complete yet.
+	Requires -lgii, -lggi and -lggiwmh for linking.
+
+	* term/epslatex.trm: New terminal driver by Gregor Thalhammer
+	<Gregor.Thalhammer@uibk.ac.at>, updated version from 7th June.
+
+2000-06-09  Johannes Zellner <johannes@zellner.org>
+
+	* src/save.c: don't close the fp's if it's stdout
 
 2000-06-07  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
@@ -118,43 +194,29 @@
 
 	* src/axis.h: prototype for axis_draw_2d_zeroaxis added.
 
-2000-05-23  Petr Mikulik <mikulik@physics.muni.cz>
+2000-05-31  Petr Mikulik  <mikulik@physics.muni.cz>
 
-	* src/mouse.c: #include "datafile.h" added.
-	(do_event): set variable replot_disabled according to status of
-	plotted_data_from_stdin.
-	(apply_zoom): use new function do_string_replot() to avoid sending
-	"replot" commands from the mouse if that would trigger reread of
-	inline data.
-	(builtin_autoscale): dito.
-	(builtin_toggle_border): dito.
-	(builtin_replot): dito.
-	(builtin_toggle_log): dito.
-	(builtin_nearest_log): dito.
-	(builtin_toggle_ratio): dito.
-	(remove_label): dito.
-	(put_label): dito.
+	* Ignore `replot` command called from mouse/hotkey-event-enhanced
+	terminal when some plot data were piped in gnuplot via stdin ---
+	i.e., no mouse replot after `plot '-'`). See also "no replot after
+	`plot '-'`" discussion in the gnuplot-beta newsgroup.
+	New variables: plotted_data_from_stdin, replot_disabled.
 
-	* src/command.h: external declaration for replot_disabled.
-	* src/command.h: prototype for do_string_replot.
+2000-05-04  Johannes Zellner <johannes@zellner.org>
 
-	* src/command.c: new global variable replot_disabled
-	(do_string_replot): new function: if replot_disabled is true,
-	don't execute the 'replot' part of a mouse action.
-	(plot_command): initialize plotted_data_from_stdin to FALSE
-	(splot_command): dito
-	(replot_command): update replot_disabled
+	* configure.in, src/plot.c, src/parse.c: replace setjmp by
+	sigsetjmp and longjmp by siglongjmp if these functions
+	(or macros) are available.
 
-	* src/datafile.h: declare global plotted_data_from_stdin.
+2000-05-04  Johannes Zellner <johannes@zellner.org>
 
-	* src/datafile.c: new global variable plotted_data_from_stdin.
-	tracks if any of the datafiles plotted is "inline data".
-	(df_open): set plotted_data_from_stdin to TRUE, if necessary.
+	* src/command.c: always include ipc.h
 
-	* src/command.c: #include "datafile.h" for new variable
-	plotted_data_from_stdin.
+	* term/linux.trm: typedef int in declaration of linux_line_func_ptr
 
-	
+	* term/x11.trm: added a few ifdef USE_MOUSE's to exclude mouse
+	code, if compiling w/o mouse support.
+
 2000-05-02  Lars Hecking  <lhecking@nmrc.ucc.ie>
 
 	* INSTALL: In "Platform notes" section, add hint for using

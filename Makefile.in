@@ -57,8 +57,6 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-AMTAR = @AMTAR@
-AMTARFLAGS = @AMTARFLAGS@
 CC = @CC@
 CPP = @CPP@
 EMACS = @EMACS@
@@ -75,7 +73,6 @@ TERMXLIBS = @TERMXLIBS@
 TUTORIAL = @TUTORIAL@
 U = @U@
 VERSION = @VERSION@
-install_sh = @install_sh@
 
 AUTOMAKE_OPTIONS = foreign 1.2h
 
@@ -377,15 +374,6 @@ maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 dist-hook:
 	@for dir in `find $(distdir) -type d -name CVS -print`; do \
 	  rm -rf $$dir; done
-
-pre-dist:
-	@cd docs && make gnuplot.texi
-	@cd config && rm -f Makefile.am && make -f Makefile.am.in Makefile.am
-	@cd demo && rm -f Makefile.am && make -f Makefile.am.in Makefile.am
-	@cd m4 && rm -f Makefile.am && make -f Makefile.am.in Makefile.am
-	@cd src && rm -f makefile.all && make -f Makefile.maint makefile.all
-	@cd term && rm -f Makefile.am && make -f Makefile.am.in Makefile.am
-	@cd tutorial && rm -f Makefile.am && make -f Makefile.am.in Makefile.am
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
