@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.55 2002/03/09 17:48:39 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.56 2002/08/30 18:45:45 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -474,8 +474,9 @@ char **argv;
 	reset_command();
 	load_rcfile();
 	init_fit();		/* Initialization of fitting module */
-
-
+#ifdef PM3D
+	init_color();  /*  Initialization of color  */
+#endif /* PM3D */
 
 	if (interactive && term != 0) {		/* not unknown */
 #if defined(HAVE_LIBREADLINE) && defined(GNUPLOT_HISTORY)
