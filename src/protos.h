@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.2 1999/05/12 13:49:48 lhecking Exp $
+ * $Id: protos.h,v 1.3 1999/05/14 19:42:45 lhecking Exp $
  *
  */
 
@@ -287,6 +287,7 @@ int almost_equals __PROTO((int t_num, char *str));
 int isstring __PROTO((int t_num));
 int isanumber __PROTO((int t_num));
 int isletter __PROTO((int t_num));
+int is_notempty __PROTO((int t_num));
 int is_definition __PROTO((int t_num));
 void copy_str __PROTO((char str[], int t_num, int max));
 int token_len __PROTO((int t_num));
