@@ -13,8 +13,9 @@ HELPFILE = wgnuplot.hlp
 TOP = .
 # May need to add include/mingw32 for Cygwin b20, but not for b20.1
 #WIN32INC= /e/Cygnus/cygwin-b20/H-i586-cygwin32/i586-cygwin32/include/mingw32
-WIN32INC=/usr/local/include
-#WIN32LIBS =
+#WIN32INC=/usr/local/include
+#WIN32INC=/usr/local/include
+WIN32LIBS =/usr/include/mingw
 #WIN32FLAGS= -DWINVER=0x0400
 CPU=i586
 
