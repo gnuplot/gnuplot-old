@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.39.4.1 2000/05/31 17:03:16 broeker Exp $
+ * $Id: post.trm,v 1.39.4.2 2000/10/18 16:43:04 broeker Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -1652,6 +1652,9 @@ const char *font;
 {
     ENHPS_DEBUG(("ENHPS_set_font(\"%s\")\n", font));
 
+    if (ignore_enhanced_text)
+	return PS_set_font(font);
+
     if (*font) {
 	size_t sep = strcspn(font,",");
 	strncpy(ps_enh_font,font,sep);
@@ -1673,6 +1676,11 @@ ENHPS_put_text(x, y, str)
 unsigned int x, y;
 const char *str;
 {
+    if (ignore_enhanced_text) {
+	PS_put_text(x,y,str);
+	return;
+    }
+
     /* flush any pending graphics (all the XShow routines do this...) */
 
     if (!strlen(str))
