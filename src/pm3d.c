@@ -119,81 +119,6 @@ double z2gray ( double z )
     return z;
 }
 
-#if 0
-static void
-pm3d_rearrange_part(struct iso_curve* src, const int len, struct iso_curve*** dest, int* reverse)
-{
-    struct iso_curve* scanA;
-    struct iso_curve* scanB;
-    struct iso_curve **scan_array;
-    int i, scan;
-    int invert = 0;
-
-    double angle = fmod(surface_rot_z, 360.0);
-
-    scanA = src;
-
-    /* loop over scans in one surface
-       Scans are linked from this_plot->iso_crvs in the opposite order than
-       they are in the datafile.
-       Therefore it is necessary to make vector scan_array of iso_curves.
-       Scans are sorted in scan_array according to pm3d.direction (this can
-       be PM3D_SCANS_FORWARD or PM3D_SCANS_BACKWARD).
-     */
-    scan_array = *dest = malloc(len * sizeof(scanA));
-
-    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
-	/* check the y ordering between scans */
-	if (scanA && scanA->p_count) {
-	    scanB = scanA->next;
-	    if (scanB && scanB->p_count) {
-		if (scanB->points[0].y < scanA->points[0].y)
-		    invert = 1;
-		else
-		    invert = 0;
-	    }
-	}
-    }
-
-    for (scan = len, i=0; --scan>=0; ) {
-	if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
-	    switch (invert) {
-		case 1:
-		    if (angle > 90.0 && angle < 270.0) {
-			scan_array[scan] = scanA;
-		    } else {
-			scan_array[i++] = scanA;
-		    }
-		    break;
-		case 0:
-		default:
-		    if (angle > 90.0 && angle < 270.0) {
-			scan_array[i++] = scanA;
-		    } else {
-			scan_array[scan] = scanA;
-		    }
-		    break;
-	    }
-	}
-	else if (pm3d.direction == PM3D_SCANS_FORWARD)
-	    scan_array[scan] = scanA;
-	else /* PM3D_SCANS_BACKWARD: i counts scans */
-	    scan_array[ i++ ] = scanA;
-	scanA = scanA->next;
-    }
-
-    if (pm3d.direction == PM3D_SCANS_AUTOMATIC) {
-	double angle = fmod(surface_rot_z, 360.0);
-	int rev = (range_flags[FIRST_X_AXIS] ^ range_flags[FIRST_Y_AXIS]) & RANGE_REVERSE;
-	if ((angle > 180.0 && !rev) || (angle < 180.0 && rev)) {
-	    *reverse = 1;
-	} else {
-	    *reverse = 0;
-	}
-    }
-}
-#else
-
 static void
 pm3d_rearrange_part(struct iso_curve* src, const int len, struct iso_curve*** dest, int* invert)
 {
@@ -263,7 +188,6 @@ pm3d_rearrange_part(struct iso_curve* src, const int len, struct iso_curve*** de
 	scanA = scanA->next;
     }
 }
-#endif
 
 /* allocates *first_ptr (and eventually *second_ptr)
  * which must be freed by the caller */
@@ -362,12 +286,6 @@ pm3d_plot(struct surface_points* this_plot, char at_which_z)
     }
     printf("\n");
 #endif
-
-    if (pm3d.hidden3d_tag) {
-	struct lp_style_type lp;
-	lp_use_properties(&lp, pm3d.hidden3d_tag, 1);
-	term_apply_lp_properties(&lp);
-    }
 
 
     /*

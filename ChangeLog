@@ -1,3 +1,7 @@
+2000-10-23  Johannes Zellner <johannes@zellner.org>
+
+	* repaired `pm3d hidden'
+
 2000-10-23  Petr Mikulik <mikulik@physics.muni.cz>
 
 	* src/os2/gclient.c: support for 'with l lt pal'

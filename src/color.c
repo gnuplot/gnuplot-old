@@ -233,27 +233,22 @@ void filled_quadrangle ( gpdPoint *corners )
 #endif
 
     term->filled_polygon(4, icorners);
+
     if (pm3d.hidden3d_tag) {
-#if 0
+
+
 	/* Colour has changed, thus must apply properties again. That's because
 	   gnuplot has no inner notion of color.
 	*/
 	struct lp_style_type lp;
 	lp_use_properties(&lp, pm3d.hidden3d_tag, 1);
 	term_apply_lp_properties(&lp);
-#endif
+
 	term->move(icorners[0].x, icorners[0].y);
 	for (i = 3; i >= 0; i--) {
 	    term->vector(icorners[i].x, icorners[i].y);
 	}
     }
-#if 0
-    fprintf(stderr, "(filled_quadrangle)");
-    for (i = 0; i < 4; i++) {
-	fprintf(stderr, " %d %d", icorners[i].x, icorners[i].y);
-    }
-    fprintf(stderr, "\n");
-#endif
 }
 
 
