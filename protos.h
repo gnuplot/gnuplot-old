@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.7 1998/11/26 19:00:11 lhecking Exp $
+ * $Id: protos.h,v 1.8 1998/12/02 18:36:51 lhecking Exp $
  *
  */
 
@@ -222,6 +222,9 @@ int scanner __PROTO((char expression[]));
 /* Prototypes from "stdfn.c" */
 
 char *safe_strncpy __PROTO((char *, char *, size_t));
+#ifndef HAVE_SLEEP
+unsigned int sleep __PROTO((unsigned int)):
+#endif
 
 
 /* Prototypes from file "term.c" */
@@ -255,7 +258,6 @@ void vms_reset();
 int null_text_angle __PROTO((int ang));
 int null_justify_text __PROTO((enum JUSTIFY just));
 int null_scale __PROTO((double x, double y));
-static void null_linewidth __PROTO((double s));
 int do_scale __PROTO((double x, double y));
 void options_null __PROTO((void));
 void UNKNOWN_null __PROTO((void));
