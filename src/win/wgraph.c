@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wgraph.c,v 1.2.2.1 2000/10/20 15:12:33 broeker Exp $";
+static char *RCSid = "$Id: wgraph.c,v 1.2.2.2 2000/10/31 14:48:19 joze Exp $";
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -1615,6 +1615,16 @@ WndGraphProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 			}
 			break;
+/* HBB 20001023: implement the '<space> in graph returns to text window' 
+ * feature already present in OS/2 and X11 */
+		case WM_CHAR:
+			if (wParam == VK_SPACE) {
+				/* Make sure the text window is visible: */
+				ShowWindow(lpgw->lptw->hWndParent, SW_SHOW);
+				/* and activate it (--> Keyboard focus goes there */
+				BringWindowToTop(lpgw->lptw->hWndParent);
+			}
+			return 0;			
 		case WM_COMMAND:
 			switch(LOWORD(wParam))
 			{

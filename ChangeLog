@@ -1,3 +1,26 @@
+2000-10-31 Johannes Zellner <johannes@zellner.org>
+
+	* src/save.c: set linestyle --> set style line
+
+2000-10-27  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* term/pstricks.trm (PSTRICKS_xscale): removed, as it was
+	essentially unused, anyway.
+	(PSTRICKS_yscale): dito.
+	(PSTRICKS_graphics): respect 'size' and 'offset' settings in
+	creating the bounding box of the graph.
+
+	* term/eepic.trm (EEPIC_lines): Added a few more linetypes which
+ 	had been blissfully commented out.
+	(EEPIC_NUMLINES): raised to 10, accordingly.
+	(EEPIC_graphics): respect 'size' and 'offset' settings in creating
+ 	the bounding box of the graph. This overrides the patch of
+ 	2000-10-24 filed in by Lars.
+
+2000-10-25  Petr Mikulik <mikulik@physics.muni.cz>
+
+	* docs/gnuplot.doc: added documentation for the "history" and 
+	  "system" commands.
 
 2000-10-25  Johannes Zellner <johannes@zellner.org>
 
@@ -11,6 +34,17 @@
 	  finally supporting 'with l lt pal' too
 
 	* docs/gnuplot.doc, pm3d/README: say PM3D works under Win too
+
+2000-10-24  Lars Hecking  <lhecking@nmrc.ucc.ie>
+
+	* docs/gnuplot.texi: Regenerate to include new arrow heads options
+	and driver updates.
+
+2000-10-24  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
+	* src/win/wgraph.c (WndGraphProc): ported X11/OS2 feature that
+ 	pressing SPC in graph window transfers the focus to the gnuplot
+ 	text window.
 
 2000-10-24  Lars Hecking  <lhecking@nmrc.ucc.ie>
 
@@ -35,6 +69,37 @@
 
 	* term/ggi.trm: 'q' closes the terminal, so it's
 	compatible with X11 and vgagl.
+
+2000-10-24  Lars Hecking  <lhecking@nmrc.ucc.ie>
+
+	* missing: Update from automake-cvs.
+
+	* src/depcomp: Add from automake-cvs.
+
+	* term/cgm.trm: Use gnuplot_version and gnuplot_patchlevel instead of
+	VERSION. Escape underscores in font names for TeX/LaTeX.
+
+	* term/cgm.trm(CGM_set_font): Eliminate compiler warning.
+
+	* term/emf.trm: Update to latest version.
+
+	* term/ggi.trm: Delete empty line at end of termdocs section.
+
+2000-10-24  Brendt Wohlberg  <brendt@cnls.lanl.gov>
+
+	* term/pslatex.trm: The current pslatex term has an option for
+	modifying the text font size, but this option only changes text
+	positioning without actually changing the font size. This patch
+	changes the optional value from a scaling factor to a font size
+	(in points) and includes LaTeX commands to actually change the
+	font size. 
+
+2000-10-24  Andreas Czechanowski  <dl4sdc@dl4sdc.ampr.org>
+
+	* term/fig.trm: Update to fig file format version 3.2. Fix scaling
+	in metric mode. Change upper left corner offset to be at an integer
+	centimeter position in metric mode. Output sizes for metrix are now
+	12x8cm and 12x15cm.
 
 2000-10-23  Johannes Zellner <johannes@zellner.org>
 
