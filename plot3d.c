@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: plot3d.c,v 1.9 1998/10/09 14:28:43 lhecking Exp $";
+static char    *RCSid = "$Id: plot3d.c,v 1.10 1998/10/19 19:39:35 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -188,7 +188,7 @@ do { if (log_array[AXIS]) { if (VALUE<0.0) {TYPE = UNDEFINED; UNDEF_ACTION; brea
  * this also restores min and max for ranges like [10:-10]
  */
 
-#ifdef HAVE_CPP_STRINGIFY
+#ifdef HAVE_STRINGIZE
 # define RANGE_MSG(x) #x " range is less than threshold : see `set zero`"
 #else
 # define RANGE_MSG(x) "x range is less than threshold : see `set zero`"

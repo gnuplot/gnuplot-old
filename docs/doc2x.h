@@ -1,5 +1,5 @@
 /*
- * $Id: doc2x.h,v 1.1 1998/10/19 13:18:20 lhecking Exp $
+ * $Id: doc2x.h,v 1.2 1998/10/19 19:39:24 lhecking Exp $
  *
  */
 
@@ -60,7 +60,7 @@ typedef int boolean;
 #endif
 #define FALSE 0
 
-#ifdef HAVE_CPP_STRINGIFY
+#ifdef HAVE_STRINGIZE
 # define START_HELP(driver) "C#" #driver ,
 # define END_HELP(driver)   ,"C#",
 #else
