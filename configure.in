@@ -10,10 +10,10 @@ dnl [Lars: this is no longer necessary. I have cut this stuff out
 dnl  of configure.in and added the necessery definitions to syscfg.h.
 dnl  This reduced the size of configure by 30k!
 dnl
-dnl $Id: configure.in,v 1.34 1998/12/09 15:23:20 lhecking Exp $
+dnl $Id: configure.in,v 1.35 1998/12/15 20:23:47 lhecking Exp $
 dnl
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.34 $)
+AC_REVISION($Revision: 1.35 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -452,14 +452,11 @@ AC_SUBST(TERMXLIBS)
 
 
 dnl Report configuration
-eval gp_bindir=$bindir
-test $gp_bindir = NONE/bin && gp_bindir=/usr/local/bin
 eval gp_datadir=$datadir
 test $gp_datadir = NONE/share && gp_datadir=/usr/local/share
 AC_MSG_RESULT([
 ** Configuration summary for $PACKAGE $VERSION:
 
-  Where are the binaries?           $gp_bindir
   Where is the help file?           $gp_datadir/gnuplot.gih
 ])
 test "$ac_cv_header_gd_h" = yes && \
