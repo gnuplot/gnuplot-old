@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graph3d.c,v 1.7 1998/09/21 21:03:27 lhecking Exp $";
+static char *RCSid = "$Id: graph3d.c,v 1.8 1998/09/23 19:56:02 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -655,7 +655,7 @@ char ss[MAX_LINE_LEN+1], *s, *e;
 		key_sample_left = 0;
   		key_sample_right = key_sample_width;
 		key_text_left = -(int)((t->h_char)*(max_ptitl_len+1));
-		key_text_right =- (int)(t->h_char);
+		key_text_right = -(int)(t->h_char);
 		key_size_left = (t->h_char)*(max_ptitl_len+2+key_width_fix);
   		key_size_right = (t->h_char)+key_sample_width;
 	}

@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: plot2d.c,v 1.5 1998/09/21 21:04:15 lhecking Exp $";
+static char    *RCSid = "$Id: plot2d.c,v 1.6 1998/09/23 19:56:31 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -189,7 +189,7 @@ do {\
 
 #define STORE_WITH_LOG_AND_FIXUP_RANGE(STORE, VALUE, TYPE, AXIS, OUT_ACTION, UNDEF_ACTION)\
 do { if (log_array[AXIS]) { if (VALUE<0.0) {TYPE = UNDEFINED; UNDEF_ACTION; break;} \
-              else if (VALUE == 0.0){STORE =- VERYLARGE; TYPE = OUTRANGE; OUT_ACTION; break;} \
+              else if (VALUE == 0.0){STORE = -VERYLARGE; TYPE = OUTRANGE; OUT_ACTION; break;} \
               else { STORE = log(VALUE)/log_base_array[AXIS]; } \
      } else STORE = VALUE; \
      if (TYPE != INRANGE) break;  /* dont set y range if x is outrange, for example */ \

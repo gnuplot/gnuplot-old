@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.7 1998/09/21 21:03:39 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.8 1998/09/23 19:56:24 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -2160,7 +2160,7 @@ in_front (Last, Test)
 
   /* Compare Test with the following polygons, which overlap in z value */
   for (Plast = Test, p = test;
-       ((P = p->next) >= 0) && (((p = plist+P)->zmax > zmin) || p->tested);
+       ((P = p->next) >= 0) && (((p = plist+P)->zmax > zmin) || (p->tested != 0));
 			 Plast = P) {
 		CHECK_POINTER(plist,p);
 		
