@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.1 1999/03/26 21:48:53 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.2 1999/05/19 11:01:57 lhecking Exp $";
 #endif
 
 
@@ -290,8 +290,8 @@ finish:
 
 #ifndef HAVE_SLEEP
 /* The implementation below does not even come close
-   to what is required by POSIX.1, but I suppose
-   it doesn't really matter on these systems. lh
+ * to what is required by POSIX.1, but I suppose
+ * it doesn't really matter on these systems. lh
  */
 
 unsigned int sleep __PROTO((unsigned int));
