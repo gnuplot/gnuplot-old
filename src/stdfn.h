@@ -1,6 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.9 2000/02/11 19:14:05 lhecking Exp $
- *
+ * $Id: stdfn.h,v 1.9.2.1 2000/05/03 21:26:12 joze Exp $
  */
 
 /* GNUPLOT - stdfn.h */

@@ -1,6 +1,5 @@
 /*
- * $Id: plot3d.h,v 1.2 1999/11/08 19:24:16 lhecking Exp $
- *
+ * $Id: plot3d.h,v 1.2.2.1 2000/05/03 21:26:12 joze Exp $
  */
 
 /* GNUPLOT - plot3d.h */
@@ -43,6 +42,7 @@
 /* Variables of plot3d.c needed by other modules: */
 
 extern struct surface_points *first_3dplot;
+extern int plot3d_num;
 
 /* prototypes from plot3d.c */
 

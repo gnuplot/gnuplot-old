@@ -1,4 +1,6 @@
-/* $Id: tables.c,v 1.13.2.1 2000/05/01 00:17:20 joze Exp $ */
+#ifndef lint
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.13.2.2 2000/05/03 21:26:12 joze Exp $"); }
+#endif
 
 /* GNUPLOT - tables.c */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.26.2.1 2000/05/01 00:17:19 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.26.2.2 2000/05/03 21:26:12 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1358,17 +1358,6 @@ do{ assert(!polar && !parametric); \
 	    max_array[FIRST_Y_AXIS] = max_array[SECOND_Y_AXIS];
     }
 
-#define WRITEBACK(axis,min,max) \
-if(range_flags[axis]&RANGE_WRITEBACK) \
-  {if (auto_array[axis]&1) min = min_array[axis]; \
-   if (auto_array[axis]&2) max = max_array[axis]; \
-  }
-
-    WRITEBACK(FIRST_X_AXIS, xmin, xmax)
-    WRITEBACK(FIRST_Y_AXIS, ymin, ymax)
-    WRITEBACK(SECOND_X_AXIS, x2min, x2max)
-    WRITEBACK(SECOND_Y_AXIS, y2min, y2max)
-
 
     /* the following ~5 lines were moved from the end of the
      * function to here, as do_plot calles term->text, which
@@ -1383,7 +1372,6 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 	plot_token = -1;
     }
 
-    /* if we get here, all went well, so record the line for replot */
     if (strcmp(term->name, "table") == 0)
 	print_table(first_plot, plot_num);
     else {
@@ -1393,6 +1381,28 @@ if(range_flags[axis]&RANGE_WRITEBACK) \
 	do_plot(first_plot, plot_num);
 
 	END_LEAK_CHECK();
+
+        /* after do_plot(), min_array[] and max_array[]
+         * contain the plotting range actually used (rounded
+         * to tic marks, not only the min/max data values)
+         *  --> save them now for writeback if requested
+	 */
+
+#define SAVE_WRITEBACK(axis) /* ULIG */ \
+  if(range_flags[axis]&RANGE_WRITEBACK) { \
+    set_writeback_min(axis,min_array[axis]); \
+    set_writeback_max(axis,max_array[axis]); \
+  }
+        SAVE_WRITEBACK(FIRST_X_AXIS);
+        SAVE_WRITEBACK(FIRST_Y_AXIS);
+        SAVE_WRITEBACK(FIRST_Z_AXIS);
+        SAVE_WRITEBACK(SECOND_X_AXIS);
+        SAVE_WRITEBACK(SECOND_Y_AXIS);
+        SAVE_WRITEBACK(SECOND_Z_AXIS);
+        SAVE_WRITEBACK(T_AXIS);
+        SAVE_WRITEBACK(R_AXIS);
+        SAVE_WRITEBACK(U_AXIS);
+        SAVE_WRITEBACK(V_AXIS);
     }
 
     cp_free(first_plot);

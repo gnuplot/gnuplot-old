@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.1 2000/05/01 00:17:19 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.12.2.2 2000/05/03 21:26:11 joze Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -3579,10 +3579,10 @@ XEvent *event;
 				32, PropModeReplace, (unsigned char *) &(exported_plot->pixmap), 1);
 #if defined(USE_MOUSE) && !defined(OS2)
 	    } else if (reply.xselection.target == XA_STRING) {
-		/* fprintf(stderr, "XA_STRING request\n"); */
+		FPRINTF((stderr, "XA_STRING request\n"));
 		XChangeProperty(dpy, reply.xselection.requestor,
 				reply.xselection.property, reply.xselection.target,
-		    8, PropModeReplace, (unsigned char*) selection, strlen(selection));
+				8, PropModeReplace, (unsigned char *)selection, strlen(selection));
 #endif
 	    } else {
 		reply.xselection.property = None;

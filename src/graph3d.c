@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.1 2000/05/01 00:17:19 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.2 2000/05/03 21:26:11 joze Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -837,7 +837,7 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 	    case FINANCEBARS:
 	    case VECTOR:
 	    case POINTSTYLE:
-		if (lkey && !clip_point(xl + key_point_offset, yl)) {
+		if (lkey) {
 		    key_sample_point(xl, yl, this_plot->lp_properties.p_type);
 		}
 		if (!(hidden3d && draw_surface))
@@ -853,7 +853,7 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 		    plot3d_lines(this_plot);
 
 		/* put points */
-		if (lkey && !clip_point(xl + key_point_offset, yl))
+		if (lkey)
 		    key_sample_point(xl, yl, this_plot->lp_properties.p_type);
 
 		if (!(hidden3d && draw_surface))
@@ -1063,14 +1063,6 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 	term_apply_lp_properties(&(this_arrow->lp_properties));
 	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
     }
-    term_end_plot();
-
-#ifndef LITE
-    if (hidden3d && draw_surface) {
-	term_hidden_line_removal();
-	hidden_active = FALSE;
-    }
-#endif /* not LITE */
 
 #ifdef USE_MOUSE
     /* finally, store the 2d projection of the x and y axis, to enable zooming by mouse */
@@ -1087,6 +1079,16 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 	axis3d_y_dy = (int)y - axis3d_o_y;
     }
 #endif
+
+    term_end_plot();
+
+#ifndef LITE
+    if (hidden3d && draw_surface) {
+	term_hidden_line_removal();
+	hidden_active = FALSE;
+    }
+#endif /* not LITE */
+
 }
 
 /* plot3d_impulses:
@@ -2142,9 +2144,17 @@ key_sample_point(xl, yl, pointtype)
 int xl, yl;
 int pointtype;
 {
-    if (!clip_point(xl + key_point_offset, yl)) {
-	(*term->point) (xl + key_point_offset, yl, pointtype);
-    } else {
+    /* HBB 20000412: fixed incorrect clipping: the point sample was
+     * clipped against the graph box, even if in 'below' or 'outside'
+     * position. But the result of that clipping was utterly ignored,
+     * because the 'else' part did exactly the same thing as the
+     * 'then' one. Some callers of this routine thus did their own
+     * clipping, which I removed, along with this change.
+     *
+     * Now, all 'automatically' placed cases will never be clipped,
+     * only user-specified ones. */
+    if ((key == -1)            /* ==-1 means auto-placed key */
+	|| !clip_point(xl + key_point_offset, yl)) {
 	(*term->point) (xl + key_point_offset, yl, pointtype);
     }
 }

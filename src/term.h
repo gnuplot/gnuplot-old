@@ -1,6 +1,5 @@
 /*
- * $Id: term.h,v 1.5.2.1 2000/05/01 00:17:20 joze Exp $
- *
+ * $Id: term.h,v 1.5.2.2 2000/05/03 21:26:12 joze Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -276,6 +275,11 @@
 
 /* DXF format for use with AutoCad (Release 10.x) */
 #include "dxf.trm"
+
+/* Enhanced Metafile Format driver */
+#ifdef USE_EMF_DRIVER
+# include "emf.trm"
+#endif
 
 /* Roland DXY800A plotter */
 /* #include "dxy.trm" */
