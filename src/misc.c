@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.2 1999/04/16 18:47:06 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.3 1999/05/12 13:48:34 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -1148,7 +1148,8 @@ TBOOLEAN can_do_args;
 		}
 		screen_ok = FALSE;	/* make sure command line is
 					   echoed on error */
-		do_line();
+		if (do_line())
+		    stop=TRUE;
 	    }
 	}
     }
