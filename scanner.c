@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.1.1.4 1998/06/23 12:38:25 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.10.2.1 1999/12/09 18:42:41 lhecking Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -37,11 +37,11 @@ static char *RCSid = "$Id: scanner.c,v 1.1.1.4 1998/06/23 12:38:25 lhecking Exp 
 #include "plot.h"
 
 static int get_num __PROTO((char str[]));
-static void substitute __PROTO((char *str, int max));
+static void substitute __PROTO((char **strp, int *str_lenp, int current));
 
 #ifdef AMIGA_AC_5
 #define O_RDONLY	0
-int open(const char * _name, int _mode, ...);
+int open(const char *_name, int _mode,...);
 int close(int);
 #endif /* AMIGA_AC_5 */
 
@@ -49,6 +49,10 @@ int close(int);
 #include <descrip.h>
 #define MAILBOX "PLOT$MAILBOX"
 #define pclose(f) fclose(f)
+#ifdef __DECC
+#include <lib$routines.h>	/* avoid some IMPLICITFNC warnings */
+#include <starlet.h>
+#endif /* __DECC */
 #endif /* VMS */
 
 
@@ -63,321 +67,346 @@ int close(int);
 
 #define APPEND_TOKEN {token[t_num].length++; current++;}
 
-#define SCAN_IDENTIFIER while (isident(expression[current + 1]))\
+#define SCAN_IDENTIFIER while (isident((int)expression[current + 1]))\
 				APPEND_TOKEN
 
-static int t_num;	/* number of token I'm working on */
+static int t_num;		/* number of token I'm working on */
 
 /*
  * scanner() breaks expression[] into lexical units, storing them in token[].
- *   The total number of tokens found is returned as the function value.
- *   Scanning will stop when '\0' is found in expression[], or when token[]
- *     is full.
+ *   The total number of tokens found is returned as the function
+ *   value.  Scanning will stop when '\0' is found in expression[], or
+ *   when token[] is full.  extend_input_line() is called to extend
+ *   expression array if needed.
  *
- *	 Scanning is performed by following rules:
+ *       Scanning is performed by following rules:
  *
- *	Current char	token should contain
+ *      Current char    token should contain
  *     -------------    -----------------------
- *	1.  alpha,_	all following alpha-numerics
- *	2.  digit	0 or more following digits, 0 or 1 decimal point,
- *				0 or more digits, 0 or 1 'e' or 'E',
- *				0 or more digits.
- *	3.  ^,+,-,/	only current char
- *	    %,~,(,)
- *	    [,],;,:,
- *	    ?,comma
+ *      1.  alpha,_     all following alpha-numerics
+ *      2.  digit       0 or more following digits, 0 or 1 decimal point,
+ *                              0 or more digits, 0 or 1 'e' or 'E',
+ *                              0 or more digits.
+ *      3.  ^,+,-,/     only current char
+ *          %,~,(,)
+ *          [,],;,:,
+ *          ?,comma
  *          $           for using patch (div)
- *	4.  &,|,=,*	current char; also next if next is same
- *	5.  !,<,>	current char; also next if next is =
- *	6.  ", '	all chars up until matching quote
- *	7.  #		this token cuts off scanning of the line (DFK).
+ *      4.  &,|,=,*     current char; also next if next is same
+ *      5.  !,<,>       current char; also next if next is =
+ *      6.  ", '        all chars up until matching quote
+ *      7.  #           this token cuts off scanning of the line (DFK).
+ *      8.  `           (command substitution: all characters through the
+ *                      matching backtic are replaced by the output of
+ *                      the contained command, then scanning is restarted.)
  *
- *			white space between tokens is ignored
+ *                      white space between tokens is ignored
  */
-int scanner(expression)
-char expression[];
+int
+scanner(expressionp, expressionlenp)
+char **expressionp;
+int *expressionlenp;
 {
-register int current;	/* index of current char in expression[] */
-register int quote;
-char brace;
+    register int current;	/* index of current char in expression[] */
+    char *expression = *expressionp;
+    register int quote;
+    char brace;
 
-	for (current = t_num = 0; expression[current] != '\0'; current++) {
-again:
-		if(t_num+1>=token_table_size) {
-		/* leave space for dummy end token */
-			extend_token_table();
-		}
-		if (isspace(expression[current]))
-			continue;						/* skip the whitespace */
-		token[t_num].start_index = current;
-		token[t_num].length = 1;
-		token[t_num].is_token = TRUE;	/* to start with...*/
-
-		if (expression[current] == '`') {
-			substitute(&expression[current],MAX_LINE_LEN - current);
-			goto again;
-		}
-		/* allow _ to be the first character of an identifier */
-		if (isalpha(expression[current]) || expression[current] == '_') {
-			SCAN_IDENTIFIER;
-		} else if (isdigit(expression[current]) || expression[current] == '.'){
-			token[t_num].is_token = FALSE;
-			token[t_num].length = get_num(&expression[current]);
-			current += (token[t_num].length - 1);
-		} else if (expression[current] == LBRACE) {
-			token[t_num].is_token = FALSE;
-			token[t_num].l_val.type = CMPLX;
-#ifdef __PUREC__
-			{ char	l[80];
-			if ((sscanf(&expression[++current],"%lf,%lf%[ }]s",
-				&token[t_num].l_val.v.cmplx_val.real,
-				&token[t_num].l_val.v.cmplx_val.imag,
-				&l)	!= 3) || (!strchr(l, RBRACE))  )
-					int_error("invalid complex constant",t_num);
-			}
-#else
-			if ((sscanf(&expression[++current],"%lf , %lf %c",
-				&token[t_num].l_val.v.cmplx_val.real,
-				&token[t_num].l_val.v.cmplx_val.imag,
-				&brace) != 3) || (brace != RBRACE))
-					int_error("invalid complex constant",t_num);
-#endif
-			token[t_num].length += 2;
-			while (expression[++current] != RBRACE) {
-				token[t_num].length++;
-				if (expression[current] == '\0')			/* { for vi % */
-					int_error("no matching '}'", t_num);
-			}
-		} else if (expression[current] == '\'' || expression[current] == '\"'){
-			token[t_num].length++;
-			quote = expression[current];
-			while (expression[++current] != quote) {
-				if (!expression[current]) {
-					expression[current] = quote;
-					expression[current+1] = '\0';
-					break;
-                                } else if (expression[current]=='\\'
-                                           && expression[current+1]) {
-                                        current++;
-                                        token[t_num].length+=2;
-				} else
-					token[t_num].length++;
-			}
-		} else switch (expression[current]) {
-		     case '#':		/* DFK: add comments to gnuplot */
-		    	  goto endline; /* ignore the rest of the line */
-			case '^':
-			case '+':
-			case '-':
-			case '/':
-			case '%':
-			case '~':
-			case '(':
-			case ')':
-			case '[':
-			case ']':
-			case ';':
-			case ':':
-			case '?':
-			case ',':
-			case '$': /* div */
-				break;
-			case '&':
-			case '|':
-			case '=':
-			case '*':
-				if (expression[current] == expression[current + 1])
-					APPEND_TOKEN;
-				break;
-			case '!':
-			case '<':
-			case '>':
-				if (expression[current + 1] == '=')
-					APPEND_TOKEN;
-				break;
-			default:
-				int_error("invalid character",t_num);
-			}
-		++t_num;	/* next token if not white space */
+    for (current = t_num = 0; expression[current] != NUL; current++) {
+      again:
+	if (t_num + 1 >= token_table_size) {
+	    /* leave space for dummy end token */
+	    extend_token_table();
 	}
+	if (isspace((int) expression[current]))
+	    continue;		/* skip the whitespace */
+	token[t_num].start_index = current;
+	token[t_num].length = 1;
+	token[t_num].is_token = TRUE;	/* to start with... */
 
-endline:					/* comments jump here to ignore line */
+	if (expression[current] == '`') {
+	    substitute(expressionp, expressionlenp, current);
+	    expression = *expressionp; /* expression might have moved */
+	    goto again;
+	}
+	/* allow _ to be the first character of an identifier */
+	if (isalpha((int) expression[current]) || expression[current] == '_') {
+	    SCAN_IDENTIFIER;
+	} else if (isdigit((int) expression[current]) || expression[current] == '.') {
+	    token[t_num].is_token = FALSE;
+	    token[t_num].length = get_num(&expression[current]);
+	    current += (token[t_num].length - 1);
+	} else if (expression[current] == LBRACE) {
+	    token[t_num].is_token = FALSE;
+	    token[t_num].l_val.type = CMPLX;
+#ifdef __PUREC__
+	    {
+		char l[80];
+		if ((sscanf(&expression[++current], "%lf,%lf%[ }]s",
+			    &token[t_num].l_val.v.cmplx_val.real,
+			    &token[t_num].l_val.v.cmplx_val.imag,
+			    &l) != 3) || (!strchr(l, RBRACE)))
+		    int_error("invalid complex constant", t_num);
+	    }
+#else
+	    if ((sscanf(&expression[++current], "%lf , %lf %c",
+			&token[t_num].l_val.v.cmplx_val.real,
+			&token[t_num].l_val.v.cmplx_val.imag,
+			&brace) != 3) || (brace != RBRACE))
+		int_error("invalid complex constant", t_num);
+#endif
+	    token[t_num].length += 2;
+	    while (expression[++current] != RBRACE) {
+		token[t_num].length++;
+		if (expression[current] == NUL)	/* { for vi % */
+		    int_error("no matching '}'", t_num);
+	    }
+	} else if (expression[current] == '\'' || expression[current] == '\"') {
+	    token[t_num].length++;
+	    quote = expression[current];
+	    while (expression[++current] != quote) {
+		if (!expression[current]) {
+		    expression[current] = quote;
+		    expression[current + 1] = NUL;
+		    break;
+		} else if (expression[current] == '\\'
+			   && expression[current + 1]) {
+		    current++;
+		    token[t_num].length += 2;
+		} else if (quote == '\"' && expression[current] == '`') {
+		    substitute(expressionp, expressionlenp, current);
+		    expression = *expressionp; /* it might have moved */
+		    current--;
+		} else
+		    token[t_num].length++;
+	    }
+	} else
+	    switch (expression[current]) {
+	    case '#':		/* DFK: add comments to gnuplot */
+		goto endline;	/* ignore the rest of the line */
+	    case '^':
+	    case '+':
+	    case '-':
+	    case '/':
+	    case '%':
+	    case '~':
+	    case '(':
+	    case ')':
+	    case '[':
+	    case ']':
+	    case ';':
+	    case ':':
+	    case '?':
+	    case ',':
+	    case '$':		/* div */
+		break;
+	    case '&':
+	    case '|':
+	    case '=':
+	    case '*':
+		if (expression[current] == expression[current + 1])
+		    APPEND_TOKEN;
+		break;
+	    case '!':
+	    case '<':
+	    case '>':
+		if (expression[current + 1] == '=')
+		    APPEND_TOKEN;
+		break;
+	    default:
+		int_error("invalid character", t_num);
+	    }
+	++t_num;		/* next token if not white space */
+    }
+
+  endline:			/* comments jump here to ignore line */
 
 /* Now kludge an extra token which points to '\0' at end of expression[].
    This is useful so printerror() looks nice even if we've fallen off the
    line. */
 
-		token[t_num].start_index = current;
-		token[t_num].length = 0;
-		/* print 3+4  then print 3+  is accepted without
-		 * this, since string is ignored if it is not
-		 * a token
-		 */
-		token[t_num].is_token=TRUE;
-	return(t_num);
+    token[t_num].start_index = current;
+    token[t_num].length = 0;
+    /* print 3+4  then print 3+  is accepted without
+     * this, since string is ignored if it is not
+     * a token
+     */
+    token[t_num].is_token = TRUE;
+    return (t_num);
 }
 
 
 static int get_num(str)
 char str[];
 {
-register int count = 0;
-register long lval;
+    register int count = 0;
+    register long lval;
 
-	token[t_num].is_token = FALSE;
-	token[t_num].l_val.type = INTGR;		/* assume unless . or E found */
-	while (isdigit(str[count]))
-		count++;
-	if (str[count] == '.') {
-		token[t_num].l_val.type = CMPLX;
-		while (isdigit(str[++count]))	/* swallow up digits until non-digit */
-			;
-		/* now str[count] is other than a digit */
-	}
-	if (str[count] == 'e' || str[count] == 'E') {
-		token[t_num].l_val.type = CMPLX;
+    token[t_num].is_token = FALSE;
+    token[t_num].l_val.type = INTGR;	/* assume unless . or E found */
+    while (isdigit((int) str[count]))
+	count++;
+    if (str[count] == '.') {
+	token[t_num].l_val.type = CMPLX;
+	/* swallow up digits until non-digit */
+	while (isdigit((int) str[++count]))
+	    ;
+	/* now str[count] is other than a digit */
+    }
+    if (str[count] == 'e' || str[count] == 'E') {
+	token[t_num].l_val.type = CMPLX;
 /* modified if statement to allow + sign in exponent
    rjl 26 July 1988 */
-		count++;
-		if (str[count] == '-' || str[count] == '+')
-			count++;
-		if (!isdigit(str[count])) {
-			token[t_num].start_index += count;
-			int_error("expecting exponent",t_num);
-		}
-		while (isdigit(str[++count]))
-			;
+	count++;
+	if (str[count] == '-' || str[count] == '+')
+	    count++;
+	if (!isdigit((int) str[count])) {
+	    token[t_num].start_index += count;
+	    int_error("expecting exponent", t_num);
 	}
-	if (token[t_num].l_val.type == INTGR) {
- 		lval = atol(str);
-		if ((token[t_num].l_val.v.int_val = lval) != lval)
-			int_error("integer overflow; change to floating point",t_num);
-	} else {
-		token[t_num].l_val.v.cmplx_val.imag = 0.0;
-		token[t_num].l_val.v.cmplx_val.real = atof(str);
-	}
-	return(count);
+	while (isdigit((int) str[++count]));
+    }
+    if (token[t_num].l_val.type == INTGR) {
+	lval = atol(str);
+	if ((token[t_num].l_val.v.int_val = lval) != lval)
+	    int_error("integer overflow; change to floating point", t_num);
+    } else {
+	token[t_num].l_val.v.cmplx_val.imag = 0.0;
+	token[t_num].l_val.v.cmplx_val.real = atof(str);
+    }
+    return (count);
 }
 
-#if defined(VMS) || defined(PIPES) || (defined(ATARI) && defined(__PUREC__)) || (defined(MTOS) && defined(__PUREC__))
+#if defined(VMS) || defined(PIPES) || (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
 
-/* this really ought to make use of the dynamic-growth of the
- * input line in 3.6.  And it definitely should not have
- * static arrays !
+/* A macro to reduce clutter ... */
+# ifdef AMIGA_AC_5
+#  define CLOSE_FILE_OR_PIPE ((void) close(fd))
+# elif (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
+#  define CLOSE_FILE_OR_PIPE ((void) fclose(f); (void) unlink(atari_tmpfile))
+# else /* Rest of the world */
+#  define CLOSE_FILE_OR_PIPE ((void) pclose(f))
+# endif
+
+/* substitute output from ` ` 
+ * *strp points to the input string.  (*strp)[current] is expected to
+ * be the initial back tic.  Characters through the following back tic
+ * are replaced by the output of the command.  extend_input_line()
+* is called to extend *strp array if needed.
  */
- 
-static void substitute(str,max)		/* substitute output from ` ` */
-char *str;
-int max;
+static void substitute(strp, str_lenp, current)        
+char **strp;
+int *str_lenp;
+int current;
 {
-register char *last;
-register int i,c;
-register FILE *f;
-#ifdef AMIGA_AC_5
-int fd;
-#else /* AMIGA_AC_5 */
-#if (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
-char	*atari_tmpfile;
-char	*atari_pgm[MAX_LINE_LEN+100];
-#endif /* (ATARI || MTOS) && PUREC */
-#endif /* AMIGA_AC_5 */
-static char pgm[MAX_LINE_LEN+1],output[MAX_LINE_LEN+1];
+    register char *last;
+    register int c;
+    register FILE *f;
+# ifdef AMIGA_AC_5
+    int fd;
+# elif (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
+    char *atari_tmpfile;
+# endif /* !AMIGA_AC_5 */
+    char *str, *pgm, *rest = NULL;
+    int pgm_len, rest_len;
 
-#ifdef VMS
-int chan, one = 1;
-static $DESCRIPTOR(pgmdsc,pgm);
-static $DESCRIPTOR(lognamedsc,MAILBOX);
-#endif /* VMS */
+# ifdef VMS
+    int chan, one = 1;
+    struct dsc$descriptor_s pgmdsc = {0, DSC$K_DTYPE_T, DSC$K_CLASS_S, 0};
+    static $DESCRIPTOR(lognamedsc, MAILBOX);
+# endif /* VMS */
 
-	/* forgive missing closing backquote at end of line */
-	i = 0;
-	last = str;
-	while (*++last) {
-		if (*last == '`') {
-			++last; /* move past it */
-			break;
-		}
-		pgm[i++] = *last;
+    /* forgive missing closing backquote at end of line */
+    str = *strp + current;
+    last = str;
+    while (*++last) {
+	if (*last == '`')
+	    break;
+    }
+    pgm_len = last - str;
+    pgm = gp_alloc(pgm_len, "command string");
+    safe_strncpy(pgm, str + 1, pgm_len); /* omit ` to leave room for NUL */
+
+    /* save rest of line, if any */
+    if (*last) {
+	last++;                 /* advance past ` */
+	rest_len = strlen(last) + 1;
+	if (rest_len > 1) {
+	    rest = gp_alloc(rest_len, "input line copy");
+	    strcpy(rest, last);
 	}
-	pgm[i] = '\0';		/* end with null */
-	max -= strlen(last);	/* max is now the max length of output sub. */
-  
-#ifdef VMS
-  	pgmdsc.dsc$w_length = i;
-   	if (!((vaxc$errno = sys$crembx(0,&chan,0,0,0,0,&lognamedsc)) & 1))
-   		os_error("sys$crembx failed",NO_CARET);
-   
-   	if (!((vaxc$errno = lib$spawn(&pgmdsc,0,&lognamedsc,&one)) & 1))
-   		os_error("lib$spawn failed",NO_CARET);
-   
-   	if ((f = fopen(MAILBOX,"r")) == NULL)
-   		os_error("mailbox open failed",NO_CARET);
-#else /* VMS */
-#if (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
-		if (system(NULL) == 0)
-			os_error("no command shell", NO_CARET);
-		if ((strlen(atari_tmpfile) + strlen(pgm) + 5) > MAX_LINE_LEN+100)
-			os_error("sorry, command to long", NO_CARET);
-		atari_tmpfile = tmpnam(NULL);
-		strcpy(atari_pgm, pgm);
-		strcat(atari_pgm, " >> ");
-		strcat(atari_pgm, atari_tmpfile);
-		system(atari_pgm);
-		if ((f = fopen(atari_tmpfile, "r")) == NULL)
-#else
-#ifdef AMIGA_AC_5
-  	if ((fd = open(pgm,"O_RDONLY")) == -1)
-#else /* AMIGA_AC_5 */
-  	if ((f = popen(pgm,"r")) == NULL)
-#endif /* AMIGA_AC_5 */
-#endif	/* (ATARI || MTOS) && PUREC */
-  		os_error("popen failed",NO_CARET);
-#endif /* VMS */
+    }
 
-	i = 0;
-	while ((c = getc(f)) != EOF) {
-		output[i++] = ((c == '\n') ? ' ' : c);	/* newlines become blanks*/
-		if (i == max) {
-#ifdef AMIGA_AC_5
-			(void) close(fd);
-#else /* AMIGA_AC_5 */
-#if (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
-			(void) fclose(f);
-			(void) unlink(atari_tmpfile);
-#else /* (ATARI || MTOS) && PUREC */
-			(void) pclose(f);
-#endif /* (ATARI || MTOS) && PUREC */
-#endif /* AMIGA_AC_5 */
-			int_error("substitution overflow", t_num);
-		}
-	}
-#ifdef AMIGA_AC_5
-	(void) close(fd);
-#else
-#if (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
-	(void) fclose(f);
-	(void) unlink(atari_tmpfile);
-#else /* (ATARI || MTOS) && PUREC */
-	(void) pclose(f);
-#endif /* (ATARI || MTOS) && PUREC */
-#endif /* AMIGA_AC_5 */
+# ifdef VMS
+    pgmdsc.dsc$a_pointer = pgm;
+    pgmdsc.dsc$w_length = pgm_len;
+    if (!((vaxc$errno = sys$crembx(0, &chan, 0, 0, 0, 0, &lognamedsc)) & 1))
+	os_error("sys$crembx failed", NO_CARET);
 
-	if (i + strlen(last) > max)
-		int_error("substitution overflowed rest of line", t_num);
-	(void) strncpy(output+i,last,MAX_LINE_LEN-i);
-									/* tack on rest of line to output */
-	(void) strcpy(str,output);				/* now replace ` ` with output */
-	screen_ok = FALSE;
+    if (!((vaxc$errno = lib$spawn(&pgmdsc, 0, &lognamedsc, &one)) & 1))
+	os_error("lib$spawn failed", NO_CARET);
+
+    if ((f = fopen(MAILBOX, "r")) == NULL)
+	os_error("mailbox open failed", NO_CARET);
+# elif (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
+    if (system(NULL) == 0)
+	os_error("no command shell", NO_CARET);
+    atari_tmpfile = tmpnam(NULL);
+    gp_realloc(pgm, pgm_len + 5 + strlen(atari_tmpfile), "command string");
+    strcat(pgm, " >> ");
+    strcat(pgm, atari_tmpfile);
+    system(pgm);
+    if ((f = fopen(atari_tmpfile, "r")) == NULL)
+# elif defined(AMIGA_AC_5)
+    if ((fd = open(pgm, "O_RDONLY")) == -1)
+# else /* everyone else */
+    if ((f = popen(pgm, "r")) == NULL)
+	os_error("popen failed", NO_CARET);
+# endif /* !VMS */
+
+    free(pgm);
+
+    /* now replace ` ` with output */
+    while (1) {
+# if defined(AMIGA_AC_5)
+	char ch;
+	if (read(fd, &ch, 1) != 1)
+	    break;
+	c = ch;
+# else
+	if ((c = getc(f)) == EOF)
+	    break;
+# endif /* !AMIGA_AC_5 */
+	/* newlines become blanks */
+	(*strp)[current++] = ((c == '\n') ? ' ' : c); 
+	if (current == *str_lenp)
+	    extend_input_line();
+    }
+    (*strp)[current] = 0;
+
+    CLOSE_FILE_OR_PIPE;
+
+    /* tack on rest of line to output */
+    if (rest) {
+	while (current + rest_len > *str_lenp)
+	    extend_input_line();
+	strcpy(*strp+current, rest);
+	free(rest);
+    }
+
+    screen_ok = FALSE;
 }
 
 #else /* VMS || PIPES || ATARI && PUREC */
 
-static void substitute(str,max)
+static void substitute(str, max)
 char *str;
 int max;
 {
-	char line[100];
+    char line[100];
 
-	int_error( strcat(strcpy(line,"substitution not supported by "),OS),t_num);
+    sprintf(line, "substitution not supported by %s", OS);
+    int_error(line, t_num);
 }
+
 #endif /* unix || VMS || PIPES || ATARI && PUREC */
