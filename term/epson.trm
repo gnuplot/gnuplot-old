@@ -1,5 +1,5 @@
 /*
- * $Id: epson.trm,v 1.8 1998/12/14 18:38:55 lhecking Exp $
+ * $Id: epson.trm,v 1.9 1999/05/31 18:33:50 lhecking Exp $
  *
  */
 
@@ -286,7 +286,7 @@ TERM_PUBLIC void NECoptions()
 	/* error, but since the terminal is already set, default to mono */
 	strcpy(term_options, "monochrome");
 	NECmode = 'm';
-	int_error("modes: color, monochrome, draft", c_token);
+	int_error(c_token, "modes: color, monochrome, draft");
     }
 }
 

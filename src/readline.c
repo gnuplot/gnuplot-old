@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: readline.c,v 1.4 1999/05/20 18:36:11 lhecking Exp $";
+static char *RCSid = "$Id: readline.c,v 1.5 1999/05/31 18:37:10 lhecking Exp $";
 #endif
 
 /* GNUPLOT - readline.c */
@@ -372,7 +372,7 @@ static void extend_cur_line()
     new_line = gp_realloc(cur_line, line_len + MAXBUF, NULL);
     if (!new_line) {
 	reset_termio();
-	int_error("Can't extend readline length", NO_CARET);
+	int_error(NO_CARET, "Can't extend readline length");
     }
     cur_line = new_line;
     line_len += MAXBUF;

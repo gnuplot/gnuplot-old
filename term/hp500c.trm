@@ -1,5 +1,5 @@
 /*
- * $Id: hp500c.trm,v 1.7 1998/12/14 18:39:45 lhecking Exp $
+ * $Id: hp500c.trm,v 1.8 1999/05/31 18:33:50 lhecking Exp $
  *
  */
 
@@ -151,7 +151,7 @@ TERM_PUBLIC void HP500Coptions()
 #define HPDJCERROR "expecting dots per inch size 75, 100, 150 or 300 and/or compression method"
     while (!END_OF_COMMAND) {
 	if (token[c_token].length > 4)
-	    int_error(HPDJCERROR, c_token);
+	    int_error(c_token, HPDJCERROR);
 
 	/* almost_equals() won't accept numbers - use strcmp() instead */
 	capture(opt, c_token, c_token, 6);

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.2 1999/05/27 20:59:56 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.3 1999/05/31 18:37:08 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -497,7 +497,7 @@ void set_hidden3doptions()
 	hiddenHandleBentoverQuadrangles = HANDLE_BENTOVER_QUADRANGLES;
 	c_token++;
 	if (!END_OF_COMMAND)
-	    int_error("No further options allowed after 'defaults'", c_token);
+	    int_error(c_token, "No further options allowed after 'defaults'");
 	return;
     }
     if (almost_equals(c_token, "off$set")) {
@@ -550,7 +550,7 @@ void set_hidden3doptions()
 	hiddenHandleBentoverQuadrangles = 0;
     }
     if (!END_OF_COMMAND) {
-	int_error("No such option to hidden3d (or wrong order)", c_token);
+	int_error(c_token, "No such option to hidden3d (or wrong order)");
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Id: imagen.trm,v 1.7 1998/12/14 18:40:00 lhecking Exp $
+ * $Id: imagen.trm,v 1.8 1999/05/31 18:33:51 lhecking Exp $
  */
 
 /* GNUPLOT - imagen.trm */
@@ -282,18 +282,18 @@ TERM_PUBLIC void IMAGEN_options()
 		continue;
 	    }
 	    if (END_OF_COMMAND) {
-		int_error("no. windows: [horizontal,vertical] expected", c_token);
+		int_error(c_token, "no. windows: [horizontal,vertical] expected");
 	    } else if (!equals(c_token, ",")) {
 		IM_win_horiz = (int) real(const_express(&a));
 	    }
 	    if (!equals(c_token, ","))
-		int_error("',' expected", c_token);
+		int_error(c_token, "',' expected");
 	    c_token++;
 	    if (!equals(c_token, "]")) {
 		IM_win_verti = (int) real(const_express(&a));
 	    }
 	    if (!equals(c_token, "]"))
-		int_error("expecting ']'", c_token);
+		int_error(c_token, "expecting ']'");
 	    c_token++;
 	} else {
 	    /* We have font size specified */

@@ -1,5 +1,5 @@
 /*
- * $Id: hppj.trm,v 1.7 1998/11/25 21:06:44 lhecking Exp $
+ * $Id: hppj.trm,v 1.8 1999/05/31 18:33:51 lhecking Exp $
  *
  */
 
@@ -109,7 +109,7 @@ TERM_PUBLIC void HPPJoptions()
 
     if (!END_OF_COMMAND) {
 	if (token[c_token].length > 8) {
-	    int_error(HPPJERROR, c_token);
+	    int_error(c_token, HPPJERROR);
 	}
 	capture(opt, c_token, c_token, /*4 */ 9);	/* HBB 980226 */
 	if (!strcmp(opt, "FNT5X9")) {
@@ -122,7 +122,7 @@ TERM_PUBLIC void HPPJoptions()
 	    hppj_font = FNT13X25;
 	    strcpy(term_options, "FNT13X25");
 	} else {
-	    int_error(HPPJERROR, c_token);
+	    int_error(c_token, HPPJERROR);
 	}
 	c_token++;
     }

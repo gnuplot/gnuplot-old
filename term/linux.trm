@@ -1,5 +1,5 @@
 /*
- * $Id: linux.trm,v 1.11 1999/03/12 21:48:34 lhecking Exp $
+ * $Id: linux.trm,v 1.12 1999/05/31 18:33:51 lhecking Exp $
  *
  */
 
@@ -145,7 +145,7 @@ void LINUX_setup(void)
 TERM_PUBLIC void LINUX_options()
 {
     if (!LINUX_graphics_allowed) {
-	int_error("Linux terminal driver not available", NO_CARET);
+	int_error(NO_CARET, "Linux terminal driver not available");
     }
     fprintf(stderr, "%s\n", vga_getmodename(linux_vmode));
 }
