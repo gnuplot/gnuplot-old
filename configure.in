@@ -10,10 +10,10 @@ dnl [Lars: this is no longer necessary. I have cut this stuff out
 dnl  of configure.in and added the necessery definitions to syscfg.h.
 dnl  This reduced the size of configure by 30k!
 dnl
-dnl $Id: configure.in,v 1.37 1998/12/21 22:22:42 lhecking Exp $
+dnl $Id: configure.in,v 1.38 1998/12/22 19:42:04 lhecking Exp $
 dnl
 AC_PREREQ(2.12)
-AC_REVISION($Revision: 1.37 $)
+AC_REVISION($Revision: 1.38 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
@@ -274,11 +274,16 @@ if test "$with_gnu_readline" != no; then
      ${gp_tcap})dnl readline
   else
     if test ! -f $with_gnu_readline ; then
-      if test ! -f ${with_gnu_readline}/libreadline.a ; then
-        AC_MSG_ERROR([No such file $with_gnu_readline])
+      if test ! -f ${with_gnu_readline}/lib/libreadline.a ; then
+        if test ! -f ${with_gnu_readline}/libreadline.a ; then
+          AC_MSG_ERROR([GNU readline library not found])
+        else
+          AC_MSG_RESULT([using ${with_gnu_readline}/libreadline.a])
+          LIBS="$LIBS ${with_gnu_readline}/libreadline.a $gp_tcap"
+        fi
       else
-        AC_MSG_RESULT([using ${with_gnu_readline}/libreadline.a])
-        LIBS="$LIBS ${with_gnu_readline}/libreadline.a $gp_tcap"
+        AC_MSG_RESULT([using ${with_gnu_readline}/lib/libreadline.a])
+        LIBS="$LIBS ${with_gnu_readline}/lib/libreadline.a $gp_tcap"
       fi
     else
       AC_MSG_RESULT([using ${with_gnu_readline}])
