@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.7 2000/11/09 01:35:11 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.8 2000/11/15 15:51:06 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -38,6 +38,7 @@ static char *RCSid() { return RCSid("$Id: color.c,v 1.7 2000/11/09 01:35:11 miku
 #ifdef PM3D
 
 #include "color.h"
+#include "getcolor.h"
 
 #include "axis.h"
 /* #include "setshow.h" */
