@@ -1,9 +1,9 @@
 
-# $Id: makefile.r,v 1.1 1998/04/15 19:16:32 lhecking Exp $
+# $Id: makefile.r,v 1.2 1998/04/16 19:28:23 lhecking Exp $
 #
 # $Log: makefile.r,v $
-# Revision 1.1  1998/04/15 19:16:32  lhecking
-# Initial revision
+# Revision 1.2  1998/04/16 19:28:23  lhecking
+# Remove unneeded symbols, add stdfn.c
 #
 # Revision 1.6  1996/01/28  16:31:40  drd
 # drd: take out defunct atari.trm from some makefiles
@@ -736,7 +736,7 @@ DIRS = term demo docs docs/latextut
 
 CSOURCE1 = bf_test.c binary.c command.c setshow.c
 CSOURCE2 = help.c graphics.c graph3d.c internal.c
-CSOURCE3 = misc.c eval.c parse.c plot.c readline.c scanner.c standard.c
+CSOURCE3 = misc.c eval.c parse.c plot.c readline.c scanner.c standard.c stdfn.c
 CSOURCE4 = bitmap.c term.c util.c version.c
 CSOURCE5 = term/ai.trm term/amiga.trm term/aed.trm \
 	term/cgi.trm term/corel.trm \
