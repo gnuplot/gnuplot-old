@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.65 2001/11/25 12:40:22 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.66 2001/12/03 12:00:27 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -568,10 +568,12 @@ show_command()
     case S_NOMY2TICS:
     case S_NOMYTICS:
     case S_NOMZTICS:
+#ifdef PM3D
     case S_NOCBTICS:
     case S_NOMCBTICS:
     case S_NOCBDTICS:
     case S_NOCBMTICS:
+#endif
     case S_NOX2DTICS:
     case S_NOX2MTICS:
     case S_NOX2TICS:

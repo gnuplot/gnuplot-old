@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.31 2001/11/10 18:27:12 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.32 2001/12/03 12:00:27 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -320,7 +320,9 @@ set y2data%s\n",
 	fputs(" \\\n", fp);
 	SAVE_GRID(SECOND_X_AXIS);
 	SAVE_GRID(SECOND_Y_AXIS);
+#ifdef PM3D
 	SAVE_GRID(COLOR_AXIS);
+#endif
 	fputs("\n", fp);
 #undef SAVE_GRID
 
