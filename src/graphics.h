@@ -1,5 +1,5 @@
 /*
- * $Id: graphics.h,v 1.21 2002/07/23 18:53:12 mikulik Exp $
+ * $Id: graphics.h,v 1.22 2002/09/27 00:12:25 sfeam Exp $
  */
 
 /* GNUPLOT - graphics.h */
@@ -54,6 +54,7 @@ typedef struct curve_points {
     char *title;		/* plot title, a.k.a. key entry */
     int title_no_enhanced;	/* don't typeset title in enhanced mode */
     struct lp_style_type lp_properties;
+    struct fill_style_type fill_properties;
     int p_max;			/* how many points are allocated */
     int p_count;		/* count of points in points */
     int x_axis;			/* FIRST_X_AXIS or SECOND_X_AXIS */

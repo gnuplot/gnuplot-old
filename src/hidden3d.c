@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.36 2002/04/08 15:04:27 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.37 2002/09/27 00:12:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -974,9 +974,6 @@ build_networks(plots, pcount)
 	    }
 	    break;
 	case BOXES:		
-#if USE_ULIG_FILLEDBOXES
-	case FILLEDBOXES:
-#endif /* USE_ULIG_FILLEDBOXES */
 #ifdef PM3D
 	case FILLEDCURVES:
 #endif
@@ -1068,9 +1065,6 @@ build_networks(plots, pcount)
 			store_edge(thisvertex, edir_west, 0, lp, above);
 			break;
 		    case BOXES:		
-#if USE_ULIG_FILLEDBOXES
-		    case FILLEDBOXES:
-#endif /* USE_ULIG_FILLEDBOXES */
 #ifdef PM3D
 		    case FILLEDCURVES:
 #endif
@@ -1253,9 +1247,6 @@ build_networks(plots, pcount)
 		    break;
 
 		case BOXES:		
-#if USE_ULIG_FILLEDBOXES
-		case FILLEDBOXES:
-#endif	/* USE_ULIG_FILLEDBOXES */
 #ifdef PM3D
 		case FILLEDCURVES:
 #endif
