@@ -1,5 +1,5 @@
 #ifndef lint
-static char    *RCSid = "$Id: plot3d.c,v 1.8 1998/10/05 12:40:19 lhecking Exp $";
+static char    *RCSid = "$Id: plot3d.c,v 1.9 1998/10/09 14:28:43 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -809,8 +809,7 @@ static void eval_3dplots()
 
 				/*{{{  data file*/
 				if (parametric && crnt_param != 0)
-					int_error("previous parametric function not fully specified",
-					  c_token);
+					int_error("previous parametric function not fully specified", c_token);
 				
 				if (!some_data_files) {
 					if (autoscale_lx & 1) {
