@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.5 2000/06/24 21:57:33 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.32.2.6 2000/08/04 14:01:27 joze Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1091,12 +1091,13 @@ set_arrow()
     struct arrow_def *this_arrow = NULL;
     struct arrow_def *new_arrow = NULL;
     struct arrow_def *prev_arrow = NULL;
-    struct position spos, epos;
+    struct position spos, epos, headsize;
     struct lp_style_type loc_lp;
     int axes = FIRST_AXES;
     int tag;
-    TBOOLEAN set_start, set_end, head = 1, set_axes = 0, set_line = 0, set_layer = 0;
+    TBOOLEAN set_start, set_end, head = 1, set_axes = 0, set_line = 0, set_headsize = 0, set_layer = 0;
     int layer = 0;
+    headsize.x = 0; /* length being zero means the default head size */
 
     c_token++;
 
@@ -1172,6 +1173,19 @@ set_arrow()
 	c_token++;
 	head = 1;
     }
+    if (!END_OF_COMMAND && equals(c_token, "heads")) {
+	c_token++;
+	head = 2;
+    }
+    if (!END_OF_COMMAND && equals(c_token, "size")) {
+	headsize.scalex = headsize.scaley = headsize.scalez = first_axes;
+	  /* only scalex used; scaley is angle of the head in [deg] */
+	c_token++;
+	if (END_OF_COMMAND)
+	    int_error(c_token, "head size expected");
+	get_position(&headsize);
+	set_headsize = TRUE;
+    }
     set_layer = FALSE;
     if (!END_OF_COMMAND && equals(c_token, "back")) {
 	c_token++;
@@ -1212,6 +1226,9 @@ set_arrow()
 	if (set_layer) {
 	    this_arrow->layer = layer;
 	}
+	if (set_headsize) {
+	    this_arrow->headsize = headsize;
+	}
 	if (set_line) {
 	    this_arrow->lp_properties = loc_lp;
 	}
@@ -1227,6 +1244,7 @@ set_arrow()
 	new_arrow->start = spos;
 	new_arrow->end = epos;
 	new_arrow->head = head;
+	new_arrow->headsize = headsize;
 	new_arrow->layer = layer;
 	new_arrow->lp_properties = loc_lp;
     }

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.3 2000/06/24 21:57:33 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.23.2.4 2000/08/04 14:01:26 joze Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -642,12 +642,27 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
     for (this_arrow = first_arrow; this_arrow != NULL;
 	 this_arrow = this_arrow->next) {
 	unsigned int sx, sy, ex, ey;
+	extern int curr_arrow_headlength;
+	extern double curr_arrow_headangle;
 
 	if (this_arrow->layer)
 	    continue;
 	map3d_position(&this_arrow->start, &sx, &sy, "arrow");
 	map3d_position(&this_arrow->end, &ex, &ey, "arrow");
 	term_apply_lp_properties(&(this_arrow->lp_properties));
+	curr_arrow_headlength = 0;
+	if (this_arrow->headsize.x > 0) { /* set head length+angle for term->arrow */
+	    int itmp, x1, x2;
+	    double savex = this_arrow->headsize.x;
+	    curr_arrow_headangle = this_arrow->headsize.y;
+	    this_arrow->headsize.y = 1.0; /* any value, just avoid log y */
+	    map_position(&this_arrow->headsize, &x2, &itmp, "arrow");
+	    this_arrow->headsize.x = 0; /* measure length from zero */
+	    map_position(&this_arrow->headsize, &x1, &itmp, "arrow");
+	    curr_arrow_headlength = x2 - x1;
+	    this_arrow->headsize.y = curr_arrow_headangle; /* restore the angle */
+	    this_arrow->headsize.x = savex; /* restore the length */
+	}
 	(*t->arrow) (sx, sy, ex, ey, this_arrow->head);
     }
 
@@ -802,7 +817,9 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 	    term_apply_lp_properties(&(this_plot->lp_properties));
 
 	    if (lkey) {
+		ignore_enhanced_text = this_plot->title_no_enhanced == 1;
 		key_text(xl, yl, this_plot->title);
+		ignore_enhanced_text = 0;
 	    }
 	    switch (this_plot->plot_style) {
 	    case BOXES:	/* can't do boxes in 3d yet so use impulses */
@@ -899,7 +916,9 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 	    if (key != 0 && this_plot->title && this_plot->title[0]
 		&& !draw_surface && !label_contours) {
 		/* unlabelled contours but no surface : put key entry in now */
+		ignore_enhanced_text = this_plot->title_no_enhanced == 1;
 		key_text(xl, yl, this_plot->title);
+		ignore_enhanced_text = 0;
 
 		switch (this_plot->plot_style) {
 		case IMPULSES:

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.31.2.3 2000/06/04 12:53:20 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.31.2.4 2000/08/04 14:01:27 joze Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -935,3 +935,5 @@ wrapper_for_write_history()
 #endif
 }
 #endif /* HAVE_LIBREADLINE && GNUPLOT_HISTORY */
+
+int ignore_enhanced_text = 0;

@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29.2.4 2000/06/09 07:47:58 joze Exp $
+ * $Id: plot.h,v 1.29.2.5 2000/08/04 14:01:27 joze Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -559,6 +559,7 @@ struct curve_points {
 	enum PLOT_STYLE plot_style;
 	enum PLOT_SMOOTH plot_smooth;
 	char *title;
+	int title_no_enhanced;		/* don't typeset title in enhanced mode */
 	struct lp_style_type lp_properties;
  	int p_max;			/* how many points are allocated */
 	int p_count;			/* count of points in points */
@@ -588,6 +589,7 @@ struct surface_points {
 	enum PLOT_TYPE plot_type;
 	enum PLOT_STYLE plot_style;
 	char *title;
+	int title_no_enhanced;		/* don't typeset title in enhanced mode */
 	struct lp_style_type lp_properties;
 	int has_grid_topology;
 	int num_iso_read;  /* Data files only - num of isolines read from file. */
@@ -723,6 +725,7 @@ struct arrow_def {
 	struct position start;
 	struct position end;
 	TBOOLEAN head;			/* arrow has a head or not */
+	struct position headsize;	/* x = length, y = angle [deg] */
 	int layer;			/* 0 = back, 1 = front */
 	struct lp_style_type lp_properties;
 };
@@ -879,5 +882,7 @@ void gp_expand_tilde __PROTO((char **));
 void drop_privilege __PROTO((void));
 void take_privilege __PROTO((void));
 #endif /* LINUXVGA */
+
+extern int ignore_enhanced_text;
 
 #endif /* GNUPLOT_PLOT_H */
