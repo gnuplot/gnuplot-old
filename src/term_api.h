@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.26 2004/03/25 12:36:02 broeker Exp $
+ * $Id: term_api.h,v 1.27 2004/03/29 10:43:36 broeker Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -167,8 +167,8 @@ typedef struct TERMENTRY {
     /* the following are optional. set term ensures they are not NULL */
     int (*text_angle) __PROTO((int));
     int (*justify_text) __PROTO((enum JUSTIFY));
-    void (*point) __PROTO((unsigned int, unsigned int,int));
-    void (*arrow) __PROTO((unsigned int, unsigned int, unsigned int, unsigned int, TBOOLEAN));
+    void (*point) __PROTO((unsigned int, unsigned int, int));
+    void (*arrow) __PROTO((unsigned int, unsigned int, unsigned int, unsigned int, int));
     int (*set_font) __PROTO((const char *font));
     void (*pointsize) __PROTO((double)); /* change pointsize */
     int flags;
