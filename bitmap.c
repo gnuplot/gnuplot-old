@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: bitmap.c,v 1.1.1.2 1998/04/15 19:22:05 lhecking Exp $";
+static char *RCSid = "$Id: bitmap.c,v 1.2.2.1 1999/09/29 13:48:23 lhecking Exp $";
 #endif
 
 /* GNUPLOT - bitmap.c */
@@ -46,16 +46,16 @@ static char *RCSid = "$Id: bitmap.c,v 1.1.1.2 1998/04/15 19:22:05 lhecking Exp $
 
 
 /*
-** General raster plotting routines.
-** Raster routines written and copyrighted 1987 by
-** Jyrki Yli-Nokari (jty@intrin.UUCP)
-** Intrinsic, Ltd.
-**
-** You may use this code for anything you like as long as
-** you are not selling it and the credit is given and
-** this message retained.
-**
-*/
+   ** General raster plotting routines.
+   ** Raster routines written and copyrighted 1987 by
+   ** Jyrki Yli-Nokari (jty@intrin.UUCP)
+   ** Intrinsic, Ltd.
+   **
+   ** You may use this code for anything you like as long as
+   ** you are not selling it and the credit is given and
+   ** this message retained.
+   **
+ */
 
 /* Bitmap plotting routines derived from above raster plotting routines
  * Russell Lang, 1990
@@ -68,22 +68,23 @@ static char *RCSid = "$Id: bitmap.c,v 1.1.1.2 1998/04/15 19:22:05 lhecking Exp $
 
 static void b_putc __PROTO((unsigned int, unsigned int, int, unsigned int));
 
-bitmap *b_p = (bitmap *)NULL;	/* global pointer to bitmap */
+bitmap *b_p = (bitmap *) NULL;	/* global pointer to bitmap */
 unsigned int b_currx, b_curry;	/* the current coordinates */
 unsigned int b_xsize, b_ysize;	/* the size of the bitmap */
-unsigned int b_planes;			/* number of color planes */
-unsigned int b_psize;			/* size of each plane */
-unsigned int b_rastermode;		/* raster mode rotates -90deg */
+unsigned int b_planes;		/* number of color planes */
+unsigned int b_psize;		/* size of each plane */
+unsigned int b_rastermode;	/* raster mode rotates -90deg */
 unsigned int b_linemask = 0xffff;	/* 16 bit mask for dotted lines */
-unsigned int b_value = 1;		/* colour of lines */
-unsigned int b_hchar;			/* width of characters */
-unsigned int b_hbits;			/* actual bits in char horizontally */
-unsigned int b_vchar;			/* height of characters */
-unsigned int b_vbits;			/* actual bits in char vertically */
-unsigned int b_angle;			/* rotation of text */
+unsigned int b_value = 1;	/* colour of lines */
+unsigned int b_hchar;		/* width of characters */
+unsigned int b_hbits;		/* actual bits in char horizontally */
+unsigned int b_vchar;		/* height of characters */
+unsigned int b_vbits;		/* actual bits in char vertically */
+unsigned int b_angle;		/* rotation of text */
 char_box b_font[FNT_CHARS];	/* the current font */
-unsigned int b_pattern[] = {0xffff, 0x1111,
-	0xffff, 0x5555, 0x3333, 0x7777, 0x3f3f, 0x0f0f, 0x5f5f};
+unsigned int b_pattern[] =
+{0xffff, 0x1111,
+ 0xffff, 0x5555, 0x3333, 0x7777, 0x3f3f, 0x0f0f, 0x5f5f};
 int b_maskcount = 0;
 unsigned int b_lastx, b_lasty;	/* last pixel set - used by b_line */
 
@@ -677,74 +678,179 @@ char_row GPFAR fnt13x25[FNT_CHARS][FNT13X25_VBITS] = {
           0x1249,000000,000000,0x1249,000000,000000,0x1249},
 };
 
+/* Moved here from gif.trm */
+struct rgb web_color_rgbs[] =
+{
+    { 0xff, 0xff, 0xff },		/* background: white         */
+    { 0x00, 0x00, 0x00 },		/*    borders: black         */
+    { 0x40, 0x40, 0x40 },		/* x & y axes: grey          */
+    { 0xff, 0x00, 0x00 },		/*   color 01: red           */
+    { 0x00, 0xc0, 0x00 },		/*   color 02: dark green    */
+    { 0x00, 0x80, 0xff },		/*   color 03: dark blue     */
+    { 0xc0, 0x00, 0xff },		/*   color 04: dark magenta  */
+    { 0xc0, 0xff, 0x40 },		/*   color 05: yellow        */
+    { 0xc0, 0x40, 0x00 },		/*   color 06: orange        */
+    { 0x40, 0xff, 0x80 },		/*   color 07: sea green     */
+    { 0x20, 0x20, 0xc0 },		/*   color 08: royal blue    */
+    { 0x80, 0x00, 0xc0 },		/*   color 09: dark violet   */
+    /* please note: these colors are optimized for web216 compatibility */
+    { 0x00, 0x60, 0x80 },		/* DeepSkyBlue4 */
+    { 0x00, 0x80, 0x00 },		/* green4 */
+    { 0x00, 0x80, 0x40 },		/* SpringGreen4 */
+    { 0x00, 0x80, 0x80 },		/* dark cyan, turquoise4 */
+    { 0x00, 0xc0, 0x60 },		/* SpringGreen3 */
+    { 0x00, 0xc0, 0xc0 },		/* cyan3, turquoise3 */
+    { 0x00, 0xff, 0x00 },		/* green */
+    { 0x20, 0x80, 0x20 },		/* forest green */
+    { 0x30, 0x60, 0x80 },		/* SteelBlue4 */
+    { 0x40, 0x40, 0x40 },		/* grey25-31 */
+    { 0x40, 0x80, 0x00 },		/* chartreuse4 */
+    { 0x00, 0x00, 0x80 },		/* dark blue, navy blue */
+    { 0x80, 0x60, 0x00 },		/* DarkGoldenrod4 */
+    { 0x80, 0x60, 0x10 },		/* goldenrod4 */
+    { 0x80, 0x60, 0x60 },		/* pink4 */
+    { 0x80, 0x60, 0x80 },		/* plum4 */
+    { 0x00, 0x00, 0xc0 },		/* medium blue */
+    { 0x00, 0x00, 0xff },		/* blue */
+    { 0x00, 0x60, 0x00 },		/* dark green */
+    { 0x40, 0xc0, 0x80 },		/* SeaGreen3 */
+    { 0x60, 0xa0, 0xc0 },		/* SkyBlue3 */
+    { 0x60, 0xc0, 0x00 },		/* chartreuse3 */
+    { 0x60, 0xc0, 0xa0 },		/* medium aquamarine */
+    { 0x80, 0x00, 0x00 },		/* dark red */
+    { 0x80, 0x00, 0x80 },		/* dark magenta */
+    { 0x60, 0x20, 0x80 },		/* DarkOrchid4 */
+    { 0x60, 0x60, 0x60 },		/* dim grey */
+    { 0x00, 0xff, 0xff },		/* cyan1, turquoise1 */
+    { 0x20, 0x20, 0x20 },		/* grey13-18 */
+    { 0x20, 0x40, 0x40 },		/* dark slate grey */
+    { 0x20, 0x40, 0x80 },		/* RoyalBlue4 */
+    { 0x60, 0x80, 0x20 },		/* olive drab */
+    { 0x60, 0x80, 0x60 },		/* DarkSeaGreen4 */
+    { 0x60, 0x80, 0x80 },		/* LightBlue4, PaleTurquoise4 */
+    { 0x80, 0x80, 0x40 },		/* LightGoldenrod4, khaki4 */
+    { 0x80, 0x80, 0x80 },		/* grey51-56 */
+    { 0xa0, 0xa0, 0xa0 },		/* dark grey, grey63-68 */
+    { 0xa0, 0xd0, 0xe0 },		/* light blue */
+    { 0xc0, 0x20, 0x20 },		/* firebrick3 */
+    { 0xc0, 0x60, 0x00 },		/* DarkOrange3 */
+    { 0x80, 0xc0, 0xe0 },		/* sky blue */
+    { 0xc0, 0x60, 0xc0 },		/* orchid3 */
+    { 0xc0, 0x80, 0x00 },		/* orange3 */
+    { 0xc0, 0x80, 0x60 },		/* LightSalmon3 */
+    { 0xff, 0x40, 0x00 },		/* orange red */
+    { 0xff, 0x40, 0x40 },		/* brown1, tomato */
+    { 0x80, 0xc0, 0xff },		/* light sky blue */
+    { 0xff, 0x80, 0x60 },		/* salmon */
+    { 0xff, 0x80, 0x80 },		/* light coral */
+    { 0xc0, 0xa0, 0x00 },		/* gold3 */
+    { 0xc0, 0xc0, 0xc0 },		/* grey76-81, honeydew3, ivory3, snow3 */
+    { 0xc0, 0xff, 0xc0 },		/* DarkSeaGreen1 */
+    { 0xff, 0x00, 0x00 },		/* red */
+    { 0xff, 0x00, 0xff },		/* magenta */
+    { 0xff, 0x80, 0xa0 },		/* PaleVioletRed1 */
+    { 0xff, 0x80, 0xff },		/* orchid1 */
+    { 0xc0, 0xc0, 0xa0 },		/* LemonChiffon3 */
+    { 0xff, 0x60, 0x60 },		/* IndianRed1 */
+    { 0xff, 0x80, 0x00 },		/* dark orange */
+    { 0xff, 0xa0, 0x00 },		/* orange */
+    { 0x80, 0xe0, 0xe0 },		/* CadetBlue2, DarkSlateGray2 */
+    { 0xa0, 0xe0, 0xe0 },		/* pale turquoise */
+    { 0xa0, 0xff, 0x20 },		/* green yellow */
+    { 0xc0, 0x00, 0x00 },		/* red3 */
+    { 0xc0, 0x00, 0xc0 },		/* magenta3 */
+    { 0xa0, 0x20, 0x20 },		/* brown */
+    { 0xa0, 0x20, 0xff },		/* purple */
+    { 0x80, 0x20, 0x00 },		/* OrangeRed4 */
+    { 0x80, 0x20, 0x20 },		/* brown4 */
+    { 0x80, 0x40, 0x00 },		/* DarkOrange4 */
+    { 0x80, 0x40, 0x20 },		/* sienna4 */
+    { 0x80, 0x40, 0x80 },		/* orchid4 */
+    { 0x80, 0x60, 0xc0 },		/* MediumPurple3 */
+    { 0x80, 0x60, 0xff },		/* SlateBlue1 */
+    { 0x80, 0x80, 0x00 },		/* yellow4 */
+    { 0xa0, 0x80, 0xff },		/* MediumPurple1 */
+    { 0xc0, 0x60, 0x80 },		/* PaleVioletRed3 */
+    { 0xc0, 0xc0, 0x00 },		/* yellow3 */
+    { 0xff, 0x80, 0x40 },		/* sienna1 */
+    { 0xff, 0xa0, 0x40 },		/* tan1 */
+    { 0xff, 0xa0, 0x60 },		/* sandy brown */
+    { 0xff, 0xa0, 0x70 },		/* light salmon */
+    { 0xff, 0xc0, 0x20 },		/* goldenrod1 */
+    { 0xff, 0xc0, 0xc0 },		/* RosyBrown1, pink */
+    { 0xff, 0xff, 0x00 },		/* yellow */
+    { 0xff, 0xff, 0x80 },		/* khaki1 */
+    { 0xff, 0xff, 0xc0 }		/* lemon chiffon */
+};
+
 /*
-** The plotting area is defined as a huge bitmap.
-** The bitmap is stored in a dynamically allocated pixel array b_p
-**
-** The bitmap is allocated (and initialized to zero) with
-** b_makebitmap(xsize, ysize, planes)
-** and freed with b_freebitmap()
-** xsize and ysize will be rounded up to a multiple of 8.
-**
-** Valid (int) coordinates range from zero to (xsize-1,ysize-1)
-**
-** Plotting is done via b_move(x, y) and b_vector(x, y) functions,
-** where the point (x,y) is the target to go from the current point
-** To set the color use b_setvalue(value) where value is the value 
-** (0 or 1 or a color number) to be stored in every pixel.
-** To get dotted line styles, use b_setlinetype(linetype).
-**
-** Internally all plotting goes through b_setpixel(x, y, value).
-*/
+   ** The plotting area is defined as a huge bitmap.
+   ** The bitmap is stored in a dynamically allocated pixel array b_p
+   **
+   ** The bitmap is allocated (and initialized to zero) with
+   ** b_makebitmap(xsize, ysize, planes)
+   ** and freed with b_freebitmap()
+   ** xsize and ysize will be rounded up to a multiple of 8.
+   **
+   ** Valid (int) coordinates range from zero to (xsize-1,ysize-1)
+   **
+   ** Plotting is done via b_move(x, y) and b_vector(x, y) functions,
+   ** where the point (x,y) is the target to go from the current point
+   ** To set the color use b_setvalue(value) where value is the value 
+   ** (0 or 1 or a color number) to be stored in every pixel.
+   ** To get dotted line styles, use b_setlinetype(linetype).
+   **
+   ** Internally all plotting goes through b_setpixel(x, y, value).
+ */
 
 
 /*
-** set pixel (x, y, value) to value value (this can be 1/0 or a color number).
-*/
-void
-b_setpixel(x, y, value)
+ * set pixel (x, y, value) to value value (this can be 1/0 or a color number).
+ */
+void b_setpixel(x, y, value)
 unsigned int x, y, value;
 {
-  register unsigned int row;
-  register unsigned char mask;
-  unsigned int i; /* HBB: added 'unsigned' to shut up gcc -Wall */
-  if (b_rastermode) {
-	/* interchange so that new (x,y) is old (y,b_ysize-1-x) */
-	row = x;  /* temp storage */
-	x = y;
-	y = b_ysize-1-row;
-  }
-  if (IN(x, b_xsize) && IN(y, b_ysize))
-  {
-    row = y/8;
-    mask = 1<<(y%8);
+    register unsigned int row;
+    register unsigned char mask;
+    unsigned int i;
 
-	for (i=0; i<b_planes; i++) {
-		if (value&1)
-			*((*b_p)[row]+x) |= mask;
-		else
-			*((*b_p)[row]+x) &= ~mask;
-		row += b_psize;
-		value >>= 1;
+    if (b_rastermode) {
+	/* interchange so that new (x,y) is old (y,b_ysize-1-x) */
+	row = x;		/* temp storage */
+	x = y;
+	y = b_ysize - 1 - row;
+    }
+    if (IN(x, b_xsize) && IN(y, b_ysize)) {
+	row = y / 8;
+	mask = 1 << (y % 8);
+
+	for (i = 0; i < b_planes; i++) {
+	    if (value & 1)
+		*((*b_p)[row] + x) |= mask;
+	    else
+		*((*b_p)[row] + x) &= ~mask;
+	    row += b_psize;
+	    value >>= 1;
 	}
-  }
+    }
 #ifdef BITMAPDEBUG
-  else
-  {
-    if (b_rastermode)
-      fprintf(stderr, "Warning: setpixel(%d, %d, %d) out of bounds\n", 
-		b_ysize-1-y, x, value);
-    else
-      fprintf(stderr, "Warning: setpixel(%d, %d, %d) out of bounds\n",
-		x, y, value);
-  }
+    else {
+	if (b_rastermode)
+	    fprintf(stderr, "Warning: setpixel(%d, %d, %d) out of bounds\n",
+		    b_ysize - 1 - y, x, value);
+	else
+	    fprintf(stderr, "Warning: setpixel(%d, %d, %d) out of bounds\n",
+		    x, y, value);
+    }
 #endif
 }
 
+
+/* Currently unused */
+#if 0
 /*
-** get pixel (x,y) value----unused
-*/
-/****************************
+ * get pixel (x,y) value
+ */
 unsigned int
 b_getpixel(x, y)
 unsigned int x, y;
@@ -784,296 +890,300 @@ unsigned int x, y;
     return(0);
   }
 }
-********************************/
+#endif /* 0 */
+
 
 /*
-** allocate the bitmap
-*/
-void
-b_makebitmap(x, y, planes)
+ * allocate the bitmap
+ */
+void b_makebitmap(x, y, planes)
 unsigned int x, y, planes;
 {
-  register unsigned j;
-  unsigned rows;
+    register unsigned j;
+    unsigned rows;
 
-  x = 8 * (unsigned int)(x/8.0+0.9);	/* round up to multiple of 8 */
-  y = 8 * (unsigned int)(y/8.0+0.9);	/* round up to multiple of 8 */
-  b_psize = y/8;					/* size of each plane */
-  rows = b_psize * planes;			/* total number of rows of 8 pixels high */
-  b_xsize = x; b_ysize = y;
-  b_currx = b_curry = 0;
-  b_planes = planes;
-  b_value = 1;
-  b_angle = 0;
-  b_rastermode = 0;
-  /* allocate row pointers */
-  b_p = (bitmap *)gp_alloc( (unsigned long)rows * sizeof(pixels *), "bitmap row buffer");
-  memset(b_p, 0, rows * sizeof(pixels *));
-  for (j = 0; j < rows; j++) {
-    /* allocate bitmap buffers */
-    (*b_p)[j] = (pixels *)gp_alloc((unsigned long)x * sizeof(pixels),(char *)NULL);
-    if ((*b_p)[j] == (pixels *)NULL) {
-		b_freebitmap();  /* free what we have already allocated */
-		int_error("out of memory for bitmap buffer", NO_CARET);
+    x = 8 * (unsigned int) (x / 8.0 + 0.9);	/* round up to multiple of 8 */
+    y = 8 * (unsigned int) (y / 8.0 + 0.9);	/* round up to multiple of 8 */
+    b_psize = y / 8;		/* size of each plane */
+    rows = b_psize * planes;	/* total number of rows of 8 pixels high */
+    b_xsize = x;
+    b_ysize = y;
+    b_currx = b_curry = 0;
+    b_planes = planes;
+    b_value = 1;
+    b_angle = 0;
+    b_rastermode = 0;
+    /* allocate row pointers */
+    b_p = (bitmap *) gp_alloc((unsigned long) rows * sizeof(pixels *), "bitmap row buffer");
+    memset(b_p, 0, rows * sizeof(pixels *));
+    for (j = 0; j < rows; j++) {
+	/* allocate bitmap buffers */
+	(*b_p)[j] = (pixels *) gp_alloc((unsigned long) x * sizeof(pixels), (char *) NULL);
+	if ((*b_p)[j] == (pixels *) NULL) {
+	    b_freebitmap();	/* free what we have already allocated */
+	    int_error("out of memory for bitmap buffer", NO_CARET);
 	}
-    memset((*b_p)[j], 0, x * sizeof(pixels));
-  }
-}
-  
-/*
-** free the allocated bitmap
-*/
-void
-b_freebitmap()
-{
-  unsigned int j;
-  unsigned rows;
-
-  rows = b_psize * b_planes;   /* total number of rows of 8 pixels high */
-  for (j = 0; j < rows; j++)
-  {
-    (void) free((char *)(*b_p)[j]);
-  }
-  (void) free((char *)b_p);
-  b_p = (bitmap *)(NULL);
+	memset((*b_p)[j], 0, x * sizeof(pixels));
+    }
 }
 
+
 /*
-** set pixel at (x,y) with color b_value and dotted mask b_linemask.
-*/
-void
-b_setmaskpixel(x,y,value)
-unsigned int x,y,value;
+ * free the allocated bitmap
+ */
+void b_freebitmap()
 {
-	/* dotted line generator */
-	if ((b_linemask>>b_maskcount)&(unsigned int)(1)) {
-		b_setpixel(x,y,value);
+    unsigned int j, rows;
+
+    rows = b_psize * b_planes;	/* total number of rows of 8 pixels high */
+    for (j = 0; j < rows; j++) {
+	(void) free((char *) (*b_p)[j]);
+    }
+    (void) free((char *) b_p);
+    b_p = (bitmap *) (NULL);
+}
+
+
+/*
+ * set pixel at (x,y) with color b_value and dotted mask b_linemask.
+ */
+void b_setmaskpixel(x, y, value)
+unsigned int x, y, value;
+{
+    /* dotted line generator */
+    if ((b_linemask >> b_maskcount) & (unsigned int) (1)) {
+	b_setpixel(x, y, value);
+    }
+    b_maskcount = (b_maskcount + 1) % 16;
+    b_lastx = x;		/* last pixel set with mask */
+    b_lasty = y;
+}
+
+
+/*
+ * draw a line from (x1,y1) to (x2,y2)
+ * with color b_value and dotted mask b_linemask.
+ */
+void b_line(x1, y1, x2, y2)
+unsigned int x1, y1, x2, y2;
+{
+    int runcount;
+    int dx, dy;
+    int xinc, yinc;
+    unsigned int xplot, yplot;
+
+    runcount = 0;
+    dx = abs((int) (x1) - (int) (x2));
+    if (x2 > x1)
+	xinc = 1;
+    else if (x2 == x1)
+	xinc = 0;
+    else
+	xinc = -1;
+    dy = abs((int) (y1) - (int) (y2));
+    if (y2 > y1)
+	yinc = 1;
+    else if (y2 == y1)
+	yinc = 0;
+    else
+	yinc = -1;
+    xplot = x1;
+    yplot = y1;
+    if (dx > dy) {
+	/* iterate x */
+	if ((b_linemask == 0xffff) ||
+	    ((xplot != b_lastx) && (yplot != b_lasty)))
+	    b_setmaskpixel(xplot, yplot, b_value);
+	while (xplot != x2) {
+	    xplot += xinc;
+	    runcount += dy;
+	    if (runcount >= (dx - runcount)) {
+		yplot += yinc;
+		runcount -= dx;
+	    }
+	    b_setmaskpixel(xplot, yplot, b_value);
 	}
-	b_maskcount= (b_maskcount+1) % 16;
-	b_lastx= x;  /* last pixel set with mask */
-	b_lasty= y;
-}
-
-/*
-** draw a line from (x1,y1) to (x2,y2)
-** with color b_value and dotted mask b_linemask.
-*/
-void
-b_line(x1,y1,x2,y2)
-unsigned int x1,y1,x2,y2;
-{
-int runcount;
-int dx,dy;
-int xinc,yinc;
-unsigned int xplot,yplot;
-
-	runcount=0;
-	dx = abs((int)(x1)-(int)(x2));
-	if (x2>x1)  xinc=  1;
-	else if (x2==x1) xinc=  0;
-	else  xinc= -1;
-	dy = abs((int)(y1)-(int)(y2));
-	if (y2>y1)  yinc=  1;
-	else if (y2==y1) yinc=  0;
-	else  yinc= -1;
-	xplot=x1;
-	yplot=y1;
-	if (dx>dy) {
-		/* iterate x */
-		if ( (b_linemask==0xffff) ||
-			((xplot!=b_lastx) && (yplot!=b_lasty)) )
-			b_setmaskpixel(xplot,yplot,b_value);
-		while (xplot!=x2) {
-			xplot+=xinc;
-			runcount+=dy;
-			if (runcount>=(dx-runcount)) {
-				yplot+=yinc;
-				runcount-=dx;
-			}
-			b_setmaskpixel(xplot,yplot,b_value);
-		}
-	} else {
-		/* iterate y */
-		if ( (b_linemask==0xffff) ||
-			((xplot!=b_lastx) && (yplot!=b_lasty)) )
-			b_setmaskpixel(xplot,yplot,b_value);
-		while (yplot!=y2) {
-			yplot+=yinc;
-			runcount+=dx;
-			if (runcount>=(dy-runcount)) {
-				xplot+=xinc;
-				runcount-=dy;
-			}
-			b_setmaskpixel(xplot,yplot,b_value);
-		}
+    } else {
+	/* iterate y */
+	if ((b_linemask == 0xffff) ||
+	    ((xplot != b_lastx) && (yplot != b_lasty)))
+	    b_setmaskpixel(xplot, yplot, b_value);
+	while (yplot != y2) {
+	    yplot += yinc;
+	    runcount += dx;
+	    if (runcount >= (dy - runcount)) {
+		xplot += xinc;
+		runcount -= dy;
+	    }
+	    b_setmaskpixel(xplot, yplot, b_value);
 	}
+    }
 }
 
+
 /*
-** set character size
-*/
-void
-b_charsize(size)
+ * set character size
+ */
+void b_charsize(size)
 unsigned int size;
 {
-	int j;
-	switch(size) {
-		case FNT5X9:
-			b_hchar = FNT5X9_HCHAR;
-			b_hbits = FNT5X9_HBITS;
-			b_vchar = FNT5X9_VCHAR;
-			b_vbits = FNT5X9_VBITS;
-			for (j = 0; j < FNT_CHARS; j++ )
-				b_font[j] = &fnt5x9[j][0];
-			break;
-		case FNT9X17:
-			b_hchar = FNT9X17_HCHAR;
-			b_hbits = FNT9X17_HBITS;
-			b_vchar = FNT9X17_VCHAR;
-			b_vbits = FNT9X17_VBITS;
-			for (j = 0; j < FNT_CHARS; j++ )
-				b_font[j] = &fnt9x17[j][0];
-			break;
-		case FNT13X25:
-			b_hchar = FNT13X25_HCHAR;
-			b_hbits = FNT13X25_HBITS;
-			b_vchar = FNT13X25_VCHAR;
-			b_vbits = FNT13X25_VBITS;
-			for (j = 0; j < FNT_CHARS; j++ )
-				b_font[j] = &fnt13x25[j][0];
-			break;
-		default:
-			int_error("Unknown character size",NO_CARET);
-	}
+    int j;
+    switch (size) {
+    case FNT5X9:
+	b_hchar = FNT5X9_HCHAR;
+	b_hbits = FNT5X9_HBITS;
+	b_vchar = FNT5X9_VCHAR;
+	b_vbits = FNT5X9_VBITS;
+	for (j = 0; j < FNT_CHARS; j++)
+	    b_font[j] = &fnt5x9[j][0];
+	break;
+    case FNT9X17:
+	b_hchar = FNT9X17_HCHAR;
+	b_hbits = FNT9X17_HBITS;
+	b_vchar = FNT9X17_VCHAR;
+	b_vbits = FNT9X17_VBITS;
+	for (j = 0; j < FNT_CHARS; j++)
+	    b_font[j] = &fnt9x17[j][0];
+	break;
+    case FNT13X25:
+	b_hchar = FNT13X25_HCHAR;
+	b_hbits = FNT13X25_HBITS;
+	b_vchar = FNT13X25_VCHAR;
+	b_vbits = FNT13X25_VBITS;
+	for (j = 0; j < FNT_CHARS; j++)
+	    b_font[j] = &fnt13x25[j][0];
+	break;
+    default:
+	int_error("Unknown character size", NO_CARET);
+    }
 }
 
 
 /*
-** put characater c at (x,y) rotated by angle with color b_value.
-*/
-static void
-b_putc(x,y,c,c_angle)
-unsigned int x,y;
+ * put characater c at (x,y) rotated by angle with color b_value.
+ */
+static void b_putc(x, y, c, c_angle)
+unsigned int x, y;
 int c;
 unsigned int c_angle;
 {
-	unsigned int i, j, k;
-	char_row fc;
+    unsigned int i, j, k;
+    char_row fc;
 
-	j = c - ' ';
+    j = c - ' ';
 
-	if (j >= FNT_CHARS)
-		return;  /* unknown (top-bit-set ?) character */
+    if (j >= FNT_CHARS)
+	return;			/* unknown (top-bit-set ?) character */
 
-	for ( i = 0; i < b_vbits; i++ ) {
-		fc = *( b_font[j] + i );
-		if ( c == '_' ) {	/* treat underline specially */
-			if ( fc  ) {	/* this this the underline row ? */
-				/* draw the under line for the full h_char width */
-				for ( k = ( b_hbits - b_hchar )/2;
-					k < ( b_hbits + b_hchar )/2; k++ ) {
-					switch(c_angle) {
-						case 0 : b_setpixel(x+k+1,y+i,b_value);
-							break;
-						case 1 : b_setpixel(x-i,y+k+1,b_value);
-							break;
-					}
-				}
-			}
+    for (i = 0; i < b_vbits; i++) {
+	fc = *(b_font[j] + i);
+	if (c == '_') {		/* treat underline specially */
+	    if (fc) {		/* this this the underline row ? */
+		/* draw the under line for the full h_char width */
+		for (k = (b_hbits - b_hchar) / 2;
+		     k < (b_hbits + b_hchar) / 2; k++) {
+		    switch (c_angle) {
+		    case 0:
+			b_setpixel(x + k + 1, y + i, b_value);
+			break;
+		    case 1:
+			b_setpixel(x - i, y + k + 1, b_value);
+			break;
+		    }
 		}
-		else {
-			/* draw character */
-			for ( k = 0; k < b_hbits; k++ ) {
-				if ( ( fc >> k ) & 1 ) {
-					switch(c_angle) {
-						case 0 : b_setpixel(x+k+1,y+i,b_value);
-							break;
-						case 1 : b_setpixel(x-i,y+k+1,b_value);
-							break;
-					}
-				}
-			}
+	    }
+	} else {
+	    /* draw character */
+	    for (k = 0; k < b_hbits; k++) {
+		if ((fc >> k) & 1) {
+		    switch (c_angle) {
+		    case 0:
+			b_setpixel(x + k + 1, y + i, b_value);
+			break;
+		    case 1:
+			b_setpixel(x - i, y + k + 1, b_value);
+			break;
+		    }
 		}
+	    }
 	}
+    }
 }
 
 
 /*
-** set b_linemask to b_pattern[linetype]
-*/
-void
-b_setlinetype(linetype)
+   ** set b_linemask to b_pattern[linetype]
+ */
+void b_setlinetype(linetype)
 int linetype;
 {
-	if (linetype>=7)
-		linetype %= 7;
-	b_linemask = b_pattern[linetype+2];
-	b_maskcount=0;
+    if (linetype >= 7)
+	linetype %= 7;
+    b_linemask = b_pattern[linetype + 2];
+    b_maskcount = 0;
 }
 
+
 /*
-** set b_value to value
-*/
-void
-b_setvalue(value)
+ * set b_value to value
+ */
+void b_setvalue(value)
 unsigned int value;
 {
-	b_value = value;
+    b_value = value;
 }
 
+
 /*
-** move to (x,y)
-*/
-void
-b_move(x, y)
+ * move to (x,y)
+ */
+void b_move(x, y)
 unsigned int x, y;
 {
-  b_currx = x;
-  b_curry = y;
+    b_currx = x;
+    b_curry = y;
 }
 
+
 /*
-** draw to (x,y) with color b_value
-*/
-void
-b_vector(x, y)
+ * draw to (x,y) with color b_value
+ */
+void b_vector(x, y)
 unsigned int x, y;
 {
-  b_line(b_currx, b_curry, x, y);
-  b_currx = x;
-  b_curry = y;
+    b_line(b_currx, b_curry, x, y);
+    b_currx = x;
+    b_curry = y;
 }
 
 
 /*
-** put text str at (x,y) with color b_value and rotation b_angle
-*/
-void
-b_put_text(x,y,str)
+ * put text str at (x,y) with color b_value and rotation b_angle
+ */
+void b_put_text(x, y, str)
 unsigned int x, y;
 char *str;
 {
-	if (b_angle == 1)
-		x += b_vchar/2;
-	else
-		y -= b_vchar/2;
-   switch (b_angle) {
-      case 0:
-	 for (; *str; ++str, x += b_hchar)
-	    b_putc (x, y, *str, b_angle);
-					break;
-      case 1:
-	 for (; *str; ++str, y += b_hchar)
-	    b_putc (x, y, *str, b_angle);
-					break;
-	}
+    if (b_angle == 1)
+	x += b_vchar / 2;
+    else
+	y -= b_vchar / 2;
+    switch (b_angle) {
+    case 0:
+	for (; *str; ++str, x += b_hchar)
+	    b_putc(x, y, *str, b_angle);
+	break;
+    case 1:
+	for (; *str; ++str, y += b_hchar)
+	    b_putc(x, y, *str, b_angle);
+	break;
+    }
 }
 
 
-int
-b_text_angle(ang)
+int b_text_angle(ang)
 int ang;
 {
-	b_angle=(unsigned int)ang;
-	return TRUE;
+    b_angle = (unsigned int) ang;
+    return TRUE;
 }
