@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.46 2000/11/24 15:44:31 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.47 2000/12/15 10:10:31 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1819,11 +1819,7 @@ const char *prompt;
 	    /* so that ^C or int_error during readline() does
 	     * not result in line being free-ed twice */
 	}
-#ifdef OS2
-	line = readline((interactive) ? prompt : "");
-#else
 	line = readline_ipc((interactive) ? prompt : "");
-#endif
 	leftover = 0;
 	/* If it's not an EOF */
 	if (line && *line) {
