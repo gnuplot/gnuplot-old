@@ -1,6 +1,6 @@
-/* $Id: driver.h,v 1.7 1998/11/03 12:45:41 lhecking Exp $ */
+/* $Id: driver.h,v 1.8 1998/11/25 21:05:34 lhecking Exp $ */
 
-/* GNUPLOT - driver.h  $Id: driver.h,v 1.7 1998/11/03 12:45:41 lhecking Exp $ */
+/* GNUPLOT - driver.h  $Id: driver.h,v 1.8 1998/11/25 21:05:34 lhecking Exp $ */
 
 /*[
  * Copyright 1986 - 1993, 1998   Thomas Williams, Colin Kelley
@@ -67,7 +67,7 @@ extern float xsize, ysize;
 /* it seems that sign as macro causes some conflict with precompiled headers */
 static int sign(int x)
 {
-  return x >=0 ? 1 : -1;
+    return x >= 0 ? 1 : -1;
 }
 #endif /* NEXT */
 
