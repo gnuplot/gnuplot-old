@@ -1,12 +1,12 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: dialogs.c,v 1.3 2000/02/11 19:12:49 lhecking Exp $" ;
+static char RCSid[]="$Id: dialogs.c,v 1.4 2002/02/15 20:17:35 amai Exp $" ;
 #endif
 
 /****************************************************************************
 
     PROGRAM: gnupmdrv
     
-        Outboard PM driver for GNUPLOT 3.3
+        Outboard PM driver for GNUPLOT 3.x
 
     MODULE:  dialogs.c  Dialog procedures for gnupmdrv 
         
