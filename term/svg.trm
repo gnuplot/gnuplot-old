@@ -61,6 +61,7 @@ unsigned int SVG_ySize = SVG_YMAX;	/* plot vertical size*/
 
 unsigned int SVG_xLast = UINT_MAX;	/* current pen horizontal position*/
 unsigned int SVG_yLast = UINT_MAX;	/* current pen vertical position*/
+char SVG_cmdLast = '\0';	/* previous command: move or line? */
 
 int SVG_LineType = -3;	/* current line type*/
 double SVG_LineWidth = 1.0;	/* current line width*/
@@ -73,7 +74,7 @@ char SVG_fontNameCur[MAX_ID_LEN + 1] = "Arial";	/* current text font family*/
 double SVG_fontSizeCur = 12;	/* current text size*/
 TBOOLEAN SVG_groupIsOpen = FALSE; /* open group flag*/
 TBOOLEAN SVG_pathIsOpen = FALSE; /* open path flag*/
-unsigned int SVG_path_count = 0;	/* size of current path*/
+unsigned int SVG_pathCount = 0;	/* size of current path*/
 struct SVG_PEN SVG_pens[16];	/* pen descriptors*/
 
 int SVG_fontAscent = 0;	/* estimated current font ascent*/
@@ -82,9 +83,8 @@ int SVG_fontLeading = 0;	/* estimated current font leading*/
 int SVG_fontAvWidth = 0;	/* estimated current font char average width*/
 
 static short SVG_Pen_RealID __PROTO ((int));
-static void SVG_PathOpen __PROTO ((void));
+static void SVG_PathAppend __PROTO ((unsigned int x, unsigned int y));
 static void SVG_PathClose __PROTO ((void));
-static void SVG_PathLimit __PROTO ((void));
 static void SVG_GroupOpen __PROTO ((void));
 static void SVG_GroupClose __PROTO ((void));
 static void SVG_SetFont __PROTO ((char *name, double size));
@@ -109,12 +109,11 @@ SVG_Pen_RealID (inPenCode)
 static void
 SVG_GroupOpen ()
 {
-    if (!SVG_groupIsOpen)     {
+    if (!SVG_groupIsOpen) {
 	fprintf (gpoutfile,
 		 "<g style=\"fill:none; stroke:%s; stroke-width:%.2f\">\n",
 		 SVG_pens[SVG_Pen_RealID (SVG_LineType)].color,
 		 SVG_pens[SVG_Pen_RealID (SVG_LineType)].width);
-
 	SVG_groupIsOpen = TRUE;
     }
 }
@@ -125,23 +124,43 @@ SVG_GroupOpen ()
 static void
 SVG_GroupClose ()
 {
-    if (SVG_groupIsOpen)
-      {
-	  fprintf (gpoutfile, "</g>\n");
-	  SVG_groupIsOpen = FALSE;
-      }
+    if (SVG_groupIsOpen) {
+	SVG_PathClose();
+	fprintf (gpoutfile, "</g>\n");
+	SVG_groupIsOpen = FALSE;
+    }
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
-	SVG_PathOpen
+	SVG_PathAppend
 ------------------------------------------------------------------------------------------------------------------------------------*/
 static void
-SVG_PathOpen ()
+SVG_PathAppend(x, y)
+    unsigned int x, y;
 {
+    /* No path is open?  Open a new one! */
     if (!SVG_pathIsOpen) {
-	fprintf (gpoutfile, "\t<path d=\"");
 	SVG_pathIsOpen = TRUE;
+
+	fprintf (gpoutfile, "\t<path d=\"");
     }
+
+    /* Sequences of 'M' commands are compressed into the last one */
+    if (SVG_cmdLast == 'M') {
+	fprintf (gpoutfile, "M%u,%u ", SVG_xLast, term->ymax - SVG_yLast);
+	SVG_pathCount++;
+    }
+
+    fprintf (gpoutfile, "L%u,%u ", x, term->ymax - y);
+
+    if (++SVG_pathCount >= 10) {	/* avoid excessive line length*/
+	SVG_pathCount = 0;
+	fprintf (gpoutfile, "\n\t\t");
+    }
+
+    SVG_xLast = x;
+    SVG_yLast = y;
+    SVG_cmdLast = 'L';
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -151,21 +170,9 @@ static void
 SVG_PathClose ()
 {
     if (SVG_pathIsOpen) {
-	fprintf (gpoutfile, "\"></path>\n");
-	SVG_path_count = 0;
+	fprintf (gpoutfile, "\"/>\n");
+	SVG_pathCount = 0;
 	SVG_pathIsOpen = FALSE;
-    }
-}
-
-/*------------------------------------------------------------------------------------------------------------------------------------
-	SVG_PathLimit
-------------------------------------------------------------------------------------------------------------------------------------*/
-static void
-SVG_PathLimit ()
-{
-    if (SVG_path_count >= 10) {	/* avoid excessive line length*/
-	fprintf (gpoutfile, "\n\t\t");
-	SVG_path_count = 0;
     }
 }
 
@@ -356,14 +363,12 @@ SVG_init ()
 TERM_PUBLIC void
 SVG_graphics ()
 {
-    /* fprintf (gpoutfile, "<svg>\n"); --- disabled HBB 20001116*/
-
     SVG_groupIsOpen = FALSE;
     SVG_pathIsOpen = FALSE;
 
-/* reset position*/
-
+    /* reset position*/
     SVG_xLast = SVG_yLast = UINT_MAX;
+    SVG_cmdLast = '\0';
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -372,10 +377,7 @@ SVG_graphics ()
 TERM_PUBLIC void
 SVG_text ()
 {
-    SVG_PathClose ();
     SVG_GroupClose ();
-
-    /* fprintf (gpoutfile, "</svg>\n\n"); --- disabled HBB 20001116 */
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -394,7 +396,6 @@ TERM_PUBLIC void
 SVG_linetype (int linetype)
 {
     if (linetype != SVG_LineType) {
-	SVG_PathClose ();
 	SVG_GroupClose ();
 	SVG_LineType = linetype;
 	SVG_GroupOpen ();
@@ -423,17 +424,9 @@ SVG_linewidth (double linewidth)
 TERM_PUBLIC void
 SVG_move (unsigned int x, unsigned int y)
 {
-    if (x != SVG_xLast || y != SVG_yLast)  {
-	SVG_PathOpen ();
-
-	fprintf (gpoutfile, "M%u,%u ", x, term->ymax - y);
-	SVG_path_count++;
-
-	SVG_PathLimit ();
-
-	SVG_xLast = x;
-	SVG_yLast = y;
-    }
+    SVG_xLast = x;
+    SVG_yLast = y;
+    SVG_cmdLast = 'M';
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -442,17 +435,8 @@ SVG_move (unsigned int x, unsigned int y)
 TERM_PUBLIC void
 SVG_vector (unsigned int x, unsigned int y)
 {
-    if (x != SVG_xLast || y != SVG_yLast) {
-	SVG_PathOpen ();
-
-	fprintf (gpoutfile, "L%u,%u ", x, term->ymax - y);
-	SVG_path_count++;
-
-	SVG_PathLimit ();
-
-	SVG_xLast = x;
-	SVG_yLast = y;
-    }
+    if (x != SVG_xLast || y != SVG_yLast)
+	SVG_PathAppend(x, y);
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -476,8 +460,10 @@ SVG_point (unsigned int x, unsigned int y, int number)
 	    , term_pointsize * term->h_tic / 2
 	    );
     }
+#if 0 /* neither needed nor useful */
     SVG_xLast = x;
     SVG_yLast = y;
+#endif
 }
 
 /*------------------------------------------------------------------------------------------------------------------------------------
@@ -515,7 +501,7 @@ SVG_put_text (unsigned int x, unsigned int y, char *str)
     
     SVG_PathClose ();
 
-/* horizontal justification*/
+    /* horizontal justification*/
 
     switch (SVG_TextJust) {
     case LEFT:

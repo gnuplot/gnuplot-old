@@ -1,5 +1,31 @@
 2003-06-23  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
+	Implemented path compression for SVG terminal drivers: avoid
+ 	consequtive moves in the same <path>, while making sure every
+ 	<path> starts with a move.
+	
+	* term/svg.trm (svg_cmdLast): New status variable storing whether
+ 	the last command output was a 'M'ove, a 'L'ine, or something else.
+	(SVG_pathCount): Renamed from SVG_path_count for better fit into
+ 	naming scheme.
+	(SVG_GroupClose): Inserted call to SVG_PathClose();
+	(SVG_PathAppend): Renamed from SVG_PathOpen().  Will now append
+ 	the current entry to the path, and automically open a new one if
+ 	necessary.  Compresses strings of 'M'oves into a single one, and
+ 	remembers the end position of the last 'M'ove or 'L'ine.
+	(SVG_PathClose): Output slightly shorter XML for end of <path>
+ 	tag.
+	(SVG_PathLimit): Removed. Functionality now inside SVG_PathAppend.
+	(SVG_graphics): Reset SVG_cmdLast.
+	(SVG_text, SVG_linetype): Remove call to SVG_PathClose().
+  	SVG_GroupClose() calls it, anyway.
+	(SVG_move): Removed almost complete code --- actions now done by
+ 	SVG_PathAppend().  Just store target, and update SVG_cmdLast.
+	(SVG_vector): Code replaced by a call to SVG_PathAppend().
+	(SVG_point): Commented out updates of SVG_{x|y}Last.
+
+2003-06-23  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
+
 	* gplt_x11.c (pr_GetR): Buffer overrun fixes.
 	(preset): Buffer overrun fixes.
 
