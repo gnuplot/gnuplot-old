@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.9.2.2 2000/05/25 06:02:05 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.9.2.3 2000/06/24 19:44:51 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1139,6 +1139,8 @@ static void
 unset_pm3d()
 {
     c_token++;
+    if (pm3d.where[0]=='b' && !pm3d.where[1]) /* unset reversed y axis from 'set pm3d map' */
+	range_flags[FIRST_Y_AXIS] &= ~RANGE_REVERSE;
     pm3d.where[0] = 0;
 #ifdef X11
     if (!strcmp(term->name, "x11")) {
