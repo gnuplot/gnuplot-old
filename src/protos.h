@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.1 1999/03/26 21:48:39 lhecking Exp $
+ * $Id: protos.h,v 1.2 1999/05/12 13:49:48 lhecking Exp $
  *
  */
 
@@ -221,7 +221,7 @@ char tos_getch();
 
 /* Prototypes from file "scanner.c" */
 
-int scanner __PROTO((char expression[]));
+int scanner __PROTO((char **expression, int *line_lengthp));
 
 
 /* Prototypes from "stdfn.c" */
