@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.4 2000/07/26 18:52:58 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.35.2.5 2000/10/18 14:26:34 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -557,9 +557,8 @@ set_arrow()
     struct arrow_def *prev_arrow = NULL;
     struct position spos, epos;
     struct lp_style_type loc_lp;
-    int axes = FIRST_AXES;
     int tag;
-    TBOOLEAN set_start, set_end, head = 1, set_axes = 0, set_line = 0, set_layer = 0;
+    TBOOLEAN set_start, set_end, head = 1, set_line = 0, set_layer = 0;
     int layer = 0;
 
     c_token++;
@@ -571,8 +570,7 @@ set_arrow()
     if (!END_OF_COMMAND
 	&& !equals(c_token, "from")
 	&& !equals(c_token, "to")
-	&& !equals(c_token, "first")
-	&& !equals(c_token, "second")) {
+	) {
 	/* must be a tag expression! */
 	tag = (int) real(const_express(&a));
 	if (tag <= 0)
@@ -580,15 +578,10 @@ set_arrow()
     } else
 	tag = assign_arrow_tag();	/* default next tag */
 
-    if (!END_OF_COMMAND && equals(c_token, "first")) {
-	++c_token;
-	axes = FIRST_AXES;
-	set_axes = 1;
-    } else if (!END_OF_COMMAND && equals(c_token, "second")) {
-	++c_token;
-	axes = SECOND_AXES;
-	set_axes = 1;
-    }
+    /* HBB 20001018: removed code here that accepted 'first' or
+     * 'second' keywords. The resulting variables 'axes' and
+     * 'set_axes' effected nothing, anyway --> deleted them, too. */
+
     /* get start position */
     if (!END_OF_COMMAND && equals(c_token, "from")) {
 	c_token++;
@@ -628,6 +621,7 @@ set_arrow()
 	get_position(&spos);
 	set_start = TRUE;
     }
+
     if (!END_OF_COMMAND && equals(c_token, "nohead")) {
 	c_token++;
 	head = 0;
