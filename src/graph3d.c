@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.51 2001/11/22 12:25:36 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.52 2001/11/26 09:18:17 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1419,7 +1419,7 @@ plot3d_lines_pm3d(plot)
 	    step = 1;
 	}
 
-	for (scan = 0; scan < n[set]; scan++) {
+	for (scan = 0; scan < n[set] && icrvs_pair[set]; scan++) {
 
 	    int cnt;
 	    struct iso_curve *icrvs = icrvs_pair[set][scan];
@@ -1584,7 +1584,7 @@ plot3d_points_pm3d(plot, p_type)
 	    step = 1;
 	}
 
-	for (scan = 0; scan < n[set]; scan++) {
+	for (scan = 0; scan < n[set] && icrvs_pair[set]; scan++) {
 
 	    int cnt;
 	    struct iso_curve *icrvs = icrvs_pair[set][scan];
