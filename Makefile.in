@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.34 1998/12/01 20:17:30 lhecking Exp $
+# $Id: Makefile.in,v 1.35 1998/12/02 18:38:27 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -165,7 +165,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.34 1998/12/01 20:17:30 lhecking Exp $
+# $Id: Makefile.in,v 1.35 1998/12/02 18:38:27 lhecking Exp $
 #
 ########################################################
 #
@@ -480,8 +480,6 @@ distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
 
 dist: distdir
-	-mv $(distdir)/docs/makefile.dst $(distdir)/docs/makefile
-	-mv $(distdir)/docs/latextut/makefile.dst $(distdir)/docs/latextut/makefile
 	-chmod -R a+r $(distdir)
 	$(TAR) chf - $(distdir) | gzip $(GZIP) > $(distdir).tar.gz
 	-rm -rf $(distdir)
