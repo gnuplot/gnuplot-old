@@ -1,5 +1,5 @@
 /* 
- * $Id: axis.h,v 1.15 2002/02/28 09:36:43 mikulik Exp $
+ * $Id: axis.h,v 1.16 2002/03/18 18:19:10 broeker Exp $
  *
  */
 
@@ -626,12 +626,19 @@ void set_writeback_max __PROTO((AXIS_INDEX));
 /* ------------ autoscaling of the color axis */
 #ifdef PM3D
 
-#define NEED_PALETTE(plot) (PM3DSURFACE == (plot)->plot_style || 1 == (plot)->lp_properties.use_palette)
+#define NEED_PALETTE(plot) \
+   (PM3DSURFACE == (plot)->plot_style \
+    || 1 == (plot)->lp_properties.use_palette)
 extern double g_non_pm3d_min, g_non_pm3d_max;
-void update_pm3d_zrange __PROTO((double value, TBOOLEAN need_palette));
 int set_pm3d_zminmax __PROTO((void));
 
+#else
+/* make this available regardless of the status of PM3D itself, for
+ * ease of use */
+#define NEED_PALETTE(plot) FALSE
 #endif /* PM3D */
+
+void update_pm3d_zrange __PROTO((double value, TBOOLEAN need_palette));
 
 
 #endif /* GNUPLOT_AXIS_H */
