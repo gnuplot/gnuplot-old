@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: internal.c,v 1.13 2002/03/07 16:28:39 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: internal.c,v 1.14 2002/03/07 17:58:11 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - internal.c */
@@ -53,19 +53,12 @@ static char *RCSid() { return RCSid("$Id: internal.c,v 1.13 2002/03/07 16:28:39 
  *   matherr() in their programs.
  */
 
-#define matherr GP_MATHERR
-#define exception GP_EXCEPTION_NAME
-
-#ifdef HAVE_STRUCT_EXCEPTION_IN_MATH_H
-# define STRUCT_EXCEPTION_P_X struct exception *x
-#endif
 
 int
-matherr(STRUCT_EXCEPTION_P_X)
+GP_MATHERR(STRUCT_EXCEPTION_P_X)
 {
     return (undefined = TRUE);	/* don't print error message */
 }
-#undef matherr
 
 #define BAD_DEFAULT default: int_error(NO_CARET, "interal error : type neither INT or CMPLX"); return;
 
