@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.11 1999/06/11 11:18:58 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.12 1999/06/11 18:54:37 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -42,6 +42,7 @@ static char *RCSid() { return RCSid("$Id: show.c,v 1.11 1999/06/11 11:18:58 lhec
 
 
 #include "plot.h"
+#include "command.h"
 #include "setshow.h"
 
 #define DEF_FORMAT   "%g"	/* default format for tic mark labels */

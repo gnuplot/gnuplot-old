@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.10 1999/06/11 11:18:56 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.11 1999/06/11 18:54:37 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -36,10 +36,13 @@ static char *RCSid() { return RCSid("$Id: plot.c,v 1.10 1999/06/11 11:18:56 lhec
 
 #include <signal.h>
 
+#define MAIN_C
 #include "plot.h"
+#undef MAIN_C
+
+#include "command.h"
 #include "fit.h"
 #include "setshow.h"
-#include "fnproto.h"
 #include <setjmp.h>
 
 #if defined(MSDOS) || defined(DOS386) || defined(__EMX__)
