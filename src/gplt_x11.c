@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.121 2004/10/30 17:53:10 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.122 2004/11/24 04:45:18 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -4469,6 +4469,7 @@ process_event(XEvent *event)
 		char *m = mouse_format;
 		double x, y, x2, y2;
 
+		*m = '\0';
 		mouse_to_coords(plot, event, &x, &y, &x2, &y2);
 		if (plot->axis_mask & (1<<FIRST_X_AXIS)) {
 		    sprintf(m,"x=  %10g %c",x,'\0');
