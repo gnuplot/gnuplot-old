@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graphics.c,v 1.24.2.16 2002/11/14 18:31:29 broeker Exp $";
+static char *RCSid = "$Id: graphics.c,v 1.24.2.17 2003/01/17 15:19:55 broeker Exp $";
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -2087,12 +2087,9 @@ struct curve_points *plot;
     }
 }
 
-/* XXX - JG  */
-/* plot_steps:                          
- * Plot the curves in STEPS style
- */
+/* Plot the curves in STEPS style */
 static void plot_steps(plot)
-struct curve_points *plot;
+    struct curve_points *plot;
 {
     int i;			/* point index */
     int x, y;			/* point in terminal coordinates */
@@ -2156,12 +2153,10 @@ struct curve_points *plot;
 	prev = plot->points[i].type;
     }
 }
-/* XXX - HOE  */
-/* plot_fsteps:                         
- * Plot the curves in STEPS style by step on forward yvalue
- */
+
+/* Plot the curves in STEPS style by step on forward yvalue */
 static void plot_fsteps(plot)
-struct curve_points *plot;
+    struct curve_points *plot;
 {
     int i;			/* point index */
     int x, y;			/* point in terminal coordinates */
@@ -2248,11 +2243,9 @@ histeps_compare(p1, p2)
 }
 
 /* CAC  */
-/* plot_histeps:                                
- * Plot the curves in HISTEPS style
- */
+/* plot_histeps: Plot the curves in HISTEPS style */
 static void plot_histeps(plot)
-struct curve_points *plot;
+    struct curve_points *plot;
 {
     int i;			/* point index */
     int xl, yl;			/* cursor position in terminal coordinates */
@@ -2274,7 +2267,7 @@ struct curve_points *plot;
     if (gl == NULL)
 	return;
 
-/* fill gl array with indexes of valid (non-undefined) points.  */
+    /* fill gl array with indexes of valid (non-undefined) points.  */
     goodcount = 0;
     for (i = 0; i < plot->p_count; i++)
 	if (plot->points[i].type == INRANGE ||
@@ -2323,32 +2316,24 @@ struct curve_points *plot;
 
     free(gl);
 }
-/* CAC 
- * Draw vertical line for the histeps routine.
- * Performs clipping.
- */
+
+/* CAC: Draw vertical line for the histeps routine. Performs clipping. */
 static void histeps_vertical(xl, yl, x, y1, y2)
-int *xl, *yl;			/* keeps track of "cursor" position */
-double x, y1, y2;		/* coordinates of vertical line */
+    int *xl, *yl;		/* keeps track of "cursor" position */
+    double x, y1, y2;		/* coordinates of vertical line */
 {
     struct termentry *t = term;
     /* global x_min, x_max, y_min, y_max */
     int xm, y1m, y2m;
 
-    if ((y1 < y_min && y2 < y_min) ||
-	(y1 > y_max && y2 > y_max) ||
-	x < x_min ||
-	x > x_max)
+    /* HBB 20030117: Redid this using generic macros, to let these
+     * survive reverted axes */
+    if (!inrange(x, x_min, x_max))
 	return;
-
-    if (y1 < y_min)
-	y1 = y_min;
-    if (y1 > y_max)
-	y1 = y_max;
-    if (y2 < y_min)
-	y2 = y_min;
-    if (y2 > y_max)
-	y2 = y_max;
+    cliptorange(y1, y_min, y_max);
+    cliptorange(y2, y_min, y_max);
+    if (y1 == y2)		/* edge completely clipped away */
+	return;
 
     xm = map_x(x);
     y1m = map_y(y1);
@@ -2367,27 +2352,21 @@ double x, y1, y2;		/* coordinates of vertical line */
  * Performs clipping.
  */
 static void histeps_horizontal(xl, yl, x1, x2, y)
-int *xl, *yl;			/* keeps track of "cursor" position */
-double x1, x2, y;		/* coordinates of vertical line */
+    int *xl, *yl;		/* keeps track of "cursor" position */
+    double x1, x2, y;		/* coordinates of vertical line */
 {
     struct termentry *t = term;
     /* global x_min, x_max, y_min, y_max */
     int x1m, x2m, ym;
 
-    if ((x1 < x_min && x2 < x_min) ||
-	(x1 > x_max && x2 > x_max) ||
-	y < y_min ||
-	y > y_max)
+    /* HBB 20030117: Redid this using generic macros, to let these
+     * survive reverted axes */
+    if (!inrange(y, y_min, y_max))
 	return;
-
-    if (x1 < x_min)
-	x1 = x_min;
-    if (x1 > x_max)
-	x1 = x_max;
-    if (x2 < x_min)
-	x2 = x_min;
-    if (x2 > x_max)
-	x2 = x_max;
+    cliptorange(x1, x_min, x_max);
+    cliptorange(x2, x_min, x_max);
+    if (x1 == x2)		/* edge completely clipped away */
+	return;
 
     ym = map_y(y);
     x1m = map_x(x1);
@@ -3124,7 +3103,6 @@ double *ex, *ey;		/* the point where it crosses an edge */
     return;
 }
 
-/* XXX - JG  */
 /* single edge intersection algorithm for "steps" curves */
 /* 
  * Given two points, one inside and one outside the plot, return
@@ -3136,9 +3114,9 @@ double *ex, *ey;		/* the point where it crosses an edge */
  * (x2,y1)->(x2,y2). 
  */
 static void edge_intersect_steps(points, i, ex, ey)
-struct coordinate GPHUGE *points;	/* the points array */
-int i;				/* line segment from point i-1 to point i */
-double *ex, *ey;		/* the point where it crosses an edge */
+    struct coordinate GPHUGE *points; /* the points array */
+    int i;			/* line segment from point i-1 to point i */
+    double *ex, *ey;		/* the point where it crosses an edge */
 {
     /* global x_min, x_max, y_min, x_max */
     double ax = points[i - 1].x;
@@ -3146,39 +3124,30 @@ double *ex, *ey;		/* the point where it crosses an edge */
     double bx = points[i].x;
     double by = points[i].y;
 
-    if (points[i].type == INRANGE) {	/* from OUTRANGE to INRANG */
+    if (points[i].type == INRANGE) {	/* from OUTRANGE to INRANGE */
 	if (inrange(ay, y_min, y_max)) {
 	    *ey = ay;
-	    if (ax > x_max)
-		*ex = x_max;
-	    else		/* x < x_min */
-		*ex = x_min;
+	    cliptorange(ax, x_min, x_max);
+	    *ex = ax;
 	} else {
 	    *ex = bx;
-	    if (ay > y_max)
-		*ey = y_max;
-	    else		/* y < y_min */
-		*ey = y_min;
+	    cliptorange(ay, y_min, y_max);
+	    *ey = ay;
 	}
     } else {			/* from INRANGE to OUTRANGE */
 	if (inrange(bx, x_min, x_max)) {
 	    *ex = bx;
-	    if (by > y_max)
-		*ey = y_max;
-	    else		/* y < y_min */
-		*ey = y_min;
+	    cliptorange(by, y_min, y_max);
+	    *ey = by;
 	} else {
 	    *ey = ay;
-	    if (bx > x_max)
-		*ex = x_max;
-	    else		/* x < x_min */
-		*ex = x_min;
+	    cliptorange(bx, x_min, x_max);
+	    *ex = bx;
 	}
     }
     return;
 }
 
-/* XXX - HOE  */
 /* single edge intersection algorithm for "fsteps" curves */
 /* fsteps means step on forward y-value. 
  * Given two points, one inside and one outside the plot, return
@@ -3190,9 +3159,9 @@ double *ex, *ey;		/* the point where it crosses an edge */
  * (x1,y2)->(x2,y2). 
  */
 static void edge_intersect_fsteps(points, i, ex, ey)
-struct coordinate GPHUGE *points;	/* the points array */
-int i;				/* line segment from point i-1 to point i */
-double *ex, *ey;		/* the point where it crosses an edge */
+    struct coordinate GPHUGE *points; /* the points array */
+    int i;			/* line segment from point i-1 to point i */
+    double *ex, *ey;		/* the point where it crosses an edge */
 {
     /* global x_min, x_max, y_min, x_max */
     double ax = points[i - 1].x;
@@ -3203,36 +3172,28 @@ double *ex, *ey;		/* the point where it crosses an edge */
     if (points[i].type == INRANGE) {	/* from OUTRANGE to INRANG */
 	if (inrange(ax, x_min, x_max)) {
 	    *ex = ax;
-	    if (ay > y_max)
-		*ey = y_max;
-	    else		/* y < y_min */
-		*ey = y_min;
+	    cliptorange(ay, y_min, y_max);
+	    *ey = ay;
 	} else {
 	    *ey = by;
-	    if (bx > x_max)
-		*ex = x_max;
-	    else		/* x < x_min */
-		*ex = x_min;
+	    cliptorange(bx, x_min, x_max);
+	    *ex = bx;
 	}
     } else {			/* from INRANGE to OUTRANGE */
 	if (inrange(by, y_min, y_max)) {
 	    *ey = by;
-	    if (bx > x_max)
-		*ex = x_max;
-	    else		/* x < x_min */
-		*ex = x_min;
+	    cliptorange(bx, x_min, x_max);
+	    *ex = bx;
 	} else {
 	    *ex = ax;
-	    if (by > y_max)
-		*ey = y_max;
-	    else		/* y < y_min */
-		*ey = y_min;
+	    cliptorange(by, y_min, y_max);
+	    *ey = by;
 	}
     }
     return;
 }
 
-/* XXX - JG  */
+
 /* double edge intersection algorithm for "steps" plot */
 /* Given two points, both outside the plot, return the points where an 
  * edge of the plot intersects the line segments forming a step 
@@ -3248,10 +3209,10 @@ double *ex, *ey;		/* the point where it crosses an edge */
  * (x2,y1)->(x2,y2). 
  */
 static TBOOLEAN /* any intersection? */
- two_edge_intersect_steps(points, i, lx, ly)
-struct coordinate GPHUGE *points;	/* the points array */
-int i;				/* line segment from point i-1 to point i */
-double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
+two_edge_intersect_steps(points, i, lx, ly)
+    struct coordinate GPHUGE *points; /* the points array */
+    int i;			/* line segment from point i-1 to point i */
+    double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 {
     /* global x_min, x_max, y_min, x_max */
     double ax = points[i - 1].x;
@@ -3259,42 +3220,41 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
     double bx = points[i].x;
     double by = points[i].y;
 
-    if (GPMAX(ax, bx) < x_min || GPMIN(ax, bx) > x_max ||
-	GPMAX(ay, by) < y_min || GPMIN(ay, by) > y_max ||
-	((ay > y_max || ay < y_min) &&
-	 (bx > x_max || bx < x_min))) {
+    if (GPMAX(ax, bx) < GPMIN(x_min, x_max) ||
+	GPMIN(ax, bx) > GPMAX(x_max, x_min) ||
+	GPMAX(ay, by) < GPMIN(y_min, y_max) ||
+	GPMIN(ay, by) > GPMAX(y_max, y_min) ||
+	(!inrange(ay, y_min, y_max) && !inrange(bx, x_min, x_max))) {
 	return (FALSE);
-    } else if (inrange(ay, y_min, y_max) && inrange(bx, x_min, x_max)) {	/* corner of step inside plotspace */
+    } else if (inrange(ay, y_min, y_max) && inrange(bx, x_min, x_max)) {
+	/* corner of step inside plotspace */
 	*ly++ = ay;
-	if (ax < x_min)
-	    *lx++ = x_min;
-	else
-	    *lx++ = x_max;
+	cliptorange(ax, x_min, x_max);
+	*lx++ = ax;
 
-	*lx++ = bx;
-	if (by < y_min)
-	    *ly++ = y_min;
-	else
-	    *ly++ = y_max;
+	*lx = bx;
+	cliptorange(by, y_min, y_max);
+	*ly = by;
 
 	return (TRUE);
-    } else if (inrange(ay, y_min, y_max)) {	/* cross plotspace in x-direction */
+    } else if (inrange(ay, y_min, y_max)) {
+	/* cross plotspace in x-direction */
 	*lx++ = x_min;
 	*ly++ = ay;
-	*lx++ = x_max;
-	*ly++ = ay;
+	*lx = x_max;
+	*ly = ay;
 	return (TRUE);
-    } else if (inrange(ax, x_min, x_max)) {	/* cross plotspace in y-direction */
+    } else if (inrange(ax, x_min, x_max)) {
+	/* cross plotspace in y-direction */
 	*lx++ = bx;
 	*ly++ = y_min;
-	*lx++ = bx;
-	*ly++ = y_max;
+	*lx = bx;
+	*ly = y_max;
 	return (TRUE);
     } else
 	return (FALSE);
 }
 
-/* XXX - HOE  */
 /* double edge intersection algorithm for "fsteps" plot */
 /* Given two points, both outside the plot, return the points where an 
  * edge of the plot intersects the line segments forming a step 
@@ -3310,10 +3270,10 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
  * (x1,y2)->(x2,y2). 
  */
 static TBOOLEAN /* any intersection? */
- two_edge_intersect_fsteps(points, i, lx, ly)
-struct coordinate GPHUGE *points;	/* the points array */
-int i;				/* line segment from point i-1 to point i */
-double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
+two_edge_intersect_fsteps(points, i, lx, ly)
+    struct coordinate GPHUGE *points; /* the points array */
+    int i;			/* line segment from point i-1 to point i */
+    double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 {
     /* global x_min, x_max, y_min, x_max */
     double ax = points[i - 1].x;
@@ -3321,23 +3281,21 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
     double bx = points[i].x;
     double by = points[i].y;
 
-    if (GPMAX(ax, bx) < x_min || GPMIN(ax, bx) > x_max ||
-	GPMAX(ay, by) < y_min || GPMIN(ay, by) > y_max ||
-	((by > y_max || by < y_min) &&
-	 (ax > x_max || ax < x_min))) {
+    if (GPMAX(ax, bx) < GPMIN(x_min, x_max) ||
+	GPMIN(ax, bx) > GPMAX(x_max, y_min) ||
+	GPMAX(ay, by) < GPMIN(y_min, y_max) ||
+	GPMIN(ay, by) > GPMAX(y_max, y_min) ||
+	(!inrange(by, y_min, y_max) && !inrange(ax, x_min, x_max))) {
 	return (FALSE);
-    } else if (inrange(by, y_min, y_max) && inrange(ax, x_min, x_max)) {	/* corner of step inside plotspace */
+    } else if (inrange(by, y_min, y_max) && inrange(ax, x_min, x_max)) {
+	/* corner of step inside plotspace */
 	*lx++ = ax;
-	if (ay < y_min)
-	    *ly++ = y_min;
-	else
-	    *ly++ = y_max;
+	cliptorange(ay, y_min, y_max);
+	*ly++ = ay;
 
 	*ly = by;
-	if (bx < x_min)
-	    *lx = x_min;
-	else
-	    *lx = x_max;
+	cliptorange(bx, x_min, x_max);
+	*lx = bx;
 
 	return (TRUE);
     } else if (inrange(by, y_min, y_max)) {	/* cross plotspace in x-direction */
@@ -3367,10 +3325,10 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
  * not distinguish it - we draw it anyway).
  */
 static TBOOLEAN /* any intersection? */
-							   two_edge_intersect(points, i, lx, ly)
-struct coordinate GPHUGE *points;	/* the points array */
-int i;				/* line segment from point i-1 to point i */
-double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
+two_edge_intersect(points, i, lx, ly)
+    struct coordinate GPHUGE *points; /* the points array */
+    int i;			/* line segment from point i-1 to point i */
+    double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 {
     /* global x_min, x_max, y_min, x_max */
     int count;
@@ -3421,7 +3379,7 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 	    oy = swap;
 	}
 	/* check actually passes through the graph area */
-	if (ix > x_max && inrange(iy, y_min, y_max)) {
+	if (ix > GPMAX(x_max, x_min) && inrange(iy, y_min, y_max)) {
 	    lx[0] = x_min;
 	    ly[0] = iy;
 
@@ -3450,7 +3408,7 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 	    oy = swap;
 	}
 	/* check actually passes through the graph area */
-	if (iy > y_max && inrange(ix, x_min, x_max)) {
+	if (iy > GPMAX(y_max, y_min) && inrange(ix, x_min, x_max)) {
 	    lx[0] = ix;
 	    ly[0] = y_min;
 
@@ -3490,7 +3448,8 @@ double *lx, *ly;		/* lx[2], ly[2]: points where it crosses edges */
 	/* line parallel to y axis */
 
 	/* x coord must be in range, and line must span both y_min and y_max */
-	/* note that spanning y_min implies spanning y_max, as both points OUTRANGE */
+	/* note that spanning y_min implies spanning y_max, as both
+	 * points OUTRANGE */
 	if (!inrange(ix, x_min, x_max)) {
 	    return (FALSE);
 	}

@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.19.2.5 2002/03/11 16:09:00 lhecking Exp $
+ * $Id: plot.h,v 1.19.2.6 2003/01/17 15:23:40 broeker Exp $
  *
  */
 
@@ -251,11 +251,32 @@ typedef double coordval;
  * plot2d.c, plot3d.c, util3d.c ...
  */
 #ifndef inrange
-# define inrange(z,min,max) \
-   (((min)<(max)) ? (((z)>=(min)) && ((z)<=(max))) : \
-                    (((z)>=(max)) && ((z)<=(min))))
+# define inrange(z,min,max) 			\
+(((min) < (max))				\
+ ? (((z) >= (min)) && ((z) <= (max))) 		\
+ : (((z) >= (max)) && ((z) <= (min))))
 #endif
 
+/* HBB 20030117: new macro to simplify clipping operations in the
+ * presence of possibly reverted axes */
+#ifndef cliptorange
+# define cliptorange(z,min,max)			\
+    do {					\
+       if ((min) < (max)) {			\
+	   if ((z) > (max))			\
+	       (z) = (max);			\
+	   else if ((z) < (min))		\
+	       (z) = (min);			\
+       } else {					\
+	   if ((z) > (min))			\
+	       (z) = (min);			\
+	   else if ((z) < (max))		\
+	       (z) = (max);			\
+       }					\
+    } while (0)
+#endif	      
+	       
+  
 /* There is a bug in the NEXT OS. This is a workaround. Lookout for
  * an OS correction to cancel the following dinosaur
  *
