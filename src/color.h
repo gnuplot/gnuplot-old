@@ -1,5 +1,5 @@
 /*
- * $Id: color.h,v 1.7 2000/11/23 14:14:37 broeker Exp $
+ * $Id: color.h,v 1.8 2001/02/19 17:10:36 broeker Exp $
  */
 
 /* GNUPLOT - color.h */
@@ -250,7 +250,8 @@ void filled_quadrangle __PROTO((gpdPoint *corners));
    Makes mapping from real 3D coordinates, passed as coords array,
    to 2D terminal coordinates, then draws filled polygon
 */
-void filled_polygon_3dcoords __PROTO((int points, struct coordinate *coords));
+/* HBB 20010216: added 'GPHUGE' attribute */
+void filled_polygon_3dcoords __PROTO((int points, struct coordinate GPHUGE *coords));
 
 /*
    Makes mapping from real 3D coordinates, passed as coords array, but at z coordinate
