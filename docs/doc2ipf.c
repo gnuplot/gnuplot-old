@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2ipf.c,v 1.2 1998/07/15 15:31:41 lhecking Exp $";
+static char *RCSid = "$Id: doc2ipf.c,v 1.3 1998/08/24 16:40:24 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2ipf.c */
@@ -55,8 +55,12 @@ static char *RCSid = "$Id: doc2ipf.c,v 1.2 1998/07/15 15:31:41 lhecking Exp $";
 #include "stdfn.h"
 
 #define MAX_LINE_LEN    1024
-#define TRUE 1
 #define MAX_COL 6
+#ifdef TRUE
+# undef TRUE
+# undef FALSE
+#endif
+#define TRUE 1
 #define FALSE 0
 
 #include "termdoc.c"

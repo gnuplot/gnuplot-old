@@ -1,5 +1,5 @@
 /*
- * $Id: doc2html.c,v 1.2 1998/07/15 15:31:38 lhecking Exp $
+ * $Id: doc2html.c,v 1.3 1998/08/24 16:40:22 lhecking Exp $
  *
  */
 
@@ -58,6 +58,10 @@
 #include "stdfn.h"
 
 #define MAX_LINE_LEN	1024
+#ifdef TRUE
+# undef TRUE
+# undef FALSE
+#endif
 #define TRUE 1
 #define FALSE 0
 

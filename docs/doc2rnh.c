@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: doc2rnh.c,v 1.1 1998/07/15 15:33:11 lhecking Exp $";
+static char *RCSid = "$Id: doc2rnh.c,v 1.2 1998/08/24 16:40:26 lhecking Exp $";
 #endif
 
 /* GNUPLOT - doc2rnh.c */
@@ -73,6 +73,10 @@ static char *RCSid = "$Id: doc2rnh.c,v 1.1 1998/07/15 15:33:11 lhecking Exp $";
 #define LINE_SKIP		3
 #define DSR_RM		70
 
+#ifdef TRUE
+# undef TRUE
+# undef FALSE
+#endif
 #define TRUE 1
 #define FALSE 0
 
