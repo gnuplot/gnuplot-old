@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: misc.c,v 1.3 1999/05/12 13:48:34 lhecking Exp $";
+static char *RCSid = "$Id: misc.c,v 1.4 1999/05/13 18:52:38 lhecking Exp $";
 #endif
 
 /* GNUPLOT - misc.c */
@@ -594,7 +594,7 @@ set y2data%s\n",
 	    break;
 	}
 	fprintf(fp, " %srotate", this_label->rotate ? "" : "no");
-	if ((this_label->font)[0] != NUL)
+	if (this_label->font != NULL)
 	    fprintf(fp, " font \"%s\"", this_label->font);
 	/* Entry font added by DJL */
 	fputc('\n', fp);

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: show.c,v 1.3 1999/04/27 11:48:21 lhecking Exp $";
+static char *RCSid = "$Id: show.c,v 1.4 1999/05/13 18:52:39 lhecking Exp $";
 #endif
 
 /* GNUPLOT - show.c */
@@ -960,7 +960,7 @@ int tag;			/* 0 means show all */
 	    }
 	    fprintf(stderr, " %s ", this_label->rotate ? "rotated (if possible)" : "not rotated");
 	    fprintf(stderr, " %s ", this_label->layer ? "front" : "back");
-	    if ((this_label->font)[0] != NUL)
+	    if (this_label->font != NULL)
 		fprintf(stderr, " font \"%s\"", this_label->font);
 	    /* Entry font added by DJL */
 	    fputc('\n', stderr);
