@@ -1,5 +1,5 @@
 #
-# $Id: makefile.ami,v 1.1 1999/03/26 21:32:12 lhecking Exp $
+# $Id: makefile.ami,v 1.2 1999/03/31 19:53:50 lhecking Exp $
 #
 # GNUPLOT Makefile for Manx Aztec C 5.2 beta of better on the Amiga
 # 
@@ -67,7 +67,7 @@ CSOURCE8 = contour.c specfun.c interpol.c
 # Docs
 #
 DOCS1 = docs/Makefile docs/README docs/checkdoc.c docs/doc2gih.c \
-	docs/doc2hlp.c docs/doc2hlp.com docs/doc2ms.c docs/doc2tex.c \
+	docs/doc2hlp.c docs/doc2hlp.vms docs/doc2ms.c docs/doc2tex.c \
 	docs/gnuplot.1 docs/lasergnu.1 docs/toc_entry.sty \
 	docs/titlepage.ms docs/titlepage.tex
 DOCS2 = docs/gnuplot.doc

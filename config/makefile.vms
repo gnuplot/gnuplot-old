@@ -1,5 +1,5 @@
 #
-# $Id: makefile.vms,v 1.1 1999/03/26 21:32:50 lhecking Exp $
+# $Id: makefile.vms,v 1.2 1999/03/31 19:53:51 lhecking Exp $
 #
 # GNUPLOT Makefile for VMS
 # 
@@ -64,8 +64,8 @@ all :   gnuplot.$X gnuplot.hlp gnuplot.hlb
 gnuplot.$X : $(OBJS) $(EXTRAOBJ)
 	link /exe=gnuplot.$X vms.$O gnuplot.opt/opt $(EXTRAOBJ) $(EXTRALIB) $(CRTL_SHARE)
 
-gnuplot.hlp : doc2hlp.$X [.docs]gnuplot.doc [.docs]doc2hlp.com
-	$$@[.docs]doc2hlp.com
+gnuplot.hlp : doc2hlp.$X [.docs]gnuplot.doc [.docs]doc2hlp.vms
+	$$@[.docs]doc2hlp.vms
 
 gnuplot.hlb : gnuplot.hlp
 	library/create/help gnuplot.hlb gnuplot.hlp
