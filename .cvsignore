@@ -4,4 +4,6 @@ config.cache
 config.h
 config.log
 config.status
+depcomp
 stamp-h
+stamp-h1
