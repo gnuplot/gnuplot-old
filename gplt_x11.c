@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.7 1998/09/21 21:06:33 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.8 1998/09/23 19:55:30 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -143,12 +143,6 @@ Error. Incompatible options.
 # define FD_ISSET(n, p)  ((p)->fds_bits[0] & (1 << ((n) % 32)))
 # define FD_ZERO(p)      memset((char *)(p),'\0',sizeof(*(p)))
 #endif /* not FD_SET */
-
-#ifdef FD_SET_T_IS_INT
-# define fd_set_t int
-#else
-# define fd_set_t fd_set
-#endif
 
 #if defined(HAVE_SYS_SYSTEMINFO_H) && defined(HAVE_SYSINFO)
 # include <sys/systeminfo.h>
@@ -379,7 +373,8 @@ void mainloop()
 	XFlush(dpy);
 
 	tset = rset;
-	nf = select(nfds, (fd_set_t *) & tset, (fd_set_t *) 0, (fd_set_t *) 0, timer);
+	nf = select((gp_nfds_t)nfds, gp_fd_set_p &tset, gp_fd_set_p 0,
+		     gp_fd_set_p0, gp_timeval_p timer);
 	if (nf < 0) {
 	    if (errno == EINTR)
 		continue;
@@ -442,7 +437,8 @@ void mainloop()
     while (1) {
 	XFlush(dpy);		/* see above */
 	tset = rset;
-	nf = select(nfds, &tset, (fd_set *) 0, (fd_set *) 0, timer);
+	nf = select((gp_nfds_t)nfds, gp_fd_set_p &tset, gp_fd_set_p 0,
+		    gp_fd_set_p 0, gp_timeval_p timer);
 	if (nf < 0) {
 	    if (errno == EINTR)
 		continue;
