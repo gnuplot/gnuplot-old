@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: graph3d.c,v 1.9 1998/10/05 12:40:09 lhecking Exp $";
+static char *RCSid = "$Id: graph3d.c,v 1.10 1998/11/17 20:55:13 lhecking Exp $";
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -916,6 +916,7 @@ char ss[MAX_LINE_LEN+1], *s, *e;
 					key_sample_point(xl,yl,-1);
 					break;
 				}
+				NEXT_KEY_LINE();
 			}
 
 			linetypeOffset = this_plot->lp_properties.l_type + (hidden3d ? 2 : 1);
