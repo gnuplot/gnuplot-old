@@ -144,6 +144,9 @@
 /* Define if you have the <gd.h> header file.  */
 #undef HAVE_GD_H
 
+/* Define if you have the <ggi/wmh.h> header file.  */
+#undef HAVE_GGI_WMH_H
+
 /* Define if you have the <libc.h> header file.  */
 #undef HAVE_LIBC_H
 
@@ -267,6 +270,9 @@
 /*  Define if this is a Linux system with SuperVGA library.  */
 #undef LINUXVGA
 
+/*  Define if you want to use the experimental ggi driver.  */
+#undef USE_GGI_DRIVER
+
 /*  Define if you are using the GNU readline library.  */
 #undef HAVE_LIBREADLINE
 
@@ -299,9 +305,6 @@
 
 /*  Define if you do not want to read .gnuplot in the current directory.  */
 #undef NOCWDRC
-
-/*  Define if you have the required ggi libraries.  */
-#undef HAVE_GGI
 
 /*  Define if you want to use the IRIS terminal on IRIS4D series computers.  */
 #undef IRIS
