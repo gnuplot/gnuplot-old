@@ -1,5 +1,5 @@
 /*
- * $Id: mac.trm,v 1.1.2.1 1999/10/19 19:51:03 lhecking Exp $
+ * $Id: mac.trm,v 1.1.2.2 2003/01/20 19:03:26 lhecking Exp $
  *
  */
 
@@ -145,7 +145,8 @@ START_HELP(mac)
 "  window will be reused as long as singlewin is in effect. If you switch back",
 "  to multiwin, generate some graphs, and then switch to singlewin again, the",
 "  orginal 'singlewin' window will be resused if it is still open. Otherwise",
-"  a new 'singlewin' window will be created. The 'singlewin' window is not numbered.",
+"  a new 'singlewin' window will be created. The 'singlewin' window is not numbered."
+END_HELP(mac)
 #endif
 
 
