@@ -1,5 +1,5 @@
 /*
- * $Id: fig.trm,v 1.26 2001/10/26 12:58:38 mikulik Exp $
+ * $Id: fig.trm,v 1.27 2002/04/30 14:08:53 broeker Exp $
  */
 
 /* GNUPLOT - fig.trm */
@@ -659,7 +659,7 @@ FIG_linetype(linetype)
 	FIG_thickness = 1;
     FIG_color = DEFAULT;
 
-    if (linetype < -2)
+    if (linetype <= L_TYPE_NODRAW)
 	linetype = -2;
 
     switch (linetype) {
