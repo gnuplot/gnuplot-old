@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: Makefile.in,v 1.26 1998/10/19 19:42:53 lhecking Exp $
+# $Id: Makefile.in,v 1.27 1998/10/20 19:41:52 lhecking Exp $
 #
 # GNUPLOT Makefile.in for autoconf (Unix X11 support)
 # Adapted from makefile.unx by djm@gnu.ai.mit.edu
@@ -164,7 +164,7 @@ W=$(srcdir)/win/
 #<<<makefile.all>>>
 ########################################################
 #
-# $Id: Makefile.in,v 1.26 1998/10/19 19:42:53 lhecking Exp $
+# $Id: Makefile.in,v 1.27 1998/10/20 19:41:52 lhecking Exp $
 #
 ########################################################
 #
@@ -215,7 +215,7 @@ CSOURCE = alloc.c binary.c bitmap.c command.c contour.c datafile.c eval.c \
 	  util.c util3d.c version.c
 
 HEADERS = alloc.h ansichek.h binary.h bitmap.h fit.h fnproto.h help.h \
-	  matrix.h national.h plot.h protos.h setshow.h stdfn.h term.h
+	  matrix.h national.h plot.h protos.h setshow.h stdfn.h syscfg.h term.h
 
 CORETERM = $(T)aed.trm $(T)ai.trm $(T)amiga.trm $(T)apollo.trm \
 	   $(T)atariaes.trm $(T)atarivdi.trm $(T)cgi.trm $(T)cgm.trm \
