@@ -2,7 +2,7 @@
 
 /*[
  *
- * Petr Mikulik, December 1998 -- June 1999
+ * Petr Mikulik, December 1998 -- June 2000
  * Copyright: open source as much as possible
  * 
  * The implementation for the drivers X11 and vgagl
@@ -36,6 +36,8 @@
 #define _COLOR_C /* must be done before including pm3d.h */
 
 #include "plot.h"
+#include "setshow.h"
+#include "graphics.h"
 #include "pm3d.h"
 #include "graphics.h"
 #include "term_api.h"
@@ -315,7 +317,6 @@ void filled_polygon_3dcoords_zfixed ( int points, struct coordinate GPHUGE *coor
 static void draw_inside_color_smooth_box_postscript
 ( int x_from, int y_from, int x_to, int y_to, int border, int border_lt_tag )
 {
-    extern FILE *gpoutfile;
     extern FILE *PSLATEX_auxfile;
     FILE *out = PSLATEX_auxfile ? PSLATEX_auxfile : gpoutfile;
     int scale_x = (x_to-x_from), scale_y = (y_to-y_from);
@@ -415,7 +416,7 @@ static void draw_inside_color_smooth_box_bitmap
 	    term_apply_lp_properties(&lp);
 	} else {
 	    /* black solid colour should be chosen, so it's border linetype */
-	    extern struct lp_style_type border_lp;
+	    struct lp_style_type border_lp;
 	    term_apply_lp_properties(&border_lp);
 	}
 	(term->move) (x_from,y_from);
@@ -451,8 +452,6 @@ void draw_color_smooth_box ()
     double tmp;
     char s[64];
     extern double base_z, ceiling_z; /* defined in graph3d.c */
-    extern char zformat[];
-    extern double log_base_array[];
 
     if (color_box.where == SMCOLOR_BOX_NO) return;
 
@@ -510,10 +509,11 @@ void draw_color_smooth_box ()
        colour box, respectively
      */
 
+    tmp = is_log_z ? exp( used_pm3d_zmin * log_base_array[FIRST_Z_AXIS] ) : used_pm3d_zmin;
 #if 0
-    sprintf(s,"%g",used_pm3d_zmin);
+    sprintf(s,"%g",tmp);
 #else /* format the label using `set format z` */
-    gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], used_pm3d_zmin);
+    gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], tmp);
 #endif
     if (color_box.rotation == 'v') {
 	if (term->justify_text) term->justify_text(LEFT);
@@ -532,11 +532,13 @@ void draw_color_smooth_box ()
 	}
     }
 
+    tmp = is_log_z ? exp( used_pm3d_zmax * log_base_array[FIRST_Z_AXIS] ) : used_pm3d_zmax;
 #if 0
-    sprintf(s,"%g",used_pm3d_zmax);
+    sprintf(s,"%g",tmp);
 #else
-    gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], used_pm3d_zmax);
+    gprintf(s, sizeof(s), zformat, log_base_array[FIRST_Z_AXIS], tmp);
 #endif
+
     if (color_box.rotation == 'v') {
 	/* text was eventually already left-justified above */
 	tmp = color_box_text_displacement(s, JUST_BOT);
