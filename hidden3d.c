@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.11 1998/11/19 10:40:08 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.12 1998/12/03 22:23:51 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -2545,7 +2545,6 @@ struct Polygon GPHUGE *p;
     struct Vertex GPHUGE *v;
     struct Polygon GPHUGE *q;
     long Q;
-    struct Cross *cross1, *cross2;
     int i;
     int x, y;			/* point in terminal coordinates */
     register struct termentry *t = term;
