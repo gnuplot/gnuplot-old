@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.29.2.5 2000/08/04 14:01:27 joze Exp $
+ * $Id: plot.h,v 1.29.2.6 2000/09/20 01:25:58 joze Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -727,6 +727,7 @@ struct arrow_def {
 	TBOOLEAN head;			/* arrow has a head or not */
 	struct position headsize;	/* x = length, y = angle [deg] */
 	int layer;			/* 0 = back, 1 = front */
+	TBOOLEAN relative;		/* second coordinate is relative to first */
 	struct lp_style_type lp_properties;
 };
 

@@ -1,5 +1,5 @@
 /*
- * $Id: graphics.h,v 1.11.2.1 2000/05/03 21:26:11 joze Exp $
+ * $Id: graphics.h,v 1.11.2.2 2000/09/20 01:25:58 joze Exp $
  */
 
 /* GNUPLOT - graphics.h */
@@ -94,5 +94,7 @@ void map_position __PROTO((struct position * pos, unsigned int *x,
 #if defined(sun386) || defined(AMIGA_SC_6_1)
 extern double CheckLog __PROTO((TBOOLEAN, double, double));
 #endif
+
+void apply_head_properties __PROTO((struct position* headsize));
 
 #endif /* GNUPLOT_GRAPHICS_H */
