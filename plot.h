@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.12 1998/10/01 10:53:33 lhecking Exp $
+ * $Id: plot.h,v 1.13 1998/10/03 20:18:10 lhecking Exp $
  *
  */
 
@@ -35,7 +35,8 @@
  * to the extent permitted by applicable law.
 ]*/
 
-#ifndef PLOT_H		/* avoid multiple includes */
+/* avoid multiple includes */
+#ifndef PLOT_H
 #define PLOT_H
 
 #ifdef HAVE_CONFIG_H
@@ -227,6 +228,10 @@
 #  endif /* AMIGA_SC_6_1 || AMIGA_AC_5 */
 # endif /* MSDOS || OS2 || DOS386 */
 #endif /* !HELPFILE */
+
+#ifndef FAQ_LOCATION
+# define FAQ_LOCATION "http://www.uni-karlsruhe.de/~ig25/gnuplot-faq/"
+#endif
 
 #ifndef CONTACT
 # define CONTACT "bug-gnuplot@dartmouth.edu"
