@@ -7,10 +7,10 @@ dnl a macro is the usual case : this saves having to update
 dnl countless makefiles when new tests are added. By usual case
 dnl I guess ansi compiler on posix system or something like that
 dnl
-dnl $Id: configure.in,v 1.3 1998/04/22 18:56:22 lhecking Exp $
+dnl $Id: configure.in,v 1.4 1998/05/07 14:10:07 lhecking Exp $
 dnl
 AC_PREREQ(2.1)
-AC_REVISION($Revision: 1.3 $)
+AC_REVISION($Revision: 1.4 $)
 AC_INIT(graphics.c)
 AC_CONFIG_HEADER(config.h:config.hin)
 
@@ -214,7 +214,7 @@ if test "$with_linux_vga" = yes; then
   AC_MSG_CHECKING(for linux vga library)
   AC_CHECK_LIB(vga, vga_init,
     AC_DEFINE(LINUXVGA)
-    LINUXSUID='sudo chown root $(bindir)/gnuplot; sudo chmod u+s $(bindir)/gnuplot'
+    LINUXSUID='chown root $(bindir)/gnuplot; chmod u+s $(bindir)/gnuplot'
     TERMLIBS="$TERMLIBS -lvga")
 fi
 
