@@ -1,3 +1,6 @@
+2000-05-11  Petr Mikulik <mikulik@physics.muni.cz>
+	* pm3d/contrib: added pm3dConvertToImage.awk
+
 2000-05-09  Petr Mikulik <mikulik@physics.muni.cz>
 	* pm3d: three new color mapping formulae 34--36: 2x,2x-0.5,2x-1
 
