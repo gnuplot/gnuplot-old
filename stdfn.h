@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.19 1999/02/10 16:49:42 lhecking Exp $
+ * $Id: stdfn.h,v 1.20 1999/03/01 21:16:54 lhecking Exp $
  *
  */
 
@@ -120,6 +120,20 @@ double strtod();
 #  endif
 # endif /* VMS */
 #endif /* !NO_STDLIB_H */
+
+/* Deal with varargs functions */
+#if defined(HAVE_VFPRINTF) || defined(HAVE_DOPRNT)
+# ifdef ANSI_C
+#  include <stdarg.h>
+#  define VA_START(args, lastarg) va_start(args, lastarg)
+# else
+#  include <varargs.h>
+#  define VA_START(args, lastarg) va_start(args)
+# endif
+#else
+# define va_alist a1, a2, a3, a4, a5, a6, a7, a8
+# define va_dcl char *a1, *a2, *a3, *a4, *a5, *a6, *a7, *a8;
+#endif /* HAVE_VFPRINTF */
 
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
