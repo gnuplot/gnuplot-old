@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.3 1998/11/03 12:51:05 lhecking Exp $
+ * $Id: syscfg.h,v 1.4 1998/11/04 14:48:20 lhecking Exp $
  *
  */
 
@@ -321,6 +321,7 @@ extern unsigned int lib$spawn();
 
 /* Autoconf related stuff
  * Transform autoconf defines to gnuplot coding standards
+ * This is only relevant for standard ANSI headers and functions
  */
 #ifdef HAVE_CONFIG_H
 
