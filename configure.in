@@ -10,12 +10,14 @@ dnl [Lars: this is no longer necessary. I have cut this stuff out
 dnl  of configure.in and added the necessery definitions to syscfg.h.
 dnl  This reduced the size of configure by 30k!
 dnl
-dnl $Id: configure.in,v 1.41 1999/01/12 19:15:48 lhecking Exp $
+dnl $Id: configure.in,v 1.42 1999/01/26 13:45:16 lhecking Exp $
 dnl
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.41 $)
+AC_REVISION($Revision: 1.42 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*version.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
+PATCHLVL=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
+VERSION="${VERSION}.${PATCHLVL}"
 AM_INIT_AUTOMAKE(gnuplot, $VERSION)
 AC_CONFIG_HEADER(config.h:config.hin)
 
