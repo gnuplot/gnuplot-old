@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: stdfn.c,v 1.5 1998/10/28 21:11:33 lhecking Exp $";
+static char *RCSid = "$Id: stdfn.c,v 1.6 1998/11/16 13:10:45 lhecking Exp $";
 #endif
 
 
@@ -384,7 +384,7 @@ size_t n;
 
     ret = strncpy(d, s, n);
     if (strlen(s) >= n)
-	d[n-1] = NUL;
+	d[ n > 0 ? n-1 : 0] = NUL;
 
     return ret;
 }
