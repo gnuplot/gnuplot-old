@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.19 2003/08/17 22:49:49 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.20 2003/08/18 12:32:24 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -82,7 +82,7 @@ static int at_size = 0;
 
 #ifdef GP_ISVAR
 /* isvar - When this variable is true PUSH operations become PUSHV */
-static TBOOLEAN push_vars = FALSE;
+static TBOOLEAN push_vars = TRUE; 
 #endif
 
 static void
