@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.11 1998/10/19 13:15:59 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.12 1998/10/20 19:45:54 lhecking Exp $";
 #endif
 
 /*
@@ -50,10 +50,6 @@ static char *RCSid = "$Id: fit.c,v 1.11 1998/10/19 13:15:59 lhecking Exp $";
 
 
 #define FIT_MAIN
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
 
 #include <signal.h>
 
@@ -1394,10 +1390,10 @@ void do_fit ()
 		if ( num_data >= max_data ) {
 			max_data = (max_data * 3) / 2; /* increase max_data by factor of 1.5 */
 			if ( 0
-					 || redim_vec (&fit_x, max_data)
-					 || redim_vec (&fit_y, max_data)
-					 || redim_vec (&fit_z, max_data)
-					 || redim_vec (&err_data, max_data)
+					 || !redim_vec (&fit_x, max_data)
+					 || !redim_vec (&fit_y, max_data)
+					 || !redim_vec (&fit_z, max_data)
+					 || !redim_vec (&err_data, max_data)
 					 ) {
 				/* Some of the reallocations went bad: */
 				df_close();
