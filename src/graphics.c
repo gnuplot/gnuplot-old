@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.120 2004/08/07 01:40:37 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.121 2004/08/17 21:21:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -4334,11 +4334,7 @@ init_histogram(struct histogram_style *histogram, char *title)
 	memcpy(histogram,&histogram_opts,sizeof(histogram_opts));
 	/* Insert in linked list */
 	histogram_opts.next = histogram;
-	if (*title) {
-	    histogram->title.text = gp_alloc(strlen(title)+1, "histogram title");
-	    strcpy(histogram->title.text,title);
-	} else
-	    histogram->title.text = NULL;
+	histogram->title.text = title;
     }
 }
 
