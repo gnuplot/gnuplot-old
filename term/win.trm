@@ -1,5 +1,5 @@
 /*
- * $Id: win.trm,v 1.8 1998/12/14 18:41:54 lhecking Exp $
+ * $Id: win.trm,v 1.9 1999/03/30 15:21:22 lhecking Exp $
  */
 
 /* GNUPLOT - win.trm */
@@ -114,7 +114,7 @@ TERM_PUBLIC void WIN_set_pointsize __PROTO((double));
 #ifdef TERM_BODY
 
 #include <windows.h>
-#include "../win/wgnuplib.h"
+#include "../src/win/wgnuplib.h"
 
 #ifdef __MSC__
 #include <io.h>			/* for mktemp() */
