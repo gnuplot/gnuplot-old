@@ -1,5 +1,5 @@
 /*
- * $Id: gif.trm,v 1.5 1998/09/22 15:00:55 lhecking Exp $
+ * $Id: gif.trm,v 1.6 1998/10/01 10:49:19 lhecking Exp $
  */
 
 /* GNUPLOT -- gif.trm */
@@ -549,10 +549,8 @@ START_HELP(gif)
 "?terminal gif",
 "?term gif",
 "?gif",
-" The `gif` terminal driver generates output in GIF format.  It must be linked",
-" with the \"gd\" library (link with \"-Lterm/gd -lgd\" if your directory structure",
-" is \"gnuplot/term/gd\").  \"gd\" cannot be distributed with `gnuplot` because of",
-" license problems.  Find out about \"gd\" from http://www.boutell.com/",
+" The `gif` terminal driver generates output in GIF format.  It uses Thomas",
+" Boutell's gd library, which is available from http://www.boutell.com/gd/",
 "",
 " Syntax:",
 "       set terminal gif {transparent} {interlace}",
