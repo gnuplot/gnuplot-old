@@ -10,7 +10,7 @@ dnl but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 dnl even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 dnl PARTICULAR PURPOSE.
 
-dnl $Id: aclocal.m4,v 1.6 1998/08/24 16:38:27 lhecking Exp $
+dnl $Id: aclocal.m4,v 1.7 1998/08/31 20:29:02 lhecking Exp $
 
 # a note to the uninitiated : the program aclocal (part of
 # GNU automake) generates the file aclocal.m4 from
