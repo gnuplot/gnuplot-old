@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.35 2000/09/20 00:59:25 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.36 2000/09/21 15:31:34 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -1816,7 +1816,7 @@ int pcount;			/* count of plots in linked list */
 	free(str);
     }
 /* PLACE LABELS */
-    if ((*t->pointsize)) {
+    if (t->pointsize) {
 	(*t->pointsize) (pointsize);
     }
     for (this_label = first_label; this_label != NULL; this_label = this_label->next) {
@@ -2101,7 +2101,7 @@ int pcount;			/* count of plots in linked list */
     }
 
 /* PLACE LABELS */
-    if ((*t->pointsize)) {
+    if (t->pointsize) {
 	(*t->pointsize) (pointsize);
     }
     for (this_label = first_label; this_label != NULL; this_label = this_label->next) {

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.30 2000/09/20 00:59:25 joze Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.31 2000/09/21 15:31:34 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -613,7 +613,7 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
 	}
     }
     /* PLACE LABELS */
-    if ((*t->pointsize)) {
+    if (t->pointsize) {
 	(*t->pointsize)(pointsize);
     }
     for (this_label = first_label; this_label != NULL;
@@ -1022,7 +1022,7 @@ int quick;			/* !=0 means plot only axes etc., for quick rotation */
     draw_bottom_grid(plots, pcount);
 
     /* PLACE LABELS */
-    if ((*t->pointsize)) {
+    if (t->pointsize) {
 	(*t->pointsize)(pointsize);
     }
     for (this_label = first_label; this_label != NULL;
