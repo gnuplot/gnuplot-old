@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.104 2004/05/21 16:47:21 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.106 2004/06/21 05:51:08 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -155,7 +155,7 @@ static void do_key_sample __PROTO((struct curve_points *this_plot, legend_key *k
 /* for plotting error bars
  * half the width of error bar tic mark
  */
-#define ERRORBARTIC (t->h_tic/2)
+#define ERRORBARTIC GPMAX((t->h_tic/2),1)
 
 /*
  * The Amiga SAS/C 6.2 compiler moans about macro envocations causing
@@ -2744,7 +2744,7 @@ struct curve_points *plot;
     double ylow, yhigh, yclose, yopen;	/* the ends of the bars */
     unsigned int xM, ylowM, yhighM;	/* the mapped version of above */
     TBOOLEAN low_inrange, high_inrange;
-    int tic = ERRORBARTIC / 2;
+    int tic = GPMAX(ERRORBARTIC/2,1);
 
     for (i = 0; i < plot->p_count; i++) {
 	/* undefined points don't count */
@@ -2814,7 +2814,7 @@ plot_c_bars(plot)
     unsigned int xlowM, xhighM, xM, ylowM, yhighM;	/* mapped version of above */
     enum coord_type prev = UNDEFINED;			/* type of previous point */
     TBOOLEAN low_inrange, high_inrange;
-    int tic = ERRORBARTIC / 2;
+    int tic = GPMAX(ERRORBARTIC/2,1);
 
     for (i = 0; i < plot->p_count; i++) {
 	/* undefined points don't count */
