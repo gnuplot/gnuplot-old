@@ -1,5 +1,5 @@
 /*
- * $Id: gif.trm,v 1.6 1998/10/01 10:49:19 lhecking Exp $
+ * $Id: gif.trm,v 1.7 1998/10/03 20:11:40 lhecking Exp $
  */
 
 /* GNUPLOT -- gif.trm */
@@ -424,7 +424,7 @@ TERM_PUBLIC void GIF_text()
 {
     if (gif_state.flags & GIF_USE_INTERLACE)
 	gdImageInterlace(gif_state.image, 1);
-    gdImageGif(gif_state.image, outfile);
+    gdImageGif(gif_state.image, gpoutfile);
     gdImageDestroy(gif_state.image);
 }
  
