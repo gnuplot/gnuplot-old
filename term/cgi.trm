@@ -1,5 +1,5 @@
 /*
- * $Id: cgi.trm,v 1.2 1998/04/15 19:59:38 lhecking Exp $
+ * $Id: cgi.trm,v 1.3 1998/04/16 19:12:12 lhecking Exp $
  *
  */
 
@@ -25,9 +25,7 @@
  * adapted to the new terminal layout by Stefan Bodewig (Dec. 1995)
  */
 
-#ifndef GOT_DRIVER_H
 #include "driver.h"
-#endif
 
 #ifdef TERM_REGISTER
 register_term(cgi)

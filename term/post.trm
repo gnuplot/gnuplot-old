@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.2 1998/04/15 19:59:51 lhecking Exp $
+ * $Id: post.trm,v 1.3 1998/04/16 19:12:56 lhecking Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -57,9 +57,7 @@
  *                       to DSC, added version no. and patchl. to %%Creator
  */
 
-#ifndef GOT_DRIVER_H
 #include "driver.h"
-#endif
 
 #ifdef TERM_REGISTER
 register_term(post)

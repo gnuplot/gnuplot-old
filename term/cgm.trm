@@ -1,5 +1,5 @@
 /* Hey Emacs this is -*- C -*-
- * $Id: cgm.trm,v 1.2 1998/04/15 19:59:39 lhecking Exp $
+ * $Id: cgm.trm,v 1.3 1998/04/16 19:12:13 lhecking Exp $
  */
 
 /* GNUPLOT - cgm.trm */
@@ -34,9 +34,7 @@
  * send your comments or suggestions to (info-gnuplot@dartmouth.edu).
 */
 
-#ifndef GOT_DRIVER_H
 #include "driver.h"
-#endif
 
 #ifdef TERM_REGISTER
 register_term(cgm)
@@ -1214,6 +1212,8 @@ START_HELP(cgm)
 " as the default.",
 "",
 " `winword6` disables the color tables for a similar reason---with the color",
-" table included, Microsoft Word displays black for color 7."
+" table included, Microsoft Word displays black for color 7.",
+"",
+" Linewidths and pointsizes may be changed with `set linestyle`."
 END_HELP(cgm)
 #endif  /* TERM_HELP */

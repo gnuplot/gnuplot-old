@@ -1,5 +1,5 @@
 /*
- * $Id: x11.trm,v 1.2 1998/04/15 20:00:01 lhecking Exp $
+ * $Id: x11.trm,v 1.3 1998/04/16 19:13:16 lhecking Exp $
  *
  */
 
@@ -37,9 +37,7 @@
  *    x11.trm  --- inboard terminal driver for X11
  */
 
-#ifndef GOT_DRIVER_H
 #include "driver.h"
-#endif
 
 #ifdef TERM_REGISTER
 register_term(x11)
