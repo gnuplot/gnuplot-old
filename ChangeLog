@@ -1,3 +1,9 @@
+2000-06-14  Johannes Zellner <johannes@zellner.org>
+
+	* src/color.c: modified the postscript color box drawing for user borders
+	* term/post.trm: repaired the broken pslatex if using `encoding'
+	as proposed by Petr Mikulik.
+
 2000-06-09  Johannes Zellner <johannes@zellner.org>
 
 	* implemented the palette `origin', `size', `border',

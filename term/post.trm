@@ -1,5 +1,5 @@
 /*
- * $Id: post.trm,v 1.39.2.2 2000/05/09 17:52:53 mikulik Exp $
+ * $Id: post.trm,v 1.39.2.3 2000/06/13 22:46:32 joze Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -947,7 +947,8 @@ NULL };
     if (ps_duplex_option)
 	fprintf(gpoutfile, "statusdict begin %s setduplexmode end\n",
 		ps_duplex_state ? "true" : "false");
-    PS_RememberFont(ps_font, 1);
+    if (uses_fonts)
+	PS_RememberFont(ps_font, 1);
 
     if (dict)
 	while (*dict)

@@ -344,11 +344,12 @@ static void draw_inside_color_smooth_box_postscript
 	    struct lp_style_type lp;
 	    lp_use_properties(&lp, border_lt_tag, 1);
 	    term_apply_lp_properties(&lp);
+	    fprintf(gpoutfile, "userlinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n", scale_y);
+	    fprintf(gpoutfile, "userlinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n", scale_x);
 	} else {
-	    fprintf(out,"0 setgray ");
+	    fprintf(out,"0 setgray gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
+	    fprintf(out,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
 	}
-	fprintf(out,"gnulinewidth %i div 2 mul setlinewidth 0 0 M 1 0 L 0 1 M 1 1 L stroke\n",scale_y);
-	fprintf(out,"\tgnulinewidth %i div 2 mul setlinewidth 0 0 M 0 1 L 1 0 M 1 1 L stroke\n",scale_x);
     }
     /* that strange  2 mul  is there because grid is twice thicker, see /BL */
     fprintf(out,"grestore 0 setgray\n");
