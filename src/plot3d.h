@@ -1,5 +1,5 @@
 /*
- * $Id: plot3d.h,v 1.3 2000/05/02 18:53:53 lhecking Exp $
+ * $Id: plot3d.h,v 1.4 2000/10/31 19:59:31 joze Exp $
  */
 
 /* GNUPLOT - plot3d.h */

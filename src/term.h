@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.8 2000/10/22 11:13:00 joze Exp $
+ * $Id: term.h,v 1.9 2000/10/31 19:59:31 joze Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -177,6 +177,10 @@
 # include "linux.trm"
 #endif
 
+/* Linux VGAGL */
+#ifdef VGAGL
+# include "vgagl.trm"
+#endif
 
 /* MGR Window system */
 #ifdef MGR

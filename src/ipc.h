@@ -1,5 +1,5 @@
 /*
- * $Id: ipc.h,v 1.5 2000/05/02 20:56:27 broeker Exp $
+ * $Id: ipc.h,v 1.6 2000/10/31 19:59:31 joze Exp $
  */
 
 /* GNUPLOT - ipc.h */

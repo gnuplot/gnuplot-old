@@ -1,5 +1,5 @@
 /*
- * $Id: mousecmn.h,v 1.2 2000/05/02 18:16:44 lhecking Exp $
+ * $Id: mousecmn.h,v 1.3 2000/10/31 19:59:31 joze Exp $
  */
 
 /* GNUPLOT - mousecnm.h */

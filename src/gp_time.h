@@ -1,5 +1,5 @@
 /*
- * $Id: gp_time.h,v 1.3 2000/05/02 18:32:33 lhecking Exp $
+ * $Id: gp_time.h,v 1.4 2000/10/31 19:59:31 joze Exp $
  */
 
 /* GNUPLOT - gp_time.h */

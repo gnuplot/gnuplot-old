@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.14 2000/05/02 18:30:04 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.15 2000/10/31 19:59:31 joze Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -203,6 +203,10 @@ struct gen_table set_tbl[] =
     { "or$igin", S_ORIGIN },
     { "o$utput", S_OUTPUT },
     { "pa$rametric", S_PARAMETRIC },
+#ifdef PM3D
+    { "pal$ette", S_PALETTE },
+    { "pm$3d", S_PM3D },
+#endif
     { "p$lot", S_PLOT },
     { "poi$ntsize", S_POINTSIZE },
     { "pol$ar", S_POLAR },

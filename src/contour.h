@@ -1,5 +1,5 @@
 /*
- * $Id: contour.h,v 1.3 2000/05/02 18:01:03 lhecking Exp $
+ * $Id: contour.h,v 1.4 2000/10/31 19:59:30 joze Exp $
  */
 
 /* GNUPLOT - contour.h */

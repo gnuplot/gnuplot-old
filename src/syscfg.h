@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.11 2000/05/02 20:56:27 broeker Exp $
+ * $Id: syscfg.h,v 1.12 2000/10/31 19:59:31 joze Exp $
  */
 
 /* GNUPLOT - syscfg.h */

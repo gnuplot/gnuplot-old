@@ -1,4 +1,4 @@
-/* $Id: driver.h,v 1.15 2000/05/02 20:56:27 broeker Exp $ */
+/* $Id: driver.h,v 1.16 2000/10/31 19:59:32 joze Exp $ */
 
 /* GNUPLOT - driver.h */
 

@@ -1,5 +1,5 @@
 /*
- * $Id: wtext.h,v 1.2 2000/10/20 15:33:51 broeker Exp $
+ * $Id: wtext.h,v 1.3 2000/10/31 19:59:32 joze Exp $
  */
 
 /* GNUPLOT - win/wtext.h */

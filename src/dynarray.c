@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: dynarray.c,v 1.6 2000/05/02 20:56:26 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: dynarray.c,v 1.7 2000/10/31 19:59:30 joze Exp $"); }
 #endif
 
 /* GNUPLOT - dynarray.c */
