@@ -1,5 +1,5 @@
 #
-# $Id: surface1.dem,v 1.3 1998/12/09 15:26:57 lhecking Exp $
+# $Id: surface1.dem,v 1.4 1999/03/12 21:48:06 lhecking Exp $
 #
 set samples 21
 set isosample 11
@@ -69,7 +69,7 @@ splot u*v / (u**2 + v**2 + 0.1)
 pause -1 "Hit return to continue (11)"
 splot [x=-3:3] [y=-3:3] sin(x) * cos(y)
 pause -1 "Hit return to continue (12)"
-set zrange [-0.35:0.35]
+set zrange [-1.0:1.0]
 replot
 pause -1 "Hit return to continue (13)"
 set title "Sinc function"
