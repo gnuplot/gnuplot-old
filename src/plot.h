@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.6 1999/06/09 12:11:38 lhecking Exp $
+ * $Id: plot.h,v 1.7 1999/06/10 19:54:11 lhecking Exp $
  *
  */
 
@@ -341,7 +341,8 @@ typedef double coordval;
 # else
 /* as a last resort */
 #  define VERYLARGE (1e37)
-#  warning "using last resort 1e37 as VERYLARGE define, please check your headers"
+/* #  warning "using last resort 1e37 as VERYLARGE define, please check your headers" */
+/* Maybe add a note somewhere in the install docs instead */
 # endif /* HUGE */
 #endif /* VERYLARGE */
 
