@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.50 2002/09/27 00:12:24 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.51 2002/09/30 00:52:22 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -1556,6 +1556,7 @@ DrawRotated(Display *dpy, Drawable d, GC gc, int xdest, int ydest,
 	}
     }
 
+    src_cen_y = 0; /* EAM 29-Sep-2002 - vertical justification has already been done */
     switch (just) {
 	case LEFT:
 	default:
