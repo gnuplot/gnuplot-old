@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: fit.c,v 1.27 1999/03/04 20:44:40 lhecking Exp $";
+static char *RCSid = "$Id: fit.c,v 1.28 1999/03/10 21:26:24 lhecking Exp $";
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -811,7 +811,6 @@ double a[];
 	struct value val;
 	Gcomplex (&val, a[num_params-1], 0.0);
 	setvar (par_name[num_params-1], val);
-	free(dpar);
     }
 
     /* call destructor for allocated vars */
