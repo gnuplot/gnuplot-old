@@ -1,4 +1,4 @@
-/* $Id: national.h,v 1.1 1999/03/26 21:48:26 lhecking Exp $ */
+/* $Id: national.h,v 1.2 1999/06/09 12:07:19 lhecking Exp $ */
 
 /* GNUPLOT - national.h */
 
@@ -32,6 +32,9 @@
  * to the extent permitted by applicable law.
 ]*/
 
+
+#ifndef GNUPLOT_NATIONAL_H
+# define GNUPLOT_NATIONAL_H
 
 /* if setlocale is available, these strings will be overridden
  * by strftime, or they may not be used at all if the run-time
@@ -178,3 +181,5 @@
 #define FDAY5 "Friday"
 #define FDAY6 "Saturday"
 #endif /* language */
+
+#endif /* GNUPLOT_NATIONAL_H */

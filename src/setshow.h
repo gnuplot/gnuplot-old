@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.5 1999/05/20 18:42:04 lhecking Exp $
+ * $Id: setshow.h,v 1.6 1999/06/09 12:07:19 lhecking Exp $
  *
  */
 
@@ -35,6 +35,9 @@
  * to the extent permitted by applicable law.
 ]*/
 
+
+#ifndef GNUPLOT_SETSHOW_H
+# define GNUPLOT_SETSHOW_H
 
 /* for show_version_long() */
 #ifdef HAVE_SYS_UTSNAME_H
@@ -269,3 +272,4 @@ extern char *missing_val;
 \t'{m}[xyz]{2}tics', '[xyz]{2}[md]tics', '[xyz]{2}zeroaxis',\n\
 \t'[xyz]data',   'zero', 'zeroaxis'"
 
+#endif /* GNUPLOT_SETSHOW_H */

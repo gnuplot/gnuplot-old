@@ -1,4 +1,4 @@
-/* $Id: alloc.h,v 1.1 1999/03/26 21:47:20 lhecking Exp $ */
+/* $Id: alloc.h,v 1.2 1999/06/09 12:07:18 lhecking Exp $ */
 
 /* GNUPLOT - alloc.h */
 
@@ -31,6 +31,9 @@
  * This software is provided "as is" without express or implied warranty
  * to the extent permitted by applicable law.
 ]*/
+
+#ifndef GNUPLOT_ALLOC_H
+# define GNUPLOT_ALLOC_H
 
 /* prototypes from "alloc.c". This file figures out if the free hack is needed
  * and redefines free if necessary.
@@ -68,3 +71,5 @@ void end_leak_check(char *file,int line);
 void gpfree __PROTO((generic *p));
 #define free gpfree
 #endif
+
+#endif /* GNUPLOT_ALLOC_H */

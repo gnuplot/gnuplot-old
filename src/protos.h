@@ -1,5 +1,5 @@
 /*
- * $Id: protos.h,v 1.6 1999/06/06 18:24:39 lhecking Exp $
+ * $Id: protos.h,v 1.7 1999/06/09 12:07:19 lhecking Exp $
  *
  */
 
@@ -34,6 +34,10 @@
  * This software is provided "as is" without express or implied warranty
  * to the extent permitted by applicable law.
 ]*/
+
+
+#ifndef GNUPLOT_PROTOS_H
+# define GNUPLOT_PROTOS_H
 
 #include "ansichek.h"
 
@@ -339,3 +343,4 @@ void clip_put_text_just __PROTO((unsigned int x, unsigned int y, char *str, enum
 
 #include "alloc.h"
 
+#endif /* GNUPLOT_PROTOS_H */
