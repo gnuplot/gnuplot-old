@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.10 1998/11/04 14:48:50 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.11 1998/11/19 10:40:08 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -1711,12 +1711,12 @@ struct Polygon GPHUGE *p;
     if (EQ(v1->x, v2->x))
 	which_intersect = v_intersect;
 
-    UPD_MINMAX(v1, v2, 1);
+    UPD_MINMAX(v1,v2,1);
 
     /* test first edge of polygon p */
     v3 = vlist + p->vertex[p->n - 1];
     v4 = vlist + p->vertex[0];
-    UPD_MINMAX(v3, v4, 2);
+    UPD_MINMAX(v3,v4,2);
 
 
     if (MINIMAX) {
@@ -1728,7 +1728,7 @@ struct Polygon GPHUGE *p;
     for (i = 0; i < p->n - 1; i++) {
 	v3 = vlist + p->vertex[i];
 	v4 = vlist + p->vertex[i + 1];
-	UPD_MINMAX(v3, v4, 2);
+	UPD_MINMAX(v3,v4,2);
 	if (!MINIMAX)
 	    continue;
 	s = (*which_intersect) (v1, v2, v3, v4);
