@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: help.c,v 1.11 1999/11/08 19:24:30 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: help.c,v 1.12 1999/11/15 22:22:46 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - help.c */
@@ -147,8 +147,8 @@ static KEY *FindHelp __PROTO((char *keyword));
 static TBOOLEAN Ambiguous __PROTO((struct key_s * key, size_t len));
 
 /* Help output */
-static void PrintHelp __PROTO((struct key_s * key, int *subtopics));
-static void ShowSubtopics __PROTO((struct key_s * key, int *subtopics));
+static void PrintHelp __PROTO((struct key_s * key, TBOOLEAN *subtopics));
+static void ShowSubtopics __PROTO((struct key_s * key, TBOOLEAN *subtopics));
 
 #if defined(PIPES)
 static FILE *outfile;		/* for unix pager, if any */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.18 1999/11/08 19:24:29 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.19 1999/11/15 22:22:27 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -109,7 +109,7 @@ static void ztick_callback __PROTO((int axis, double place, char *text,
 				    struct lp_style_type grid));
 static void setlinestyle __PROTO((struct lp_style_type style));
 
-static void boundary3d __PROTO((int scaling, struct surface_points * plots,
+static void boundary3d __PROTO((TBOOLEAN scaling, struct surface_points * plots,
 				int count));
 #if 0				/* not used */
 static double dbl_raise __PROTO((double x, int y));
