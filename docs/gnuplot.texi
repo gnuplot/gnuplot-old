@@ -299,7 +299,7 @@ known bugs:
 }
 
 Before seeking help, please check the
-@uref{http://www.ucc.ie/gnuplot/gnuplot-faq.html,FAQ (Frequently Asked Questions) list.
+@uref{http://www.gnuplot.info/faq/,FAQ (Frequently Asked Questions) list.
 }
 If you do not have a copy of the FAQ, you may request a copy by email from
 the Majordomo address above, ftp a copy from
@@ -361,7 +361,8 @@ left, both for plotting and labels.  See @ref{plot}.
 
 14. The @ref{call} command: @ref{load} with arguments.
 
-15. More flexible `range` commands with `reverse` and `writeback` keywords.
+15. More flexible `range` commands with `reverse`, `writeback` and 'restore'
+keywords.
 
 16. @ref{encoding} for multi-lingual encoding.
 
@@ -472,7 +473,7 @@ The editing commands are as follows:
       ^K    deletes from current position to the end of line.
       ^L,^R redraws line in case it gets trashed.
       ^U    deletes the entire line.
-      ^W    deletes the last word.
+      ^W    deletes from the current word to the end of line.
 
 @end example
 
@@ -862,7 +863,7 @@ The `besj1(x)` function returns the j1st Bessel function of its argument.
 @findex besy0
 
 
-The @ref{besy0} function returns the y0th Bessel function of its argument.
+The `besy0(x)` function returns the y0th Bessel function of its argument.
 @ref{besy0} expects its argument to be in radians.
 
 @node besy1, ceil, besy0, Functions
@@ -1608,7 +1609,7 @@ Newlines in the output produced by the spawned command are replaced with
 blanks.
 
 Command-line substitution can be used anywhere on the `gnuplot` command
-line.
+line, except inside strings delimited by single quotes.
 
 Example:
 
@@ -1624,6 +1625,14 @@ or, in VMS
       f(x) = `run leastsq`
 
 @end example
+
+These will generate labels with the current time and userid:
+@example
+      set label "generated on `date +%Y-%m-%d`by `whoami`" at 1,1
+      set timestamp "generated on %Y-%m-%d by `whoami`"
+
+@end example
+
 
 @node Syntax, Time/Date_data, Substitution, gnuplot
 @section Syntax
@@ -2074,7 +2083,7 @@ either directly on the command line or indirectly, by referencing a
 parameter file.  The two use different means to set initial values.
 
 Adjustable parameters can be specified by a comma-separated list of variable
-names after the `via` keyword.  Any variable that is not already defined is
+names after the `via` keyword.  Any variable that is not already defined
 is created with an initial value of 1.0.  However, the fit is more likely
 to converge rapidly if the variables have been previously declared with more
 appropriate starting values.
@@ -2379,7 +2388,7 @@ the chi-squared target function increased or decreased significantly.
 Setting FIT_LAMBDA_FACTOR to zero re-enables the default factor of
 10.0.
 
-Oher variables with the FIT_ prefix may be added to `fit`, so it is safer
+Other variables with the FIT_ prefix may be added to `fit`, so it is safer
 not to use that prefix for user-defined variables.
 
 The variables FIT_SKIP and FIT_INDEX were used by earlier releases of
@@ -3693,7 +3702,7 @@ This plots sin(x) with impulses:
 
 This plots x with points, x**2 with the default:
 @example
-      plot x*y w points, x**2 + y**2
+      plot x w points, x**2
 
 @end example
 
@@ -5887,7 +5896,7 @@ Syntax:
 A cartesian coordinate system is used by default.
 
 For a spherical coordinate system, the data occupy two or three columns (or
-@ref{using} entries).  The first two are interpreted as the polar and azimuthal
+@ref{using} entries).  The first two are interpreted as the azimuthal and polar
 angles theta and phi (in the units specified by @ref{angles}).  The radius r
 is taken from the third column if there is one, or is set to unity if there
 is no third column.  The mapping is:
@@ -6901,8 +6910,8 @@ The @ref{vector} style draws a vector from (x,y) to (x+xdelta,y+ydelta).  Thus
 it requires four columns of data.  It also draws a small arrowhead at the
 end of the vector.
 
-The @ref{vector} style is still experimental: it doesn't get clipped properly
-and other things may also be wrong with it.  Use it at your own risk.
+`set clip one` and `set clip two` affect drawing vectors.
+Please see @ref{clip}.
 
 @node xerrorbars, xyerrorbars, vector, style
 @subsubsection xerrorbars
@@ -6939,7 +6948,7 @@ If data are provided in an unsupported mixed form, the @ref{using} filter on the
 if the data are of the form (x,y,xdelta,ylow,yhigh), then you can use
 
 @example
-      plot 'data' using 1:2:($1-$3),($1+$3),4,5 with xyerrorbars
+      plot 'data' using 1:2:($1-$3):($1+$3):4:5 with xyerrorbars
 
 @end example
 
@@ -6993,7 +7002,7 @@ The surface is drawn with the style specifed by @ref{with}, or else the
 appropriate style, data or function.
 
 Whenever `set nosurface` is issued, `splot` will not draw points or lines
-corresponding to the function or data file points.  Contours may be still be
+corresponding to the function or data file points.  Contours may still be
 drawn on the surface, depending on the @ref{contour} option. `set nosurface;
 set contour base` is useful for displaying contours on the grid base.  See
 also @ref{contour}.
@@ -7129,9 +7138,10 @@ Examples:
 @tmindex cgm
 
 
-The `cgm` terminal generates a Computer Graphics Metafile.  This file format
-is a subset of the ANSI X3.122-1986 standard entitled "Computer Graphics -
-Metafile for the Storage and Transfer of Picture Description Information".
+The `cgm` terminal generates a Computer Graphics Metafile, Version 1. 
+This file format is a subset of the ANSI X3.122-1986 standard entitled
+"Computer Graphics - Metafile for the Storage and Transfer of Picture
+Description Information".
 Several options may be set in `cgm`.
 
 Syntax:
@@ -7139,6 +7149,7 @@ Syntax:
       set terminal cgm @{<mode>@} @{<color>@} @{<rotation>@} @{solid | dashed@}
                        @{width <plot_width>@} @{linewidth <line_width>@}
                        @{"<font>"@} @{<fontsize>@}
+                       @{<color0> <color1> <color2> ...@}
 
 @end example
 
@@ -7146,25 +7157,31 @@ where <mode> is `landscape`, `portrait`, or `default`;
 <color> is either `color` or `monochrome`; 
 <rotation> is either `rotate` or `norotate`;
 `solid` draws all curves with solid lines, overriding any dashed patterns;
-<plot_width> is the width of the page in points; 
-<line_width> is the line width in points; 
+<plot_width> is the assumed width of the plot in points; 
+<line_width> is the line width in points (default 1); 
 <font> is the name of a font; and 
-`<fontsize>` is the size of the font in points.
+<fontsize> is the size of the font in points (default 12).
 
 By default, `cgm` uses rotated text for the Y axis label.
 
 The first six options can be in any order.  Selecting `default` sets all
 options to their default values.
 
+Each color must be of the form 'xrrggbb', where x is the literal
+character 'x' and 'rrggbb' are the red, green and blue components in
+hex.  For example, 'x00ff00' is green.  The background color is set
+first, then the plotting colors."
+
 Examples:
 @example
       set terminal cgm landscape color rotate dashed width 432 \\
-                     linewidth 1  'Arial Bold' 12       # defaults
-      set terminal cgm 14 linewidth 2  14  # wider lines & larger font
-      set terminal cgm portrait 'Times Roman Italic' 12
-      set terminal cgm color solid    # no pesky dashes!
+                     linewidth 1  'Helvetica Bold' 12       # defaults
+      set terminal cgm linewidth 2  14  # wider lines & larger font
+      set terminal cgm portrait "Times Italic" 12
+      set terminal cgm color solid      # no pesky dashes!
 
 @end example
+
 
 
 @noindent --- FONT ---
@@ -7176,30 +7193,87 @@ Examples:
 The first part of a Computer Graphics Metafile, the metafile description,
 includes a font table.  In the picture body, a font is designated by an
 index into this table.  By default, this terminal generates a table with
-the following fonts:
+the following 35 fonts, plus six more with `italic` replaced by
+`oblique`, or vice-versa (since at least the Microsoft Office and Corel
+Draw CGM import filters treat `italic` and `oblique` as equivalent):
 
 @example
-      Arial
-      Arial Italic
-      Arial Bold
-      Arial Bold Italic
-      Times Roman
-      Times Roman Italic
-      Times Roman Bold
-      Times Roman Bold Italic
       Helvetica
-      Roman
+      Helvetica Bold
+      Helvetica Oblique
+      Helvetica Bold Oblique
+      Times Roman
+      Times Bold
+      Times Italic
+      Times Bold Italic
+      Courier
+      Courier Bold
+      Courier Oblique
+      Courier Bold Oblique
+      Symbol
+      Hershey/Cartographic_Roman
+      Hershey/Cartographic_Greek
+      Hershey/Simplex_Roman
+      Hershey/Simplex_Greek
+      Hershey/Simplex_Script
+      Hershey/Complex_Roman
+      Hershey/Complex_Greek
+      Hershey/Complex_Script
+      Hershey/Complex_Italic
+      Hershey/Complex_Cyrillic
+      Hershey/Duplex_Roman
+      Hershey/Triplex_Roman
+      Hershey/Triplex_Italic
+      Hershey/Gothic_German
+      Hershey/Gothic_English
+      Hershey/Gothic_Italian
+      Hershey/Symbol_Set_1
+      Hershey/Symbol_Set_2
+      Hershey/Symbol_Math
+      ZapfDingbats
+      Script
+      15
 
 @end example
 
-Case is not distinct, but the modifiers must appear in the above order (that
-is, not 'Arial Italic Bold').  'Arial Bold' is the default font.
 
-You may also specify a font name which does not appear in the default font
-table.  In that case, a new font table is constructed with the specified
-font as its only entry.  You must ensure that the spelling, capitalization,
-and spacing of the name are appropriate for the application that will read
-the CGM file.
+The first thirteen of these fonts are required for WebCGM.  The
+Microsoft Office CGM import filter implements the 13 standard fonts
+listed above, and also 'ZapfDingbats' and 'Script'.  However, the
+script font may only be accessed under the name '15'.  For more on
+Microsoft import filter font substitutions, check its help file which
+you may find here:
+@example
+  C:\\Program Files\\Microsoft Office\\Office\\Cgmimp32.hlp
+@end example
+
+and/or its configuration file, which you may find here:
+@example
+  C:\\Program Files\\Common Files\\Microsoft Shared\\Grphflt\\Cgmimp32.cfg
+
+@end example
+
+In the `set term` command, you may specify a font name which does not
+appear in the default font table.  In that case, a new font table is
+constructed with the specified font as its first entry. You must ensure
+that the spelling, capitalization, and spacing of the name are
+appropriate for the application that will read the CGM file.  (Gnuplot
+and any MIL-D-28003A compliant application ignore case in font names.)
+If you need to add several new fonts, use several `set term` commands.
+
+Example:
+@example
+      set terminal cgm 'Old English'
+      set terminal cgm 'Tengwar'
+      set terminal cgm 'Arabic'
+      set output 'myfile.cgm'
+      plot ...
+      set output
+
+@end example
+
+You cannot introduce a new font in a @ref{label} command."
+
 
 
 @noindent --- FONTSIZE ---
@@ -7208,11 +7282,12 @@ the CGM file.
 @c ?set terminal cgm fontsize
 @c ?set term cgm fontsize
 @c ?cgm fontsize
-Fonts are scaled assuming the page is 6 inches wide.  If the @ref{size} command
-is used to change the aspect ratio of the page or the CGM file is converted
-to a different width (e.g. it is imported into a document in which the
-margins are not 6 inches apart), the resulting font sizes will be different.
-To change the assumed width, use the `width` option.
+Fonts are scaled assuming the page is 6 inches wide.  If the @ref{size}
+command is used to change the aspect ratio of the page or the CGM file
+is converted to a different width, the resulting font sizes will be
+scaled up or down accordingly.  To change the assumed width, use the
+`width` option.
+
 
 
 @noindent --- LINEWIDTH ---
@@ -7221,9 +7296,10 @@ To change the assumed width, use the `width` option.
 @c ?set terminal cgm linewidth
 @c ?set term cgm linewidth
 @c ?cgm linewidth
-The `linewidth` option sets the width of lines in pt.  The default width is
-1 pt.  Scaling is affected by the actual width of the page, as discussed
-under the `fontsize` and `width` options
+The `linewidth` option sets the width of lines in pt.  The default width
+is 1 pt.  Scaling is affected by the actual width of the page, as
+discussed under the `fontsize` and `width` options.
+
 
 
 @noindent --- ROTATE ---
@@ -7232,13 +7308,15 @@ under the `fontsize` and `width` options
 @c ?set terminal cgm rotate
 @c ?set term cgm rotate
 @c ?cgm rotate
-The `norotate` option may be used to disable text rotation.  For example,
-the CGM input filter for Word for Windows 6.0c can accept rotated text, but
-the DRAW editor within Word cannot.  If you edit a graph (for example, to
-label a curve), all rotated text is restored to horizontal.  The Y axis
-label will then extend beyond the clip boundary.  With `norotate`, the Y
-axis label starts in a less attractive location, but the page can be edited
-without damage.  The `rotate` option confirms the default behavior.
+The `norotate` option may be used to disable text rotation.  For
+example, the CGM input filter for Word for Windows 6.0c can accept
+rotated text, but the DRAW editor within Word cannot.  If you edit a
+graph (for example, to label a curve), all rotated text is restored to
+horizontal.  The Y axis label will then extend beyond the clip boundary.
+With `norotate`, the Y axis label starts in a less attractive location,
+but the page can be edited without damage.  The `rotate` option confirms
+the default behavior.
+
 
 
 @noindent --- SOLID ---
@@ -7247,9 +7325,11 @@ without damage.  The `rotate` option confirms the default behavior.
 @c ?set term cgm solid
 @c ?cgm solid
 The `solid` option may be used to disable dashed line styles in the
-plots.  This is useful when color is enabled and the dashing of the lines
-detracts from the appearance of the plot. The `dashed` option confirms the
-default behavior, which gives a different dash pattern to each curve.
+plots.  This is useful when color is enabled and the dashing of the
+lines detracts from the appearance of the plot. The `dashed` option
+confirms the default behavior, which gives a different dash pattern to
+each curve.
+
 
 
 @noindent --- SIZE ---
@@ -7257,9 +7337,10 @@ default behavior, which gives a different dash pattern to each curve.
 @c ?commands set terminal cgm size
 @c ?set terminal cgm size
 @c ?set term cgm size
-@c ?scgm size
-Default size of a CGM page is 32599 units wide and 23457 units high for
+@c ?cgm size
+Default size of a CGM plot is 32599 units wide and 23457 units high for
 landscape, or 23457 units wide by 32599 units high for portrait.
+
 
 
 @noindent --- WIDTH ---
@@ -7268,14 +7349,16 @@ landscape, or 23457 units wide by 32599 units high for portrait.
 @c ?set terminal cgm width
 @c ?set term cgm width
 @c ?cgm width
-All distances in the CGM file are in abstract units.  The application that
-reads the file determines the size of the final page.  By default, the width
-of the final page is assumed to be 6 inches (15.24 cm).  This distance is
-used to calculate the correct font size, and may be changed with the `width`
-option.  The keyword should be followed by the width in points.  (Here, a
-point is 1/72 inch, as in PostScript.  This unit is known as a "big point"
-in TeX.)  `gnuplot` arithmetic can be used to convert from other units, as
-follows:
+All distances in the CGM file are in abstract units.  The application
+that reads the file determines the size of the final plot.  By default,
+the width of the final plot is assumed to be 6 inches (15.24 cm).  This
+distance is used to calculate the correct font size, and may be changed
+with the `width` option.  The keyword should be followed by the width in
+points.  (Here, a point is 1/72 inch, as in PostScript.  This unit is
+known as a "big point" in TeX.)  Gnuplot `expressions` can be used to
+convert from other units.
+
+Example:
 @example
       set terminal cgm width 432            # default
       set terminal cgm width 6*72           # same as above
@@ -7284,28 +7367,33 @@ follows:
 @end example
 
 
-@noindent --- WINWORD6 ---
 
+@noindent --- NOFONTLIST ---
+
+@c ?commands set terminal cgm nofontlist
+@c ?set terminal cgm nofontlist
+@c ?set term cgm nofontlist
+@c ?cgm nofontlist
 @c ?commands set terminal cgm winword6
 @c ?set terminal cgm winword6
 @c ?set term cgm winword6
 @c ?cgm winword6
-The default font table was chosen to match, where possible, the default font
-assignments made by the Computer Graphics Metafile input filter for
-Microsoft Word 6.0c, although the filter makes available only 'Arial' and
-'Times Roman' fonts and their bold and/or italic variants.  Other fonts such
-as 'Helvetica' and 'Roman' are not available.  If the CGM file includes a
-font table, the filter mostly ignores it.  However, it changes certain font
-assignments so that they disagree with the table.  As a workaround, the
-`winword6` option deletes the font table from the CGM file.  In this case,
-the filter makes predictable font assignments.  'Arial Bold' is correctly
-assigned even with the font table present, which is one reason it was chosen
-as the default.
+The default font table includes the fonts recommended for WebCGM, which
+are compatible with the Computer Graphics Metafile input filter for
+Microsoft Office and Corel Draw.  Another application might use
+different fonts and/or different font names, which may not be
+documented.  As a workaround, the `nofontlist` option deletes the font
+table from the CGM file.  In this case, the reading application should
+use a default table.  Gnuplot will still use its own default font table
+to select font indices.  Thus, 'Helvetica' will give you an index of 1,
+which should get you the first entry in your application's default font
+table. 'Helvetica Bold' will give you its second entry, etc.
 
-`winword6` disables the color tables for a similar reason---with the color
-table included, Microsoft Word displays black for color 7.
+The former `winword6` option is now a deprecated synonym for
+`nofontlist`.  The problems involving the color and font tables that
+the `winword6` option was intended to work around turned out to be
+gnuplot bugs which have now been fixed."
 
-Linewidths and pointsizes may be changed with @ref{linestyle}."
 
 @node corel, dumb, cgm, terminal
 @subsubsection corel
@@ -7405,24 +7493,71 @@ package for LaTeX.  To use it, you need "eepic.sty", "epic.sty" and a
 printer driver that supports the "tpic" \\specials.  If your printer driver
 doesn't support those \\specials, "eepicemu.sty" will enable you to use some
 of them.
+dvips and dvipdfm do support the "tpic" \\specials.
 
-Although dotted and dashed lines are possible with `eepic` and are tempting,
-they do not work well for high-sample-rate curves, fusing the dashes all
-together into a solid line.  For now, the `eepic` driver creates only solid
-lines.  There is another gnuplot driver (`tpic`) that supports dashed lines,
-but it cannot be used if your DVI driver doesn't support "tpic" \\specials.
+Syntax:
+@example
+   set terminal eepic @{color, dashed, rotate, small, tiny, default, <fontsize>@}
 
+@end example
+
+Options:
+You can give options in any order you wish.
+'color' causes gnuplot to produce \\color@{...@} commands so that the graphs are
+colored. Using this option, you must include \\usepackage@{color@} in the preambel
+of your latex document.
+'dashed' will allow dashed line types; without this option, only solid lines
+with varying thickness will be used.
+'dashed' and 'color' are mutually exclusive; if 'color' is specified, then 'dashed'
+will be ignored.
+'rotate' will enable true rotated text (by 90 degrees). Otherwise, rotated text
+will be typeset with letters stacked above each other. If you use this option
+you must include \\usepackage@{graphicx@} in the preamble.
+'small' will use \\scriptsize symbols as point markers (Probably does not work
+with TeX, only LaTeX2e). Default is to use the default math size.
+'tiny' uses \\scriptscriptstyle symbols.
+'default' resets all options to their defaults = no color, no dashed lines,
+pseudo-rotated (stacked) text, large point symbols.
+<fontsize> is a number which specifies the font size inside the picture
+environment; the unit is pt (points), i.e., 10 pt equals approx. 3.5 mm.
+If fontsize is not specified, then all text inside the picture will be set
+in \\footnotesize.
+
+Notes:
+Remember to escape the # character (or other chars meaningful to (La-)TeX)
+by \\\\ (2 backslashes).
+It seems that dashed lines become solid lines when the vertices of a plot
+are too close. (I do not know if that is a general problem with the tpic specials,
+or if it is caused by a bug in eepic.sty or dvips/dvipdfm.)
+The default size of an eepic plot is 5x3 inches, which can be scaled 
+by 'set size a,b'.
+Points, among other things, are drawn using the LaTeX commands "\\Diamond",
+"\\Box", etc.  These commands no longer belong to the LaTeX2e core; they are
+included in the latexsym package, which is part of the base distribution and
+thus part of any LaTeX implementation. Please do not forget to use this package.
+Instead of latexsym, you can also include the amssymb package."
 All drivers for LaTeX offer a special way of controlling text positioning:
 If any text string begins with '@{', you also need to include a '@}' at the
-end of the text, and the whole text will be centered both horizontally
-and vertically by LaTeX. --- If the text string begins with '[', you need
-to continue it with: a position specification (up to two out of t,b,l,r),
-']@{', the text itself, and finally, '@}'. The text itself may be anything
-LaTeX can typeset as an LR-box. \\rule@{@}@{@}'s may help for best positioning.
-
-The `eepic` terminal has no options.
+end of the text, and the whole text will be centered both horizontally and
+vertically.  If the text string begins with '[', you need to follow this with
+a position specification (up to two out of t,b,l,r), ']@{', the text itself,
+and finally '@}'.  The text itself may be anything LaTeX can typeset as an
+LR-box.  '\\rule@{@}@{@}'s may help for best positioning.
 
 Examples:
+set term eepic
+@example
+  output graphs as eepic macros inside a picture environment;
+  \\input the resulting file in your LaTeX document.
+@end example
+
+set term eepic color tiny rotate 8
+@example
+  eepic macros with \\color macros, \\scripscriptsize point markers,
+  true rotated text, and all text set with 8pt.
+
+@end example
+
 About label positioning:
 Use gnuplot defaults (mostly sensible, but sometimes not really best):
 @example
@@ -7441,7 +7576,7 @@ Specify own positioning (top here):
 
 The other label -- account for long ticlabels:
 @example
-       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}'"
+       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}@}'"
 
 @end example
 
@@ -7519,7 +7654,7 @@ printers with resolutions of 180 and 60 dots per inch, respectively.
 `epson-lx800` is a generic 9-pin driver appropriate for printers like the
 Epson LX-800, the Star NL-10 and NX-1000, the PROPRINTER, and so forth.
 
-`nec-cp6` is generix 24-pin driver that can be used for printers like the
+`nec-cp6` is generic 24-pin driver that can be used for printers like the
 NEC CP6 and the Epson LQ-800.
 
 The `okidata` driver supports the 9-pin OKIDATA 320/321 Standard printers.
@@ -7582,7 +7717,7 @@ material with "xfig" on top of the plot.
 
 `thickness` sets the default line thickness, which is 1 if not specified.
 Overriding the thickness can be achieved by adding a multiple of 100 to the
-to the `linetype` value for a @ref{plot} command.  In a similar way the `depth`
+`linetype` value for a @ref{plot} command.  In a similar way the `depth`
 of plot elements (with respect to the default depth) can be controlled by
 adding a multiple of 1000 to <linetype>.  The depth is then <layer> +
 <linetype>/1000 and the thickness is (<linetype>%1000)/100 or, if that is
@@ -7698,7 +7833,8 @@ plum and dark violet for eight plotting colors.
 @example
       set terminal gif transparent xffffff \\
                        x000000 x202020 x404040 x606060 \\
-                       x808080 xA0A0A0 xC0C0C0 xE0E0E0 \\
+                       x808080 xA0A0A0 xC0C0C0 xE0E0E0
+
 @end example
 
 which uses white for the transparent background, black for borders, dark
@@ -7875,9 +8011,9 @@ large amount of memory."
 
 
 The `hpgl` driver produces HPGL output for devices like the HP7475A plotter.
-There are two options which can be set---the number of pens and "eject", which
-tells the plotter to eject a page when done.  The default is to use 6 pens
-and not to eject the page when done.
+There are two options which can be set: the number of pens and `eject`,
+which tells the plotter to eject a page when done.  The default is to use 6
+pens and not to eject the page when done.
 
 The international character sets ISO-8859-1 and CP850 are recognized via
 `set encoding iso_8859_1` or `set encoding cp850` (see @ref{encoding} for
@@ -7905,18 +8041,48 @@ is equivalent to the previous `hp7550` terminal, and the selection
 
 is equivalent to the previous `hp7580b` terminal.
 
-The `pcl5` driver supports the Hewlett-Packard Laserjet III.  It actually uses
-HPGL-2, but there is a name conflict among the terminal devices.  It has
-several options
+The `pcl5` driver supports plotters such as the Hewlett-Packard Designjet
+750C, the Hewlett-Packard Laserjet III, and the Hewlett-Packard Laserjet IV.
+It actually uses HPGL-2, but there is a name conflict among the terminal
+devices.  It has several options which must be specified in the order
+indicated below:
 
 Syntax:
 @example
-      set terminal pcl5 @{<mode>@} @{<font>@} @{<fontsize>@}
+      set terminal pcl5 @{mode <mode>@} @{<plotsize>@}
+          @{@{color @{<number_of_pens>@}@} | monochrome@} @{solid | dashed@}
+          @{font <font>@} @{size <fontsize>@} @{pspoints | nopspoints@}
 
 @end example
 
-where <mode> is `landscape`, or `portrait`, <font> is `stick`, `univers`, or
-`cg_times`, and <fontsize> is the size in points.
+<mode> is `landscape` or `portrait`. <plotsize> is the physical
+plotting size of the plot, which is one of the following: `letter` for
+standard (8 1/2" X 11") displays, `legal` for (8 1/2" X 14") displays,
+`noextended` for (36" X 48") displays (a letter size ratio) or,
+`extended` for (36" X 55") displays (almost a legal size ratio).
+`color` is for multi-pen (i.e. color) plots, and <number_of_pens> is
+the number of pens (i.e. colors) used in color plots. `monochrome` is for
+one (e.g. black) pen plots. `solid` draws all lines as solid lines, or
+`dashed` will draw lines with different dashed and dotted line patterns.
+<font> is `stick`, `univers`, `cg_times`, `zapf_dingbats`, `antique_olive`,
+`arial`, `courier`, `garamond_antigua`, `letter_gothic`, `cg_omega`,
+`albertus`, `times_new_roman`, `clarendon`, `coronet`, `marigold`,
+`truetype_symbols`, or `wingdings`. <fontsize> is the font size in points.
+The point type selection can be the standard default set by specifying
+`nopspoints`, or the same set of point types found in the postscript terminal
+by specifying `pspoints`.
+
+Note that built-in support of some of these options is printer device
+dependendent. For instance, all the fonts are supposedly supported by the HP
+Laserjet IV, but only a few (e.g. univers, stick) may be supported by the HP
+Laserjet III and the Designjet 750C. Also, color obviously won't work on the
+the laserjets since they are monochrome devices.
+
+Defaults: landscape, noextended, color (6 pens), solid, univers, 12 point,
+@example
+          and nopspoints.
+
+@end example
 
 With `pcl5` international characters are handled by the printer; you just put
 the appropriate 8-bit character codes into the text strings.  You don't need
@@ -8068,11 +8234,6 @@ Points, among other things, are drawn using the LaTeX commands "\\Diamond" and
 in the latexsym package, which is part of the base distribution and thus part
 of any LaTeX implementation.  Please do not forget to use this package.
 
-Points are drawn with the LaTex commands \\Diamond and \\Box.  These
-commands do no longer belong to the LaTeX2e core, but are included in the
-latexsym-package in the base distribution, and are hence part of all LaTeX
-implementations. Please do not forget to use this package.
-
 Examples:
 About label positioning:
 Use gnuplot defaults (mostly sensible, but sometimes not really best):
@@ -8092,7 +8253,7 @@ Specify own positioning (top here):
 
 The other label -- account for long ticlabels:
 @example
-       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}'"
+       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}@}'"
 
 @end example
 
@@ -8108,7 +8269,7 @@ The other label -- account for long ticlabels:
 
 @cindex metafont
 
-The `mf` terminal driver creates a input file to the METAFONT program.  Thus a
+The `mf` terminal driver creates an input file to the METAFONT program.  Thus a
 figure may be used in the TeX document in the same way as is a character.
 
 To use a picture in a document, the METAFONT program must be run with the
@@ -8119,7 +8280,7 @@ site, an unexperienced user could perform the operation without much trouble.
 
 The text support is based on a METAFONT character set.  Currently the
 Computer Modern Roman font set is input, but the user is in principal free to
-chose whatever fonts he or she needs.  The METAFONT source files for the
+choose whatever fonts he or she needs.  The METAFONT source files for the
 chosen font must be available.  Each character is stored in a separate
 picture variable in METAFONT.  These variables may be manipulated (rotated,
 scaled etc.) when characters are needed.  The drawback is the interpretation
@@ -8259,7 +8420,7 @@ Syntax:
 `polyline` plots curves as continuous curves and `vectors` plots curves as
 collections of vectors.
 @ref{help} and `?` print online help on standard error output---both print a
-short description of the usage; @ref{help} also lists the options;
+short description of the usage; @ref{help} also lists the options.
 
 Examples:
 @example
@@ -8326,17 +8487,30 @@ Examples:
 
 The `png` terminal driver supports Portable Network Graphics.  To compile it,
 you will need  the third-party libraries "libpng" and "zlib"; both are
-available at ftp://ftp.uu.net/graphics/png.  `png` has two options.
+available at http://www.cdrom.com/pub/png/.  `png` has four options.
+
+By default, the `png` terminal driver uses a shared Web-friendy palette.
 
 Syntax:
 @example
       set terminal png @{small | medium | large@}
+                       @{transparent | notransparent@}
                        @{monochrome | gray | color@}
+                       @{<color0> <color1> <color2> ...@}
 
 @end example
 
-The defaults are small (fontsize) and monochrome.  Default size of the output
-is 640*480 pixel."
+`transparent` instructs the driver to generate transparent PNGs.  The first
+color will be the transparent one.
+
+The defaults are small (fontsize) and color.  Default size of the output
+is 640*480 pixel. 
+
+Each color must be of the form 'xrrggbb', where x is the literal character
+'x' and 'rrggbb' are the red, green and blue components in hex.  For example,
+'x00ff00' is green.  The background color is set first, then the border
+colors, then the X & Y axis colors, then the plotting colors.  The maximum
+number of colors that can be set is currently 99."
 
 @node postscript, pslatex_and_pstex, png, terminal
 @subsubsection postscript
@@ -8440,7 +8614,7 @@ section for some hints.
 Braces can be used to place multiple-character text where a single character
 is expected (e.g., 2^@{10@}).  To change the font and/or size, use the full
 form:  @{/[fontname][=fontsize | *fontscale] text@}.  Thus @{/Symbol=20 G@} is a
-20-point GAMMA) and @{/*0.75 K@} is a K at three-quarters of whatever fontsize
+20-point GAMMA and @{/*0.75 K@} is a K at three-quarters of whatever fontsize
 is currently in effect.  (The '/' character MUST be the first character after
 the '@{'.)
 
@@ -8551,7 +8725,7 @@ Syntax:
 
 <color> is either `color` or `monochrome`.  <rotate> is either `rotate` or
 `norotate` and determines if the y-axis label is rotated.  <font_size> is
-used to scale the font from its usual size.
+the size (in pts) of the desired font.
 
 If `auxfile` is specified, it directs the driver to put the PostScript
 commands into an auxiliary file instead of directly into the LaTeX file.
@@ -8599,7 +8773,7 @@ Specify own positioning (top here):
 
 The other label -- account for long ticlabels:
 @example
-       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}'
+       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}@}'
 
 @end example
 
@@ -8718,7 +8892,8 @@ which a graph would be based, i.e., the results of processing the @ref{plot} or
 `splot` command, in a multicolumn ASCII table of X Y @{Z@} R values.  The
 character R takes on one of three values: "i" if the point is in the active
 range, "o" if it is out-of-range, or "u" if it is undefined.  The data
-format is determined by the format of the axis labels (see `set format`).
+format is determined by the format of the axis labels (see `set format`),
+and the columns are separated by single spaces.
 
 For those times when you want the numbers, you can display them on the
 screen or save them to a file.  This can be useful if you want to generate
@@ -8928,10 +9103,9 @@ Or, for Perl/Tk use a program like this:
 @example
  use Tk;
  my $top = MainWindow->new;
- my $c = $top->Canvas;
- $c->pack();
- do "plot.pl";
- gnuplot->($c);
+ my $c = $top->Canvas->pack;
+ my $gnuplot = do "plot.pl";
+ $gnuplot->($c);
  MainLoop;
 
 @end example
@@ -9010,7 +9184,7 @@ Specify own positioning (top here):
 
 The other label -- account for long ticlabels:
 @example
-       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}'"
+       set ylabel '[r]@{\\LaTeX\\ -- $ \\gamma $\\rule@{7mm@}@{0pt@}@}'"
 
 @end example
 
@@ -9066,7 +9240,7 @@ command line arguments or a configuration file.  See the X(1) man page
 
 A number of other `gnuplot` options are available for the `x11` terminal.
 These may be specified either as command-line options when `gnuplot` is
-invoked or as resources in the configuration file "/.Xdefaults".  They are
+invoked or as resources in the configuration file ".Xdefaults".  They are
 set upon initialization and cannot be altered during a `gnuplot` session.
 
 
@@ -9083,17 +9257,17 @@ on the command line when starting `gnuplot` or as resources in your
 ".Xdefaults" file:
 
 @example
- `-clear`   requests that the window be cleared momentarily before a
-            new plot is displayed.
- `-gray`    requests grayscale rendering on grayscale or color displays.
-            (Grayscale displays receive monochrome rendering by default.)
- `-mono`    forces monochrome rendering on color displays.
- `-persist` plot windows survive after main gnuplot program exits
- `-raise`   raise plot window after each plot
- `-noraise` do not raise plot window after each plot
- `-tvtwm`   requests that geometry specifications for position of the
-            window be made relative to the currently displayed portion
-            of the virtual root.
+ `-mono`     forces monochrome rendering on color displays.
+ `-gray`     requests grayscale rendering on grayscale or color displays.
+             (Grayscale displays receive monochrome rendering by default.)
+ `-clear`    requests that the window be cleared momentarily before a
+             new plot is displayed.
+ `-tvtwm`    requests that geometry specifications for position of the
+             window be made relative to the currently displayed portion
+             of the virtual root.
+ `-raise`    raises plot window after each plot
+ `-noraise`  does not raise plot window after each plot
+ `-persist`  plot windows survive after main gnuplot program exits
 
 @end example
 
@@ -9114,7 +9288,7 @@ sizes.  For example, `-pointsize 2` uses points twice the default size, and
 `-pointsize 0.5` uses points half the normal size.
 
 
-@noindent --- MONOCHOME_OPTIONS ---
+@noindent --- MONOCHROME_OPTIONS ---
 
 @c ?commands set terminal x11 monochrome_options
 @c ?set terminal x11 monochrome_options
@@ -9268,7 +9442,7 @@ to a '16' dotted line.
 
 
 The `xlib` terminal driver supports the X11 Windows System.  It generates
-gnulib_x11 commands.  `set term x11` behaves similarly to `set terminal xlib;
+gnuplot_x11 commands. `set term x11` behaves similarly to `set terminal xlib;
 set output "|gnuplot_x11"`.  `xlib` has no options, but see `x11`."
 
 @node tics, ticslevel, terminal, set-show
@@ -9383,7 +9557,7 @@ time.  Its default value is what asctime() uses: "%a %b %d %H:%M:%S %Y"
 year).  With `top` or `bottom` you can place the timestamp at the top or
 bottom of the left margin (default: bottom).  `rotate` lets you write the
 timestamp vertically, if your terminal supports vertical text.  The constants
-<xoff> and <off> are offsets from the default position given in character
+<xoff> and <yoff> are offsets from the default position given in character
 screen coordinates.  <font> is used to specify the font with which the time
 is to be written.
 
@@ -9431,6 +9605,7 @@ The valid formats are:
       %j           day of the year, 1--365
       %H           hour, 0--24
       %M           minute, 0--60
+      %s           seconds since the Unix epoch (1970-01-01, 00:00 UTC)
       %S           second, 0--60
       %b           three-character abbreviation of the name of the month
       %B           name of the month
@@ -9786,7 +9961,7 @@ option is not specified, the datatype reverts to normal.
 See @ref{timefmt} to tell `gnuplot` how to read date or time data.  The
 time/date is converted to seconds from start of the century.  There is
 currently only one timefmt, which implies that all the time/date columns must
-confirm to this format.  Specification of ranges should be supplied as quoted
+conform to this format.  Specification of ranges should be supplied as quoted
 strings according to this format to avoid interpretation of the time/date as
 an expression.
 
@@ -9905,7 +10080,7 @@ lines, of course.
 If you are not satisfied with the default position of an axis label, use @ref{label} instead--that command gives you much more control over where text is
 placed.
 
-Please see `set syntax` for further information about backslash processing
+Please see `syntax` for further information about backslash processing
 and the difference between single- and double-quoted strings.
 
 @node xmtics, xrange, xlabel, set-show
@@ -9923,7 +10098,7 @@ and the difference between single- and double-quoted strings.
 
 @cindex noxmtics
 
-The @ref{xmtics} commands converts the x-axis tic marks to months of the
+The @ref{xmtics} command converts the x-axis tic marks to months of the
 year where 1=Jan and 12=Dec.  Overflows are converted modulo 12 to months.
 The tics are returned to their default labels by `set noxmtics`.  Similar
 commands perform the same duties for the other axes.
@@ -9947,6 +10122,10 @@ See also the `set format` command.
 @c ?commands show xrange
 @c ?set xrange
 @c ?show xrange
+@cindex writeback
+
+@cindex restore
+
 @cindex xrange
 @opindex xrange
 
@@ -9957,7 +10136,8 @@ polar radius r and the parametric variables t, u, and v.
 
 Syntax:
 @example
-      set xrange [@{@{<min>@}:@{<max>@}@}] @{@{no@}reverse@} @{@{no@}writeback@}
+      set xrange @{ [@{@{<min>@}:@{<max>@}@}] @{@{no@}reverse@} @{@{no@}writeback@} @}
+                 | restore
       show xrange
 
 @end example
@@ -9979,13 +10159,14 @@ The `writeback` option essentially saves the range found by @ref{autoscale} in
 the buffers that would be filled by @ref{xrange}.  This is useful if you wish
 to plot several functions together but have the range determined by only
 some of them.  The `writeback` operation is performed during the @ref{plot}
-execution, so it must be specified before that command.  For example,
+execution, so it must be specified before that command.  To restore
+the last saved horizontal range use `set xrange restore`. For example,
 
 @example
       set xrange [-10:10]
       set yrange [] writeback
       plot sin(x)
-      set noautoscale y
+      set yrange restore
       replot x/2
 
 @end example
@@ -10088,7 +10269,7 @@ cancels this.
 
 The defaults are `border mirror norotate` for tics on the x and y axes, and
 `border nomirror norotate` for tics on the x2 and y2 axes.  For the z axis,
-the the `@{axis | border@}` option is not available and the default is
+the `@{axis | border@}` option is not available and the default is
 `nomirror`.  If you do want to mirror the z-axis tics, you might want to
 create a bit more room for them with @ref{border}.
 
@@ -10105,7 +10286,7 @@ be plotted on the axis between the values <start> and <end> with an increment
 of <incr>.  If <end> is not given, it is assumed to be infinity.  The
 increment may be negative.  If neither <start> nor <end> is given, <start> is
 assumed to be negative infinity, <end> is assumed to be positive infinity,
-and the tics will be drawn at integral multiples of <step>.  If the axis is
+and the tics will be drawn at integral multiples of <incr>.  If the axis is
 logarithmic, the increment will be used as a multiplicative factor.
 
 Examples:
@@ -10124,7 +10305,7 @@ Make tics at ..., -10, -5, 0, 5, 10, ...
 
 Make tics at 1, 100, 1e4, 1e6, 1e8.
 @example
-      set logscale x; set xtics 1,100,10e8
+      set logscale x; set xtics 1,100,1e8
 
 @end example
 
@@ -10151,7 +10332,7 @@ tics are labelled.
 However they are specified, tics will only be plotted when in range.
 
 Format (or omission) of the tic labels is controlled by `set format`, unless
-the explicit text of a labels is included in the `set xtic (`<label>`)` form.
+the explicit text of a labels is included in the `set xtics (`<label>`)` form.
 
 Minor (unlabelled) tics can be added by the @ref{mxtics} command.
 
@@ -10243,7 +10424,7 @@ the week.  Please see @ref{xdtics} for details.
 @opindex y2label
 
 
-The @ref{y2dtics} command sets the label for the y2 (right-hand) axis.
+The @ref{y2label} command sets the label for the y2 (right-hand) axis.
 Please see @ref{xlabel}.
 
 @node y2mtics, y2range, y2label, set-show
@@ -10325,7 +10506,8 @@ axis (x2 = 0).  For details, please see @ref{zeroaxis}.
 @opindex ydata
 
 
-Sets y-axis data to timeseries (dates/times).  Please see @ref{xdata}.
+The @ref{ydata} command sets y-axis data to timeseries (dates/times).
+Please see @ref{xdata}.
 
 @node ydtics, ylabel, ydata, set-show
 @subsection ydtics
@@ -10437,7 +10619,8 @@ The @ref{yzeroaxis} command draws a line at x = 0.  For details, please see
 @opindex zdata
 
 
-Set zaxis date to timeseries (dates/times).  Please see @ref{xdata}.
+The @ref{zdata} command sets z-axis data to timeseries (dates/times).
+Please see @ref{xdata}.
 
 @node zdtics, zero, zdata, set-show
 @subsection zdtics
@@ -11029,7 +11212,7 @@ distribution site:
 Please e-mail any bugs to bug-gnuplot@@dartmouth.edu.
 
 @menu
-* Old_bugs::			
+* Old_bugs::                    
 @end menu
 
 @node Old_bugs,  , Bugs, Bugs
