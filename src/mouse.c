@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.47 2004/05/03 18:22:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.48 2004/05/17 10:18:18 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -1591,6 +1591,13 @@ event_buttonrelease(struct gp_event_t *ge)
 	    Ginteger(&current->udv_value, modifier_mask & Mod_Ctrl);
 	}
     }
+#ifdef _Windows
+    if (paused_for_mouse) {
+	/* remove pause message box after 'pause mouse' */
+	paused_for_mouse = FALSE;
+	kill_pending_Pause_dialog();
+    }
+#endif
 }
 
 static void
