@@ -1,5 +1,5 @@
 /*
- * $Id: cgm.trm,v 1.16.2.8 2002/12/04 19:31:09 lhecking Exp $
+ * $Id: cgm.trm,v 1.16.2.9 2003/01/20 19:04:02 lhecking Exp $
  */
 
 /* GNUPLOT - cgm.trm */
@@ -1507,7 +1507,7 @@ START_HELP(cgm)
 " The first part of a Computer Graphics Metafile, the metafile description,",
 " includes a font table.  In the picture body, a font is designated by an",
 " index into this table.  By default, this terminal generates a table with",
-" the following 16 fonts, plus six more with `italic` replaced by",
+" the following 35 fonts, plus six more with `italic` replaced by",
 " `oblique`, or vice-versa (since at least the Microsoft Office and Corel",
 " Draw CGM import filters treat `italic` and `oblique` as equivalent):",
 "@start table - first is interactive cleartext form",
