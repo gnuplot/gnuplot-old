@@ -10,10 +10,10 @@ dnl [Lars: this is no longer necessary. I have cut this stuff out
 dnl  of configure.in and added the necessery definitions to syscfg.h.
 dnl  This reduced the size of configure by 30k!
 dnl
-dnl $Id: configure.in,v 1.45 1999/02/10 16:49:28 lhecking Exp $
+dnl $Id: configure.in,v 1.46 1999/02/17 17:54:20 lhecking Exp $
 dnl
 AC_PREREQ(2.13)
-AC_REVISION($Revision: 1.45 $)
+AC_REVISION($Revision: 1.46 $)
 AC_INIT(graphics.c)
 VERSION=`sed -n 's/.*version.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
 PATCHLVL=`sed -n 's/.*patchlevel.*"\(.*\)".*/\1/p' $srcdir/version.c|tr -d ' '`
@@ -364,7 +364,11 @@ AC_MSG_CHECKING([terminal driver sources])
  |(tr '\012' @; echo) |sed 's/@$/%/;s/@/ \\@/g' |tr @% '\012\012' >termlist
 TERM_LIST=termlist
 AC_SUBST_FILE(TERM_LIST)
-AC_MSG_RESULT([list created])
+if test -s termlist ; then
+   AC_MSG_RESULT([list created])
+else
+   AC_MSG_RESULT([cannot create list - you may need to edit docs/Makefile])
+fi
 
 dnl How do we detect the Ultrix X libraries?
 dnl Or is it really a server (run-time) problem?
