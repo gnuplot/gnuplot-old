@@ -1,5 +1,5 @@
 #
-# $Id: using.dem,v 1.1 1998/04/15 19:16:43 lhecking Exp $
+# $Id: using.dem,v 1.2 1998/12/02 18:36:13 lhecking Exp $
 #
 # Requires data file "using.dat" from this directory,
 # so change current working directory to this directory before running.
@@ -24,4 +24,4 @@ pause -1 "Hit return to continue"
 # undo what we have done above
 set title
 set autoscale x
-set xtics
+#set xtics autofreq
