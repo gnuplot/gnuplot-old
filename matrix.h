@@ -1,4 +1,16 @@
-/* $Id: matrix.h,v 1.1.1.4 1998/06/23 14:11:13 lhecking Exp $ */
+/* $Id: matrix.h,v 1.8.2.1 2002/01/31 21:22:43 lhecking Exp $ */
+
+/* GNUPLOT - matrix.h */
+
+/*  NOTICE: Change of Copyright Status
+ *
+ *  The author of this module, Carsten Grammes, has expressed in
+ *  personal email that he has no more interest in this code, and
+ *  doesn't claim any copyright. He has agreed to put this module
+ *  into the public domain.
+ *
+ *  Lars Hecking  15-02-1999
+ */
 
 /*
  *	Header file: public functions in matrix.c
@@ -40,10 +52,12 @@
 EXT double  *vec __PROTO((int n));
 EXT int     *ivec __PROTO((int n));
 EXT double  **matr __PROTO((int r, int c));
-EXT void    free_matr __PROTO((double **m, int r));
-EXT void    redim_vec __PROTO((double **v, int n));
+EXT void    free_matr __PROTO((double **m));
+EXT double  *redim_vec __PROTO((double **v, int n));
 EXT void    redim_ivec __PROTO((int **v, int n));
 EXT void    solve __PROTO((double **a, int n, double **b, int m));
-EXT void    inverse __PROTO((double **src, double **dst, int n));
+EXT void    Givens __PROTO((double **C, double *d, double *x,
+			double *r, int N, int n, int want_r)); 
+EXT void    Invert_RtR __PROTO((double **R, double **I, int n));
 
 #endif
