@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wtext.c,v 1.1 1999/03/26 22:11:24 lhecking Exp $";
+static char *RCSid = "$Id: wtext.c,v 1.2 1999/07/27 19:42:16 lhecking Exp $";
 #endif
 
 /* GNUPLOT - win/wtext.c */
@@ -119,6 +119,10 @@ TextMessage(void)
 
     while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
         {
+#if 1 /* HBB 19990505: Petzold says we should check this: */
+        if (msg.message == WM_QUIT)
+            return;
+#endif
         TranslateMessage(&msg);
         DispatchMessage(&msg);
         }
