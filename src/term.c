@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.78 2004/07/04 17:27:19 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.76.2.1 2004/09/20 19:36:16 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -385,9 +385,9 @@ term_set_output(char *dest)
 		term_close_output();
 	    }
 #endif
-	    if (term && (term->flags & TERM_BINARY))
+            if (term && (term->flags & TERM_BINARY))
 		f = FOPEN_BINARY(dest);
-	    else
+            else
 		f = fopen(dest, "w");
 
 	    if (f == (FILE *) NULL)
@@ -934,7 +934,6 @@ do_arrow(
 	    filledhead[3].y = ey + y2;
 	    filledhead[4].x = ex + xm;
 	    filledhead[4].y = ey + ym;
-	    filledhead->style = FS_OPAQUE;
 	    (*t->filled_polygon) (5, filledhead);
 	}
 #endif
@@ -964,7 +963,6 @@ do_arrow(
 		filledhead[3].y = sy - y2;
 		filledhead[4].x = sx - xm;
 		filledhead[4].y = sy - ym;
-		filledhead->style = FS_OPAQUE;
 		(*t->filled_polygon) (5, filledhead);
 	    }
 #endif
@@ -1162,7 +1160,7 @@ list_terms()
     for (i = 0; i < TERMCOUNT; i++) {
 	sprintf(line_buffer, "  %15s  %s\n",
 		term_tbl[sort_idxs[i]].name,
-	        term_tbl[sort_idxs[i]].description);
+                term_tbl[sort_idxs[i]].description);
 	OutLine(line_buffer);
     }
 
@@ -1613,7 +1611,7 @@ test_term()
 		  (unsigned int) (ymax_t - ticscale * t->v_tic));
     (*t->move) ((unsigned int) (xmax_t / 2), (unsigned int) (ymax_t - t->v_tic * (1 + ticscale)));
     (*t->vector) ((unsigned int) (xmax_t / 2 + ticscale * t->h_tic),
-	          (unsigned int) (ymax_t - t->v_tic * (1 + ticscale)));
+                  (unsigned int) (ymax_t - t->v_tic * (1 + ticscale)));
     /* HBB 19990530: changed this to use right-justification, if possible... */
     str = "show ticscale";
     if ((*t->justify_text) (RIGHT))
@@ -1725,12 +1723,10 @@ test_term()
 	    }
 	    corners[n].x = corners[0].x;
 	    corners[n].y = corners[0].y;
-	    corners->style = FS_OPAQUE;
 	    term->filled_polygon(n+1, corners);
 	    str = "(color) filled polygon:";
 	} else
 	    str = "filled polygons not supported";
-	(*t->linetype)(LT_BLACK);
 	i = ((*t->justify_text) (CENTRE)) ? 0 : t->h_char * strlen(str) / 2;
 	(*t->put_text) (cen_x + i, cen_y + radius + t->v_char * 0.5, str);
 	(*t->linetype)(LT_BLACK);
@@ -2248,6 +2244,14 @@ enhanced_recursion(
 		for (e=escape; *e; e++) {
 		    (term->enhanced_writec)(*e);
 		}
+		break;
+	    } else if (term->flags & TERM_IS_POSTSCRIPT) {
+		/* Shigeharu TAKENO  Aug 2004 - Needed in order for shift-JIS encoding to work */
+		/* If this change causes problems then we need a separate flag for shift-JIS   */
+		/* and certain other 8-bit character sets.                                     */
+		(term->enhanced_open)(fontname, fontsize, base, widthflag, showflag, overprint);
+		(term->enhanced_writec)('\\');
+		(term->enhanced_writec)('\\');
 		break;
 	    }
 	    ++p;
