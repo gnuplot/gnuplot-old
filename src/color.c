@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.53 2004/11/27 02:38:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.54 2005/01/08 15:37:21 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -482,7 +482,7 @@ void
 draw_color_smooth_box(int plot_mode)
 {
     double tmp;
-    FILE *out = postscript_gpoutfile;	/* either gpoutfile or PSLATEX_auxfile */
+    FILE *out = gppsfile;	/* either gpoutfile or PSLATEX_auxfile */
 
     if (color_box.where == SMCOLOR_BOX_NO)
 	return;
@@ -567,7 +567,7 @@ draw_color_smooth_box(int plot_mode)
     /* Optimized version of the smooth colour box in postscript. Advantage:
        only few lines of code is written into the output file.
      */
-    if (postscript_gpoutfile)
+    if (gppsfile)
 	draw_inside_color_smooth_box_postscript(out);
     else
 	draw_inside_color_smooth_box_bitmap(out);

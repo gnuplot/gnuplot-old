@@ -1,5 +1,5 @@
 /* Hello, Emacs: this is -*-C-*- !
- * $Id: post.trm,v 1.138 2004/12/31 06:12:56 sfeam Exp $
+ * $Id: post.trm,v 1.139 2005/01/08 15:37:23 mikulik Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -1960,9 +1960,9 @@ PS_init()
     /* Keep track of whether we have written the enhanced text dictionary yet */
     ENHPS_initialized = (term->put_text == ENHPS_put_text) ? 2 : 1;
     
-#ifdef PM3D
+#if defined(PM3D) || defined(WITH_IMAGE)
     /* to optimize output for postscript terminals family */
-    postscript_gpoutfile = gpoutfile;
+    gppsfile = gpoutfile;
 #endif
 }
 
