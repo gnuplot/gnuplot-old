@@ -1,5 +1,5 @@
 #
-# $Id: poldat.dem,v 1.1 1998/04/15 19:16:42 lhecking Exp $
+# $Id: poldat.dem,v 1.2 1999/03/10 21:21:32 lhecking Exp $
 #
 #
 set size square
@@ -148,7 +148,7 @@ plot "-" using 1:5,"-"
     180.000      0.000   -200.000      0.000   -200.000      0.000 
 e
 #
-# formerly $Id: poldat.dem,v 1.1 1998/04/15 19:16:42 lhecking Exp $
+# formerly $Id: poldat.dem,v 1.2 1999/03/10 21:21:32 lhecking Exp $
 #
 #
    0.000  90.007E-01 -35.926E+00 -71.297E+00  90.783E-01
