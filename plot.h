@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.11 1998/09/25 15:19:55 lhecking Exp $
+ * $Id: plot.h,v 1.12 1998/10/01 10:53:33 lhecking Exp $
  *
  */
 
@@ -104,7 +104,7 @@
 # define OS "OS/2 "
 # define HOME  "GNUPLOT"
 # define PLOTRC "gnuplot.ini"
-# define SHELL "c:\\cmd.exe"
+# define SHELL "c:\\os2\\cmd.exe"
 # define DIRSEP1 '\\'
 #endif /* OS/2 */
 
