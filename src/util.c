@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.34 2002/04/05 17:15:51 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.35 2002/09/02 21:03:27 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -33,6 +33,9 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.34 2002/04/05 17:15:51 broe
  * This software is provided "as is" without express or implied warranty
  * to the extent permitted by applicable law.
 ]*/
+
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "util.h"
 
@@ -1017,3 +1020,17 @@ char *instr;
     }
     *t = NUL;
 }
+
+
+TBOOLEAN 
+existdir (name)
+     const char *name;
+{
+    DIR *dp;
+    if (! (dp = opendir(name) ) )
+	return FALSE;
+    
+    closedir(dp);
+    return TRUE;
+}
+
