@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.67 2003/05/17 05:59:00 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.68 2003/08/20 17:48:45 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -414,9 +414,10 @@ set y2data%s\n",
 	if (this_label->lp_properties.pointflag == 0)
 	    fprintf(fp, " nopoint");
 	else {
-	    fprintf(fp, " point with color of linetype %d pointtype %d offset %g,%g",
+	    fprintf(fp, " point linetype %d pointtype %d pointsize %g offset %g,%g",
 		this_label->lp_properties.l_type+1,
 		this_label->lp_properties.p_type+1,
+		this_label->lp_properties.p_size,
 		this_label->hoffset, this_label->voffset);
 	}
 	fputc('\n', fp);
