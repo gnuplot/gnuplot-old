@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.1 1999/03/26 21:48:59 lhecking Exp $
+ * $Id: term.h,v 1.2 1999/05/19 11:01:42 lhecking Exp $
  *
  */
 
@@ -325,5 +325,6 @@
 #include "pstricks.trm"		/* LaTeX picture environment with PSTricks macros */
 #include "texdraw.trm"		/* TeXDraw drawing package for LaTeX */
 #include "metafont.trm"		/* METAFONT */
+#include "metapost.trm"		/* METAPOST */
 
 #endif /* !SHORT_TERMLIST */
