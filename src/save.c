@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.40 2002/02/15 15:40:58 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.41 2002/03/09 22:41:45 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -845,6 +845,8 @@ set ticscale %g %g\n",
     case PM3D_FLUSH_BEGIN: fputs("begin", fp); break;
     case PM3D_FLUSH_END: fputs("end", fp); break;
     }
+    fputs((pm3d.ftriangles ? " " : " no"), fp);
+    fputs("ftriangles", fp);
     if (pm3d.hidden3d_tag) fprintf(fp," hidden3d %d", pm3d.hidden3d_tag);
 	else fputs(" nohidden3d", fp);
     fputs((pm3d.solid ? " solid" : " transparent"), fp);
