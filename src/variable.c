@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: variable.c,v 1.8 1999/06/22 11:56:50 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: variable.c,v 1.9 1999/07/20 15:27:48 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - variable.c */
@@ -140,7 +140,7 @@ char *path;
 		PRINT_LOADPATH(last);
 	    }
 	} else
-	    fputs("\tno loadpath\n", stderr);
+	    fputs("\tloadpath is empty\n", stderr);
 	break;
     case ACTION_SAVE:
 	/* we don't save the load path taken from the
