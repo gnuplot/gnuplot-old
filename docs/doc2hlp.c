@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2hlp.c,v 1.8 1999/06/14 19:17:07 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2hlp.c,v 1.9 1999/07/09 20:59:41 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - doc2hlp.c */
@@ -56,7 +56,7 @@ static char *RCSid() { return RCSid("$Id: doc2hlp.c,v 1.8 1999/06/14 19:17:07 lh
 #include "stdfn.h"
 #include "doc2x.h"
 
-extern boolean single_top_level;
+extern TBOOLEAN single_top_level;
 
 void convert __PROTO((FILE *, FILE *));
 void process_line __PROTO((char *, FILE *));

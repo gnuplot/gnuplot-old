@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2ms.c,v 1.10 1999/06/14 19:17:08 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2ms.c,v 1.11 1999/07/09 20:59:42 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - doc2ms.c */
@@ -76,7 +76,7 @@ void putms __PROTO((char *, FILE *));
 void putms_verb __PROTO((char *, FILE *));
 void finish __PROTO((FILE *));
 
-static boolean intable = FALSE;
+static TBOOLEAN intable = FALSE;
 
 int
 main(argc, argv)
