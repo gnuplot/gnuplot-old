@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: hidden3d.c,v 1.5 1998/07/01 20:37:39 lhecking Exp $";
+static char *RCSid = "$Id: hidden3d.c,v 1.6 1998/08/18 16:27:15 lhecking Exp $";
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -347,7 +347,7 @@ struct Polygon {
     unsigned int xextent, yextent;
 #endif
     /* HBB 980317: the remaining bit of padding. */
-#if defined(DOS16) || defined(WIN16)
+#if defined(DOS16) || defined(WIN16) || defined(WIN32)
     char dummies[8];
 #endif
   };
