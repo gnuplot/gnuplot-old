@@ -1,5 +1,5 @@
 /*
- * $Id: djsvga.trm,v 1.5 1998/10/28 21:01:12 lhecking Exp $
+ * $Id: djsvga.trm,v 1.6 1998/11/06 22:05:19 lhecking Exp $
  */
 
 /* GNUPLOT - djsvga.trm */
@@ -331,7 +331,7 @@ char *fontname;
 	char *cp;
 	GrFont *font;
 
-	safe_strncpy(DJSVGA_fontname, fontname, sizeof(DJSVGA_fontname);
+	safe_strncpy(DJSVGA_fontname, fontname, sizeof(DJSVGA_fontname));
 	cp = strstr(DJSVGA_fontname, ",");
 	if (cp != NULL) 
 		*cp = NUL;
