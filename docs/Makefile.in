@@ -62,14 +62,16 @@ INSTALL_DATA = @INSTALL_DATA@
 CC     = @CC@
 CPP    = @CPP@
 DEFS   = @DEFS@
+DEFAULT_INCLUDES = -I. -I$(srcdir) -I.. -I$(top_builddir)
 CPPFLAGS = @CPPFLAGS@
 CFLAGS = @CFLAGS@
-INCLUDES = -I.. -I$(top_srcdir) -I$(top_srcdir)/term -I.
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/term
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 
-COMPILE = $(CC) $(DEFS) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
-LINK = $(CC) $(CFLAGS) $(LDFLAGS) -o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(CFLAGS) $(LDFLAGS) -o $@
 
 .c.o:
 	$(COMPILE) -c $<
@@ -115,20 +117,36 @@ DIST_COMMON = README Makefile.in
 SOURCES = checkdoc.c doc2gih.c doc2hlp.c doc2html.c doc2info.c \
 doc2ipf.c doc2ms.c doc2rnh.c doc2rtf.c doc2tex.c termdoc.c xref.c
 
+BUILT_SOURCES = allterm.h term.h
+
 HEADERS = doc2x.h xref.h
 
 EXTRA_DIST = doc2hlp.com doc2texi.el doc2texi.pl gnuplot.1 gnuplot.doc \
 gnuplot.texi gpcard.tex lasergnu.1 makefile.ami makefile.dst titlepag.ms \
 titlepag.tex toc_entr.sty latextut old psdoc
 
+CLEANFILES = doc2tex gnuplot.tex gnuplot.dvi gnuplot.aux gnuplot.log \
+gnuplot.toc gnuplot.pdf gnuplot.ps gpcard.dvi gpcard.log gpcard.ps alldoc2gih \
+doc2gih gnuplot.gih doc2hlp gnuplot.hlp doc2html gnuplot.html doc2info \
+gnuplot.info* gnuplot.out doc2ipf gnuplot.ipf doc2ms gnuplot.ms doc2rnh \
+gnuplot.rnh doc2rtf gnuplot.rtf gnuplot.nroff checkdoc gnuplot.txt
+
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(EXTRA_DIST)
 
-allterm.h : $(CORETERM)
+allterm.h: $(CORETERM)
 	@echo Building allterm.h
-	@cat $(top_srcdir)/term/*.trm > allterm.c
-	$(CPP) -I$(top_srcdir)/term -DTERM_DRIVER_H -DTERM_HELP allterm.c | \
-	  sed '/^ *$$/d;/^#/d' > allterm.h
-	@rm -f allterm.c
+	@for e in `egrep "^[    ]*START_HELP" $(CORETERM) |\
+	    sort -f -t':' -k2` ; do \
+	  f=`echo $$e |cut -d\: -f1` ; s=`echo $$e | cut -d\: -f2` ;\
+	  sed -n "/^[   ]*$$s/,/^[      ]*END_HELP/p" $$f ; \
+	done >$@
+
+term.h: $(CORETERM)
+	@echo Building term.h
+	@cat ../config.h $(CORETERM) > term.c
+	$(CPP) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) -DTERM_DRIVER_H -DTERM_HELP term.c |\
+	  sed '/^ *$$/d;/^#/d' >$@
+	@rm -f term.c
 
 # for debugging
 alldoc: check dvi gih hlp html info ipf ms nroff pdf ps rnh rtf
@@ -189,7 +207,7 @@ gnuplot.ms: doc2ms $(srcdir)/gnuplot.doc
 doc2ms: doc2ms.o termdoc.o
 	$(LINK) doc2ms.o termdoc.o $(LIBS)
 
-doc2ms.o: doc2ms.c allterm.h
+doc2ms.o: doc2ms.c $(BUILT_SOURCES)
 	$(COMPILE) -DALL_TERM_DOC -c $(srcdir)/doc2ms.c
 
 ### html
@@ -224,7 +242,7 @@ gnuplot.tex: doc2tex $(srcdir)/gnuplot.doc
 doc2tex: doc2tex.o termdoc.o
 	$(LINK) doc2tex.o termdoc.o $(LIBS)
 
-doc2tex.o: doc2tex.c allterm.h
+doc2tex.o: doc2tex.c $(BUILT_SOURCES)
 	$(COMPILE) -DALL_TERM_DOC -c $(srcdir)/doc2tex.c
 
 # this is how to make DVI files
@@ -279,7 +297,7 @@ allgih: alldoc2gih $(srcdir)/gnuplot.doc
 alldoc2gih: alldoc2gih.o termdoc.o
 	$(LINK) alldoc2gih.o termdoc.o $(LIBS)
 
-alldoc2gih.o: doc2gih.c allterm.h
+alldoc2gih.o: doc2gih.c $(BUILT_SOURCES)
 	$(COMPILE) -DALL_TERM_DOC -c $(srcdir)/doc2gih.c
 	@mv doc2gih.o alldoc2gih.o
 
@@ -346,7 +364,7 @@ check: all checkdoc
 checkdoc: checkdoc.o termdoc.o $(srcdir)/gnuplot.doc
 	$(LINK) checkdoc.o termdoc.o $(LIBS)
 
-checkdoc.o: checkdoc.c allterm.h
+checkdoc.o: checkdoc.c $(BUILT_SOURCES)
 	$(COMPILE) -DALL_TERM_DOC -c $(srcdir)/checkdoc.c
 
 # For Unix and MSDOS only
@@ -406,21 +424,19 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 
-clean:
-	-rm -f doc2tex gnuplot.tex gnuplot.dvi \
-	  gnuplot.aux gnuplot.log gnuplot.toc \
-	  gnuplot.ps gpcard.dvi gpcard.log gpcard.ps \
-	  alldoc2gih doc2gih gnuplot.gih gnuplot.pdf \
-	  doc2hlp gnuplot.hlp \
-	  doc2html gnuplot.html \
-	  doc2info gnuplot.info* gpltinfo.tex \
-	  doc2ipf gnuplot.ipf \
-	  doc2ms gnuplot.ms \
-	  doc2rnh gnuplot.rnh \
-	  doc2rtf gnuplot.rtf \
-	  gnuplot.nroff checkdoc *.o core a.out allterm.h
+clean-local:
+	@test "$(top_srcdir)" = "$(top_builddir)" || rm -f gnuplot.texi
 	( cd latextut; $(MAKE) clean )
-	rm -f *.exe
+
+clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
+
+clean-compile:
+	-rm -f *.o core *.core
+
+clean: clean-local clean-generic clean-compile
+	-rm -f *.exe *~
 
 mostlyclean: clean
 
@@ -441,28 +457,26 @@ Makefile: Makefile.in ../config.status
 # (but then we have to change all the other makefiles). Plus then
 # we cannot make some doc2* filters use allterm.h and others use term.h
 
-TERM_H = $(top_srcdir)/term.h
-
 checkdoc.o: checkdoc.c ../config.h $(top_srcdir)/ansichek.h \
 		$(top_srcdir)/stdfn.h doc2x.h allterm.h
 alldoc2gih.o: doc2gih.c ../config.h $(top_srcdir)/ansichek.h \
 		$(top_srcdir)/stdfn.h doc2x.h allterm.h
 doc2gih.o: doc2gih.c ../config.h $(top_srcdir)/ansichek.h \
-		$(top_srcdir)/stdfn.h doc2x.h $(TERM_H)
+		$(top_srcdir)/stdfn.h doc2x.h term.h
 doc2hlp.o: doc2hlp.c ../config.h $(top_srcdir)/ansichek.h \
-		$(top_srcdir)/stdfn.h doc2x.h $(TERM_H)
+		$(top_srcdir)/stdfn.h doc2x.h term.h
 doc2html.o: doc2html.c ../config.h $(top_srcdir)/ansichek.h \
 		$(top_srcdir)/stdfn.h doc2x.h allterm.h
 doc2info.o: doc2info.c ../config.h $(top_srcdir)/ansichek.h \
-		$(top_srcdir)/stdfn.h doc2x.h $(TERM_H)
+		$(top_srcdir)/stdfn.h doc2x.h term.h
 doc2ipf.o: doc2ipf.c ../config.h $(top_srcdir)/ansichek.h \
-		$(top_srcdir)/stdfn.h doc2x.h $(TERM_H)
+		$(top_srcdir)/stdfn.h doc2x.h term.h
 doc2ms.o: doc2ms.c ../config.h $(top_srcdir)/ansichek.h \
 		$(top_srcdir)/stdfn.h doc2x.h allterm.h
 doc2rnh.o: doc2rnh.c ../config.h $(top_srcdir)/ansichek.h \
-		$(top_srcdir)/stdfn.h doc2x.h $(TERM_H)
+		$(top_srcdir)/stdfn.h doc2x.h term.h
 doc2rtf.o: doc2rtf.c ../config.h $(top_srcdir)/ansichek.h \
-		$(top_srcdir)/stdfn.h doc2x.h $(TERM_H)
+		$(top_srcdir)/stdfn.h doc2x.h term.h
 doc2tex.o: doc2tex.c ../config.h $(top_srcdir)/ansichek.h \
 		$(top_srcdir)/stdfn.h doc2x.h allterm.h
 termdoc.o: termdoc.c ../config.h $(top_srcdir)/ansichek.h \
