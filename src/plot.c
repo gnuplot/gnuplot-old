@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.50 2002/02/04 11:53:34 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.51 2002/02/15 17:15:12 amai Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -302,17 +302,15 @@ char **argv;
 
 #if defined(OS2)
     int rc;
-    if (_osmode == OS2_MODE) {
 #ifdef OS2_IPC
-	char semInputReadyName[40];
-	sprintf( semInputReadyName, "\\SEM32\\GP%i_Input_Ready", getpid() );
-	rc = DosCreateEventSem(semInputReadyName,&semInputReady,0,0);
-	if (rc != 0)
-	    fputs("DosCreateEventSem error\n",stderr);
+    char semInputReadyName[40];
+    sprintf( semInputReadyName, "\\SEM32\\GP%i_Input_Ready", getpid() );
+    rc = DosCreateEventSem(semInputReadyName,&semInputReady,0,0);
+    if (rc != 0)
+      fputs("DosCreateEventSem error\n",stderr);
 #endif
-	PM_setup();
-	rc = RexxRegisterSubcomExe("GNUPLOT", (PFN) RexxInterface, NULL);
-    }
+    PM_setup();
+    rc = RexxRegisterSubcomExe("GNUPLOT", (PFN) RexxInterface, NULL);
 #endif
 
 /* malloc large blocks, otherwise problems with fragmented mem */
@@ -595,8 +593,7 @@ char **argv;
     term_reset();
 
 #ifdef OS2
-    if (_osmode == OS2_MODE)
-	RexxDeregisterSubcom("GNUPLOT", NULL);
+    RexxDeregisterSubcom("GNUPLOT", NULL);
 #endif
 
 #if defined(ATARI) || defined(MTOS)

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.57 2002/02/14 16:42:08 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.58 2002/02/15 17:15:11 amai Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1248,16 +1248,14 @@ void
 invalid_command()
 {
 #ifdef OS2
-    if (_osmode == OS2_MODE) {
-	if (token[c_token].is_token) {
-	    int rc;
-	    rc = ExecuteMacro(input_line + token[c_token].start_index,
-			      token[c_token].length);
-	    if (rc == 0) {
-		c_token = num_tokens = 0;
-		return;
-	    }
-	}
+   if (token[c_token].is_token) {
+      int rc;
+      rc = ExecuteMacro(input_line + token[c_token].start_index,
+	      token[c_token].length);
+      if (rc == 0) {
+         c_token = num_tokens = 0;
+         return;
+      }
     }
 #endif
     int_error(c_token, "invalid command");
