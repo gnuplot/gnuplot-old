@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.6 1998/11/20 12:14:20 lhecking Exp $
+ * $Id: syscfg.h,v 1.7 1998/12/01 20:14:49 lhecking Exp $
  *
  */
 
@@ -275,6 +275,9 @@
 #   include <conio.h>
 #   include <dir.h>            /* setdisk() */
 #  endif                       /* _Windows */
+#  ifdef WIN32
+#   define HAVE_SLEEP 1
+#  endif
 
 # else                         /* must be MSC */
 #  if !defined(__EMX__) && !defined(DJGPP)
