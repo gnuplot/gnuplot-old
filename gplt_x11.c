@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.16.2.1 1999/08/19 14:40:50 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.16.2.2 1999/08/25 16:16:01 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -1202,7 +1202,7 @@ XEvent *event;
                 !strcmp(v,"On") || !strcmp(v,"True") || \
                 !strcmp(v,"ON") || !strcmp(v,"TRUE") )
 */
-#define On(v) ( !strncasecmp(v,"on",2) || !strncasecmp(v,"true",4) )
+#define On(v) ( !strnicmp(v,"on",2) || !strnicmp(v,"true",4) )
 
 #define AppDefDir "/usr/lib/X11/app-defaults"
 #ifndef MAXHOSTNAMELEN
