@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.9 1998/09/25 15:24:08 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.10 1998/10/01 10:59:50 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -121,9 +121,6 @@ Error. Incompatible options.
 # include "config.h"
 #endif
 
-#include "ansichek.h"
-#include "stdfn.h"
-
 #ifdef HAVE_SYS_BSDTYPES_H
 # include <sys/bsdtypes.h>
 #endif /* HAVE_SYS_BSDTYPES_H */
@@ -143,6 +140,9 @@ Error. Incompatible options.
 # define FD_ISSET(n, p)  ((p)->fds_bits[0] & (1 << ((n) % 32)))
 # define FD_ZERO(p)      memset((char *)(p),'\0',sizeof(*(p)))
 #endif /* not FD_SET */
+
+#include "ansichek.h"
+#include "stdfn.h"
 
 #if defined(HAVE_SYS_SYSTEMINFO_H) && defined(HAVE_SYSINFO)
 # include <sys/systeminfo.h>
@@ -1277,7 +1277,7 @@ char *argv[];
 	    fprintf(stderr, "gnuplot: %s failed. X11 aborted.\n", SYSINFO_METHOD);
 	    EXIT(1);
 	}
-	if ((p = index(host, '.')) != NULL)
+	if ((p = strchr(host, '.')) != NULL)
 	    *p = '\0';
 	sprintf(buffer, "%s/.Xdefaults-%s", home, host);
 	dbEnv = XrmGetFileDatabase(buffer);
