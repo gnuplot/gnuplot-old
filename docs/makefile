@@ -1,5 +1,5 @@
 #
-# $Id: makefile,v 1.2 1998/06/19 19:57:49 lhecking Exp $
+# $Id: makefile,v 1.3 1998/10/09 14:25:32 lhecking Exp $
 #
 #
 # Makefile for GNUPLOT documentation
@@ -16,7 +16,7 @@
 #   or
 #    make "TROFF=itroff" troff    (for troff; use your troff here)
 #
-# $Id: makefile,v 1.2 1998/06/19 19:57:49 lhecking Exp $
+# $Id: makefile,v 1.3 1998/10/09 14:25:32 lhecking Exp $
 
 # usually overridden by ../Makefile
 HELPDEST = /usr/local/lib
@@ -74,23 +74,23 @@ default: gnuplot.hlp gnuplot.gih
 
 # the converters
 
-doc2html : doc2html.c termdoc.c allterm.h
-	$(CC) $(DOC_CFLAGS) -o doc2html doc2html.c
+doc2html : doc2html.c termdoc.c xref.c allterm.h
+	$(CC) $(DOC_CFLAGS) -o doc2html doc2html.c termdoc.c xref.c
 
 doc2ms: doc2ms.c termdoc.c allterm.h
-	$(CC) $(DOC_CFLAGS) -o doc2ms doc2ms.c
+	$(CC) $(DOC_CFLAGS) -DALL_TERM_DOC -o doc2ms doc2ms.c termdoc.c
 
 doc2tex: doc2tex.c termdoc.c allterm.h 
-	$(CC) $(DOC_CFLAGS) -o doc2tex doc2tex.c
+	$(CC) $(DOC_CFLAGS) -DALL_TERM_DOC -o doc2tex doc2tex.c termdoc.c
 
 doc2hlp: doc2hlp.c termdoc.c
-	$(CC) $(DOC_CFLAGS) -o doc2hlp doc2hlp.c
+	$(CC) $(DOC_CFLAGS) -o doc2hlp doc2hlp.c termdoc.c
 
 doc2gih: doc2gih.c termdoc.c
-	$(CC) $(DOC_CFLAGS) -o doc2gih doc2gih.c
+	$(CC) $(DOC_CFLAGS) -o doc2gih doc2gih.c termdoc.c
 
 checkdoc: checkdoc.c termdoc.c allterm.h
-	$(CC) $(DOC_CFLAGS) -o checkdoc checkdoc.c
+	$(CC) $(DOC_CFLAGS) -DALL_TERM_DOC -o checkdoc checkdoc.c termdoc.c
 
 
 allterm.h:
