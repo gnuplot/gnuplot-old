@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgnuplib.c,v 1.5 2004/04/13 17:24:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgnuplib.c,v 1.6 2004/07/01 17:10:10 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgnuplib.c */
@@ -35,7 +35,7 @@ static char *RCSid() { return RCSid("$Id: wgnuplib.c,v 1.5 2004/04/13 17:24:06 b
 
 /*
  * AUTHORS
- * 
+ *
  *   Russell Lang
  */
 

@@ -1,5 +1,5 @@
 /*
- * $Id: wresourc.h,v 1.5 2004/04/13 17:24:14 broeker Exp $
+ * $Id: wresourc.h,v 1.6 2004/07/01 17:10:11 broeker Exp $
  */
 
 /* GNUPLOT - win/wresourc.h */
@@ -36,7 +36,7 @@
 
 /*
  * AUTHORS
- * 
+ *
  *   Maurice Castro
  *   Russell Lang
  */

@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.h,v 1.3 2004/04/13 17:24:14 broeker Exp $
+ * $Id: winmain.h,v 1.4 2004/07/01 17:10:11 broeker Exp $
  */
 
 /* GNUPLOT - win/winmain.h */
@@ -36,7 +36,7 @@
 
 /*
  * AUTHORS
- * 
+ *
  *   Hans-Bernhard Broeker
  */
 

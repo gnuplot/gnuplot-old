@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.40 2004/04/13 17:23:58 broeker Exp $
+ * $Id: plot.h,v 1.41 2004/07/01 17:10:07 broeker Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -47,7 +47,7 @@
 #endif
 
 /* Type definitions */
-  
+
 /* Variables of plot.c needed by other modules: */
 
 extern TBOOLEAN interactive;

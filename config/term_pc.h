@@ -1,5 +1,5 @@
 /*
- * $Id: term_pc.h,v 1.3 2004/04/13 17:23:30 broeker Exp $
+ * $Id: term_pc.h,v 1.4 2004/07/01 17:10:02 broeker Exp $
  *
  */
 
@@ -39,9 +39,9 @@
  * term.h: terminal support definitions
  *   Edit this file depending on the set of terminals you wish to support.
  * Comment out the terminal types that you don't want or don't have, and
- * uncomment those that you want included. Be aware that some terminal 
- * types (eg, SUN, UNIXPLOT) will require changes in the makefile 
- * LIBS definition. 
+ * uncomment those that you want included. Be aware that some terminal
+ * types (eg, SUN, UNIXPLOT) will require changes in the makefile
+ * LIBS definition.
  */
 
 /*

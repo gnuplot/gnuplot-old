@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wpause.c,v 1.6 2004/05/17 10:18:18 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wpause.c,v 1.7 2004/07/01 17:10:11 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - win/wpause.c */
@@ -35,7 +35,7 @@ static char *RCSid() { return RCSid("$Id: wpause.c,v 1.6 2004/05/17 10:18:18 mik
 
 /*
  * AUTHORS
- * 
+ *
  *   Russell Lang
  */
 
@@ -117,7 +117,7 @@ PauseBox(LPPW lppw)
 	ReleaseDC(NULL,hdc);
 
 #ifndef WIN32
-	lppw->lpfnPauseButtonProc = 
+	lppw->lpfnPauseButtonProc =
 #ifdef __DLL__
 		(WNDPROC)GetProcAddress(hdllInstance, "PauseButtonProc");
 #else

@@ -1,5 +1,5 @@
 /*
- * $Id: wtext.h,v 1.8 2004/04/13 17:24:15 broeker Exp $
+ * $Id: wtext.h,v 1.9 2004/07/01 17:10:11 broeker Exp $
  */
 
 /* GNUPLOT - win/wtext.h */
@@ -37,7 +37,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-/* redefine functions that can talk to tty devices, to use 
+/* redefine functions that can talk to tty devices, to use
  * implementation in winmain.c/wgnuplot.dll */
 
 #define kbhit()  MyKBHit()

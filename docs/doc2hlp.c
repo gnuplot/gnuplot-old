@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2hlp.c,v 1.14 2004/04/13 17:23:30 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2hlp.c,v 1.15 2004/07/01 17:10:03 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - doc2hlp.c */
@@ -35,12 +35,12 @@ static char *RCSid() { return RCSid("$Id: doc2hlp.c,v 1.14 2004/04/13 17:23:30 b
 ]*/
 
 /*
- * doc2hlp.c  -- program to convert Gnuplot .DOC format to 
+ * doc2hlp.c  -- program to convert Gnuplot .DOC format to
  * VMS help (.HLP) format.
  *
  * This involves stripping all lines with a leading ?,
  * @, #, or %.
- * Modified by Russell Lang from hlp2ms.c by Thomas Williams 
+ * Modified by Russell Lang from hlp2ms.c by Thomas Williams
  *
  * usage:  doc2hlp [file.doc [file.hlp]]
  *

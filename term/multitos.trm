@@ -1,5 +1,5 @@
-/*
- * $Id: multitos.trm,v 1.12 2004/04/13 17:24:35 broeker Exp $
+/* Hello, Emacs, this is -*-C-*-
+ * $Id: multitos.trm,v 1.13 2004/07/01 17:10:33 broeker Exp $
  */
 
 /* GNUPLOT - multitos.trm */
@@ -42,9 +42,9 @@
  *
  * AUTHOR
  *  Dirk Stadler (email: dirk_stadler@n.maus.de, dirk@lstm.uni-erlangen.de)
- * 
+ *
  * send your comments or suggestions to (gnuplot-info@lists.sourceforge.net).
- * 
+ *
  */
 
 #include "driver.h"

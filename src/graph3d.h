@@ -1,5 +1,5 @@
 /*
- * $Id: graph3d.h,v 1.15 2004/04/13 17:23:54 broeker Exp $
+ * $Id: graph3d.h,v 1.16 2004/07/01 17:10:05 broeker Exp $
  */
 
 /* GNUPLOT - graph3d.h */
@@ -89,11 +89,11 @@ typedef struct surface_points {
     int title_no_enhanced;	/* don't typeset title in enhanced mode */
     struct lp_style_type lp_properties;
     int has_grid_topology;
-    
+
     /* Data files only - num of isolines read from file. For
      * functions, num_iso_read is the number of 'primary' isolines (in
      * x direction) */
-    int num_iso_read;		
+    int num_iso_read;
     struct gnuplot_contours *contours; /* NULL if not doing contours. */
     struct iso_curve *iso_crvs;	/* the actual data */
 
@@ -101,7 +101,7 @@ typedef struct surface_points {
     TBOOLEAN pm3d_color_from_column;
     char pm3d_where[7];		/* explicitly given base, top, surface */
 #endif
-    
+
 } surface_points;
 
 /* Variables of graph3d.c needed by other modules: */
