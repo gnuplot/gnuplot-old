@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.28 2001/07/20 14:04:06 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.29 2001/08/22 14:15:34 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -54,8 +54,6 @@ static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.28 2001/07/20 14:04:06 
 #include "command.h"
 #include "dynarray.h"
 #include "graph3d.h"
-#include "parse.h"
-/*  #include "setshow.h" */
 #include "tables.h"
 #include "term_api.h"
 #include "util.h"

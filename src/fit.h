@@ -1,5 +1,5 @@
 /*
- * $Id: fit.h,v 1.8 2000/11/01 18:57:28 broeker Exp $
+ * $Id: fit.h,v 1.9 2001/08/22 14:15:34 broeker Exp $
  */
 
 /* GNUPLOT - fit.h */
@@ -63,7 +63,7 @@ extern char fitbuf[];
 
 /* Prototypes of functions exported by fit.c */
 
-extern void error_ex __PROTO((void));
+void error_ex __PROTO((void));
 void init_fit __PROTO((void));
 void update __PROTO((char *pfile, char *npfile));
 void fit_command __PROTO((void));
