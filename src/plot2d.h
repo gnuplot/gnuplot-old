@@ -1,5 +1,5 @@
 /*
- * $Id: plot2d.h,v 1.11 2004/09/12 01:12:11 sfeam Exp $
+ * $Id: plot2d.h,v 1.12 2005/03/02 20:35:35 sfeam Exp $
  */
 
 /* GNUPLOT - plot2d.h */
@@ -44,9 +44,7 @@
 extern struct curve_points *first_plot;
 
 extern double boxwidth;
-#if USE_ULIG_RELATIVE_BOXWIDTH
 extern TBOOLEAN boxwidth_is_absolute;
-#endif /* USE_ULIG_RELATIVE_BOXWIDTH */
 
 /* prototypes from plot2d.c */
 

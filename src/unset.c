@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.75 2005/03/02 19:44:57 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.76 2005/03/02 20:35:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -651,9 +651,7 @@ static void
 unset_boxwidth()
 {
     boxwidth = -1.0;
-#if USE_ULIG_RELATIVE_BOXWIDTH
     boxwidth_is_absolute = TRUE;
-#endif
 }
 
 
