@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: gplt_x11.c,v 1.8 1998/09/23 19:55:30 lhecking Exp $";
+static char *RCSid = "$Id: gplt_x11.c,v 1.9 1998/09/25 15:24:08 lhecking Exp $";
 #endif
 
 /* GNUPLOT - gplt_x11.c */
@@ -374,7 +374,7 @@ void mainloop()
 
 	tset = rset;
 	nf = select((gp_nfds_t)nfds, gp_fd_set_p &tset, gp_fd_set_p 0,
-		     gp_fd_set_p0, gp_timeval_p timer);
+		     gp_fd_set_p 0, gp_timeval_p timer);
 	if (nf < 0) {
 	    if (errno == EINTR)
 		continue;
