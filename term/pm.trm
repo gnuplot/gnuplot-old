@@ -1,5 +1,5 @@
 /*
- * $Id: pm.trm,v 1.12 1998/12/14 18:40:55 lhecking Exp $
+ * $Id: pm.trm,v 1.13 1998/12/23 21:53:26 lhecking Exp $
  */
 
 /* GNUPLOT - pm.trm */
@@ -83,6 +83,7 @@ TERM_PUBLIC void PM_linewidth __PROTO((double linewidth));
 #define INCL_DOSPROCESS
 #define INCL_DOSSEMAPHORES
 #define INCL_DOSMISC
+#define INCL_DOSMODULEMGR
 #include <os2.h>
 
 
