@@ -1,3 +1,7 @@
+#ifndef lint
+static char *RCSid() { return RCSid("$Id: pm3d.c,v 1.5 2000/11/02 19:07:16 lhecking Exp $"); }
+#endif
+
 /* GNUPLOT - pm3d.c */
 
 /*[
@@ -12,7 +16,7 @@
 ]*/
 
 #ifdef HAVE_CONFIG_H
-#   include "config.h"
+# include "config.h"
 #endif
 
 #ifdef PM3D

@@ -1,7 +1,10 @@
-    /* invert the gray for negative figure (default is positive) */
-
+/*
+ * $Id: color.h,v 1.5 2000/11/02 19:07:16 lhecking Exp $
+ */
 
 /* GNUPLOT - color.h */
+
+/* invert the gray for negative figure (default is positive) */
 
 /*[
  *
@@ -26,7 +29,7 @@ of palettes between terminals and making palette routines.
 #define COLOR_H
 
 #ifdef HAVE_CONFIG_H
-#   include "config.h"
+# include "config.h"
 #endif
 
 #ifdef PM3D
