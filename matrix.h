@@ -1,15 +1,13 @@
-/* $Id: matrix.h,v 1.9 1999/02/14 18:16:39 lhecking Exp $ */
+/* $Id: matrix.h,v 1.10 1999/02/17 17:58:19 lhecking Exp $ */
 
 /*  NOTICE: Change of Copyright Status
  *
  *  The author of this module, Carsten Grammes, has expressed in
  *  personal email that he has no more interest in this code, and
- *  doesn't claim any copyright. He suggests to put this code
- *  under GPL. This is not compatible with the current gnuplot
- *  copyright. But there is no problem to use this code in a
- *  different project under different copyright conditions.
+ *  doesn't claim any copyright. He has agreed to put this module
+ *  into the public domain.
  *
- *  Lars Hecking  11-02-1999
+ *  Lars Hecking  15-02-1999
  */
 
 /*
