@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.53 2003/04/13 20:22:46 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.54 2003/04/18 10:41:36 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1532,7 +1532,11 @@ reset_command()
     df_separator = '\0';
 
     unset_locale();
+#if 0
+    /* 2003-18-04: Don't reset non-graphics settings, like set term, out,
+     * loadpath and fontpath. */
     unset_loadpath();
+#endif
     unset_fit();
 
     /* HBB 20000506: set 'interactive' back to its real value: */
