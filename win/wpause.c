@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: wpause.c,v 1.1.1.2 1998/04/15 19:23:53 lhecking Exp $";
+static char *RCSid = "$Id: wpause.c,v 1.3.2.1 2002/12/12 12:47:28 broeker Exp $";
 #endif
 
 /* GNUPLOT - win/wpause.c */
@@ -76,7 +76,7 @@ CreatePauseClass(LPPW lppw)
 	wndclass.hInstance = lppw->hInstance;
 	wndclass.hIcon = NULL;
 	wndclass.hCursor = LoadCursor(NULL, IDC_ARROW);
-	wndclass.hbrBackground = COLOR_BTNFACE+1;
+	wndclass.hbrBackground = (HBRUSH)(COLOR_BTNFACE+1);
 	wndclass.lpszMenuName = NULL;
 	wndclass.lpszClassName = szPauseClass;
 	RegisterClass(&wndclass);
@@ -101,7 +101,7 @@ PauseBox(LPPW lppw)
 		lppw->Origin.y = (rect.bottom + rect.top) / 2;
 
 	hdc = GetDC(NULL);
-	SelectFont(hdc, GetStockFont(SYSTEM_FIXED_FONT));
+	SelectObject(hdc, GetStockObject(SYSTEM_FIXED_FONT));
 	GetTextMetrics(hdc, &tm);
 	width  = max(24,4+_fstrlen(lppw->Message)) * tm.tmAveCharWidth;
 	width = min(width, rect.right-rect.left);
@@ -118,7 +118,11 @@ PauseBox(LPPW lppw)
 #endif
 	lppw->hWndPause = CreateWindowEx(WS_EX_DLGMODALFRAME, 
 		szPauseClass, lppw->Title,
-		WS_POPUPWINDOW | WS_CAPTION,
+/* HBB 981202: WS_POPUPWINDOW would have WS_SYSMENU in it, but we don't
+ * want, nor need, a System menu in our Pause windows. Actually, it was
+ * emptied manually, in the WM_CREATE handler below, in the original code.
+ * This solution seems cleaner. */
+		WS_POPUP | WS_BORDER | WS_CAPTION,
 		lppw->Origin.x - width/2, lppw->Origin.y - height/2,
 		width, height,
 		lppw->hWndParent, NULL, lppw->hInstance, lppw);
@@ -128,12 +132,16 @@ PauseBox(LPPW lppw)
 
 	lppw->bPause = TRUE;
 	lppw->bPauseCancel = IDCANCEL;
-	while (lppw->bPause)
-    		while (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
+	while (lppw->bPause) {
+		/* HBB 20021211: Nigel Nunn found a better way to avoid
+		 * 100% CPU load --> use it */
+		if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE)) {
 			/* wait until window closed */
-        		TranslateMessage(&msg);
-        		DispatchMessage(&msg);
-        	}
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		} else
+			WaitMessage();
+	}
 	DestroyWindow(lppw->hWndPause);
 #ifndef WIN32
 #ifndef __DLL__
@@ -180,7 +188,7 @@ WndPauseProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_PAINT:
 			{
 			hdc = BeginPaint(hwnd, &ps);
-			SelectFont(hdc, GetStockFont(SYSTEM_FIXED_FONT));
+			SelectObject(hdc, GetStockObject(SYSTEM_FIXED_FONT));
 			SetTextAlign(hdc, TA_CENTER);
 			GetClientRect(hwnd, &rect);
 			SetBkMode(hdc,TRANSPARENT);
@@ -191,12 +199,12 @@ WndPauseProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		case WM_CREATE:
 			{
-			HMENU sysmenu = GetSystemMenu(hwnd, FALSE);
+			/* HBB 981202 HMENU sysmenu = GetSystemMenu(hwnd, FALSE); */
 			lppw = ((CREATESTRUCT FAR *)lParam)->lpCreateParams;
 			SetWindowLong(hwnd, 0, (LONG)lppw);
 			lppw->hWndPause = hwnd;
 			hdc = GetDC(hwnd);
-			SelectFont(hdc, GetStockFont(SYSTEM_FIXED_FONT));
+			SelectObject(hdc, GetStockObject(SYSTEM_FIXED_FONT));
 			GetTextMetrics(hdc, &tm);
 			cxChar = tm.tmAveCharWidth;
 			cyChar = tm.tmHeight + tm.tmExternalLeading;
@@ -229,6 +237,7 @@ WndPauseProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 #endif
 			if (GetParent(hwnd))
 				EnableWindow(GetParent(hwnd),FALSE);
+#if 0 /* HBB 981203 */
 			DeleteMenu(sysmenu,SC_RESTORE,MF_BYCOMMAND);
 			DeleteMenu(sysmenu,SC_SIZE,MF_BYCOMMAND);
 			DeleteMenu(sysmenu,SC_MINIMIZE,MF_BYCOMMAND);
@@ -236,6 +245,7 @@ WndPauseProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			DeleteMenu(sysmenu,SC_TASKLIST,MF_BYCOMMAND);
 			DeleteMenu(sysmenu,0,MF_BYCOMMAND); /* a separator */
 			DeleteMenu(sysmenu,0,MF_BYCOMMAND); /* a separator */
+#endif
 			}
 			return 0;
 		case WM_DESTROY:
