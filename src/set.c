@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.158 2004/12/01 21:10:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.159 2004/12/04 06:11:18 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2631,6 +2631,7 @@ set_palette()
 	    case S_PALETTE_GAMMA: /* "gamma" */
 		++c_token;
 		sm_palette.gamma = real(const_express(&a));
+		--c_token;
 		continue;
 	    case S_PALETTE_COLOR: /* "col$or" */
 		if (pm3d_last_set_palette_mode != SMPAL_COLOR_MODE_NONE) {
