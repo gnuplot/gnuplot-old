@@ -1,5 +1,5 @@
 /*
- * $Id: mouse.h,v 1.4 2000/05/02 20:01:55 broeker Exp $
+ * $Id: mouse.h,v 1.5 2000/05/02 20:56:27 broeker Exp $
  */
 
 /* GNUPLOT - mouse.h */
@@ -42,12 +42,10 @@
  */
 
 
-#ifndef _HAVE_MOUSE_H
-#define _HAVE_MOUSE_H
-
 #include "mousecmn.h"
 
-#include "syscfg.h"
+#ifndef _HAVE_MOUSE_H
+#define _HAVE_MOUSE_H
 
 /* Zoom queue
 */
@@ -204,6 +202,7 @@ void UpdateStatusline __PROTO((void));
 void do_event __PROTO((struct gp_event_t *ge));
 int plot_mode __PROTO((int mode));
 void event_reset __PROTO((struct gp_event_t *ge));
+void event_plotdone __PROTO((void));
 #ifdef OS2
 void update_menu_items_PM_terminal __PROTO((void));
 #endif
