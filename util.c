@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: util.c,v 1.6 1998/10/01 10:50:59 lhecking Exp $";
+static char *RCSid = "$Id: util.c,v 1.7 1998/10/09 14:29:46 lhecking Exp $";
 #endif
 
 /* GNUPLOT - util.c */
@@ -295,7 +295,7 @@ void m_quote_capture(str, start, end)
 char **str;
 int start, end;
 {
-    register int i, e;
+    register int i, e, escflag = 0;
     register char *s;
 
     if (*str)			/* previous pointer to malloc'd memory there */
@@ -304,8 +304,9 @@ int start, end;
     *str = gp_alloc((unsigned long) (e - token[start].start_index + 1), "string");
     s = *str;
     for (i = token[start].start_index + 1; i < e && input_line[i] != NUL; i++)
-	*s++ = input_line[i];
+	if ((*s++ = input_line[i]) == '\\') ++escflag;
     *s = NUL;
+    if (escflag) parse_esc(*str);
 }
 
 
