@@ -12,6 +12,21 @@
 	* reimplemented the Linux vgagl terminal driver with
 	mouse and pm3d support (uses the lib3dkit library)
 
+2000-05-04  Johannes Zellner <johannes@zellner.org>
+
+	* configure.in, src/plot.c, src/parse.c: replace setjmp by
+	sigsetjmp and longjmp by siglongjmp if these functions
+	(or macros) are available.
+
+2000-05-04  Johannes Zellner <johannes@zellner.org>
+
+	* src/command.c: always include ipc.h
+
+	* term/linux.trm: typedef int in declaration of linux_line_func_ptr
+
+	* term/x11.trm: added a few ifdef USE_MOUSE's to exclude mouse
+	code, if compiling w/o mouse support.
+
 2000-05-03  Johannes Zellner <johannes@zellner.org>
 
 	* merged pre-pm3d - pre-pm3d-01 from the MAIN trunk.
