@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: plot.c,v 1.27 1999/03/11 13:03:29 lhecking Exp $";
+static char *RCSid = "$Id: plot.c,v 1.28 1999/03/12 21:45:59 lhecking Exp $";
 #endif
 
 /* GNUPLOT - plot.c */
@@ -455,7 +455,7 @@ char **argv;
      * ignore the return : its probably not a big deal
      */
     if (setvbuf(stdout, (char *) NULL, _IOLBF, (size_t) 1024) != 0)
-	fputs("Could not linebuffer stdout\n", stderr);
+	(void) fputs("Could not linebuffer stdout\n", stderr);
 #endif
 
     gpoutfile = stdout;
@@ -576,7 +576,7 @@ char **argv;
 		noend = 1;
 	    else
 #endif
-	    if (STREQ(*argv, "-")) {
+	    if (strcmp(*argv, "-") == 0) {
 		/* DBT 10-7-98  go interactive if "-" on command line */
 
 		interactive = TRUE;
@@ -710,7 +710,7 @@ static void load_rcfile()
     if (plotrc)
 	load_file(plotrc, rcfile, FALSE);
 
-    free(plotrc);
+    free(rcfile);
 }
 
 static void get_user_env ()
