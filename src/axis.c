@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.15 2001/06/21 11:20:20 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.16 2001/06/21 15:00:58 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -964,8 +964,8 @@ setup_tics(axis, max)
 
     struct ticdef *ticdef = &(axis_array[axis].ticdef);
 
-    TBOOLEAN fixmin = ! (axis_array[axis].autoscale & AUTOSCALE_MIN);
-    TBOOLEAN fixmax = ! (axis_array[axis].autoscale & AUTOSCALE_MAX);
+    TBOOLEAN fixmin = (axis_array[axis].autoscale & AUTOSCALE_MIN);
+    TBOOLEAN fixmax = (axis_array[axis].autoscale & AUTOSCALE_MAX);
 
     /* HBB 20000506: if no tics required for this axis, do
      * nothing. This used to be done exactly before each call of
