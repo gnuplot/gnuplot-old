@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.52 2003/03/13 06:17:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.53 2003/04/13 20:22:46 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1026,6 +1026,7 @@ unset_tics(axis)
     axis_array[axis].ticdef.textcolor.type = TC_DEFAULT;
     axis_array[axis].ticdef.textcolor.lt = 0;
     axis_array[axis].ticdef.textcolor.value = 0;
+    axis_array[axis].tic_rotate = 0;
 
     if (axis_array[axis].ticdef.type == TIC_USER) {
 	free_marklist(axis_array[axis].ticdef.def.user);
