@@ -1,5 +1,5 @@
 ;
-;  $Id: gnuplot.prj,v 1.1 1999/03/26 21:47:56 lhecking Exp $
+;  $Id: gnuplot.prj,v 1.2 1999/05/30 17:10:48 lhecking Exp $
 ;
 ; gnuplot.prj - this project can be used for both PureC and TurboC on the
 ; Atari. It is currently set up for PureC, but if you change all lines
@@ -51,6 +51,7 @@ term		(term.c, bitmap.h, plot.h, setshow.h, term.h,
 		 term\post.trm, term\texdraw.trm, term\tgif.h,
 		 term\tgif.trm, term\tpic.trm)
 util		(util.c, plot.h)
+variable	(variable.c, plot.h, variable.h)
 version		(version.c)
 PCFLTLIB.LIB	 ; note: the order of the librarys is significant !!
 PCSTDLIB.LIB
