@@ -1,6 +1,6 @@
 ############################################################
 #
-# $Id: makefile.os9,v 1.6 1998/10/09 14:31:32 lhecking Exp $
+# $Id: makefile.os9,v 1.7 1998/10/28 21:05:53 lhecking Exp $
 #
 # GNUPLOT 3.6 makefile (X11 support) for OS-9 and Ultra C
 #   by Martijn Schipper 18-6-1996
@@ -103,9 +103,9 @@ $(RDIR)/termdoc.$(O): $(D)termdoc.c
 # I have only old X11 R4 libraries, that is the reason for using compatability
 # mode for compiling and linking gnuplot_x11
 #
-gnuplot_X11: $(RDIR)/gplt_x11.$(O)
+gnuplot_X11: $(RDIR)/gplt_x11.$(O) $(RDIR)/stdfn.$(O)
 	$(LC) -mode=compat $(DEBUG) -q -m=64 $(X11LIBS) $(RDIR)/gplt_x11.$(O) \
-	-n=$@ -f=$(ODIR)/$@
+	$(RDIR)/stdfn.$(O) -n=$@ -f=$(ODIR)/$@
 	attr -pepr $(ODIR)/$@
 
 $(RDIR)/gplt_x11.$(O): gplt_x11.c

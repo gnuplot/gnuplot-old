@@ -1,5 +1,5 @@
 #
-# $Id: makefile.unx,v 1.4 1998/10/03 20:19:10 lhecking Exp $
+# $Id: makefile.unx,v 1.5 1998/10/28 21:05:58 lhecking Exp $
 #
 #
 ############################################################
@@ -727,9 +727,9 @@ gnuplot: $(OBJS) version.o
 doc:
 	( cd docs; $(MAKE) $(MFLAGS) $(MY_FLAGS) gnuplot.gih )
 
-gnuplot_x11: gplt_x11.c
+gnuplot_x11: gplt_x11.c stdfn.c
 	$(CC) $(CFLAGS) $(X11FLAGS) $(X11INCLUDES) -o gnuplot_x11 \
-	gplt_x11.c $(X11LIBS)
+	stdfn.c gplt_x11.c $(X11LIBS)
 
 demo/binary1 demo/binary2 demo/binary3: bf_test
 	( cd demo; ../bf_test )
