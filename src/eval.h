@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.13 2004/10/27 21:54:49 sfeam Exp $
+ * $Id: eval.h,v 1.14 2004/12/05 08:04:42 sfeam Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -131,7 +131,7 @@ extern struct udvt_entry *first_udv; /* user-def'd variables */
 extern struct udvt_entry udv_pi; /* 'pi' variable */
 extern TBOOLEAN undefined;
 
-#if (GP_STRING_VARS > 1)
+#ifdef GP_STRING_VARS
 extern TBOOLEAN STRING_RESULT_ONLY;
 #endif
 
