@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.9.2.5 2002/01/23 11:18:28 lhecking Exp $
+ * $Id: syscfg.h,v 1.9.2.6 2002/01/23 11:26:12 lhecking Exp $
  *
  */
 
@@ -226,7 +226,7 @@
 #endif
 
 #ifndef FAQ_LOCATION
-#define FAQ_LOCATION "http://www.gnuplot.info/gnuplot-faq.html" */
+#define FAQ_LOCATION "http://www.gnuplot.info/gnuplot-faq.html"
 #endif
 
 #ifndef CONTACT
