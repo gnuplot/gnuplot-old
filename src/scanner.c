@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid = "$Id: scanner.c,v 1.2 1999/05/12 13:50:58 lhecking Exp $";
+static char *RCSid = "$Id: scanner.c,v 1.3 1999/05/13 18:53:13 lhecking Exp $";
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -376,8 +376,8 @@ int current;
 	if ((c = getc(f)) == EOF)
 	    break;
 # endif /* !AMIGA_AC_5 */
-	/* newlines become blanks */
-	(*strp)[current++] = ((c == '\n') ? ' ' : c); 
+	if (c != '\n' && c != '\r')
+	    (*strp)[current++] = c;
 	if (current == *str_lenp)
 	    extend_input_line();
     }
