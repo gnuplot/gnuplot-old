@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.107 2004/12/10 13:38:48 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.108 2005/01/24 08:16:42 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1272,8 +1272,6 @@ save_command()
 #endif
 	    (void) fclose(fp);
     }
-
-    c_token++;
 
     free(save_file);
 }
