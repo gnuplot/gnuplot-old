@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.6 1999/06/09 12:07:19 lhecking Exp $
+ * $Id: setshow.h,v 1.7 1999/06/11 18:53:17 lhecking Exp $
  *
  */
 
@@ -157,8 +157,6 @@ extern label_struct x2label, y2label;
 
 extern int			timelabel_rotate;
 extern int			timelabel_bottom;
-extern char			timefmt[];
-extern int 			datatype[];
 extern int			range_flags[];
 extern double			rmin, rmax;
 extern double			tmin, tmax, umin, umax, vmin, vmax;
