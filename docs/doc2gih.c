@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2gih.c,v 1.10 2002/12/16 14:16:52 lhecking Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2gih.c,v 1.11 2002/12/17 20:50:49 lhecking Exp $"); }
 #endif
 
 /* GNUPLOT - doc2gih.c */
@@ -104,7 +104,7 @@ convert (FILE *inf, FILE *outf)
 
 
 void
-process_line( char *line, FILE *b)
+process_line(char *line, FILE *b)
 {
     static int line_count = 0;
 
