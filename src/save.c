@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.104 2005/03/29 08:07:16 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.105 2005/04/14 20:04:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -211,8 +211,9 @@ set bar %f\n",
 
     if (draw_border)
 	/* HBB 980609: handle border linestyle, too */
-	fprintf(fp, "set border %d lt %d lw %.3f\n",
-		draw_border, border_lp.l_type + 1, border_lp.l_width);
+	fprintf(fp, "set border %d lt %d lw %.3f %s\n",
+		draw_border, border_lp.l_type + 1, border_lp.l_width,
+		border_layer == 0 ? "back" : "front");
     else
 	fputs("unset border\n", fp);
 
