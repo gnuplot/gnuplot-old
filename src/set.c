@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.174 2005/04/14 20:04:44 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.175 2005/04/15 23:15:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -939,7 +939,6 @@ set_border()
 	    if (save_token != c_token)
 		continue;
 	    draw_border = (int)real(const_express(&a));
-	    c_token++;
 	}
     }
 }
