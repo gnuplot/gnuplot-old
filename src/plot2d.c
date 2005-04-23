@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.102 2005/03/30 20:23:16 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.103 2005/04/23 18:16:34 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1523,7 +1523,7 @@ eval_plots()
 		    if (this_plot->labels == NULL) {
 			this_plot->labels = new_text_label(-1);
 			this_plot->labels->pos = JUST_CENTRE;
-			this_plot->labels->layer = 1;
+			this_plot->labels->layer = LAYER_PLOTLABELS;
 		    }
 		    parse_label_options(this_plot->labels);
 		    if (stored_token != c_token) {
@@ -1685,7 +1685,7 @@ eval_plots()
 	    if (this_plot->plot_style == LABELPOINTS && this_plot->labels == NULL) {
 		this_plot->labels = new_text_label(-1);
 		this_plot->labels->pos = JUST_CENTRE;
-		this_plot->labels->layer = 1;
+		this_plot->labels->layer = LAYER_PLOTLABELS;
 	    }
 #endif
 
