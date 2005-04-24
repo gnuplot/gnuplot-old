@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.133 2005/03/30 20:52:47 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.134 2005/04/24 04:42:58 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -1962,6 +1962,10 @@ exec_cmd(plot_struct *plot, char *command)
 	    	pr_font(&buffer[2]);
 		if (font)
 		  gpXSetFont(dpy,gc,font->fid);
+#ifdef PM3D
+		if (font && gc_pm3d)
+		  gpXSetFont(dpy,gc_pm3d,font->fid);
+#endif
 		break;
 	case 'E':
 		/* Save the requested font encoding */
