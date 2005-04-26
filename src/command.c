@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.113 2005/04/22 21:40:37 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.114 2005/04/26 14:06:54 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -112,7 +112,9 @@ int thread_rl_RetCode = -1; /* return code from readline in a thread */
 #ifndef _Windows
 # include "help.h"
 #else
+# ifdef USE_OWN_WINSYSTEM_FUNCTION
 static int winsystem __PROTO((const char *));
+# endif
 #endif /* _Windows */
 
 #ifdef _Windows
@@ -2533,7 +2535,7 @@ read_line(const char *prompt)
 
 #endif /* !VMS */
 
-#ifdef _Windows
+#if defined(_Windows) && defined(USE_OWN_WINSYSTEM_FUNCTION)
 /* there is a system like call on MS Windows but it is a bit difficult to
    use, so we will invoke the command interpreter and use it to execute the
    commands */
