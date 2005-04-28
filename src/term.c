@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.107 2005/04/22 21:40:37 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.108 2005/04/28 20:33:23 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -319,7 +319,7 @@ void fflush_binary();
 #endif
 
 #ifdef __WATCOMC__
-# include <io.h>
+# include <io.h>  	/* for setmode() */
 #endif
 
 /* This is needed because the unixplot library only writes to stdout,
