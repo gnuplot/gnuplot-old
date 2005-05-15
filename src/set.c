@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.178 2005/05/14 22:45:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.179 2005/05/15 23:44:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -3216,10 +3216,15 @@ set_terminal()
 	return;
     }
 
+#ifdef BACKWARDS_COMPATIBLE
     if (equals(c_token,"table")) {
-	int_error(NO_CARET,"The command 'set term table' is obsolete.\n\t Please use 'set table \"outfile\"' instead.\n");
+	set_table();
+	if (interactive)
+	    int_warn(NO_CARET,"The command 'set term table' is deprecated.\n\t Please use 'set table \"outfile\"' instead.\n");
 	return;
-    }
+    } else
+	table_mode = FALSE;
+#endif
 
     /* `set term push' */
     if (equals(c_token,"push")) {
@@ -3242,9 +3247,6 @@ set_terminal()
     if (equals(c_token,"pop")) {
 	pop_terminal();
 	c_token++;
-#ifdef BACKWARDS_COMPATIBLE
-	table_mode = FALSE;
-#endif
 	return;
     } /* set term pop */
 
