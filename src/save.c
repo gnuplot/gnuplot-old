@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.106 2005/04/18 19:48:08 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.107 2005/05/19 20:31:39 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -455,6 +455,8 @@ set y2data%s\n",
 	default:
 	case HT_CLUSTERED:
 	    fprintf(fp,"clustered gap %d ",histogram_opts.gap); break;
+	case HT_ERRORBARS:
+	    fprintf(fp,"errorbars gap %d lw %g",histogram_opts.gap,histogram_opts.bar_lw); break;
 	case HT_STACKED_IN_LAYERS:
 	    fprintf(fp,"rowstacked "); break;
 	case HT_STACKED_IN_TOWERS:
