@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.109 2005/05/13 20:12:03 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.110 2005/05/24 20:54:02 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -482,6 +482,12 @@ term_init()
      * This was originally done in change_term, but that
      * resulted in output files being truncated
      */
+
+    if (outstr && (term->flags & TERM_NO_OUTPUTFILE)) {
+	if (interactive)
+	    fprintf(stderr,"Closing %s\n",outstr);
+	term_close_output();
+    }
 
     if (outstr &&
 	(((term->flags & TERM_BINARY) && !opened_binary) ||
