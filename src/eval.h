@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.15 2005/03/06 02:20:21 sfeam Exp $
+ * $Id: eval.h,v 1.16 2005/06/02 17:18:45 sfeam Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -147,6 +147,7 @@ struct value * Gcomplex __PROTO((struct value *, double, double));
 struct value * Ginteger __PROTO((struct value *, int));
 #ifdef GP_STRING_VARS
 struct value * Gstring __PROTO((struct value *, char *));
+struct value * gpfree_string __PROTO((struct value *a));
 struct value * pop_or_convert_from_string __PROTO((struct value *));
 #endif
 
