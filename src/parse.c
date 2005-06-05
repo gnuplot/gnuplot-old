@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.33 2005/03/06 02:20:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.34 2005/06/05 06:17:14 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -129,8 +129,7 @@ temp_at()
 	 */
 	int i;
 	for (i=0; i<at->a_count; i++)
-	    if (at->actions[i].arg.v_arg.type == STRING)
-		free(at->actions[i].arg.v_arg.v.string_val);
+	    gpfree_string(&at->actions[i].arg.v_arg);
 #endif
 	free(at);
     }
