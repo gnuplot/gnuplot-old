@@ -1,5 +1,5 @@
 /*
- * $Id: gp_types.h,v 1.29 2005/03/03 04:09:47 sfeam Exp $
+ * $Id: gp_types.h,v 1.30 2005/07/07 20:35:12 sfeam Exp $
  */
 
 /* GNUPLOT - gp_types.h */
@@ -58,7 +58,7 @@ enum MODE_PLOT_TYPE {
 };
 
 enum PLOT_TYPE {
-	FUNC, DATA, FUNC3D, DATA3D
+	FUNC, DATA, FUNC3D, DATA3D, NODATA
 };
 
 /* we explicitly assign values to the types, such that we can
