@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.20 2005/07/08 17:13:46 sfeam Exp $
+ * $Id: eval.h,v 1.21 2005/07/10 04:24:42 sfeam Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -169,5 +169,6 @@ void free_at __PROTO((struct at_type *at_ptr));
 #ifdef APOLLO
 void apollo_pfm_catch __PROTO((void));
 #endif
+struct udvt_entry * add_udv_by_name __PROTO((char *key));
 
 #endif /* GNUPLOT_EVAL_H */
