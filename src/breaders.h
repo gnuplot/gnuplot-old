@@ -1,5 +1,5 @@
 /*
- * $Id: breaders.h,v 1.1 2004/09/01 15:56:59 mikulik Exp $
+ * $Id: breaders.h,v 1.2 2005/07/12 03:37:42 sfeam Exp $
  */
 
 /* GNUPLOT - binedf.h */
@@ -47,7 +47,7 @@
 
 #include "syscfg.h"
 
-/* Prototypes of functions exported by datafile.c */
+/* Prototypes of functions exported by breaders.c */
 
 void edf_filetype_function __PROTO((void));
 
