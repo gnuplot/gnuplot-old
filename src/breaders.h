@@ -1,5 +1,5 @@
 /*
- * $Id: breaders.h,v 1.2 2005/07/12 03:37:42 sfeam Exp $
+ * $Id: breaders.h,v 1.3 2005/07/15 15:55:13 broeker Exp $
  */
 
 /* GNUPLOT - binedf.h */
@@ -41,7 +41,9 @@
 #ifndef GNUPLOT_BINEDF_H
 # define GNUPLOT_BINEDF_H
 
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #ifdef BINARY_DATA_FILE
 
