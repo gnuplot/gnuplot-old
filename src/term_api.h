@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.44 2005/05/24 20:54:02 sfeam Exp $
+ * $Id: term_api.h,v 1.45 2005/07/15 17:02:49 broeker Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -353,6 +353,10 @@ void ignore_enhanced __PROTO((TBOOLEAN flag));
 
 #ifdef LINUXVGA
 void LINUX_setup __PROTO((void));
+#endif
+
+#ifdef PC
+void PC_setup __PROTO((void));
 #endif
 
 #ifdef VMS
