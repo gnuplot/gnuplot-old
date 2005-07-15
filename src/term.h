@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.30 2005/03/25 05:01:12 sfeam Exp $
+ * $Id: term.h,v 1.31 2005/07/15 16:08:09 broeker Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -115,7 +115,7 @@
 # endif				/* MSDOS && EMX */
 
 /* MSDOS with djgpp compiler */
-# ifdef DJGPP
+# if defined(DJGPP) && (!defined(DJSVGA) || (DJSVGA != 0))
 #  include "djsvga.trm"
 # endif
 
