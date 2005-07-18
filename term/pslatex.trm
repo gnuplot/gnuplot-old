@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: pslatex.trm,v 1.58 2005/07/15 16:56:01 broeker Exp $
+ * $Id: pslatex.trm,v 1.59 2005/07/18 18:24:02 sfeam Exp $
  */
 
 /* GNUPLOT - pslatex.trm */
@@ -109,7 +109,6 @@ TERM_PUBLIC char *epslatex_header = NULL;
 
 #ifdef TERM_BODY
 
-#define PSLATEX_DRIVER
 #include "post.h"
 
 struct pstex_text_command {
