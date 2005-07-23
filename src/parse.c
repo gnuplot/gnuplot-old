@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.41 2005/07/20 09:20:25 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.42 2005/07/23 04:19:54 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -123,7 +123,6 @@ string_or_express(struct at_type **atptr)
 {
     int i;
     TBOOLEAN has_dummies;
-    int start_tkn = c_token;
 
     static char* str = NULL;
     free(str);
