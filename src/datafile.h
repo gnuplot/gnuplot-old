@@ -1,5 +1,5 @@
 /*
- * $Id: datafile.h,v 1.18 2005/07/16 21:01:39 sfeam Exp $
+ * $Id: datafile.h,v 1.19 2005/07/25 17:32:04 sfeam Exp $
  */
 
 /* GNUPLOT - datafile.h */
@@ -105,6 +105,9 @@ extern char *df_commentschars;
 /* flag if any 'inline' data are in use, for the current plot */
 extern TBOOLEAN plotted_data_from_stdin;
 
+/* Setting this allows the parser to recognize Fortran D or Q   */
+/* format constants in the input file. But it slows things down */
+extern TBOOLEAN df_fortran_constants;
 
 /* Prototypes of functions exported by datafile.c */
 

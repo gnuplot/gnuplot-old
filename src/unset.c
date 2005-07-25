@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.82 2005/06/19 22:03:52 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.83 2005/07/25 17:32:08 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -278,6 +278,12 @@ unset_command()
 	unset_margin(&tmargin);
 	break;
     case S_DATAFILE:
+	if (almost_equals(c_token,"fort$ran")) {
+	    df_fortran_constants = FALSE;
+	    c_token++;
+	    break;
+	}
+	df_fortran_constants = FALSE;
 	unset_missing();
 	df_separator = '\0';
 	free(df_commentschars);
