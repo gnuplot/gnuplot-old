@@ -1,5 +1,5 @@
 /*
-** static char RCSid[]="$Id: gnupmdrv.h,v 1.7 2004/12/20 16:50:38 mikulik Exp $" ;
+** static char RCSid[]="$Id: gnupmdrv.h,v 1.8 2005/07/28 07:46:06 mikulik Exp $" ;
 */
 
 /* PM driver for GNUPLOT */
@@ -41,6 +41,7 @@
  *   Gnuplot driver for OS/2:  Roger Fearick
  */
 
+#include "config.h"
 /* include resource defines */
 
 #ifndef DISPDEFS_H
@@ -107,7 +108,9 @@ extern char szIniFile[256];    /* full path of ini file */
 extern int  bServer;
 extern int  bPersist;
 extern int  bWideLines;
+#ifdef PM_KEEP_OLD_ENHANCED_TEXT
 extern int  bEnhanced;
+#endif
 
 /*==== stuff for querying printer capability =================================*/
 
