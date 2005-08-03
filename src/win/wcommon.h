@@ -1,5 +1,5 @@
 /*
- * $Id: wcommon.h,v 1.5 2005/08/03 16:55:42 mikulik Exp $
+ * $Id: wcommon.h,v 1.6 2005/08/03 16:58:32 mikulik Exp $
  */
 
 /* GNUPLOT - wcommon.h */
@@ -48,6 +48,11 @@
 #endif
 /* this file contains items that are internal to wgnuplot.dll */
 
+/* winmain.c */
+#ifdef WANT_GETDLLVERSION
+# define PACKVERSION(major,minor) MAKELONG(minor,major)
+extern DWORD GetDllVersion(LPCTSTR lpszDllName);
+#endif
 
 /* wgnuplib.c */
 extern HINSTANCE hdllInstance;
