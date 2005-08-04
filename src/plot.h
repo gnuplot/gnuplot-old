@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.41 2004/07/01 17:10:07 broeker Exp $
+ * $Id: plot.h,v 1.42 2005/08/04 16:34:08 mikulik Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -71,6 +71,7 @@ extern TBOOLEAN CallFromRexx;
 void bail_to_command_line __PROTO((void));
 void interrupt_setup __PROTO((void));
 void gp_expand_tilde __PROTO((char **));
+void get_user_env __PROTO((void));
 
 #ifdef LINUXVGA
 void drop_privilege __PROTO((void));
