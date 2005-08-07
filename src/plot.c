@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.76 2005/08/04 16:34:08 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.77 2005/08/07 09:43:30 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -525,9 +525,7 @@ main(int argc, char **argv)
 	 * would set them to. Since the axis variables aren't in
 	 * initialized arrays any more, this is now necessary... */
 	reset_command();
-#ifdef PM3D
 	init_color();  /*  Initialization of color  */
-#endif /* PM3D */
 	load_rcfile();
 	init_fit();		/* Initialization of fitting module */
 

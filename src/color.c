@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.56 2005/08/06 17:22:12 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.57 2005/08/07 09:43:27 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -14,16 +14,12 @@ static char *RCSid() { return RCSid("$Id: color.c,v 1.56 2005/08/06 17:22:12 sfe
  *   - Palette routines
  *   - Colour box drawing
  *
- * This file is used only if PM3D is defined.
- *
 ]*/
 
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
-#ifdef PM3D
 
 #include "color.h"
 #include "getcolor.h"
@@ -651,7 +647,3 @@ draw_color_smooth_box(int plot_mode)
 
 }
 
-
-
-
-#endif /* PM3D */
