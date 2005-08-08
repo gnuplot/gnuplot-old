@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.42 2005/08/04 16:34:08 mikulik Exp $
+ * $Id: plot.h,v 1.43 2005/08/08 09:24:30 mikulik Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -55,11 +55,6 @@ extern TBOOLEAN interactive;
 extern const char *user_shell;
 #if defined(ATARI) || defined(MTOS)
 extern const char *user_gnuplotpath;
-#endif
-
-
-#ifdef GNUPLOT_HISTORY
-extern long int gnuplot_history_size;
 #endif
 
 #ifdef OS2
