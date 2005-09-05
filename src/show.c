@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.163 2005/08/12 08:31:56 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.164 2005/09/05 19:36:59 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2175,6 +2175,8 @@ show_pm3d()
 	fputs("\tsurface is transparent for borders, tics and labels\n", stderr);
     }
 #endif
+    fprintf(stderr,"\tsteps for bilinear interpolation: %d,%d\n",
+	 pm3d.interp_i, pm3d.interp_j);
     fprintf(stderr,"\tquadrangle color according to ");
     switch (pm3d.which_corner_color) {
 	case PM3D_WHICHCORNER_MEAN: fputs("averaged 4 corners\n", stderr); break;

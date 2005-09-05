@@ -1,5 +1,5 @@
 /*
- * $Id: tables.h,v 1.52 2005/08/07 09:43:31 mikulik Exp $
+ * $Id: tables.h,v 1.53 2005/09/05 19:36:59 mikulik Exp $
  */
 
 /* GNUPLOT - tables.h */
@@ -156,6 +156,7 @@ enum set_palette_id {
 enum set_pm3d_id {
     S_PM3D_INVALID,
     S_PM3D_AT,
+    S_PM3D_INTERPOLATE,
     S_PM3D_SCANSFORWARD, S_PM3D_SCANSBACKWARD, S_PM3D_SCANS_AUTOMATIC,
     S_PM3D_FLUSH, S_PM3D_FTRIANGLES, S_PM3D_NOFTRIANGLES,
     S_PM3D_CLIP_1IN, S_PM3D_CLIP_4IN,

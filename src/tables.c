@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.63 2005/08/07 09:43:31 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.64 2005/09/05 19:36:59 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -434,6 +434,7 @@ const struct gen_table color_model_tbl[] =
 const struct gen_table set_pm3d_tbl[] =
 {
     { "at",		S_PM3D_AT },
+    { "interp$olate",	S_PM3D_INTERPOLATE },
     { "scansfor$ward",	S_PM3D_SCANSFORWARD },
     { "scansback$ward", S_PM3D_SCANSBACKWARD },
     { "scansauto$matic",S_PM3D_SCANS_AUTOMATIC },
