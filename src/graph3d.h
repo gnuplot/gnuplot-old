@@ -1,5 +1,5 @@
 /*
- * $Id: graph3d.h,v 1.21 2005/08/07 09:43:29 mikulik Exp $
+ * $Id: graph3d.h,v 1.22 2005/10/02 22:15:09 sfeam Exp $
  */
 
 /* GNUPLOT - graph3d.h */
@@ -125,7 +125,13 @@ extern float surface_scale;
 extern float surface_zscale;
 extern int splot_map;
 
-extern float ticslevel;
+typedef struct { 
+    double ticslevel; 
+    double xyplane_z; 
+    TBOOLEAN absolute;
+} t_xyplane;
+
+extern t_xyplane xyplane;
 
 #define ISO_SAMPLES 10		/* default number of isolines per splot */
 extern int iso_samples_1;

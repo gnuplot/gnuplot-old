@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.168 2005/09/26 04:19:44 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.169 2005/10/02 22:15:09 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2451,7 +2451,10 @@ show_tics(
 {
     SHOW_ALL_NL;
 
-    fprintf(stderr, "\tticslevel is %g\n", ticslevel);
+    if (xyplane.absolute)
+	fprintf(stderr, "xyplane intercepts z axis at %g\n", xyplane.xyplane_z);
+    else
+	fprintf(stderr, "xyplane ticslevel is %g\n", xyplane.ticslevel);
 
     if (showx)
 	show_ticdef(FIRST_X_AXIS);
