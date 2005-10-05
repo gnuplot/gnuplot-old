@@ -1,5 +1,5 @@
 /*
- * $Id: pm_msgs.h,v 1.3 2005/08/07 09:43:33 mikulik Exp $
+ * $Id: pm_msgs.h,v 1.4 2005/10/05 08:05:41 mikulik Exp $
  */
 
 /* GNUPLOT - pm_msgs.h */
@@ -76,6 +76,8 @@
 #define GR_SET_COLOR		'C'
 #define GR_SET_RGBCOLOR		'b'
 #define GR_FILLED_POLYGON	'f'
+#define GR_IMAGE		'i'
+#define GR_RGB_IMAGE	'I'
 
 #endif
 
