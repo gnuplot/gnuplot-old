@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.124 2005/10/02 22:15:09 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.125 2005/10/06 04:18:15 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -628,6 +628,7 @@ set origin %g,%g\n",
 
     save_zeroaxis(fp, FIRST_X_AXIS);
     save_zeroaxis(fp, FIRST_Y_AXIS);
+    save_zeroaxis(fp, FIRST_Z_AXIS);
     save_zeroaxis(fp, SECOND_X_AXIS);
     save_zeroaxis(fp, SECOND_Y_AXIS);
 
