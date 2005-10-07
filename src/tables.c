@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.66 2005/10/06 04:18:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.67 2005/10/07 13:00:51 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -48,6 +48,8 @@ static char *RCSid() { return RCSid("$Id: tables.c,v 1.66 2005/10/06 04:18:16 sf
 /* the actual commands */
 const struct gen_ftable command_ftbl[] =
 {
+    { "ra$ise", raise_command },
+    { "low$er", lower_command },
 #ifdef USE_MOUSE
     { "bi$nd", bind_command },
 #endif
