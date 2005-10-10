@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.115 2005/10/01 23:38:48 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.116 2005/10/10 02:44:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1546,6 +1546,7 @@ eval_plots()
 		if (this_plot->plot_style == VECTOR) {
 		    int stored_token = c_token;
 		    struct arrow_style_type arrow;
+		    default_arrow_style(&arrow);
 
 		    arrow_parse(&arrow, line_num, TRUE);
 		    if (stored_token != c_token) {
