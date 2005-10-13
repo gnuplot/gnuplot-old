@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: dumb.trm,v 1.21 2005/08/07 09:43:34 mikulik Exp $
+ * $Id: dumb.trm,v 1.22 2005/10/13 19:22:59 sfeam Exp $
  *
  */
 
@@ -194,7 +194,7 @@ DUMB_init()
     if (dumb_matrix)
 	free(dumb_matrix);
 
-    dumb_matrix = gp_alloc(dumb_xmax * dumb_ymax * 2, "dumb terminal");
+    dumb_matrix = gp_alloc((dumb_xmax+1) * (dumb_ymax+1) * 2, "dumb terminal");
 
     dumb_priority = dumb_matrix + dumb_xmax * dumb_ymax;
 }
