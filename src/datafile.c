@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.98 2005/11/27 04:25:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.99 2005/11/28 22:41:27 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -2801,6 +2801,8 @@ void
 df_set_datafile_binary()
 {
     c_token++;
+    if (END_OF_COMMAND)
+	int_error(c_token, "option expected");
     clear_binary_records(DF_CURRENT_RECORDS);
     /* Set current records to default in order to retain current default settings. */
     if (df_bin_record_default) {
