@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.139 2005/12/05 04:25:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.140 2005/12/05 05:14:32 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -997,7 +997,8 @@ do_3dplot(
 		break;
 
 	    case VECTOR:
-		plot3d_vectors(this_plot);
+	        if (!(hidden3d && draw_surface))
+		    plot3d_vectors(this_plot);
 		if (lkey) {
 		    if (this_plot->lp_properties.use_palette)
 			key_sample_line_pm3d(this_plot, xl, yl);
