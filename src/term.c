@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.133 2005/12/14 12:18:31 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.134 2006/01/07 20:14:03 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -802,6 +802,10 @@ term_end_multiplot()
     mp_layout.auto_layout = FALSE;
     mp_layout.xscale = mp_layout.yscale = 1.0;
     mp_layout.xoffset = mp_layout.yoffset = 0.0;
+    if (mp_layout.title.text) {
+	free(mp_layout.title.text);
+	mp_layout.title.text = NULL;
+    }
 
     term_end_plot();
 #ifdef USE_MOUSE
