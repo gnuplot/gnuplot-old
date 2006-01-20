@@ -1,5 +1,5 @@
 /*
- * $Id: command.h,v 1.38 2005/10/07 13:00:51 mikulik Exp $
+ * $Id: command.h,v 1.39 2006/01/20 06:18:41 sfeam Exp $
  */
 
 /* GNUPLOT - command.h */
@@ -71,12 +71,6 @@ extern int paused_for_mouse;	/* Flag the end condition we are paused until */
 #define PAUSE_CLICK	007		/* Any button click */
 #define PAUSE_KEYSTROKE 010		/* Any keystroke */
 #define PAUSE_ANY       077		/* Terminate on any of the above */
-#endif
-
-extern TBOOLEAN is_3d_plot;
-
-#ifdef WITH_IMAGE
-extern TBOOLEAN is_cb_plot;
 #endif
 
 #ifdef GP_MACROS
