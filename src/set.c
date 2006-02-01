@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.215 2006/01/20 06:18:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.216 2006/02/01 06:05:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -3720,7 +3720,7 @@ set_timestamp()
     }
 
     if (!(timelabel.text))
-	timelabel.text = strdup(DEFAULT_TIMESTAMP_FORMAT);
+	timelabel.text = gp_strdup(DEFAULT_TIMESTAMP_FORMAT);
 
 }
 
