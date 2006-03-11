@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.79 2005/08/12 08:31:56 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.80 2006/03/11 22:11:44 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -175,7 +175,6 @@ static int exit_status = EXIT_SUCCESS;
 # include <process.h>
 static ULONG RexxInterface(PRXSTRING, PUSHORT, PRXSTRING);
 TBOOLEAN CallFromRexx = FALSE;
-void PM_intc_cleanup(void);
 #endif /* OS2 */
 
 #if defined(ATARI) || defined(MTOS)
