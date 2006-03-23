@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.93 2006/03/11 22:11:44 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.94 2006/03/23 07:14:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1472,17 +1472,20 @@ unset_axislabel_or_title(text_label *label)
 {
     struct position default_offset = { character, character, character, 
 				       0., 0., 0. };
-    free(label->text);
-    label->text = NULL;
-    free(label->font);
-    label->font = NULL;
-    label->offset = default_offset;
-    label->textcolor.type = TC_DEFAULT;
+    if (label) {
+	free(label->text);
+	label->text = NULL;
+	free(label->font);
+	label->font = NULL;
+	label->offset = default_offset;
+	label->textcolor.type = TC_DEFAULT;
+    }
 }
 
 static void
 unset_axislabel(AXIS_INDEX axis)
 {
+    unset_axislabel_or_title(&axis_array[axis].label);
     axis_array[axis].label = default_axis_label;
     if (axis == FIRST_Y_AXIS || axis == SECOND_Y_AXIS)
 	axis_array[axis].label.rotate = TEXT_VERTICAL;
