@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.153 2006/04/10 17:47:04 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.154 2006/04/10 18:32:09 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -2038,13 +2038,25 @@ draw_3d_graphbox(struct surface_points *plot, int plot_num, WHICHGRID whichgrid)
 	    map3d_xy(zaxis_x, zaxis_y, base_z, &x, &y);
 	    term->move(x, y);
 	    map3d_xy(back_x , back_y , base_z, &x, &y);
-	    term->vector(x, y);
+	    if (draw_border & 2)
+		term->vector(x, y);
+	    else
+		term->move(x, y);
 	    map3d_xy(right_x, right_y, base_z, &x, &y);
-	    term->vector(x, y);
+	    if (draw_border & 8)
+		term->vector(x, y);
+	    else
+		term->move(x, y);
 	    map3d_xy(front_x, front_y, base_z, &x, &y);
-	    term->vector(x, y);
+	    if (draw_border & 4)
+		term->vector(x, y);
+	    else
+		term->move(x, y);
 	    map3d_xy(zaxis_x, zaxis_y, base_z, &x, &y);
-	    term->vector(x, y);
+	    if (draw_border & 1)
+		term->vector(x, y);
+	    else
+		term->move(x, y);
 	    closepath();
     } else
 
