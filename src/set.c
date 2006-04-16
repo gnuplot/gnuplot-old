@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.228 2006/04/08 13:48:38 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.229 2006/04/16 21:22:07 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -3210,7 +3210,8 @@ set_object()
 	for (; this_object != NULL; this_object = this_object->next)
 	     if (tag == this_object->tag)
 		break;
-	if (tag == this_object->tag && this_object->object_type == OBJ_RECTANGLE) {
+	if (this_object && tag == this_object->tag
+			&& this_object->object_type == OBJ_RECTANGLE) {
 	    c_token--;
 	    set_rectangle(tag);
 	} else
