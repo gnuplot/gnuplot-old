@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.57 2006/04/28 22:45:45 tlecomte Exp $
+ * $Id: term_api.h,v 1.58 2006/04/29 00:37:42 tlecomte Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -301,6 +301,8 @@ enum { IPC_BACK_UNUSABLE = -2, IPC_BACK_CLOSED = -1 };
 
 # endif /* PIPE_IPC */
 
+/* options handling */
+enum { UNSET = -1, no = 0, yes = 1 };
 
 /* Variables of term.c needed by other modules: */
 
