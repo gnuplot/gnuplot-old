@@ -1,3 +1,7 @@
+/*
+ * $Id: gp_cairo_term.h,v 1.2 2006/06/04 23:16:04 tlecomte Exp $
+ */
+
 /* GNUPLOT - gp_cairo_term.h */
 
 /*[

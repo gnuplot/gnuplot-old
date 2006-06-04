@@ -1,3 +1,7 @@
+/*
+ * $Id: wxt_gui.h,v 1.3 2006/06/04 23:16:05 tlecomte Exp $
+ */
+
 /* GNUPLOT - wxt_gui.h */
 
 /*[
