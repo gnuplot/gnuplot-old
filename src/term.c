@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.147 2006/05/02 00:25:22 tlecomte Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.148 2006/06/07 21:40:48 tlecomte Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1610,7 +1610,8 @@ init_terminal()
 #endif /* SUN */
 
 #ifdef WXWIDGETS
-	term_name = "wxt";
+	if (term_name == (char *) NULL)
+		term_name = "wxt";
 #endif
 
 #ifdef _Windows
