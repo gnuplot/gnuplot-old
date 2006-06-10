@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.22 2005/11/27 19:30:49 sfeam Exp $
+ * $Id: eval.h,v 1.23 2006/06/10 00:35:26 sfeam Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -53,7 +53,6 @@
 enum operators {
     /* keep this in line with table in eval.c */
     PUSH, PUSHC, PUSHD1, PUSHD2, PUSHD,
-    PUSHV,
     CALL, CALLN, LNOT, BNOT, UMINUS,
     LOR, LAND, BOR, XOR, BAND, EQ, NE, GT, LT, GE, LE, PLUS, MINUS, MULT,
     DIV, MOD, POWER, FACTORIAL, BOOLE,
