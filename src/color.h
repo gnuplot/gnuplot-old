@@ -1,5 +1,5 @@
 /*
- * $Id: color.h,v 1.28 2006/05/21 05:03:35 tlecomte Exp $
+ * $Id: color.h,v 1.29 2006/06/15 15:42:33 sfeam Exp $
  */
 
 /* GNUPLOT - color.h */
@@ -222,6 +222,8 @@ void invalidate_palette __PROTO((void));
 */
 void set_color __PROTO(( double gray ));
 void set_rgbcolor __PROTO(( int rgblt ));
+
+void ifilled_quadrangle __PROTO((gpiPoint* icorners));
 
 /*
    The routine above for 4 points explicitly
