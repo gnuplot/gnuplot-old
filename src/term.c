@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.148 2006/06/07 21:40:48 tlecomte Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.149 2006/06/15 04:53:02 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -559,6 +559,11 @@ term_start_plot()
     /* Sync point for epslatex text positioning */
     if (term->layer)
 	(term->layer)(TERM_LAYER_RESET);
+
+    /* Because PostScript plots may be viewed out of order, make sure */
+    /* Each new plot makes no assumption about the previous palette.  */
+    if (term->flags & TERM_IS_POSTSCRIPT)
+	invalidate_palette();
 
     /* Set canvas size to full range of current terminal coordinates */
         canvas.xleft  = 0;
