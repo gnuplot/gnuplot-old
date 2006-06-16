@@ -1,11 +1,12 @@
 /*
- * $Id: mousecmn.h,v 1.14 2005/03/26 22:06:51 sfeam Exp $
+ * $Id: mousecmn.h,v 1.15 2006/06/16 19:55:56 mikulik Exp $
  */
 
 /* GNUPLOT - mousecnm.h */
 
 /*[
- * Copyright 1999, 2004
+ * 
+ * Copyright: Petr Mikulik <mikulik@physics.muni.cz>, since 1999
  *
  * Permission to use, copy, and distribute this software and its
  * documentation for any purpose with or without fee is hereby granted
