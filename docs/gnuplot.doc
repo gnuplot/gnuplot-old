@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.358 2006/06/17 22:56:13 sfeam Exp $
+C RCS $Id: gnuplot.doc,v 1.359 2006/06/17 23:13:36 sfeam Exp $
 C
 C Copyright (C) 1986 - 1993, 1998, 1999, 2000, 2001, 2004   Thomas Williams, Colin Kelley et al.
 C
@@ -6055,6 +6055,9 @@ C ... and restart the table:
  even if no surface is present in the graph.  Individual plots within the
  graph may be explicitly excluded from this processing by appending the extra
  option `nohidden3d` to the `with` specifier.
+
+ Hidden3d does not affect solid surfaces drawn using the pm3d mode. To 
+ achieve a similar effect for pm3d surfaces, use instead set `pm3d depthorder`.
 
  Functions are evaluated at isoline intersections.  The algorithm interpolates
  linearly between function points or data points when determining the visible
