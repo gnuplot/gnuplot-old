@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.359 2006/06/17 23:13:36 sfeam Exp $
+C RCS $Id: gnuplot.doc,v 1.360 2006/06/18 05:15:52 sfeam Exp $
 C
 C Copyright (C) 1986 - 1993, 1998, 1999, 2000, 2001, 2004   Thomas Williams, Colin Kelley et al.
 C
@@ -10851,5 +10851,7 @@ C ... and restart the table:
  versions differ in their handling of piped I/O.  Therefore gnuplot scripts
  using piped output to PDF may work only for some versions of PDFlib.
 
-
+ External library svgalib (used by linux and vgagl driver):
+ Requires gnuplot to be suid root (bad!) and has many bugs that are specific
+ to the video card or graphics driver used in X11.
  
