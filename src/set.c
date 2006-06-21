@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.230 2006/06/15 15:42:34 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.231 2006/06/21 03:40:18 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4693,11 +4693,10 @@ load_tic_series(AXIS_INDEX axis)
 	incr_token = c_token;
 	GET_NUM_OR_TIME(incr, axis);
 
-	if (END_OF_COMMAND)
+	if (!equals(c_token, ",")) {
+	    /* only step and increment specified */
 	    end = VERYLARGE;
-	else {
-	    if (!equals(c_token, ","))
-		int_error(c_token, "expecting comma to separate incr,end");
+	} else {
 	    c_token++;
 	    GET_NUM_OR_TIME(end, axis);
 	}
