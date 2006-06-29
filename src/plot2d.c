@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.129 2006/06/25 17:56:02 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.130 2006/06/29 19:36:43 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -2249,6 +2249,8 @@ eval_plots()
          *  --> save them now for writeback if requested
          */
         SAVE_WRITEBACK_ALL_AXES;
+	/* update GPVAL_ variables available to user */
+	update_gpval_variables(1);
     }
 
     cp_free(first_plot);

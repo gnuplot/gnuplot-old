@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.98 2006/06/28 04:31:23 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.99 2006/06/29 19:36:44 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -538,6 +538,7 @@ unset_command()
 	int_error(c_token, unsetmess);
 	break;
     }
+    update_gpval_variables(0); /* update GPVAL_ inner variables */
 }
 
 
@@ -1728,6 +1729,8 @@ reset_command()
     /* Garbage collection on space allocated for user variables */
     cleanup_udvlist();
 #endif
+
+    update_gpval_variables(0); /* update GPVAL_ inner variables */
 
     /* HBB 20000506: set 'interactive' back to its real value: */
     interactive = save_interactive;

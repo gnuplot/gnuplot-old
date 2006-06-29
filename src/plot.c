@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.83 2006/06/20 19:54:09 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.84 2006/06/29 19:36:43 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -441,6 +441,8 @@ main(int argc, char **argv)
     interactive = FALSE;
     init_terminal();		/* can set term type if it likes */
     push_terminal(0);		/* remember the default terminal */
+
+    update_gpval_variables(1);  /* update GPVAL_ variables available to user */
 
 #ifdef AMIGA_SC_6_1
     if (IsInteractive(Input()) == DOSTRUE)
