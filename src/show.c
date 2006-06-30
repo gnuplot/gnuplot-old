@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.180 2006/06/29 19:36:44 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.181 2006/06/30 02:17:24 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -629,7 +629,7 @@ show_command()
 	error_message = showmess;
 	break;
     default:
-	error_message = "internal parser error -- report as a bug";
+	error_message = "invalid or deprecated syntax";
 	break;
     }
 
