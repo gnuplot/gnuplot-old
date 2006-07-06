@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.234 2006/06/30 02:17:24 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.235 2006/07/06 19:34:06 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2171,8 +2171,11 @@ set_mouse()
 	} else if (almost_equals(c_token, "nozoomco$ordinates")) {
 	    mouse_setting.annotate_zoom_box = 0;
 	    ++c_token;
-	} else if (almost_equals(c_token, "po$lardistance")) {
+	} else if (almost_equals(c_token, "po$lardistancedeg")) {
 	    mouse_setting.polardistance = 1;
+	    ++c_token;
+	} else if (almost_equals(c_token, "polardistancet$an")) {
+	    mouse_setting.polardistance = 2;
 	    ++c_token;
 	} else if (almost_equals(c_token, "nopo$lardistance")) {
 	    mouse_setting.polardistance = 0;
