@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wtext.c,v 1.14 2006/06/19 03:47:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: wtext.c,v 1.15 2006/07/08 23:58:17 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - win/wtext.c */
