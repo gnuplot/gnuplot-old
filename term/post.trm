@@ -1,5 +1,5 @@
 /* Hello, Emacs: this is -*-C-*- !
- * $Id: post.trm,v 1.189 2006/07/17 22:57:27 tlecomte Exp $
+ * $Id: post.trm,v 1.190 2006/07/17 23:10:57 tlecomte Exp $
  */
 
 /* GNUPLOT - post.trm */
@@ -3136,9 +3136,6 @@ PS_dump_prologue_file(char *name)
     char *ps_prologue_dir;
     FILE *prologue_fd;
     char buf[256];
-#ifdef OS2
-    char *exepath;
-#endif
 
     if ((ps_prologue_dir = getenv("GNUPLOT_PS_DIR")) == NULL) {
 #ifdef GNUPLOT_PS_DIR
