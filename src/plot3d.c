@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.129 2006/06/29 19:36:43 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.130 2006/07/18 23:51:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1156,7 +1156,7 @@ eval_3dplots()
 	if (is_definition(c_token)) {
 	    define();
 	} else {
-	    int specs;
+	    int specs = -1;
 	    struct surface_points *this_plot;
 
 	    char *name_str;
