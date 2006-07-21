@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.25 2006/06/29 19:36:43 mikulik Exp $
+ * $Id: eval.h,v 1.26 2006/07/21 05:19:51 sfeam Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -127,6 +127,7 @@ extern const struct ft_entry GPFAR ft[]; /* The table of builtin functions */
 extern struct udft_entry *first_udf; /* user-def'd functions */
 extern struct udvt_entry *first_udv; /* user-def'd variables */
 extern struct udvt_entry udv_pi; /* 'pi' variable */
+extern struct udvt_entry *udv_NaN; /* 'NaN' variable */
 extern TBOOLEAN undefined;
 
 /* Prototypes of functions exported by eval.c */

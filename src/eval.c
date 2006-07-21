@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.46 2006/07/14 17:25:07 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.47 2006/07/21 05:19:51 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -61,6 +61,7 @@ static pfm_$fh_func_val_t apollo_sigfpe(pfm_$fault_rec_t & fault_rec)
 
 /* Global variables exported by this module */
 struct udvt_entry udv_pi = { NULL, "pi", FALSE, {INTGR, {0} } };
+struct udvt_entry *udv_NaN;
 /* first in linked list */
 struct udvt_entry *first_udv = &udv_pi;
 struct udft_entry *first_udf = NULL;
