@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: sun.trm,v 1.12 2006/07/07 03:51:23 sfeam Exp $
+ * $Id: sun.trm,v 1.13 2006/07/21 02:35:48 sfeam Exp $
  *
  */
 
@@ -363,7 +363,9 @@ START_HELP(sun)
 "1 sun",
 "?commands set terminal sun",
 "?set terminal sun",
+"?set term sun",
 "?terminal sun",
+"?term sun",
 "?sun",
 " The `sun` terminal driver supports the SunView window system.  It has no",
 " options."
