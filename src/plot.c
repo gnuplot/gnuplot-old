@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.87 2006/07/29 22:26:10 tlecomte Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.88 2006/07/30 03:37:06 tlecomte Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -631,7 +631,11 @@ main(int argc, char **argv)
 
     if (argc > 1) {
 #ifdef _Windows
-	int noend = 0;
+# ifdef WXWIDGETS
+	TBOOLEAN noend = persist;
+# else
+	TBOOLEAN noend = FALSE;
+# endif
 #endif
 
 	/* load filenames given as arguments */
@@ -641,7 +645,7 @@ main(int argc, char **argv)
 #ifdef _Windows
 	    if (stricmp(*argv, "-noend") == 0 || stricmp(*argv, "/noend") == 0
 	       	|| stricmp(*argv, "-persist") == 0)
-		noend = 1;
+		noend = TRUE;
 	    else
 #endif
 	    if (strcmp(*argv, "-") == 0) {
