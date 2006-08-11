@@ -1,6 +1,6 @@
 2006-08-11  Petr Mikulik  <mikulik@physics.muni.cz>
 
-	* docs/gnuplot.doc (puttex): Remove superfluous spaces around \index{x}.
+	* docs/doc2tex.c (puttex): Remove superfluous spaces around \index{x}.
 
 2006-08-11 Bastian Maerkisch  <bmaerkisch@web.de>
 
