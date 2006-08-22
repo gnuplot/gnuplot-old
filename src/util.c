@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.64 2006/06/27 04:02:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.65 2006/08/22 03:08:12 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -911,6 +911,8 @@ int_error(int t_num, const char str[], va_dcl)
     fprintf(stderr, str, a1, a2, a3, a4, a5, a6, a7, a8);
 #endif
     fputs("\n\n", stderr);
+
+    update_gpval_variables(2);
 
     bail_to_command_line();
 }
