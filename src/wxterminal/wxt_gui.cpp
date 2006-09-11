@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.25 2006/09/11 08:31:38 tlecomte Exp $
+ * $Id: wxt_gui.cpp,v 1.26 2006/09/11 21:48:38 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -543,21 +543,25 @@ void wxtPanel::wxt_settings_queue(TBOOLEAN antialiasing,
 					TBOOLEAN oversampling,
 					int hinting_setting)
 {
+	mutex_queued.Lock();
 	settings_queued = true;
 	antialiasing_queued = antialiasing;
 	oversampling_queued = oversampling;
 	hinting_queued = hinting_setting;
+	mutex_queued.Unlock();
 }
 
 /* apply queued settings */
 void wxtPanel::wxt_settings_apply()
 {
+	mutex_queued.Lock();
 	if (settings_queued) {
 		plot.antialiasing = antialiasing_queued;
 		plot.oversampling = oversampling_queued;
 		plot.hinting = hinting_queued;
 		settings_queued = false;
 	}
+	mutex_queued.Unlock();
 }
 
 /* clear the command list, free the allocated memory */

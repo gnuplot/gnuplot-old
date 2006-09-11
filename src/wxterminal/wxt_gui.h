@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.13 2006/09/10 22:13:52 tlecomte Exp $
+ * $Id: wxt_gui.h,v 1.14 2006/09/11 21:48:38 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -344,6 +344,7 @@ private:
 	TBOOLEAN antialiasing_queued;
 	TBOOLEAN oversampling_queued;
 	int hinting_queued;
+	wxMutex mutex_queued;
 
 #ifdef USE_MOUSE
 	/* watches for time between mouse clicks */
