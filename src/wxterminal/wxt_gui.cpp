@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.28 2006/09/21 14:29:26 tlecomte Exp $
+ * $Id: wxt_gui.cpp,v 1.29 2006/09/21 14:33:31 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -662,7 +662,7 @@ void wxtPanel::DrawToDC(wxDC &dc, wxRegion &region)
 
 #ifdef USE_MOUSE
 	if (wxt_zoombox) {
-		tmp_pen = wxPen( wxT("BLACK") );
+		tmp_pen = wxPen(wxT("black"), 1, wxSOLID);
 		tmp_pen.SetCap( wxCAP_ROUND );
 		dc.SetPen( tmp_pen );
 		dc.SetLogicalFunction( wxINVERT );
