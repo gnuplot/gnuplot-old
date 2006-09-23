@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.29 2006/09/21 14:33:31 tlecomte Exp $
+ * $Id: wxt_gui.cpp,v 1.30 2006/09/23 14:25:10 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -734,13 +734,10 @@ void wxtPanel::OnSize( wxSizeEvent& event )
 	new_yscale = ((double) plot.device_ymax)*plot.oversampling_scale/((double) plot.ymax);
 
 	/* We will keep the aspect ratio constant */
-	if (new_yscale == new_xscale) {
-		plot.xscale = new_xscale;
-		plot.yscale = new_yscale;
-	} else if (new_yscale < new_xscale) {
+	if (new_yscale < new_xscale) {
 		plot.xscale = new_yscale;
 		plot.yscale = new_yscale;
-	} else if (new_yscale > new_xscale) {
+	} else {
 		plot.xscale = new_xscale;
 		plot.yscale = new_xscale;
 	}
