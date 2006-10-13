@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.168 2006/10/08 21:04:26 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.169 2006/10/13 19:50:51 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -3963,6 +3963,7 @@ is_meta(KeySym mod)
 static char*
 getMultiTabConsoleSwitchCommand(unsigned long *newGnuplotXID)
 {
+#ifdef HAVE_STRDUP	/* We assume that any machine missing strdup is too old for KDE */
     char *cmd = NULL; /* result */
     char *ptr = getenv("KONSOLE_DCOP_SESSION"); /* Try KDE's Konsole first. */
     *newGnuplotXID = 0;
@@ -4036,6 +4037,8 @@ getMultiTabConsoleSwitchCommand(unsigned long *newGnuplotXID)
     }
     /* now test for GNOME multitab console */
     /* ... if somebody bothers to implement it ... */
+
+#endif /* HAVE_STRDUP */
     /* we are not running in any known (implemented) multitab console */
     return NULL;
 }
