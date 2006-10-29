@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.185 2006/09/19 16:03:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.185.2.1 2006/10/29 05:50:42 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -3094,8 +3094,9 @@ show_ticdef(AXIS_INDEX axis)
     }
 
     if (axis_array[axis].ticdef.textcolor.type != TC_DEFAULT) {
-        fprintf(stderr,"\t  textcolor lt %d\n",
-            axis_array[axis].ticdef.textcolor.lt+1);
+        fputs("\t ", stderr);
+	save_textcolor(stderr, &axis_array[axis].ticdef.textcolor);
+        fputs("\n", stderr);
     }
 
     if (axis_array[axis].ticdef.font && *axis_array[axis].ticdef.font) {
