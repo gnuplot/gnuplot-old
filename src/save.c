@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.134 2006/10/29 04:22:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.135 2006/10/30 00:08:24 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -313,7 +313,11 @@ set y2data%s\n",
 	fputc('\n', fp);
     }
 
-    fprintf(fp, "set key title \"%s\"\n", conv_text(key->title));
+    fprintf(fp, "set key title \"%s\"", conv_text(key->title));
+    if (key->font)
+	fprintf(fp, " font \"%s\"", key->font);
+    fputs("\n", fp);
+
     if (!(key->visible))
 	fputs("unset key\n", fp);
     else {
