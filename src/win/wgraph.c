@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.52 2006/07/18 05:20:51 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.53 2006/11/12 23:43:46 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -942,6 +942,7 @@ drawgraph(LPGW lpgw, HDC hdc, LPRECT rect)
 	     * by a W_fillstyle call. */
 	    switch(fillstyle & 0x0f) {
 		case FS_SOLID:
+		case FS_TRANSPARENT_SOLID:
 		    /* style == 1 --> use halftone fill pattern
 		     * according to filldensity. Density is from
 		     * 0..100 percent: */
@@ -953,6 +954,7 @@ drawgraph(LPGW lpgw, HDC hdc, LPRECT rect)
 		    SelectObject(hdc, halftone_brush[idx]);
 		    break;
 		case FS_PATTERN:
+		case FS_TRANSPARENT_PATTERN:
 		    /* style == 2 --> use fill pattern according to
                      * fillpattern. Pattern number is enumerated */
 		    idx = fillstyle >> 4;

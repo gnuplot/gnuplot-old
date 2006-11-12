@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.47 2006/05/15 10:34:07 mikulik Exp $";
+static char RCSid[]="$Id: gclient.c,v 1.48 2006/11/12 23:43:46 sfeam Exp $";
 #endif
 
 /****************************************************************************
@@ -2698,6 +2698,7 @@ ReadGnu(void* arg)
 		switch(style & 0xf) {
 
 		    case FS_SOLID:
+		    case FS_TRANSPARENT_SOLID:
 		    {
 			/* style == 1 --> fill with intensity according to filldensity */
 			static const ULONG patternlist[] = {
@@ -2718,6 +2719,7 @@ ReadGnu(void* arg)
 		    }
 
 		    case FS_PATTERN:
+		    case FS_TRANSPARENT_PATTERN:
 		    {
 			/* style == 2 --> fill with pattern according to fillpattern */
 			/* the upper 3 nibbles of 'style' contain pattern number */
