@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.167.2.1 2006/10/13 19:47:28 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.167.2.2 2007/01/10 22:42:13 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -3687,6 +3687,7 @@ PaletteSetColor(plot_struct * plot, double gray)
 		index = plot->cmap->allocated -1;
 
 	XSetForeground(dpy, gc, plot->cmap->pixels[index]);
+	plot->current_rgb = plot->cmap->pixels[index];
     }
 }
 
