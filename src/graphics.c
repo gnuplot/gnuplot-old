@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.210 2007/01/17 05:34:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.211 2007/01/22 00:43:03 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -2054,6 +2054,10 @@ plot_impulses(struct curve_points *plot, int yaxis_x, int xaxis_y)
 		continue;
 	    }
 	}
+
+	if ((plot->lp_properties.pm3d_color.value < 0.0)
+	    && (plot->lp_properties.pm3d_color.type == TC_RGB))
+	    set_rgbcolor( plot->points[i].yhigh);
 
 	if (polar)
 	    (*t->move) (yaxis_x, xaxis_y);
