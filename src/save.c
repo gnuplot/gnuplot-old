@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.140 2007/02/06 21:07:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.141 2007/02/06 23:56:39 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -320,6 +320,8 @@ set y2data%s\n",
     fprintf(fp, "set key title \"%s\"", conv_text(key->title));
     if (key->font)
 	fprintf(fp, " font \"%s\"", key->font);
+    if (key->textcolor.type != TC_LT || key->textcolor.lt != LT_BLACK)
+	save_textcolor(fp, &key->textcolor);
     fputs("\n", fp);
 
     if (!(key->visible))
