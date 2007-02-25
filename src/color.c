@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.70.2.1 2006/10/19 17:47:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.70.2.2 2007/02/25 13:04:50 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -614,7 +614,6 @@ draw_color_smooth_box(int plot_mode)
     /* draw tics */
     if (axis_array[COLOR_AXIS].ticmode) {
 	term_apply_lp_properties(&border_lp); /* border linetype */
-	setup_tics(COLOR_AXIS, 20);
 	gen_tics(COLOR_AXIS, cbtick_callback );
     }
 
