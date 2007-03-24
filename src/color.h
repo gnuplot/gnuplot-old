@@ -1,5 +1,5 @@
 /*
- * $Id: color.h,v 1.29 2006/06/15 15:42:33 sfeam Exp $
+ * $Id: color.h,v 1.29.2.1 2007/03/24 05:29:48 sfeam Exp $
  */
 
 /* GNUPLOT - color.h */
@@ -57,7 +57,7 @@ typedef struct {
 /* EAM July 2004 - Disentangle polygon support and PM3D support  */
 /* a point (with integer coordinates) for use in polygon drawing */
 typedef struct {
-    unsigned int x, y;
+    int x, y;
 #ifdef EXTENDED_COLOR_SPECS
     double z;
     colorspec_t spec;
