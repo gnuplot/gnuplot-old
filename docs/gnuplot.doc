@@ -1,4 +1,4 @@
-C RCS $Id: gnuplot.doc,v 1.422 2007/03/09 00:09:12 sfeam Exp $
+C RCS $Id: gnuplot.doc,v 1.423 2007/03/28 22:22:43 sfeam Exp $
 C
 C Copyright (C) 1986 - 1993, 1998, 1999, 2000, 2001, 2004   Thomas Williams, Colin Kelley et al.
 C
@@ -3237,7 +3237,8 @@ C ... and restart the table:
        1.0 "second column" 3.0
 
  Data may be written in exponential format with the exponent preceded by the
- letter e, E, d, D, q, or Q.
+ letter e or E.  The fortran exponential specificiers d, D, q, and Q may also
+ be used if the command `set datafile fortran` is in effect.
 
  Only one column (the y value) need be provided.  If x is omitted, `gnuplot`
  provides integer values starting at 0.
