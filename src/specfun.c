@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: specfun.c,v 1.34 2005/04/22 21:40:37 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: specfun.c,v 1.35 2007/04/25 21:27:18 vanzandt Exp $"); }
 #endif
 
 /* GNUPLOT - specfun.c */
@@ -110,7 +110,6 @@ static double confrac __PROTO((double a, double b, double x));
 static double ibeta __PROTO((double a, double b, double x));
 static double igamma __PROTO((double a, double x));
 static double ranf __PROTO((struct value * init));
-static double inverse_normal_func __PROTO((double p));
 static double inverse_error_func __PROTO((double p));
 static double lambertw __PROTO((double x));
 #ifndef GAMMA
@@ -975,7 +974,9 @@ f_normal(union argument *arg)
     x = real(pop(&a));
 
     x = 0.5 * SQRT_TWO * x;
-    x = 0.5 * (1.0 + erf(x));
+    x = 0.5 * erfc(-x);		/* by using erfc instead of erf, we
+				   can get accurate values for -38 <
+				   arg < -8 */
     push(Gcomplex(&a, x, 0.0));
 }
 
