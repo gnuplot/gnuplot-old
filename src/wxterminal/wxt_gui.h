@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.20 2007/04/29 21:41:08 tlecomte Exp $
+ * $Id: wxt_gui.h,v 1.21 2007/04/29 22:14:56 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -499,6 +499,11 @@ STATUS_INTERRUPT_ON_NEXT_CHECK,
 STATUS_INTERRUPT
 };
 static int wxt_status = STATUS_UNINITIALIZED;
+
+/* wxt_handling_persist is set to true after a child process is created for the
+ * "persist-effect", and starts handling events directly without having two
+ * separate threads. */
+static bool wxt_handling_persist = false;
 
 /* structure to store windows and their ID */
 typedef struct wxt_window_t {
