@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.c,v 1.21 2007/03/31 23:33:15 sfeam Exp $
+ * $Id: gp_cairo.c,v 1.22 2007/04/30 13:01:56 tlecomte Exp $
  */
 
 /* GNUPLOT - gp_cairo.c */
@@ -170,6 +170,8 @@ void gp_cairo_initialize_plot(plot_struct *plot)
 
 	plot->oversampling = TRUE;
 	plot->oversampling_scale = GP_CAIRO_SCALE;
+
+	plot->rounded = FALSE;
 
 	plot->hinting = 100;
 
