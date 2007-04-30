@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.22 2007/04/30 12:39:41 tlecomte Exp $
+ * $Id: wxt_gui.h,v 1.23 2007/04/30 12:56:08 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
