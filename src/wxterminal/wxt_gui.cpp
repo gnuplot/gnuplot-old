@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.30.2.5 2006/11/28 20:26:55 tlecomte Exp $
+ * $Id: wxt_gui.cpp,v 1.30.2.6 2007/05/05 19:01:41 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -177,8 +177,10 @@ void *wxtThread::Entry()
 	FPRINTF((stderr,"gui_thread_entry\n"));
 
 	/* don't answer to SIGINT in this thread - avoids LONGJMP problems */
-	sigset_t set[1] = {SIGINT};
-	pthread_sigmask(SIG_BLOCK,set,NULL);
+	sigset_t set;
+	sigemptyset(&set);
+	sigaddset(&set, SIGINT);
+	pthread_sigmask(SIG_BLOCK, &set, NULL);
 
 	/* gui loop */
 	wxTheApp->OnRun();
