@@ -1,5 +1,5 @@
 /*
- * $Id: variable.h,v 1.14 2007/04/07 22:31:30 sfeam Exp $
+ * $Id: variable.h,v 1.15 2007/05/10 22:49:37 sfeam Exp $
  */
 
 /* GNUPLOT - variable.h */
@@ -116,7 +116,5 @@ extern char full_month_names[12][32];
 extern char abbrev_month_names[12][8];
 extern char full_day_names[7][32];
 extern char abbrev_day_names[7][8];
-
-extern char *numeric_locale;
 
 #endif /* VARIABLE_H */

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.68 2007/04/07 22:31:29 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.69 2007/05/10 22:49:37 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -44,10 +44,6 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.68 2007/04/07 22:31:29 sfea
 /*  #include "setshow.h" */		/* for month names etc */
 #include "term_api.h"		/* for term_end_plot() used by graph_error() */
 
-#if defined(HAVE_LOCALE_H)
-#include "variable.h"
-#endif
-
 #if defined(HAVE_DIRENT_H)
 # include <sys/types.h>
 # include <dirent.h>
@@ -69,6 +65,10 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.68 2007/04/07 22:31:29 sfea
 
 /* decimal sign */
 char *decimalsign = NULL;
+
+/* Holds the name of the current locale from LC_NUMERIC */
+/* as set by "set decimal locale" */
+char *numeric_locale = NULL;
 
 const char *current_prompt = NULL; /* to be set by read_line() */
 
