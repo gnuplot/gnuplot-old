@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.145 2007/04/27 20:35:45 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.146 2007/05/10 22:52:46 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -430,6 +430,13 @@ get_data(struct curve_points *current_plot)
 	? current_plot : NULL;
 #endif
 
+#ifdef HAVE_LOCALE_H
+    /* If the user has set an explicit locale for numeric input, apply it */
+    /* here so that it affects data fields read from the input file.      */
+    if (numeric_locale)
+	setlocale(LC_NUMERIC,numeric_locale);
+#endif
+
     while ((j = df_readline(v, max_cols)) != DF_EOF) {
         /* j <= max_cols */
 
@@ -797,6 +804,12 @@ get_data(struct curve_points *current_plot)
     cp_extend(current_plot, i); /* shrink to fit */
 
     df_close();
+
+#ifdef HAVE_LOCALE_H
+    /* We are finished reading user input; return to C locale for internal use */
+    if (numeric_locale)
+	setlocale(LC_NUMERIC,"C");
+#endif
 
     return i;                   /* i==0 indicates an 'empty' file */
 }
