@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.53 2006/11/12 23:43:46 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.54 2007/05/18 06:15:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -406,6 +406,8 @@ GraphInit(LPGW lpgw)
 void WDPROC
 GraphClose(LPGW lpgw)
 {
+	/* Pass it through mouse handling to check for "bind Close" */
+	Wnd_exec_event(lpgw, (LPARAM)0, GE_reset, 0);
 	/* close window */
 	if (lpgw->hWndGraph)
 		DestroyWindow(lpgw->hWndGraph);
