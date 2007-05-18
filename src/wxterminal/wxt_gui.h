@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.23 2007/04/30 12:56:08 tlecomte Exp $
+ * $Id: wxt_gui.h,v 1.24 2007/05/18 08:55:21 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -224,6 +224,9 @@ public:
 	void OnExitLoop( wxCommandEvent &event );
 
 private:
+	/* any class wishing to process wxWidgets events must use this macro */
+	DECLARE_EVENT_TABLE()
+
 	/* load a toolbar icon */
 	void LoadPngIcon(const unsigned char *embedded_png, int length, int icon_number);
 	/* load a cursor */
