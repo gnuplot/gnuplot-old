@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.25 2007/05/22 17:30:51 tlecomte Exp $
+ * $Id: wxt_gui.h,v 1.26 2007/05/23 21:51:18 tlecomte Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -151,7 +151,7 @@ extern "C" {
 #elif defined(__WXMSW__)
 # define WXT_MONOTHREADED
 #else
-# error "Not implemented"
+# error "wxt does not know if this platform has to be mono- or multi-threaded"
 #endif
 
 extern "C" {
