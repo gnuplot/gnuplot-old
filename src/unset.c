@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.99.2.1 2007/03/22 04:58:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.99.2.2 2007/06/07 16:27:38 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -927,7 +927,7 @@ unset_label()
 		return;		/* exit, our job is done */
 	    }
 	}
-	int_error(c_token, "label not found");
+	/* int_warn(c_token, "label not found"); */
     }
 }
 
