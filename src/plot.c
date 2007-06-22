@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.94 2007/06/04 20:54:26 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.95 2007/06/22 17:53:33 tlecomte Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -210,7 +210,7 @@ inter(int anint)
     {
     term_reset();
     (void) putc('\n', stderr);
-    LONGJMP(command_line_env, TRUE);	/* return to prompt */
+    bail_to_command_line();	/* return to prompt */
     }
 }
 
