@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.179 2007/06/19 21:13:25 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.180 2007/06/29 04:50:31 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -1510,7 +1510,7 @@ record()
 			break;
 		    csp = csp->next_cmap_struct;
 		}
-		sprintf(cmapidx+1, "%3u\0", cm_index);
+		sprintf(cmapidx+1, "%3u%c", cm_index, '\0');
 		store_command(cmapidx, plot);
 	    }
 	    return 1;
