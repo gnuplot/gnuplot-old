@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.c,v 1.22 2007/04/30 13:01:56 tlecomte Exp $
+ * $Id: gp_cairo.c,v 1.23 2007/07/12 23:44:52 sfeam Exp $
  */
 
 /* GNUPLOT - gp_cairo.c */
@@ -780,7 +780,7 @@ void gp_cairo_draw_point(plot_struct *plot, int x1, int y1, int style)
 	}
 
 	cairo_save(plot->cr);
-	cairo_set_line_width(plot->cr, 1.0*plot->oversampling_scale);
+	cairo_set_line_width(plot->cr, plot->linewidth*plot->oversampling_scale);
 	cairo_set_source_rgb(plot->cr, plot->color.r, plot->color.g, plot->color.b);
 
 	/* always draw a dot. Nothing more is needed for style=-1 */
