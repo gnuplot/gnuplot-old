@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.35 2006/04/29 05:30:07 tlecomte Exp $
+ * $Id: term.h,v 1.36 2007/07/16 21:58:43 tlecomte Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -453,6 +453,10 @@
 /* WXWIDGETS */
 #ifdef WXWIDGETS
 # include "wxt.trm"
+#endif
+
+#ifdef HAVE_CAIROPDF
+# include "cairo.trm"
 #endif
 
 #endif /* !SHORT_TERMLIST */
