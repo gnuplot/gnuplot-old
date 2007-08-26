@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.33 2006/03/06 17:42:29 broeker Exp $
+ * $Id: syscfg.h,v 1.33.2.1 2007/08/26 06:15:51 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -239,7 +239,7 @@
 #endif
 
 #ifndef CONTACT
-# define CONTACT "gnuplot-bugs@lists.sourceforge.net"
+# define CONTACT "http://sourceforge.net/projects/gnuplot"
 #endif
 
 #ifndef HELPMAIL
