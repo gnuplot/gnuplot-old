@@ -1,5 +1,5 @@
 /*
- * $Id: datafile.h,v 1.21 2007/02/23 17:46:17 sfeam Exp $
+ * $Id: datafile.h,v 1.22 2007/08/27 04:33:47 sfeam Exp $
  */
 
 /* GNUPLOT - datafile.h */
@@ -126,9 +126,7 @@ void f_dollars __PROTO((union argument *x));
 void f_column  __PROTO((union argument *x));
 void f_valid   __PROTO((union argument *x));
 void f_timecolumn   __PROTO((union argument *x));
-#ifdef GP_STRING_VARS
 void f_stringcolumn   __PROTO((union argument *x));
-#endif
 
 struct use_spec_s {
     int column;
