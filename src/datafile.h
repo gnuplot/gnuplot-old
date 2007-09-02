@@ -1,5 +1,5 @@
 /*
- * $Id: datafile.h,v 1.22 2007/08/27 04:33:47 sfeam Exp $
+ * $Id: datafile.h,v 1.23 2007/09/02 03:41:32 sfeam Exp $
  */
 
 /* GNUPLOT - datafile.h */
@@ -82,7 +82,6 @@ extern TBOOLEAN df_matrix;
 /* is this a binary file? */
 extern TBOOLEAN df_binary;
 
-extern int df_eof;
 extern int df_line_number;
 extern AXIS_INDEX df_axis[];
 extern struct udft_entry ydata_func; /* HBB 990829: moved from command.h */
