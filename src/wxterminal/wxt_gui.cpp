@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.54 2007/08/20 09:46:06 tlecomte Exp $
+ * $Id: wxt_gui.cpp,v 1.55 2007/10/06 06:04:05 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -2206,7 +2206,7 @@ void wxt_command_push(gp_command command)
 void wxtPanel::wxt_cairo_refresh()
 {
 	/* Clear background. */
-	gp_cairo_clear(&plot);
+	gp_cairo_solid_background(&plot);
 
 	command_list_t::iterator wxt_iter; /*declare the iterator*/
 	for(wxt_iter = command_list.begin(); wxt_iter != command_list.end(); ++wxt_iter) {
