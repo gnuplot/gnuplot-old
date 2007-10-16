@@ -1,5 +1,5 @@
 /*
- * $Id: term_pc.h,v 1.5 2005/03/25 21:01:59 sfeam Exp $
+ * $Id: term_pc.h,v 1.6 2007/10/16 21:19:44 sfeam Exp $
  *
  */
 
@@ -164,11 +164,6 @@
 #   include "gpr.h"
 #  endif
 #endif /* Apollo */
-
-/* Iris */
-#ifdef IRIS
-# include "iris4d.trm"
-#endif
 
 
 /* Linux VGA */
