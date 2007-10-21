@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.148 2007/09/02 03:41:32 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.149 2007/10/21 04:12:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1559,6 +1559,11 @@ eval_3dplots()
 #endif
 
 	    }
+
+	    /* Some low-level routines expect to find the pointflag attribute */
+	    /* in lp_properties (they don't have access to the full header).  */
+	    if (this_plot->plot_style & PLOT_STYLE_HAS_POINT)
+		this_plot->lp_properties.pointflag = TRUE;
 
 	    /* Rule out incompatible line/point/style options */
 	    if (this_plot->plot_type == FUNC3D) {
