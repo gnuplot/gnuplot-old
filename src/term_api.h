@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.63 2007/02/27 05:06:41 sfeam Exp $
+ * $Id: term_api.h,v 1.64 2007/10/21 04:17:23 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -425,8 +425,8 @@ void PM_set_gpPMmenu __PROTO((struct t_gpPMmenu * gpPMmenu));
 # endif
 #endif
 
-/* in set.c (used in pm3d.c) */
-void lp_use_properties __PROTO((struct lp_style_type *lp, int tag, int pointflag));
+/* in misc.c */
+void lp_use_properties __PROTO((struct lp_style_type *lp, int tag));
 
 /* Wrappers for term->path() */
 void newpath __PROTO((void));
