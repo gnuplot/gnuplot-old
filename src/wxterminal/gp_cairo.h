@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.h,v 1.8 2007/10/06 06:04:05 sfeam Exp $
+ * $Id: gp_cairo.h,v 1.9 2007/11/04 22:56:31 tlecomte Exp $
  */
 
 /* GNUPLOT - gp_cairo.h */
@@ -214,9 +214,12 @@ void gp_cairo_set_textangle(plot_struct *plot, double angle);
 void gp_cairo_solid_background(plot_struct *plot);
 void gp_cairo_clear_background(plot_struct *plot);
 
-/* fill term->h_char, v_char, h_tic, v_tic
+/* helps to fill term->h_char, v_char, h_tic, v_tic
  * Depends on plot->fontsize and fontname */
-void gp_cairo_set_termvar(plot_struct *plot);
+void gp_cairo_set_termvar(plot_struct *plot, unsigned int *v_char,
+                                             unsigned int *h_char,
+                                             unsigned int *v_tic,
+                                             unsigned int *h_tic);
 
 /* translate plot->encoding int to char* suitable for glib */
 const char* gp_cairo_get_encoding(plot_struct *plot);
