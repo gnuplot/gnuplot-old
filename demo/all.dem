@@ -1,5 +1,5 @@
 #
-# $Id: all.dem,v 1.35 2007/08/30 05:58:04 sfeam Exp $
+# $Id: all.dem,v 1.36 2007/11/10 23:50:01 sfeam Exp $
 #
 # Executes ALL demos in this directory, in functionality order.
 #
@@ -171,8 +171,8 @@ print "********************** file textrotate.dem *********************"
 load "textrotate.dem"
 reset
 
-print "********************** file enhancedtext.dem *********************"
-load "enhancedtext.dem"
+print "********************** file enhanced_utf8.dem *********************"
+load "enhanced_utf8.dem"
 reset
 
 print "********************** file arrowstyle.dem *********************"
