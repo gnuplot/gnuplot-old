@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.254 2007/12/02 01:48:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.255 2007/12/06 06:27:07 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2637,7 +2637,7 @@ set_palette_file()
 	int_error(c_token, "missing filename");
 
     df_set_plot_mode(MODE_QUERY);	/* Needed only for binary datafiles */
-    specs = df_open(file_name, 4);
+    specs = df_open(file_name, 4, NULL);
     free(file_name);
 
     if (specs > 0 && specs < 3)
