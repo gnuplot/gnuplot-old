@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.184 2007/12/08 23:53:59 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.185 2007/12/09 23:41:44 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -5811,7 +5811,7 @@ pr_width()
 	strcat(option, width_keys[n]);
 	strcat(option, "Width");
 	if ((v = pr_GetR(db, option)) != NULL) {
-	    if (*v < '0' || *v > '10' || strlen(v) > 2)
+	    if (*v < '0' || *v > '9' || strlen(v) > 1)
 		fprintf(stderr, "gnuplot: illegal width value %s:%s\n", option, v);
 	    else
 		widths[n] = (unsigned int) atoi(v);
