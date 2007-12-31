@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.66 2007/12/20 03:15:54 sfeam Exp $
+ * $Id: term_api.h,v 1.67 2007/12/31 17:51:27 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -259,6 +259,11 @@ typedef struct TERMENTRY {
  * a polygon cleanly.
  */
     void (*path) __PROTO((int p));
+
+/* Scale factor for converting terminal coordinates to output
+ * pixel coordinates.  Used to provide data for external mousing code.
+ */
+    double tscale;
 
 } TERMENTRY;
 
