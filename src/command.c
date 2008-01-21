@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.162 2008/01/10 16:08:26 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.163 2008/01/21 22:17:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1081,7 +1081,10 @@ pause_command()
 #endif
 	sleep_time = real_expression();
 
-    if (!(END_OF_COMMAND)) {
+    if (END_OF_COMMAND) {
+	if (!buf)  /* Can only happen the first time through */
+	    buf = gp_strdup("paused");
+    } else {
 	free(buf);
 	buf = try_to_get_string();
 	if (!buf)
@@ -1098,6 +1101,7 @@ pause_command()
 	    text = 1;
 	}
     }
+
     if (sleep_time < 0) {
 #ifdef _Windows
     if (paused_for_mouse && !graphwin.hWndGraph) {
