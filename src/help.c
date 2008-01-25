@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: help.c,v 1.22 2007/06/30 19:36:04 tlecomte Exp $"); }
+static char *RCSid() { return RCSid("$Id: help.c,v 1.23 2008/01/25 20:55:26 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - help.c */
@@ -35,6 +35,13 @@ static char *RCSid() { return RCSid("$Id: help.c,v 1.22 2007/06/30 19:36:04 tlec
 ]*/
 
 #include "help.h"
+
+#ifdef NO_GIH
+#include <stdio.h>
+void EndOutput(){}
+void StartOutput(){}
+void OutLine(const char *M){fputs(M,stderr);}
+#else
 
 #include "alloc.h"
 #include "util.h"
@@ -771,3 +778,5 @@ EndOutput()
 	(void) pclose(outfile);
 #endif
 }
+
+#endif  /* #ifdef NO_GIH */
