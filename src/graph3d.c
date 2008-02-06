@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.190 2008/02/02 22:12:46 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.191 2008/02/06 18:04:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -90,7 +90,7 @@ TBOOLEAN draw_surface = TRUE;
 
 /* Was hidden3d display selected by user? */
 TBOOLEAN hidden3d = FALSE;
-int hidden3d_layer = LAYER_FRONT;
+int hidden3d_layer = LAYER_BACK;
 
 /* Rotation and scale of the 3d view, as controlled by 'set view': */
 float surface_rot_z = 30.0;

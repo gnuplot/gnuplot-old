@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.63 2008/02/02 22:12:46 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.64 2008/02/06 18:04:22 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -2142,7 +2142,7 @@ reset_hidden3doptions()
     hiddenHandleUndefinedPoints = HANDLE_UNDEFINED_POINTS;
     hiddenShowAlternativeDiagonal = SHOW_ALTERNATIVE_DIAGONAL;
     hiddenHandleBentoverQuadrangles = HANDLE_BENTOVER_QUADRANGLES;
-    hidden3d_layer = LAYER_FRONT;
+    hidden3d_layer = LAYER_BACK;
 }
 
 /* Emacs editing help for HBB:
