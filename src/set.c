@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.260 2008/02/14 17:05:20 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.261 2008/02/20 06:18:45 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4048,6 +4048,8 @@ set_timestamp()
 	}
 	/* The "offset" keyword is new (v4.1); for backward compatibility we don't enforce it */
 	get_position_default(&(timelabel.offset),character);
+#else
+	int_error(c_token,"unrecognized option");
 #endif
 
     }
