@@ -1,5 +1,5 @@
 /*
- * $Id: graphics.h,v 1.40 2007/12/18 19:02:56 sfeam Exp $
+ * $Id: graphics.h,v 1.41 2008/02/22 06:13:49 sfeam Exp $
  */
 
 /* GNUPLOT - graphics.h */
@@ -125,9 +125,10 @@ void plot_image_or_update_axes __PROTO((void *plot, TBOOLEAN update_axes));
 #endif
 
 #ifdef EAM_OBJECTS
-void place_rectangles __PROTO((struct object *listhead, int layer, int dimensions, BoundingBox *clip_area));
+void place_objects __PROTO((struct object *listhead, int layer, int dimensions, BoundingBox *clip_area));
+void do_ellipse __PROTO((int dimensions, t_ellipse *e, int style ));
 #else
-#define place_rectangles(listhead,layer,dimensions,clip_area) /* void() */
+#define place_objects(listhead,layer,dimensions,clip_area) /* void() */
 #endif
 
 #endif /* GNUPLOT_GRAPHICS_H */
