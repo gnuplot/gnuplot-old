@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.139 2008/02/23 17:43:47 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.140 2008/02/24 19:49:35 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -3119,7 +3119,7 @@ adjust_binary_use_spec()
 
     char *nothing_known = "No default columns known for that plot style";
     enum PLOT_STYLE plot_style;
-    unsigned ps_index;
+    unsigned int ps_index;
     int c_token_copy;
 
     /* This may appear strange, but ASCII matrix is not the same
