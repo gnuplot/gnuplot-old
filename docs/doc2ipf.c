@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2ipf.c,v 1.20 2007/10/24 00:47:51 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2ipf.c,v 1.21 2008/02/25 02:20:35 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - doc2ipf.c */
@@ -184,13 +184,14 @@ process_line(char *line, FILE *b)
 	    case '$':
 		/* FIXME: this fails for '$' entry in 'unitary operators' */
 		if (intable && (tablechar != '$') && (line[0] == '%')) {
-		    ++i;
+		    if (line[++i] == NUL || line[i+1] == NUL)
+			break;
 		    if (line[i + 1] == '$' || line[i] == 'x' || line[i] == '|') {
-			while (line[i] != '$')
+			while (line[i] && line[i] != '$')
 			    line2[j++] = line[i++];
 			--j;
 		    } else {
-			while (line[i] != '$')
+			while (line[i] != '$' && line[i+1] != NUL)
 			    i++;
 			if (line[i + 1] == ',')
 			    i++;
