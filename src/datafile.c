@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.110.2.10 2008/02/01 20:12:56 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.110.2.11 2008/03/04 06:12:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -3046,7 +3046,7 @@ adjust_binary_use_spec()
     df_matrix_binary = (df_matrix_file && df_binary_file);
 
     c_token_copy = c_token;
-    for (c_token = 0; !END_OF_COMMAND; c_token++)
+    for (; !END_OF_COMMAND; c_token++)
 	if (almost_equals(c_token, "w$ith"))
 	    break;
     if (!END_OF_COMMAND)
