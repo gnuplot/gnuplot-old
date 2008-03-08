@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.81.2.2 2007/05/09 22:16:30 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.81.2.3 2008/03/08 17:51:45 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -741,7 +741,7 @@ lp_use_properties(struct lp_style_type *lp, int tag, int pointflag)
     lp->l_type = tag - 1;
     lp->pm3d_color.type = TC_LT;
     lp->pm3d_color.lt = lp->l_type;
-    lp->pointflag = pointflag;
+    lp->p_type = tag - 1;
 }
 
 
