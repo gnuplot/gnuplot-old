@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.h,v 1.11 2008/02/04 22:52:27 tlecomte Exp $
+ * $Id: gp_cairo.h,v 1.12 2008/03/08 06:37:17 sfeam Exp $
  */
 
 /* GNUPLOT - gp_cairo.h */
@@ -170,7 +170,8 @@ typedef struct plot_struct {
 /* linetype enums */
 enum {
 GP_CAIRO_SOLID,
-GP_CAIRO_DASH
+GP_CAIRO_DASH,
+GP_CAIRO_DOTS
 };
 
 /* correspondance between gnuplot's linetypes and colors */
