@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.263 2008/02/29 17:34:54 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.264 2008/03/11 18:49:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -5316,8 +5316,8 @@ parse_histogramstyle( histogram_style *hs,
 		  && (hs->type == HT_ERRORBARS)) {
 	    c_token++;
 	    hs->bar_lw = real_expression();
-	    if (hs->bar_lw < 0)
-		hs->bar_lw = 0;
+	    if (hs->bar_lw <= 0)
+		hs->bar_lw = 1;
 	} else
 	    /* We hit something unexpected */
 	    break;
