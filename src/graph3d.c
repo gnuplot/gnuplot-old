@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.195 2008/03/05 05:41:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.196 2008/03/13 19:53:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1088,16 +1088,14 @@ do_3dplot(
 		}
 		break;
 
-#ifdef EAM_DATASTRINGS
 	    case LABELPOINTS:
 		if (!hidden3d || this_plot->opt_out_of_hidden3d)
 		    place_labels3d(this_plot->labels->next, LAYER_PLOTLABELS);
 		break;
-#endif
-#ifdef EAM_HISTOGRAMS
+
 	    case HISTOGRAMS: /* Cannot happen */
 		break;
-#endif
+
 #ifdef WITH_IMAGE
 	    case IMAGE:
 		/* Plot image using projection of 3D plot coordinates to 2D viewing coordinates. */

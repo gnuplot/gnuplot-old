@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util3d.c,v 1.33 2008/01/27 18:47:45 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util3d.c,v 1.34 2008/03/13 19:53:37 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util3d.c */
@@ -900,9 +900,7 @@ map3d_xyz(
     out->z = Res[2] / Res[3];
     /* store z for later color calculation */
     out->real_z = z;
-#ifdef EAM_DATASTRINGS
     out->label = NULL;
-#endif
 }
 
 
