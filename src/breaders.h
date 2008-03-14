@@ -1,5 +1,5 @@
 /*
- * $Id: breaders.h,v 1.3 2005/07/15 15:55:13 broeker Exp $
+ * $Id: breaders.h,v 1.4 2008/03/14 02:56:22 sfeam Exp $
  */
 
 /* GNUPLOT - binedf.h */
@@ -45,15 +45,10 @@
 # include "config.h"
 #endif
 
-#ifdef BINARY_DATA_FILE
-
 #include "syscfg.h"
 
 /* Prototypes of functions exported by breaders.c */
 
 void edf_filetype_function __PROTO((void));
-
-#endif
-
 
 #endif /* GNUPLOT_BINEDF_H */
