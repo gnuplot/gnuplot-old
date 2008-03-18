@@ -1,5 +1,5 @@
 /*
- * $Id: util.h,v 1.30 2007/11/11 19:22:19 sfeam Exp $
+ * $Id: util.h,v 1.31 2008/03/18 00:16:33 sfeam Exp $
  */
 
 /* GNUPLOT - util.h */
@@ -56,7 +56,8 @@ extern TBOOLEAN screen_ok;
 
 /* decimal sign */
 extern char *decimalsign;
-extern char *numeric_locale;
+extern char *numeric_locale;	/* LC_NUMERIC */
+extern char *current_locale;	/* LC_TIME */
 
 extern const char *current_prompt; /* needed by is_error() and friends */
 
