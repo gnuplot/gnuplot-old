@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.132.2.6 2008/03/12 03:09:15 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.132.2.7 2008/03/27 22:17:25 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -804,8 +804,9 @@ set origin %g,%g\n",
     /*
      *  Save palette information
      */
+
     fprintf( fp, "set palette %s %s maxcolors %d ",
-	     sm_palette.positive ? "positive" : "negative",
+	     sm_palette.positive==SMPAL_POSITIVE ? "positive" : "negative",
 	     sm_palette.ps_allcF ? "ps_allcF" : "nops_allcF",
 	sm_palette.use_maxcolors);
     fprintf( fp, "gamma %g ", sm_palette.gamma );
