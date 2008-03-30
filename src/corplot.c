@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: corplot.c,v 1.6 2004/07/25 12:25:00 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: corplot.c,v 1.7 2008/03/30 03:27:54 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - corplot.c */
@@ -38,9 +38,6 @@ static char *RCSid() { return RCSid("$Id: corplot.c,v 1.6 2004/07/25 12:25:00 br
 #include <stdio.h>
 #include <process.h>
 #include <dos.h>
-#if (defined(ATARI) || defined(MTOS)) && defined(__PUREC__)
-#include "syscfg.h"
-#endif
 
 #define BOUNDARY 32768
 #define segment(addr) (FP_SEG(m) + ((FP_OFF(m)+15) >> 4));

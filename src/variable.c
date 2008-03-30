@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: variable.c,v 1.32 2008/03/18 00:16:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: variable.c,v 1.33 2008/03/30 03:27:55 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - variable.c */
@@ -194,7 +194,7 @@ struct path_table {
 };
 
 /* Yet, no special font paths for these operating systems:
- * MSDOS, ATARI, AMIGA, MTOS, NeXT, ultrix, VMS, _IBMR2, alliant
+ * MSDOS, AMIGA, NeXT, ultrix, VMS, _IBMR2, alliant
  *
  * Environmental variables are written as $(name).
  * Commands are written as $`command`.
