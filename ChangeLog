@@ -1,6 +1,6 @@
 2008-04-02  Ethan A Merritt  <merritt@u.washington.edu>
 
-	* src/eval.c: Change name from GPVAL_PI to GPVAL_pi
+	* src/eval.c docs/gnuplot.doc: Change name from GPVAL_PI to GPVAL_pi
 
 2008-04-01  Thomas Sefzick  <thse@users.sourceforge.net>
 
