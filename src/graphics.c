@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.258 2008/04/05 04:11:00 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.259 2008/04/05 16:19:35 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -458,7 +458,7 @@ boundary(struct curve_points *plots, int count)
 	plot_bounds.ytop -= (1.0 - tmargin.x) * (float)(t->ymax-1);
     } else if (tmargin.x >=0) {
 	/* Specified in terms of character height */
-	plot_bounds.ytop -= tmargin.x * (float)t->v_char + 0.5;
+	plot_bounds.ytop -= (int)(tmargin.x * (float)t->v_char + 0.5);
     } else {
 	/* Auto-calculation of space required */
 	int top_margin = x2label_textheight + title_textheight;
