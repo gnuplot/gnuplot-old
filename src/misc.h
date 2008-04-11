@@ -1,5 +1,5 @@
 /*
- * $Id: misc.h,v 1.25 2008/03/31 01:47:58 sfeam Exp $
+ * $Id: misc.h,v 1.26 2008/04/11 22:42:04 sfeam Exp $
  */
 
 /* GNUPLOT - misc.h */
@@ -89,6 +89,7 @@ typedef struct lf_state_struct {
     TBOOLEAN interactive;	/* value of interactive flag on entry */
     TBOOLEAN do_load_arg_substitution;	/* likewise ... */
     int inline_num;		/* inline_num on entry */
+    int depth;			/* recursion depth */
     struct lf_state_struct *prev;			/* defines a stack */
     char *call_args[10];	/* args when file is 'call'ed instead of 'load'ed */
 }  LFS;
