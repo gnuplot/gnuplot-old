@@ -1,5 +1,5 @@
 /*
- * $Id: datafile.h,v 1.26 2008/03/14 02:56:24 sfeam Exp $
+ * $Id: datafile.h,v 1.27 2008/04/15 17:39:34 sfeam Exp $
  */
 
 /* GNUPLOT - datafile.h */
@@ -183,7 +183,7 @@ typedef struct df_binary_type_struct {
 } df_binary_type_struct;
 
 typedef struct df_column_bininfo_struct {
-    short skip_bytes;
+    long skip_bytes;
     df_binary_type_struct column;
 } df_column_bininfo_struct;
 
