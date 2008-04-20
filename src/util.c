@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.65.2.4 2008/04/20 00:38:45 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.65.2.5 2008/04/20 21:24:40 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -887,6 +887,8 @@ int_error(int t_num, const char str[], va_dcl)
 #ifdef VA_START
     va_list args;
 #endif
+
+    char error_message[80] = {'\0'};
 
     /* reprint line if screen has been written to */
 
