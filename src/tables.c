@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.71.2.2 2008/04/02 02:08:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.71.2.3 2008/05/04 04:26:05 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -658,6 +658,20 @@ lookup_ftable(const struct gen_ftable *ftbl, int find_token)
 	ftbl++;
     }
     return ftbl->value;
+}
+
+/* Returns value of the first table entry for which the search string
+ * is a leading substring, or -1 if there is no match.
+ */
+int
+lookup_table_entry(const struct gen_table *tbl, const char *search_str)
+{
+    while (tbl->key) {
+	if (!strncmp(search_str, tbl->key, strlen(search_str)))
+	    return tbl->value;
+	tbl++;
+    }
+    return -1;
 }
 
 /* Returns index of the table tbl whose key matches the beginning of the
