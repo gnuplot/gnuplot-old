@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.h,v 1.12 2008/03/08 06:37:17 sfeam Exp $
+ * $Id: gp_cairo.h,v 1.13 2008/05/08 00:10:06 sfeam Exp $
  */
 
 /* GNUPLOT - gp_cairo.h */
@@ -134,6 +134,8 @@ typedef struct plot_struct {
 
 	/* font handling */
 	char fontname[MAX_ID_LEN + 1];
+	int fontweight;
+	int fontstyle;
 	double fontsize;
 	enum set_encoding_id encoding;
 
