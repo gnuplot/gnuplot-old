@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.58 2008/04/26 18:12:25 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.59 2008/05/17 15:37:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -465,6 +465,13 @@ GraphEnd(LPGW lpgw)
 #ifdef USE_MOUSE
 	gp_exec_event(GE_plotdone, 0, 0, 0, 0, 0);	/* notify main program */
 #endif
+}
+
+/* shige */
+void WDPROC
+GraphChangeTitle(LPGW lpgw)
+{
+	SetWindowText(lpgw->hWndGraph,lpgw->Title);
 }
 
 void WDPROC
