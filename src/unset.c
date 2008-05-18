@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.117 2008/04/30 04:16:20 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.118 2008/05/18 03:31:18 janert Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -702,6 +702,9 @@ unset_dgrid3d()
     dgrid3d_row_fineness = 10;
     dgrid3d_col_fineness = 10;
     dgrid3d_norm_value = 1;
+    dgrid3d_mode = DGRID3D_QNORM;
+    dgrid3d_x_scale = 1.0;
+    dgrid3d_y_scale = 1.0;
     dgrid3d = FALSE;
 }
 
