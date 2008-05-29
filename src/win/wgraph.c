@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.52 2006/07/18 05:20:51 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.52.2.1 2008/05/29 20:01:20 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -347,7 +347,7 @@ GraphInit(LPGW lpgw)
 {
 	HMENU sysmenu;
 	WNDCLASS wndclass;
-	char buf[80];
+	char buf[MAX_PATH];
 
 	if (!lpgw->hPrevInstance) {
 		wndclass.style = CS_HREDRAW | CS_VREDRAW;
