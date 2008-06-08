@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.216 2008/06/04 02:38:12 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.217 2008/06/08 22:17:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1200,7 +1200,7 @@ show_fillstyle()
     case LT_NODRAW:
 	fprintf(stderr," with no border\n");
 	break;
-    case LT_UNDEFINED:
+    case LT_DEFAULT:
 	fprintf(stderr," with border\n");
 	break;
     default:
