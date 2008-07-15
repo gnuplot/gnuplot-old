@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.274 2008/07/15 00:15:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.275 2008/07/15 18:05:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -3655,8 +3655,6 @@ plot_boxes(struct curve_points *plot, int xaxis_y)
 			break;
 		    case HT_CLUSTERED:
 		    case HT_ERRORBARS:
-			/* EAM - Is this ever used for anything? */
-			stackheight[i].yhigh = plot->points[i].y;
 			break;
 		    }
 		}
