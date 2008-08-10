@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.41 2006/04/28 16:54:03 tlecomte Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.41.2.1 2008/08/10 00:50:29 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -786,6 +786,12 @@ ansi_getc()
 		break;
 	    case 'B':		/* down arrow key */
 		c = 016;
+		break;
+	    case 'F':		/* end key */
+		c = 005;
+		break;
+	    case 'H':		/* home key */
+		c = 001;
 		break;
 	    }
 	}
