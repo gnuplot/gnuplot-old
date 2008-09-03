@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.60.2.8 2008/08/01 16:18:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.60.2.9 2008/09/03 16:29:34 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -1647,7 +1647,7 @@ add_tic_user(AXIS_INDEX axis, char *label, double position, int level)
     struct ticmark *tic, *newtic;
     struct ticmark listhead;
 
-    if (!label)
+    if (!label && level < 0)
 	return;
 
     /* Mark this axis as user-generated ticmarks only, unless the */
