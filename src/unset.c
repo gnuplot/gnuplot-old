@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.122 2008/08/19 18:48:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.123 2008/09/06 03:42:50 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1439,6 +1439,7 @@ unset_view()
 {
     splot_map_deactivate();
     splot_map = FALSE;
+    aspect_ratio_3D = 0.0;
     surface_rot_z = 30.0;
     surface_rot_x = 60.0;
     surface_scale = 1.0;
