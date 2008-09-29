@@ -1,5 +1,5 @@
 /*
- * $Id: color.h,v 1.30 2007/01/27 21:40:42 sfeam Exp $
+ * $Id: color.h,v 1.31 2008/09/29 05:25:49 mikulik Exp $
  */
 
 /* GNUPLOT - color.h */
@@ -95,8 +95,9 @@ typedef struct {
 
 
 /* a point (with double coordinates) for use in polygon drawing */
+/* the "c" field is used only inside the routine pm3d_plot() */
 typedef struct {
-    double x, y, z;
+    double x, y, z, c;
 } gpdPoint;
 
 
