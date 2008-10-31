@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.210 2008/10/28 16:15:54 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.211 2008/10/31 15:20:20 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1235,6 +1235,7 @@ do_3dplot(
 			    case STEPS:
 			    case FSTEPS:
 			    case HISTEPS:
+			    case PM3DSURFACE:
 				key_sample_line(xl, yl);
 				break;
 			    case YERRORLINES:	/* ignored; treat like points */
