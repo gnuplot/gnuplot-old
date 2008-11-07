@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.180 2008/09/16 05:35:25 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.181 2008/11/07 11:55:46 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -101,6 +101,7 @@ FILE *open_printer __PROTO((void));     /* in wprinter.c */
 void close_printer __PROTO((FILE * outfile));
 # ifdef __MSC__
 #  include <malloc.h>
+#  include <io.h>
 # else
 #  include <alloc.h>
 # endif                         /* MSC */
