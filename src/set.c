@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.236.2.16 2008/11/27 22:06:38 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.236.2.17 2008/11/27 23:17:32 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4066,6 +4066,14 @@ set_view()
     if (splot_map == TRUE) {
 	splot_map_deactivate();
 	splot_map = FALSE; /* default is no map */
+    }
+
+    if (almost_equals(c_token,"equal$_axes")) {
+	aspect_ratio_3D = 1.0;
+	c_token++;
+    } else if (almost_equals(c_token,"noequal$_axes")) {
+	aspect_ratio_3D = 0.0;
+	c_token++;
     }
 
     local_vals[0] = surface_rot_x;

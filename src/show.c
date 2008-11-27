@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.185.2.7 2008/11/07 06:34:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.185.2.8 2008/11/27 23:17:32 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2475,6 +2475,8 @@ show_view()
     }
     fprintf(stderr, "%g rot_x, %g rot_z, %g scale, %g scale_z\n",
 		surface_rot_x, surface_rot_z, surface_scale, surface_zscale);
+    fprintf(stderr,"\t\taxes are %s\n",
+		aspect_ratio_3D == 1.0 ? "on the same scale" : "independently scaled");
 }
 
 
