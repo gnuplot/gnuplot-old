@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.194.2.36 2008/11/28 20:29:44 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.194.2.37 2008/12/08 07:13:46 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -1516,10 +1516,12 @@ place_rectangles(struct object *listhead, int layer, int dimensions, BoundingBox
 	term_apply_lp_properties(&lpstyle);
 	style = style_from_fill(fillstyle);
 
-	if (lpstyle.use_palette && term->filled_polygon) {
-	    (*term->filled_polygon)(4, fill_corners(style,x,y,w,h));
-	} else if (term->fillbox)
-	    (*term->fillbox) (style, x, y, w, h);
+	if (style != FS_EMPTY) {
+	    if (lpstyle.use_palette && term->filled_polygon) {
+		(*term->filled_polygon)(4, fill_corners(style,x,y,w,h));
+	    } else if (term->fillbox)
+		(*term->fillbox) (style, x, y, w, h);
+	}
 
 	if (fillstyle->border_linetype != LT_NODRAW
 	&&  fillstyle->border_linetype != LT_UNDEFINED) {
@@ -5155,10 +5157,12 @@ do_key_sample(
 	unsigned int h = key_entry_height/2;
 
 	if (w > 0) {
-	    if (this_plot->lp_properties.use_palette && t->filled_polygon)
-		(*t->filled_polygon)(4, fill_corners(style,x,y,w,h));
-	    else
-		(*t->fillbox)(style,x,y,w,h);
+	    if (style != FS_EMPTY) {
+		if (this_plot->lp_properties.use_palette && t->filled_polygon)
+		    (*t->filled_polygon)(4, fill_corners(style,x,y,w,h));
+		else
+		    (*t->fillbox)(style,x,y,w,h);
+	    }
 
 	    if (fs->fillstyle != FS_EMPTY && fs->border_linetype != LT_UNDEFINED)
 		(*t->linetype)(fs->border_linetype);
