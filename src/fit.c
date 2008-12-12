@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.56.2.1 2007/07/19 16:11:23 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.56.2.2 2008/12/12 07:14:11 sfeam Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -551,7 +551,7 @@ fit_interrupt()
 		struct value v;
 		const char *tmp;
 
-		tmp = (fit_script != 0 && *fit_script) ? fit_script : DEFAULT_CMD;
+		tmp = (*fit_script) ? fit_script : DEFAULT_CMD;
 		fprintf(STANDARD, "executing: %s", tmp);
 		/* set parameters visible to gnuplot */
 		for (i = 0; i < num_params; i++) {
