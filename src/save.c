@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.132.2.11 2008/11/27 23:17:32 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.132.2.12 2008/12/15 03:44:22 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -552,8 +552,9 @@ set encoding %s\n\
     else {
 	fprintf(fp, "%g, %g, %g, %g",
 	    surface_rot_x, surface_rot_z, surface_scale, surface_zscale);
-	fprintf(fp, " %sequal_axes", aspect_ratio_3D == 1.0 ? "" : "no");
     }
+    fprintf(fp, "\nset view %s", aspect_ratio_3D == 2 ? "equal xy" :
+                                 aspect_ratio_3D == 3 ? "equal xyz": "");
 
     fprintf(fp, "\n\
 set samples %d, %d\n\
