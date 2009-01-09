@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.41 2008/12/22 21:44:39 sfeam Exp $
+ * $Id: term.h,v 1.42 2009/01/09 00:30:35 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -284,6 +284,9 @@
 /* Adobe Illustrator Format */
 /* obsolete: use 'set term postscript level1 */
 /* #include "ai.trm" */
+
+/* HTML Canvas terminal */
+#include "canvas.trm"
 
 /* Computer Graphics Metafile (eg ms office) */
 #include "cgm.trm"
