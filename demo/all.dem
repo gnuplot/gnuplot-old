@@ -1,5 +1,5 @@
 #
-# $Id: all.dem,v 1.25.2.1 2006/10/09 20:51:39 mikulik Exp $
+# $Id: all.dem,v 1.25.2.2 2009/01/27 20:47:00 sfeam Exp $
 #
 # Executes ALL demos in this directory, in functionality order.
 #
@@ -56,6 +56,7 @@ reset
 print "******************** file multiplt.dem ********************"
 load "multiplt.dem"
 load "layout.dem"
+load "margins.dem"
 reset
 
 print "******************** file surface1.dem ********************"
