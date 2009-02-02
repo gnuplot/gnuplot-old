@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.179 2009/01/31 03:14:44 vanzandt Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.180 2009/02/02 06:10:07 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -533,7 +533,7 @@ define()
 
 	/* Save function definition in a user-accessible variable */
 	if (1) {
-	    char *tmpnam = gp_alloc(6+strlen(udf->udf_name), "varname");
+	    char *tmpnam = gp_alloc(8+strlen(udf->udf_name), "varname");
 	    strcpy(tmpnam, "GPFUN_");
 	    strcat(tmpnam, udf->udf_name);
 	    fill_gpval_string(tmpnam, udf->definition);
