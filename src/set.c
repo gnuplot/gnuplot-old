@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.297 2009/02/04 17:18:59 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.298 2009/02/16 07:37:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -3986,8 +3986,7 @@ set_terminal()
 
     /* `set term <normal terminal>' */
     term = 0; /* in case set_term() fails */
-    term = set_term(c_token);
-    c_token++;
+    term = set_term();
     /* get optional mode parameters
      * not all drivers reset the option string before
      * strcat-ing to it, so we reset it for them
