@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.192 2009/02/15 21:59:03 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.193 2009/02/16 22:08:47 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -3719,7 +3719,7 @@ PaletteSetColor(plot_struct * plot, double gray)
 static void
 gp_execute_GE_plotdone (int windowid)
 {
-    static last_window_id = -1;
+    static int last_window_id = -1;
     if (windowid == last_window_id)
 	gp_exec_event(GE_plotdone, 0, 0, 0, 0, 0);
     else {
