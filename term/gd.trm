@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: gd.trm,v 1.131 2009/02/25 18:39:25 sfeam Exp $
+ * $Id: gd.trm,v 1.132 2009/03/03 02:43:13 sfeam Exp $
  * based on gif.trm,v 1.26.2.1 2000/05/01 00:17:20 joze
  */
 
@@ -763,6 +763,8 @@ PNG_options()
 		    if (*s) {
 			free(png_state.ttffont);
 			png_state.ttffont = s;
+		    } else {
+			continue;
 		    }
 		} else {
 		    free(png_state.ttffont);
