@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.66 2008/11/07 11:55:46 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.67 2009/03/23 23:12:50 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -2007,9 +2007,13 @@ Wnd_exec_event(LPGW lpgw, LPARAM lparam, char type, int par1)
     int mx, my;
     static unsigned long lastTimestamp = 0;
     unsigned long thisTimestamp = GetMessageTime();
+    int par2 = thisTimestamp - lastTimestamp;
+
+    if (type == GE_keypress)
+	par2 = 0;
 
     GetMousePosViewport(lpgw, &mx, &my);
-    gp_exec_event(type, mx, my, par1, thisTimestamp - lastTimestamp, 0);
+    gp_exec_event(type, mx, my, par1, par2, 0);
     lastTimestamp = thisTimestamp;
 }
 
