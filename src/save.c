@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.169 2008/12/11 06:53:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.170 2009/03/26 00:49:17 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -1229,14 +1229,12 @@ save_data_func_style(FILE *fp, const char *which, enum PLOT_STYLE style)
     case LABELPOINTS:
 	fputs("labels\n", fp);
 	break;
-#ifdef WITH_IMAGE
     case IMAGE:
 	fputs("image\n", stderr);
 	break;
     case RGBIMAGE:
 	fputs("rgbimage\n", stderr);
 	break;
-#endif
     default:
 	fputs("---error!---\n", fp);
     }

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.226 2009/01/15 04:55:50 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.227 2009/03/26 00:49:17 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -980,9 +980,7 @@ show_version(FILE *fp)
 # ifdef THIN_PLATE_SPLINES_GRID
 		"+THIN_SPLINES  "
 # endif
-#ifdef WITH_IMAGE
 		"+IMAGE  "
-#endif
 	    "";
 
 	    sprintf(compile_options, "\

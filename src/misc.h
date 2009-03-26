@@ -1,5 +1,5 @@
 /*
- * $Id: misc.h,v 1.31 2008/12/10 06:53:13 sfeam Exp $
+ * $Id: misc.h,v 1.32 2009/03/26 00:49:16 sfeam Exp $
  */
 
 /* GNUPLOT - misc.h */
@@ -76,9 +76,7 @@ void parse_fillstyle __PROTO((struct fill_style_type *fs, int def_style,
 void parse_colorspec __PROTO((struct t_colorspec *tc, int option));
 TBOOLEAN need_fill_border __PROTO((struct fill_style_type *fillstyle));
 
-#ifdef WITH_IMAGE
 void get_image_options __PROTO((t_image *image));
-#endif
 
 /* State information for load_file(), to recover from errors
  * and properly handle recursive load_file calls
