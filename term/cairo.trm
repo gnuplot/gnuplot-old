@@ -1,5 +1,5 @@
 /*
- * $Id: cairo.trm,v 1.29 2009/05/11 03:33:25 sfeam Exp $
+ * $Id: cairo.trm,v 1.30 2009/06/08 04:37:29 sfeam Exp $
  */
 
 /* GNUPLOT - cairo.trm */
@@ -267,10 +267,12 @@ TERM_PUBLIC void cairotrm_options()
 		case CAIROTRM_MONO:
 			c_token++;
 			cairotrm_mono = TRUE;
+			term->flags |= TERM_MONOCHROME;
 			break;
 		case CAIROTRM_COLOR:
 			c_token++;
 			cairotrm_mono = FALSE;
+			term->flags &= ~TERM_MONOCHROME;
 			break;
 		case CAIROTRM_DASHLENGTH:
 			c_token++;
