@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_term.h,v 1.11 2009/03/26 00:49:18 sfeam Exp $
+ * $Id: wxt_term.h,v 1.12 2009/06/13 05:23:56 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_term.h */
@@ -101,6 +101,8 @@ void wxt_update_size __PROTO((int number));
 /* state variables shared between wxt.trm and wxt_gui.cpp */
 extern int wxt_window_number;
 extern TBOOLEAN wxt_enhanced_enabled;
+extern TBOOLEAN wxt_dashed;
+extern double wxt_dashlength;
 extern int wxt_persist;
 extern int wxt_raise;
 extern int wxt_ctrl;
