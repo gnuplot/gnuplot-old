@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.194.2.42 2009/03/28 20:11:06 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.194.2.43 2009/07/05 06:16:17 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -3573,7 +3573,7 @@ plot_boxes(struct curve_points *plot, int xaxis_y)
 		    style = style_from_fill(&plot->fill_properties);
 
 		    if (plot->lp_properties.use_palette && t->filled_polygon) {
-			(*t->filled_polygon)(4, fill_corners(style,x,y,w,h));
+			(*t->filled_polygon)(4, fill_corners(style,x,y,w-1,h-1));
 		    } else
 			(*t->fillbox) (style, x, y, w, h);
 
