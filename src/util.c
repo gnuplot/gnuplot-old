@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.84 2009/02/05 17:12:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.85 2009/07/05 00:09:32 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -1246,7 +1246,7 @@ TBOOLEAN contains8bit(const char *s)
 #define INVALID_UTF8 0xfffful
 
 /* Read from second byte to end of UTF-8 sequence.
-   used by utftoulong() */
+   used by utf8toulong() */
 TBOOLEAN
 utf8_getmore (unsigned long * wch, const char **str, int nbytes)
 {
