@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: breaders.c,v 1.6.2.1 2009/08/28 05:19:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: breaders.c,v 1.6.2.2 2009/08/28 05:30:35 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - breaders.c */
@@ -294,6 +294,9 @@ gd_filetype_function(int type)
 {
     int_error(NO_CARET, "This copy of gnuplot cannot read png/gif/jpeg images");
 }
+
+int
+df_libgd_get_pixel(int i, int j, int component) {}
 
 #else
 
