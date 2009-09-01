@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.300 2009/07/05 00:06:54 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.301 2009/09/01 16:36:34 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4697,7 +4697,7 @@ set_tic_prop(AXIS_INDEX axis)
 
 	/* if tics are off and not set by axis, reset to default (border) */
 	if (((axis_array[axis].ticmode & TICS_MASK) == NO_TICS) && (!axisset)) {
-	    axis_array[axis].ticmode = TICS_ON_BORDER;
+	    axis_array[axis].ticmode |= TICS_ON_BORDER;
 	    if ((mirror_opt == FALSE) && ((axis == FIRST_X_AXIS) || (axis == FIRST_Y_AXIS) || (axis == COLOR_AXIS))) {
 		axis_array[axis].ticmode |= TICS_MIRROR;
 	    }
