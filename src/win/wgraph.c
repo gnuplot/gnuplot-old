@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.67.2.3 2009/08/29 21:41:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.67.2.4 2009/09/06 16:55:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -895,11 +895,11 @@ drawgraph(LPGW lpgw, HDC hdc, LPRECT rect)
 	if ((lastop==W_vect) && (curptr->op!=W_vect)) {
 	    if (polyi >= 2) {
 		Polyline(hdc, ppt, polyi);
-		/* Bastian's proposed new fix */
+		/* EAM - why isn't this a move to ppt[polyi-1] ? */
 		MoveTo(hdc, ppt[0].x, ppt[0].y);
 	    }
+	    /* EAM - I think this is not necessary */
 	    else if (polyi == 1)
-		/* Bastian's earlier fix */
 		LineTo(hdc, ppt[0].x, ppt[0].y);
 	    polyi = 0;
 	}
@@ -917,6 +917,7 @@ drawgraph(LPGW lpgw, HDC hdc, LPRECT rect)
 	    polyi++;
 	    if (polyi >= polymax) {
 		Polyline(hdc, ppt, polyi);
+		MoveTo(hdc, xdash, ydash);
 		ppt[0].x = xdash;
 		ppt[0].y = ydash;
 		polyi = 1;
