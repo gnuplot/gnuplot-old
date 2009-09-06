@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.52.2.7 2009/03/23 23:03:25 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.52.2.8 2009/09/06 16:57:55 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -885,6 +885,7 @@ drawgraph(LPGW lpgw, HDC hdc, LPRECT rect)
 	    polyi++;
 	    if (polyi >= polymax) {
 		Polyline(hdc, ppt, polyi);
+		MoveTo(hdc, xdash, ydash);     /* EAM 5 Sept 2009 */
 		ppt[0].x = xdash;
 		ppt[0].y = ydash;
 		polyi = 1;
