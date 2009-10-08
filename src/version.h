@@ -1,5 +1,5 @@
 /*
- * $Id: version.h,v 1.5 2006/08/05 21:33:15 sfeam Exp $
+ * $Id: version.h,v 1.5.4.1 2009/10/08 16:28:38 sfeam Exp $
  */
 
 /* GNUPLOT - version.h */
@@ -44,6 +44,7 @@ extern const char gnuplot_patchlevel[];
 extern const char gnuplot_date[];
 extern const char gnuplot_copyright[];
 extern const char faq_location[];
+extern const char bug_report[];
 extern const char bug_email[];
 extern const char help_email[];
 
