@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.195 2009/08/19 15:52:53 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.196 2009/10/23 15:33:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -339,6 +339,8 @@ get_data(struct curve_points *current_plot)
 	variable_color = TRUE;
     if (current_plot->lp_properties.pm3d_color.type == TC_Z)
 	variable_color = TRUE;
+    if (current_plot->lp_properties.l_type == LT_COLORFROMCOLUMN)
+	variable_color = TRUE;
 
     /* eval_plots has already opened file */
 
@@ -667,7 +669,7 @@ get_data(struct curve_points *current_plot)
 		    /* xlow and xhigh are same as x */
 		    /* auto width if boxes, else ignored */
 		    store2d_point(current_plot, i++, v[0], v[1], v[0], v[0], v[1],
-				  v[1], -1.0);
+				  variable_color_value, -1.0);
 	    }
 	    break;
 
