@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: internal.c,v 1.52 2009/10/25 02:47:24 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: internal.c,v 1.53 2009/10/26 17:34:55 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - internal.c */
@@ -806,8 +806,7 @@ void
 f_power(union argument *arg)
 {
     struct value a, b, result;
-    int i, count;
-    int t;
+    int i, t;
     double mag, ang;
 
     (void) arg;			/* avoid -Wunused warning */
