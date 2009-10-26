@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.80 2009/08/02 22:06:19 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.81 2009/10/26 18:47:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -1667,7 +1667,7 @@ add_tic_user(AXIS_INDEX axis, char *label, double position, int level)
     } else {
 	/* The new tic must duplicate position of tic->next */
 	if (position != tic->next->position)
-	    fprintf(stderr,"add_tic_user: list sort error\n");
+	    int_warn(NO_CARET,"add_tic_user: list sort error");
 	newtic = tic->next;
 	/* Don't over-write a major tic with a minor tic */
 	if (newtic->level < level)
