@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.104 2008/12/12 21:06:13 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.105 2009/10/31 03:22:37 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -643,7 +643,7 @@ main(int argc, char **argv)
 		    fprintf(stderr, "syntax:  gnuplot -e \"commands\"\n");
 		    return 0;
 		}
-		do_string(*argv, FALSE);
+		do_string(*argv);
 
 	    } else
 		load_file(loadpath_fopen(*argv, "r"), gp_strdup(*argv), FALSE);
