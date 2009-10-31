@@ -1,6 +1,6 @@
 /*
- *  $Id: lua.trm,v 1.6 2009/10/29 03:42:14 sfeam Exp $
- *  $Date: 2009/10/29 03:42:14 $
+ *  $Id: lua.trm,v 1.7 2009/10/31 05:24:18 sfeam Exp $
+ *  $Date: 2009/10/31 05:24:18 $
  *  $Rev: 90 $
  */
 
@@ -883,6 +883,7 @@ LUA_justify_text(enum JUSTIFY mode)
       case LEFT:
         m = "left";
         break;
+      default:
       case CENTRE:
         m = "center";
         break;

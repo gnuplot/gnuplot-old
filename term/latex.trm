@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: latex.trm,v 1.35 2009/10/10 06:06:02 sfeam Exp $
+ * $Id: latex.trm,v 1.36 2009/10/31 05:24:18 sfeam Exp $
  *
  */
 
@@ -787,7 +787,8 @@ TERM_PUBLIC void
 LATEX_put_text(unsigned int x, unsigned int y, const char str[])
 {
     static const char *justify[] = { "[l]", "", "[r]" };
-    int flag, i;
+    TBOOLEAN flag = FALSE;
+    int i;
 
     /* ignore empty strings */
     if (str[0] == NUL)
