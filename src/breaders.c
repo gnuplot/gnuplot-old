@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: breaders.c,v 1.8 2009/08/28 05:30:45 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: breaders.c,v 1.9 2009/11/02 20:22:10 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - breaders.c */
@@ -296,7 +296,7 @@ gd_filetype_function(int type)
 }
 
 int
-df_libgd_get_pixel(int i, int j, int component) {}
+df_libgd_get_pixel(int i, int j, int component) { return 0; }
 
 #else
 
