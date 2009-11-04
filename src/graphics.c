@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.302.2.11 2009/09/06 18:12:56 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.302.2.12 2009/11/04 16:10:48 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -5891,11 +5891,11 @@ plot_image_or_update_axes(void *plot, TBOOLEAN update_axes)
     }
 
     if (pixel_planes == IC_PALETTE && make_palette()) {
-	fprintf(stderr, ERROR_NOTICE("This terminal does not support palette-based images.\n\n"));
+	/* int_warn(NO_CARET, "This terminal does not support palette-based images.\n\n"); */
 	return;
     }
     if ((pixel_planes == IC_RGB || pixel_planes == IC_RGBA) && !term->set_color) {
-	fprintf(stderr, ERROR_NOTICE("This terminal does not support rgb images.\n\n"));
+	/* int_warn(NO_CARET, "This terminal does not support rgb images.\n\n"); */
 	return;
     }
     /* Use generic code to handle alpha channel if the terminal can't */
