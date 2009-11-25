@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: winmain.c,v 1.26.2.2 2009/10/06 23:10:26 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: winmain.c,v 1.26.2.3 2009/11/25 17:59:40 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -94,6 +94,8 @@ static char *RCSid() { return RCSid("$Id: winmain.c,v 1.26.2.2 2009/10/06 23:10:
 
 /* limits */
 #define MAXSTR 255
+#define MAXPRINTF 1024
+  /* used if vsnprintf(NULL,0,...) returns zero (MingW 3.4) */
 
 /* globals */
 TW textwin;
@@ -561,6 +563,7 @@ MyFPrintF(FILE *file, const char *fmt, ...)
 	count = _vscprintf(fmt, args) + 1;
 #else
 	count = vsnprintf(NULL,0,fmt,args) + 1;
+	if (count == 0) count = MAXPRINTF;
 #endif
 	va_end(args);
 	va_start(args, fmt);
@@ -588,6 +591,7 @@ MyVFPrintF(FILE *file, const char *fmt, va_list args)
 	count = _vscprintf(fmt, args_copied) + 1;
 #else
 	count = vsnprintf(NULL, 0U, fmt, args_copied) + 1;
+	if (count == 0) count = MAXPRINTF;
 #endif
 	va_end(args_copied);
 	buf = (char *)malloc(count * sizeof(char));
@@ -611,6 +615,7 @@ MyPrintF(const char *fmt, ...)
     count = _vscprintf(fmt, args) + 1;
 #else
     count = vsnprintf(NULL, 0, fmt, args) + 1;
+    if (count == 0) count = MAXPRINTF;
 #endif
     va_end(args);
     va_start(args, fmt);
