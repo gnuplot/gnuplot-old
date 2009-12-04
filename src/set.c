@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.299.2.3 2009/09/13 17:43:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.299.2.4 2009/12/04 04:26:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2291,6 +2291,14 @@ set_margin(t_position *margin)
     margin->x = real_expression();
     if (margin->x < 0)
 	margin->x = -1;
+
+    if (margin->scalex == screen) {
+	if (margin->x < 0)
+	    margin->x = 0;
+	if (margin->x > 1)
+	    margin->x = 1;
+    }
+
 }
 
 static void
