@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.178 2009/11/26 17:23:45 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.179 2009/12/04 04:43:51 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -2083,7 +2083,7 @@ f_stringcolumn(union argument *arg)
     (void) pop(&a);
     column = (int) real(&a);
 
-    if (!evaluate_inside_using)
+    if (!evaluate_inside_using || df_matrix)
 	int_error(c_token-1, "stringcolumn() called from invalid context");
 
     if (column < 1 || column > df_no_cols) {
