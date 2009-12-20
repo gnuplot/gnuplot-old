@@ -1,5 +1,5 @@
 /*
- * $Id: tables.h,v 1.68 2008/11/15 19:38:55 sfeam Exp $
+ * $Id: tables.h,v 1.68.2.1 2009/12/20 03:54:42 sfeam Exp $
  */
 
 /* GNUPLOT - tables.h */
@@ -198,6 +198,7 @@ enum filledcurves_opts_id {
 extern const struct gen_table command_tbl[];
 extern const struct gen_table plot_axes_tbl[];
 extern const struct gen_table plot_smooth_tbl[];
+extern const struct gen_table dgrid3d_mode_tbl[];
 extern const struct gen_table save_tbl[];
 extern const struct gen_table set_tbl[];
 extern const struct gen_table test_tbl[];
