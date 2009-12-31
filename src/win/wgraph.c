@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.72 2009/12/22 21:01:28 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.73 2009/12/31 01:21:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -365,7 +365,9 @@ GraphInit(LPGW lpgw)
 		RegisterClass(&wndclass);
 	}
 
+#if 0  /* shige */
 	ReadGraphIni(lpgw);
+#endif
 
 	lpgw->hWndGraph = CreateWindow(szGraphClass, lpgw->Title,
 		WS_OVERLAPPEDWINDOW,
@@ -1642,7 +1644,7 @@ WriteGraphIni(LPGW lpgw)
 	return;
 }
 
-static void
+void
 ReadGraphIni(LPGW lpgw)
 {
 	LPSTR file = lpgw->IniFile;
