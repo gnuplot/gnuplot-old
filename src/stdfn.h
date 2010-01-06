@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.32 2006/05/13 09:22:17 mikulik Exp $
+ * $Id: stdfn.h,v 1.33 2010/01/06 17:29:03 sfeam Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -530,5 +530,7 @@ unsigned int sleep __PROTO((unsigned int));
 #endif
 
 double gp_strtod __PROTO((const char *str, char **endptr));
+
+double not_a_number __PROTO((void));
 
 #endif /* STDFN_H */
