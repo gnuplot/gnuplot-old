@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.107 2010/01/06 17:29:03 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.108 2010/02/17 22:40:28 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -683,7 +683,15 @@ interrupt_setup()
     setmatherr(purec_matherr);
 #endif
 
+#if defined(WGP_CONSOLE)
+    /* FIXME. CTRC+C crashes console mode gnuplot for windows.
+       Failure of longjmp() is not easy to fix so that the signal
+       of SIGINT is just ignored at the moment.
+    */
+    (void) signal(SIGINT, SIG_IGN);
+#else
     (void) signal(SIGINT, (sigfunc) inter);
+#endif
 
 #ifdef SIGPIPE
     /* ignore pipe errors, this might happen with set output "|head" */
