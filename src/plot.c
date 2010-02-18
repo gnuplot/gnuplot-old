@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.104.2.3 2010/02/17 22:39:13 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.104.2.4 2010/02/18 05:52:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -375,7 +375,12 @@ main(int argc, char **argv)
 		    "  -p  --persist\n"
 		    "  -e  \"command1; command2; ...\"\n"
 		    "gnuplot %s patchlevel %s\n"
+#ifdef DIST_CONTACT
+		    "Report bugs to "DIST_CONTACT"\n"
+		    "            or %s\n",
+#else
 		    "Report bugs to %s\n",
+#endif
 		    gnuplot_version, gnuplot_patchlevel, bug_report);
 	    return 0;
 
