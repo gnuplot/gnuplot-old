@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.85 2009/07/05 00:09:32 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.86 2010/03/06 06:12:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -950,6 +950,7 @@ int_error(int t_num, const char str[], va_dcl)
     /* We are bailing out of nested context without ever reaching */
     /* the normal cleanup code. Reset any flags before bailing.   */
     df_reset_after_error();
+    eval_reset_after_error();
 
     /* Load error state variables */
     update_gpval_variables(2);
