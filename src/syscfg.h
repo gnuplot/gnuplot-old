@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.39 2010/03/14 18:01:46 sfeam Exp $
+ * $Id: syscfg.h,v 1.40 2010/03/14 18:52:45 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -253,15 +253,7 @@
 #endif
 
 
-/* Misc platforms */
-#ifdef apollo
-# ifndef APOLLO
-#  define APOLLO
-# endif
-# define GPR
-#endif
-
-#if defined(APOLLO) || defined(alliant)
+#if defined(alliant)
 # undef HAVE_LIMITS_H
 #endif
 
