@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.86 2010/03/14 06:43:17 sfeam Exp $
+ * $Id: term_api.h,v 1.87 2010/03/18 04:52:53 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -172,6 +172,7 @@ typedef struct t_image {
 #define TERM_ALPHA_CHANNEL  512  /* alpha channel transparency      */
 #define TERM_MONOCHROME    1024  /* term is running in mono mode    */
 #define TERM_LINEWIDTH     2048  /* support for set term linewidth  */
+#define TERM_FONTSCALE     4096  /* terminal supports fontscale     */
 
 /* The terminal interface structure --- heart of the terminal layer.
  *

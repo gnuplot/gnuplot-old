@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.311 2010/03/14 06:43:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.312 2010/03/18 04:52:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4027,6 +4027,13 @@ set_termoptions()
 	    ok_to_call_terminal = TRUE;
 	else
 	    c_token += 2;
+    } else if (equals(c_token,"fontscale")) {
+	if (term->flags & TERM_FONTSCALE)
+	    ok_to_call_terminal = TRUE;
+	else {
+	    c_token++;
+	    real_expression();   /* Silently ignore the request */
+	}
     } else if (equals(c_token,"lw") || almost_equals(c_token,"linew$idth")) {
 	if (term->flags & TERM_LINEWIDTH)
 	    ok_to_call_terminal = TRUE;
