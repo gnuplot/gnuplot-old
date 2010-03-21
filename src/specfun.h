@@ -1,5 +1,5 @@
 /*
- * $Id: specfun.h,v 1.9 2009/09/06 01:59:56 janert Exp $
+ * $Id: specfun.h,v 1.10 2010/03/21 17:42:26 sfeam Exp $
  */
 
 /* GNUPLOT - specfun.h */
@@ -52,6 +52,7 @@
 void f_erf __PROTO((union argument *x));
 void f_erfc __PROTO((union argument *x));
 void f_ibeta __PROTO((union argument *x));
+void f_voigt __PROTO((union argument *x));
 void f_igamma __PROTO((union argument *x));
 void f_gamma __PROTO((union argument *x));
 void f_lgamma __PROTO((union argument *x));
