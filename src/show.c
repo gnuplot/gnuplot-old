@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.235 2010/03/14 06:43:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.236 2010/05/02 20:56:09 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2403,11 +2403,9 @@ show_fit()
 {
     SHOW_ALL_NL;
 
-#ifdef GP_FIT_ERRVARS
     fprintf(stderr, "\
 \tfit will%s place parameter errors in variables\n",
 	    fit_errorvariables ? "" : " not");
-#endif /* GP_FIT_ERRVARS */
 
     if (fitlogfile != NULL) {
         fprintf(stderr, "\
