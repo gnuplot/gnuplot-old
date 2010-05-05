@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.202 2010/03/14 22:44:38 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.203 2010/05/05 18:03:50 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -123,6 +123,7 @@ FILE *gpoutfile;
    details.
 */
 FILE *gppsfile = 0;
+char *PS_psdir = NULL;
 
 /* true if terminal has been initialized */
 TBOOLEAN term_initialised;
