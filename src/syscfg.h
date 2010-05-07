@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.36.2.2 2010/02/03 05:01:00 sfeam Exp $
+ * $Id: syscfg.h,v 1.36.2.3 2010/05/07 03:51:04 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -425,7 +425,7 @@ typedef unsigned char _Bool;
 #endif
 
 /* May or may not fix a problem reported for Sun Studio compilers */
-#if defined(__SUNPRO_CC) && !defined(bool)
+#if defined(__SUNPRO_CC) && !defined __cplusplus && !defined(bool)
 #define bool unsigned char
 #endif
 
