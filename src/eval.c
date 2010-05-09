@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.80 2010/05/08 02:06:05 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.81 2010/05/09 12:12:00 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -301,6 +301,8 @@ magnitude(struct value *val)
 	    if(abs_r > abs_i) {
 		quotient = abs_i / abs_r;
 		return abs_r * sqrt(1 + quotient*quotient);
+	    } else if (abs_i == 0) {
+		return 0;
 	    } else {
 		quotient = abs_r / abs_i;
 		return abs_i * sqrt(1 + quotient*quotient);
