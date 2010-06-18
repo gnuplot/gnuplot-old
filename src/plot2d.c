@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.133.2.18 2010/03/06 19:15:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.133.2.19 2010/06/18 17:29:54 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -2225,7 +2225,10 @@ eval_plots()
                             /* If non-para, it must be INRANGE */
                             /* logscale ? log(x) : x */
                             this_plot->points[i].x = t;
-                            if (boxwidth >= 0 && boxwidth_is_absolute) {
+
+			    /* For boxes [only] check use of boxwidth */
+			    if ((this_plot->plot_style == BOXES)
+			    &&  (boxwidth >= 0 && boxwidth_is_absolute)) {
                                 double xlow, xhigh;
                                 int dmy_type = INRANGE;
                                 this_plot->points[i].z = 0;
