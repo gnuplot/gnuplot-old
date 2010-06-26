@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.92.2.1 2009/12/20 03:54:42 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.92.2.2 2010/06/26 06:43:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -644,6 +644,7 @@ const struct gen_table show_style_tbl[] =
     { "ar$row", SHOW_STYLE_ARROW },
     { "incr$ement", SHOW_STYLE_INCREMENT },
     { "hist$ogram", SHOW_STYLE_HISTOGRAM },
+    { "circ$le", SHOW_STYLE_CIRCLE },
     { "rect$angle", SHOW_STYLE_RECTANGLE },
     { NULL, SHOW_STYLE_INVALID }
 };
