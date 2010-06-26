@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.314 2010/05/02 23:47:03 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.315 2010/06/26 05:43:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -3891,6 +3891,12 @@ set_style()
     case SHOW_STYLE_RECTANGLE:
 	c_token++;
 	set_obj(-2, OBJ_RECTANGLE);
+	break;
+    case SHOW_STYLE_CIRCLE:
+	c_token++;
+	if (almost_equals(c_token++,"r$adius")) {
+	    get_position(&default_circle.o.circle.extent);
+	}
 	break;
 #endif
     case SHOW_STYLE_HISTOGRAM:
