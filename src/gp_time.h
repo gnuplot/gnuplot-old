@@ -1,5 +1,5 @@
 /*
- * $Id: gp_time.h,v 1.7 2007/03/30 05:18:46 sfeam Exp $
+ * $Id: gp_time.h,v 1.8 2010/07/01 16:50:33 sfeam Exp $
  */
 
 /* GNUPLOT - gp_time.h */
@@ -58,7 +58,7 @@
 /* Prototypes of functions exported by time.c */
 
 /* string to *tm */
-char * gstrptime __PROTO((char *, char *, struct tm *));
+char * gstrptime __PROTO((char *, char *, struct tm *, double *));
 
 /* seconds to string */
 size_t gstrftime __PROTO((char *, size_t, const char *, double));

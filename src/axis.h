@@ -1,5 +1,5 @@
 /*
- * $Id: axis.h,v 1.57 2009/08/02 22:06:19 sfeam Exp $
+ * $Id: axis.h,v 1.58 2010/07/01 16:50:32 sfeam Exp $
  *
  */
 
@@ -524,12 +524,13 @@ do {									\
     if (((axes) >= 0) && (axis_array[(axes)+(axis)].is_timedata)	\
 	&& isstringvalue(c_token)) {					\
 	struct tm tm;							\
+	double usec;							\
 	char *ss = try_to_get_string();					\
-	if (gstrptime(ss,axis_array[axis].timefmt,&tm))			\
-	    (store) = (double) gtimegm(&tm);				\
+	if (gstrptime(ss,axis_array[axis].timefmt,&tm,&usec))		\
+	    (store) = (double) gtimegm(&tm) + usec;			\
 	free(ss);							\
     } else {								\
-	(store) = real_expression();						\
+	(store) = real_expression();					\
     }									\
 } while(0)
 
