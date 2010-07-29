@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.181 2010/05/11 04:27:05 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.182 2010/07/29 17:51:38 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -2159,9 +2159,7 @@ parametric_3dfixup(struct surface_points *start_plot, int *plot_num)
 {
     struct surface_points *xp, *new_list, *free_list = NULL;
     struct surface_points **last_pointer = &new_list;
-    size_t tlen;
     int i, surface;
-    char *new_title;
 
     /*
      * Ok, go through all the plots and move FUNC3D types together.  Note:
