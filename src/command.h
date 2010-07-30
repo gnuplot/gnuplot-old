@@ -1,5 +1,5 @@
 /*
- * $Id: command.h,v 1.51 2010/03/14 18:01:46 sfeam Exp $
+ * $Id: command.h,v 1.52 2010/07/30 19:11:40 sfeam Exp $
  */
 
 /* GNUPLOT - command.h */
@@ -91,7 +91,7 @@ extern struct udft_entry *dummy_func;
 # define STDOUT 1
 #endif
 
-#if defined(MSDOS) || defined(DOS386)
+#if defined(MSDOS)
 # ifdef DJGPP
 extern char HelpFile[];         /* patch for do_help  - AP */
 # endif                         /* DJGPP */

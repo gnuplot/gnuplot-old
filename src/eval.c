@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.82 2010/05/11 22:59:44 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.83 2010/07/30 19:11:40 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -219,7 +219,7 @@ static JMP_BUF fpe_env;
 static RETSIGTYPE
 fpe(int an_int)
 {
-#if defined(MSDOS) && !defined(__EMX__) && !defined(DJGPP) && !defined(_Windows) || defined(DOS386)
+#if defined(MSDOS) && !defined(__EMX__) && !defined(DJGPP) && !defined(_Windows)
     /* thanks to lotto@wjh12.UUCP for telling us about this  */
     _fpreset();
 #endif
