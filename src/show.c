@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.227.2.6 2010/08/06 01:23:06 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.227.2.7 2010/08/09 21:38:05 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -871,7 +871,7 @@ show_version(FILE *fp)
 #else
 		"LIBREADLINE  "
 #endif
-#if defined(HAVE_LIBREADLINE) && defined(MISSING_RL_FORCED_UPDATE_DISPLAY)
+#if defined(HAVE_LIBREADLINE) && defined(MISSING_RL_TILDE_EXPANSION)
 		"+READLINE_IS_REALLY_EDITLINE  "
 #endif
 #ifdef GNUPLOT_HISTORY
