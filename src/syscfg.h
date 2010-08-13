@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.42 2010/07/30 19:11:40 sfeam Exp $
+ * $Id: syscfg.h,v 1.43 2010/08/13 23:36:58 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -77,11 +77,6 @@
 # define PATHSEP  ';'
 # define GNUPLOT_HISTORY_FILE "~\\gnuplot_history"
 #endif /* OS/2 */
-
-#ifdef OSK
-# define OS    "OS-9"
-# define SHELL "/dd/cmds/shell"
-#endif /* OS-9 */
 
 #if defined(vms) || defined(VMS)
 # define OS "VMS"

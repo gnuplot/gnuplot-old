@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.118 2010/08/10 05:40:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.119 2010/08/13 23:36:58 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -301,10 +301,6 @@ main(int argc, char **argv)
 #endif
 
 /* malloc large blocks, otherwise problems with fragmented mem */
-#ifdef OSK
-    _mallocmin(102400);
-#endif
-
 #ifdef MALLOCDEBUG
     malloc_debug(7);
 #endif
