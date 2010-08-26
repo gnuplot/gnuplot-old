@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.c,v 1.51 2010/04/05 05:20:04 sfeam Exp $
+ * $Id: gp_cairo.c,v 1.52 2010/08/26 18:17:21 sfeam Exp $
  */
 
 /* GNUPLOT - gp_cairo.c */
@@ -221,6 +221,7 @@ void gp_cairo_initialize_context(plot_struct *plot)
 	} else {
 	    cairo_set_line_cap  (plot->cr, CAIRO_LINE_CAP_SQUARE);
 	    cairo_set_line_join (plot->cr, CAIRO_LINE_JOIN_MITER);
+	    cairo_set_miter_limit(plot->cr, 3.8);
 	}
 
 }
