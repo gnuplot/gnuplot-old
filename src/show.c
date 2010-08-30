@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.243 2010/08/13 23:36:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.244 2010/08/30 18:29:57 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -3322,17 +3322,19 @@ conv_text(const char *t)
 	    *s++ = *t;
 	    break;
 
-	default:{
-		if (isprint((unsigned char)*t))
-		    *s++ = *t;
-		else {
-		    *s++ = '\\';
-		    sprintf(s, "%03o", (unsigned char)*t);
-		    while (*s != NUL)
-			s++;
-		}
+	default:
+	    if (encoding == S_ENC_UTF8)
+		*s++ = *t;
+	    else if (isprint((unsigned char)*t))
+		*s++ = *t;
+	    else {
+		*s++ = '\\';
+		sprintf(s, "%03o", (unsigned char)*t);
+		while (*s != NUL)
+		    s++;
 	    }
 	    break;
+
 	}
 	t++;
     }
