@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.322 2010/09/04 21:21:48 juhaszp Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.323 2010/09/16 05:56:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4515,7 +4515,7 @@ set_view()
     surface_rot_z = local_vals[1];
     surface_scale = local_vals[2];
     surface_zscale = local_vals[3];
-
+    surface_lscale = log(surface_scale);
 }
 
 

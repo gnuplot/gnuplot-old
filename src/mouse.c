@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.126 2010/09/10 17:09:23 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.127 2010/09/16 05:56:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -1865,7 +1865,8 @@ event_motion(struct gp_event_t *ge)
 	    } else {
 
 		if (relx > rely) {
-		    surface_scale += (mouse_x - start_x) * 2.0 / term->xmax;
+		    surface_lscale += (mouse_x - start_x) * 2.0 / term->xmax;
+		    surface_scale = exp(surface_lscale);
 		    if (surface_scale < 0)
 			surface_scale = 0;
 		} else {
