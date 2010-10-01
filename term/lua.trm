@@ -1,6 +1,6 @@
 /*
- *  $Id: lua.trm,v 1.9 2010/09/15 23:46:20 sfeam Exp $
- *  $Date: 2010/09/15 23:46:20 $
+ *  $Id: lua.trm,v 1.10 2010/10/01 23:10:46 sfeam Exp $
+ *  $Date: 2010/10/01 23:10:46 $
  *  $Rev: 90 $
  */
 
@@ -346,13 +346,11 @@ LUA_GP_get_all_variables(lua_State *L) {
           lua_pushstring(L, "real");
           lua_rawseti(L, -2, 2);
         }
-#ifdef HAVE_ISNAN
+
         if (isnan(val->v.cmplx_val.real)) {
           lua_pushnil(L);
           lua_rawseti(L, -2, 3);
-        } else
-#endif
-        {
+        } else {
           lua_pushnumber(L, val->v.cmplx_val.real);
           lua_rawseti(L, -2, 3);
         }
