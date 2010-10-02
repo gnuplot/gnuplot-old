@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: stdfn.c,v 1.17.4.1 2010/01/06 17:35:10 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: stdfn.c,v 1.17.4.2 2010/10/02 16:32:40 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - stdfn.c */
@@ -462,11 +462,12 @@ gp_strtod(const char *str, char **endptr)
 }
 
 /* Implement portable generation of a NaN value. */
+/* NB: Supposedly DJGPP V2.04 can use atof("NaN"), but... */
 
 double
 not_a_number(void)
 {
-#ifdef __MSC__
+#if defined(__MSC__) || defined(DJGPP) || defined(__DJGPP__)
 	unsigned long lnan[2]={0xffffffff, 0x7fffffff};
     return *( double* )lnan;
 #else
