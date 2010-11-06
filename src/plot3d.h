@@ -1,5 +1,5 @@
 /*
- * $Id: plot3d.h,v 1.18 2008/05/18 03:31:17 janert Exp $
+ * $Id: plot3d.h,v 1.19 2010/11/06 22:02:37 juhaszp Exp $
  */
 
 /* GNUPLOT - plot3d.h */
@@ -61,6 +61,7 @@ extern int dgrid3d_mode;
 extern double dgrid3d_x_scale;
 extern double dgrid3d_y_scale;
 extern TBOOLEAN	dgrid3d;
+extern TBOOLEAN dgrid3d_kdensity;
 
 /* prototypes from plot3d.c */
 
