@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.210 2010/10/06 05:44:57 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.211 2010/11/14 00:06:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -78,7 +78,6 @@ static char *RCSid() { return RCSid("$Id: term.c,v 1.210 2010/10/06 05:44:57 sfe
 
 #include "alloc.h"
 #include "axis.h"
-#include "bitmap.h"
 #include "command.h"
 #include "driver.h"
 #include "graphics.h"
@@ -90,6 +89,10 @@ static char *RCSid() { return RCSid("$Id: term.c,v 1.210 2010/10/06 05:44:57 sfe
 #include "version.h"
 #include "misc.h"
 #include "getcolor.h"
+
+#ifndef NO_BITMAP_SUPPORT
+#include "bitmap.h"
+#endif
 
 #ifdef USE_MOUSE
 #include "mouse.h"
