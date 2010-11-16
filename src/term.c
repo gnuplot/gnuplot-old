@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.211 2010/11/14 00:06:53 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.212 2010/11/16 20:59:36 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1319,8 +1319,7 @@ do_arrow(
 	    ex += xm;
 	    ey += ym;
 	}
-	if (clip_line(&sx, &sy, &ex, &ey))
-	    draw_clip_line(sx, sy, ex, ey);
+	draw_clip_line(sx, sy, ex, ey);
     }
 
     /* Restore previous clipping box */
