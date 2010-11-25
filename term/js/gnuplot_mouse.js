@@ -1,5 +1,5 @@
 /*
- * $Id: gnuplot_mouse.js,v 1.10 2010/11/25 04:29:35 sfeam Exp $
+ * $Id: gnuplot_mouse.js,v 1.11 2010/11/25 05:53:49 sfeam Exp $
  */
 // Mousing code for use with gnuplot's 'canvas' terminal driver.
 // The functions defined here assume that the javascript plot produced by
@@ -66,10 +66,10 @@ gnuplot.init = function ()
       document.getElementById("gnuplot_grid_icon").onmouseup = gnuplot.toggle_grid;
   if (document.getElementById("gnuplot_textzoom_icon"))
       document.getElementById("gnuplot_textzoom_icon").onmouseup = gnuplot.toggle_zoom_text;
-  if (document.getElementById("rezoom_icon"))
-      document.getElementById("rezoom_icon").onmouseup = gnuplot.rezoom;
-  if (document.getElementById("unzoom_icon"))
-      document.getElementById("unzoom_icon").onmouseup = gnuplot.unzoom;
+  if (document.getElementById("gnuplot_rezoom_icon"))
+      document.getElementById("gnuplot_rezoom_icon").onmouseup = gnuplot.rezoom;
+  if (document.getElementById("gnuplot_unzoom_icon"))
+      document.getElementById("gnuplot_unzoom_icon").onmouseup = gnuplot.unzoom;
   gnuplot.mouse_update();
 }
 
