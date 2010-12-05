@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.171.2.9 2010/11/19 22:56:38 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.171.2.10 2010/12/05 00:01:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -555,10 +555,11 @@ set y2data%s\n",
     /* FIXME */
     fprintf(fp, "\
 set pointsize %g\n\
+set pointintervalbox %g\n\
 set encoding %s\n\
 %sset polar\n\
 %sset parametric\n",
-	    pointsize,
+	    pointsize, pointintervalbox,
 	    encoding_names[encoding],
 	    (polar) ? "" : "un",
 	    (parametric) ? "" : "un");
