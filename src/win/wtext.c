@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wtext.c,v 1.19 2008/11/07 11:55:46 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wtext.c,v 1.20 2010/12/14 23:02:23 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - win/wtext.c */
@@ -41,6 +41,10 @@ static char *RCSid() { return RCSid("$Id: wtext.c,v 1.19 2008/11/07 11:55:46 mik
 
 /* WARNING: Do not write to stdout/stderr with functions not listed
    in win/wtext.h */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #define STRICT
 

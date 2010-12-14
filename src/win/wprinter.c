@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wprinter.c,v 1.5 2005/08/03 16:55:40 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wprinter.c,v 1.6 2010/12/14 23:02:23 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - win/wprinter.c */
@@ -41,6 +41,10 @@ static char *RCSid() { return RCSid("$Id: wprinter.c,v 1.5 2005/08/03 16:55:40 m
  */
 
 /* Dump a file to the printer */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #define STRICT
 #include <windows.h>
