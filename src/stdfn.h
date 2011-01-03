@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.35 2010/08/13 23:36:58 sfeam Exp $
+ * $Id: stdfn.h,v 1.36 2011/01/03 14:30:31 juhaszp Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -259,6 +259,10 @@ extern char *sys_errlist[];
 
 #ifndef HAVE_TIME_T_IN_TIME_H
 # define time_t long
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h> /* for gettimeofday() */
 #endif
 
 #if defined(PIPES) && defined(VMS)
