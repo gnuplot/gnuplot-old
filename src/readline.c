@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.49 2010/09/03 20:21:09 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.50 2011/02/21 08:03:13 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -78,11 +78,10 @@ getc_wrapper(FILE* fp /* should be stdin, supplied by readline */)
 	}
 	else
 #endif
-#if defined(HAVE_LIBEDITLINE)
-	    c = getchar();
-#else
+	if (fp)
 	    c = getc(fp);
-#endif
+	else
+	    c = getchar(); /* HAVE_LIBEDITLINE */
 	if (c == EOF && errno == EINTR)
 	    continue;
 	return c;
@@ -99,7 +98,7 @@ readline_ipc(const char* prompt)
 #endif
     return readline((const char*) prompt);
 }
-#endif  /* defined(HAVE_LIBREADLINE) || define(READLINE) */
+#endif  /* HAVE_LIBREADLINE || HAVE_LIBEDITLINE || READLINE */
 
 
 #if defined(READLINE) && !(defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDITLINE))
@@ -996,4 +995,4 @@ reset_termio()
 #endif /* not MSDOS && not _Windows */
 }
 
-#endif /* READLINE && !HAVE_LIBREADLINE */
+#endif /* READLINE && !(HAVE_LIBREADLINE || HAVE_LIBEDITLINE) */
