@@ -1,5 +1,5 @@
 /*
- * $Id: wcommon.h,v 1.9 2006/03/28 09:55:22 broeker Exp $
+ * $Id: wcommon.h,v 1.10 2011/02/23 19:58:16 markisch Exp $
  */
 
 /* GNUPLOT - wcommon.h */
@@ -59,11 +59,15 @@
 
 #endif
   
+#ifndef CLEARTYPE_QUALITY
+#define CLEARTYPE_QUALITY       5
+#endif
 
 /* winmain.c */
 #ifdef WIN32
 # define PACKVERSION(major,minor) MAKELONG(minor,major)
 extern DWORD GetDllVersion(LPCTSTR lpszDllName);
+extern BOOL IsWindowsXPorLater(void);
 extern char *appdata_directory(void);
 #endif
 
