@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.30 2010/02/16 07:15:12 mikulik Exp $
+ * $Id: wgnuplib.h,v 1.31 2011/02/28 12:19:12 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -355,7 +355,10 @@ typedef struct tagGW {
 	unsigned int nGWOP;
 	BOOL	locked;		/* locked if being written */
 	double  org_pointsize;	/* Original Pointsize */
-	int		statuslineheight;	/* height of status line area */
+	int     statuslineheight;	/* height of status line area */
+	BOOL    doublebuffer;   /* double buffering? */
+	BOOL    oversample;	/* oversampling? */
+	int     sampling;	/* current sampling factor */
 } GW;
 typedef GW FAR*  LPGW;
 
