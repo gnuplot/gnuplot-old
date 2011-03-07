@@ -1,5 +1,5 @@
 # Hello, emacs: this is a -*- Makefile -*-
-# $Id: Makefile,v 1.1 2011/02/26 20:28:21 broeker Exp $
+# $Id: Makefile,v 1.2 2011/03/07 11:25:08 markisch Exp $
 #
 # GNUPLOT Makefile for MinGW32 on Win95/98/NT/2k/..
 # This assumes usual installation of the MinGW32 toolkit, the free
@@ -465,7 +465,7 @@ ifdef HTML_HELP
 # convert gnuplot.doc to windows/wgnuplot.html
 $(BUILDHELPFILE): doc2html.exe $(D)gnuplot.doc $(D)windows/wgnuplot.hhp $(D)windows/wgnuplot.hhk \
                   $(D)windows/wgnuplot.stp $(D)plotstyles.gnu
-	./doc2html $(D)gnuplot.doc $(D)windows/wgnuplot.html $(D)windows/wgnuplot.hhc
+	./doc2html $(D)gnuplot.doc $(D)windows/
 	-( cd $(D) ; ../config/mingw/$(TARGET) -e "winhelp=1" plotstyles.gnu )
 	-$(HHC) $(D)windows/wgnuplot.hhp
 
