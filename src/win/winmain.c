@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: winmain.c,v 1.34 2011/02/23 19:58:16 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: winmain.c,v 1.35 2011/03/10 19:57:35 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -152,7 +152,7 @@ kill_pending_Pause_dialog ()
 
 /* atexit procedure */
 void
-WinExit()
+WinExit(void)
 {
         term_reset();
 
