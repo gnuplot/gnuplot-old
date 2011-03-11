@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.79 2010/03/18 04:52:53 sfeam Exp $
+ * $Id: wxt_gui.cpp,v 1.80 2011/03/11 22:20:59 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -1604,6 +1604,10 @@ void wxt_graphics()
 	/* set the line properties */
 	/* FIXME: should this be in wxt_settings_apply() ? */
 	wxt_current_plot->rounded = wxt_rounded;
+
+	/* background as given by set term */
+	wxt_current_plot->background = wxt_rgb_background;
+	gp_cairo_set_background(wxt_rgb_background);
 
 	/* apply the queued rendering settings */
 	wxt_current_panel->wxt_settings_apply();
