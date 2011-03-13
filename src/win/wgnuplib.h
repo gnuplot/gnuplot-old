@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.32 2011/03/07 21:41:36 markisch Exp $
+ * $Id: wgnuplib.h,v 1.33 2011/03/13 14:49:48 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -161,10 +161,9 @@ typedef struct tagMW
 	char	*szAnswer;
 	int		nChar;
 	int		nButton;
+	HWND	hToolbar;
 	HWND	hButton[BUTTONMAX];
 	int		hButtonID[BUTTONMAX];
-	WNDPROC	lpfnMenuButtonProc;
-	WNDPROC	lpfnButtonProc[BUTTONMAX];
 } MW;
 typedef MW FAR * LPMW;
 
