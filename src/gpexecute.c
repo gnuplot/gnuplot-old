@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gpexecute.c,v 1.17 2010/08/31 12:57:32 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: gpexecute.c,v 1.18 2011/03/13 19:55:29 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - gpexecute.c */
@@ -241,9 +241,6 @@ gp_exec_event(char type, int mx, int my, int par1, int par2, int winid)
     }
 #endif
 #ifdef WIN_IPC
-    /* FIXME HBB 20010216: this breaks the wgnuplot.exe+wgnuplot.dll type of
-     * compilation (for Win16). do_event is in the main program(mouse.c), but
-     * gpexecute is in the DLL --> can't reach it, from here. */
     do_event(&ge);
     return;
 #endif

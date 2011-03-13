@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.89 2011/01/01 15:33:32 juhaszp Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.90 2011/03/13 19:55:29 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -210,11 +210,7 @@ const struct ft_entry GPFAR ft[] =
 
 /* Module-local variables: */
 
-#if defined(_Windows) && !defined(WIN32)
-static JMP_BUF far fpe_env;
-#else
 static JMP_BUF fpe_env;
-#endif
 
 /* Internal helper functions: */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: alloc.c,v 1.15 2010/10/21 04:14:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: alloc.c,v 1.16 2011/03/13 19:55:29 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - alloc.c */
@@ -51,14 +51,6 @@ static char *RCSid() { return RCSid("$Id: alloc.c,v 1.15 2010/10/21 04:14:36 sfe
 #if defined(MSDOS) && defined(__TURBOC__)
 # include <alloc.h>		/* for farmalloc, farrealloc */
 #endif
-
-#if defined(_Windows) && !defined(WIN32)
-# include <windows.h>
-# include <windowsx.h>
-# define farmalloc(s) GlobalAllocPtr(GHND,s)
-# define farrealloc(p,s) GlobalReAllocPtr(p,s,GHND)
-#endif
-
 
 
 #ifndef GP_FARMALLOC
@@ -336,7 +328,7 @@ void
 gpfree(generic *p)
 {
 #ifdef _Windows
-    HGLOBAL hGlobal = GlobalHandle(SELECTOROF(p));
+    HGLOBAL hGlobal = GlobalHandle(p);
     GlobalUnlock(hGlobal);
     GlobalFree(hGlobal);
 #else
