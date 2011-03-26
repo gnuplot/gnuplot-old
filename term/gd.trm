@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: gd.trm,v 1.155 2011/03/26 19:15:01 sfeam Exp $
+ * $Id: gd.trm,v 1.156 2011/03/26 20:03:16 sfeam Exp $
  * based on gif.trm,v 1.26.2.1 2000/05/01 00:17:20 joze
  */
 
@@ -2305,7 +2305,7 @@ gd_iconv(char **string)
 	    if (iconv(cd, string, &len1, &stmp, &len2) == (size_t)-1)
 		int_warn(NO_CARET, "iconv failed");
 	    else
-		string = &iconv_string;
+		*string = iconv_string;
 	    iconv_close(cd);
 	}
     }
@@ -2320,7 +2320,7 @@ gd_iconv(char **string)
 	    if (iconv(cd, (char **)(string), &len1, &stmp, &len2) == (size_t)-1)
 		int_warn(NO_CARET, "iconv failed");
 	    else
-		string = &iconv_string;
+		*string = iconv_string;
 	    iconv_close(cd);
 	}
     }
