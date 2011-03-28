@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wmenu.c,v 1.17 2011/03/20 18:47:47 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: wmenu.c,v 1.18 2011/03/28 10:09:41 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - win/wmenu.c */
@@ -62,6 +62,10 @@ static char *RCSid() { return RCSid("$Id: wmenu.c,v 1.17 2011/03/20 18:47:47 mar
 #include "wresourc.h"
 #include "stdfn.h"
 #include "wcommon.h"
+
+/* Choose between the directory dialog of the windows shell and
+   a modified version of the "file open" dialog */
+#define SHELL_DIR_DIALOG 
 
 BOOL CALLBACK InputBoxDlgProc(HWND, UINT, WPARAM, LPARAM);
 
