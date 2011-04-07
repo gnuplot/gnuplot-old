@@ -1,10 +1,12 @@
 /*
- * $Id: gnuplot_svg.js,v 1.1 2011/04/06 06:00:18 sfeam Exp $
+ * $Id: gnuplot_svg.js,v 1.2 2011/04/07 21:48:25 sfeam Exp $
  */
 // Shared routines for interaction with SVG fragments produced by 
 // gnuplot's SVG terminal driver.
 
 var gnuplot_svg = { };
+
+gnuplot_svg.version = "07 April 2011";
 
 gnuplot_svg.SVGDoc = null;
 gnuplot_svg.SVGRoot = null;
