@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.34 2010/03/14 18:52:44 sfeam Exp $
+ * $Id: eval.h,v 1.35 2011/04/16 11:15:55 markisch Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -94,11 +94,7 @@ typedef union argument {
 
 
 /* This type definition has to come after union argument has been declared. */
-#ifdef __ZTC__
-typedef void (*FUNC_PTR)(...);
-#else
 typedef void (*FUNC_PTR) __PROTO((union argument *arg));
-#endif
 
 /* standard/internal function table entry */
 typedef struct ft_entry {

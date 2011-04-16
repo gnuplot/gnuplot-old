@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.36 2011/01/03 14:30:31 juhaszp Exp $
+ * $Id: stdfn.h,v 1.37 2011/04/16 11:15:55 markisch Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -359,11 +359,7 @@ int gp_strnicmp __PROTO((const char *, const char *, size_t));
 #endif
 
 #ifndef GP_SLEEP
-# ifdef __ZTC__
-#    define GP_SLEEP(delay) usleep ((unsigned long) (delay+0.5))
-# else
-#    define GP_SLEEP(delay) sleep ((unsigned int) (delay+0.5))
-# endif
+#  define GP_SLEEP(delay) sleep ((unsigned int) (delay+0.5))
 #endif
 
 #ifdef HAVE_ATEXIT
