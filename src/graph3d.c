@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.246 2011/04/06 06:00:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.247 2011/04/16 04:55:26 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1025,6 +1025,7 @@ do_3dplot(
 		    break;
 		}
 	    case STEPS:	/* HBB: I think these should be here */
+	    case FILLSTEPS:
 	    case FSTEPS:
 	    case HISTEPS:
 	    case LINES:
