@@ -1,6 +1,6 @@
 2011-04-17  Ethan A Merritt  <merritt@u.washington.edu>
 
-	* config/Makefile.am.in:  
+	* config/Makefile.am.in:  Fix package-build breakage.
 
 2011-04-17  Hans-Bernhard Broeker  <broeker@physik.rwth-aachen.de>
 
