@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.132 2011/04/13 23:59:12 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.133 2011/04/25 16:59:02 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -216,7 +216,7 @@ load_file(FILE *fp, char *name, TBOOLEAN can_do_args)
     do_load_arg_substitution = can_do_args;
 
     if (fp == (FILE *) NULL) {
-	os_error(c_token, "Cannot open %s file '%s'",
+	os_error(NO_CARET, "Cannot open %s file '%s'",
 		 can_do_args ? "call" : "load", name);
     } else if (fp == stdin) {
 	/* DBT 10-6-98  go interactive if "-" named as load file */
