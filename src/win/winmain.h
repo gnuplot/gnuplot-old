@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.h,v 1.7 2008/10/10 22:23:20 mikulik Exp $
+ * $Id: winmain.h,v 1.8 2011/04/27 17:17:17 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.h */
@@ -53,6 +53,7 @@ extern GW graphwin;
 extern PW pausewin;
 extern MW menuwin;
 
+extern HWND help_window;
 extern LPSTR winhelpname;
 extern LPSTR szModuleName;
 extern LPSTR szPackageDir;
