@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: winmain.c,v 1.45 2011/04/27 17:17:17 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: winmain.c,v 1.46 2011/04/28 13:44:04 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - win/winmain.c */
@@ -86,6 +86,9 @@ static char *RCSid() { return RCSid("$Id: winmain.c,v 1.45 2011/04/27 17:17:17 m
 #include "wgnuplib.h"
 #include "wtext.h"
 #include "wcommon.h"
+#ifdef HAVE_GDIPLUS
+#include "wgdiplus.h"
+#endif
 
 /* workaround for old header files */
 #ifndef CSIDL_APPDATA
@@ -186,6 +189,9 @@ WinExit(void)
             /* file APIs are per process */
         }
 #endif
+#endif
+#ifdef HAVE_GDIPLUS
+        gdiplusCleanup();
 #endif
         return;
 }
