@@ -1,5 +1,8 @@
 2011-05-13  Bastian Maerkisch  <bmaerkisch@web.de>
 
+	* src/win/wgraph.c (WndGraphProc): Cycle through mouse-modes by
+	clicking on status bar. Suggestion by plotter@piments.com
+
 	* src/plot.c (main): Print messages concerning codepages only in
 	interactive sessions.
 
