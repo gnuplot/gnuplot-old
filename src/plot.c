@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.126 2011/05/13 18:30:57 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.127 2011/05/22 19:08:13 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -925,7 +925,7 @@ RexxInterface(PRXSTRING rxCmd, PUSHORT pusErr, PRXSTRING rxRc)
     memcpy(command_line_env, keepenv, sizeof(JMP_BUF));
     return 0;
 }
-#endif
+#endif /* OS2 */
 
 #ifdef GNUPLOT_HISTORY
 # if defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDITLINE)
