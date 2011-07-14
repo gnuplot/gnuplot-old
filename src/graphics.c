@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.372 2011/07/12 19:30:34 juhaszp Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.373 2011/07/14 20:24:16 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -3523,7 +3523,7 @@ plot_boxes(struct curve_points *plot, int xaxis_y)
 		}
 
 		if (plot->plot_style == HISTOGRAMS) {
-		    int ix = i;
+		    int ix = plot->points[i].x;
 		    int histogram_linetype = i;
 		    if (plot->histogram->startcolor > 0)
 			histogram_linetype += plot->histogram->startcolor;
@@ -3535,8 +3535,8 @@ plot_boxes(struct curve_points *plot, int xaxis_y)
 		    if (histogram_opts.type == HT_CLUSTERED
 		    ||  histogram_opts.type == HT_ERRORBARS) {
 			int clustersize = plot->histogram->clustersize + histogram_opts.gap;
-			dxl  += (i-1) * (clustersize - 1) + plot->histogram_sequence;
-			dxr  += (i-1) * (clustersize - 1) + plot->histogram_sequence;
+			dxl  += (ix-1) * (clustersize - 1) + plot->histogram_sequence;
+			dxr  += (ix-1) * (clustersize - 1) + plot->histogram_sequence;
 			dxl  += histogram_opts.gap/2;
 			dxr  += histogram_opts.gap/2;
 			dxl  /= clustersize;
