@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.128 2011/07/28 16:27:43 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: wgraph.c,v 1.129 2011/07/30 04:39:13 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - win/wgraph.c */
@@ -2326,7 +2326,7 @@ WriteGraphIni(LPGW lpgw)
 	wsprintf(profile, "%d", lpgw->oversample);
 	WritePrivateProfileString(section, "GraphOversampling", profile, file);
 	wsprintf(profile, "%d", lpgw->antialiasing);
-	WritePrivateProfileString(section, "GraphAntialising", profile, file);
+	WritePrivateProfileString(section, "GraphAntialiasing", profile, file);
 	wsprintf(profile, "%d %d %d",GetRValue(lpgw->background),
 			GetGValue(lpgw->background), GetBValue(lpgw->background));
 	WritePrivateProfileString(section, "GraphBackground", profile, file);
