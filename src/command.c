@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.218 2011/08/15 18:16:49 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.219 2011/08/19 18:42:08 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1053,6 +1053,8 @@ if_command()
      * Old if/else syntax (no curly braces) affects the rest of the current line.
      * Deprecate?
      */
+    if (clause_depth > 0)
+	int_error(c_token,"Old-style if/else statement encountered inside brackets");
     if_depth++;
     if (exprval != 0.0) {
 	/* fake the condition of a ';' between commands */
