@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.222 2011/07/12 18:38:52 juhaszp Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.223 2011/08/25 21:06:07 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1607,6 +1607,14 @@ change_term(const char *origname, int length)
 	name = "x11";
 	length = 3;
     }
+
+#ifdef HAVE_CAIROPDF
+    /* To allow "set term eps" as short for "set term epscairo" */
+    if (!strncmp(origname,"eps",length)) {
+	name = "epscairo";
+	length = 8;
+    }
+#endif
 
     for (i = 0; i < TERMCOUNT; i++) {
 	if (!strncmp(name, term_tbl[i].name, length)) {
