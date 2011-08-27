@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.37 2011/08/01 05:14:23 sfeam Exp $
+ * $Id: eval.h,v 1.38 2011/08/27 11:18:01 juhaszp Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -63,7 +63,7 @@ enum operators {
     JUMP, JUMPZ, JUMPNZ, JTERN, SF_START,
 
     /* functions specific to using spec */
-    COLUMN
+    COLUMN, STRINGCOLUMN
 };
 #define is_jump(operator) \
     ((operator) >=(int)JUMP && (operator) <(int)SF_START)
