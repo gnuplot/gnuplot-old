@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.207 2011/06/21 01:10:43 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.208 2011/08/29 17:27:00 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -114,6 +114,7 @@ static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.207 2011/06/21 01:10:43
 # include <X11/Xlocale.h>
 #endif
 
+#include <assert.h>
 #include "syscfg.h"
 #include "stdfn.h"
 #include "gp_types.h"
