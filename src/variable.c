@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: variable.c,v 1.41 2011/05/02 19:25:01 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: variable.c,v 1.42 2011/09/04 11:06:19 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - variable.c */
@@ -78,7 +78,9 @@ loadpath_handler(int action, char *path)
     /* index pointer, end of loadpath,
      * env section of loadpath, current limit, in that order */
     static char *p, *last, *envptr, *limit;
+#ifdef X11
     char *appdir;
+#endif
 
     switch (action) {
     case ACTION_CLEAR:

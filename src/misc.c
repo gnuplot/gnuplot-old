@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.136 2011/08/19 18:42:08 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.137 2011/09/04 11:06:19 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -1109,8 +1109,6 @@ parse_colorspec(struct t_colorspec *tc, int options)
 	tc->type = TC_LINESTYLE;
 	tc->lt = real_expression();
     } else if (almost_equals(c_token,"rgb$color")) {
-	char *color;
-	int rgbtriple;
 	c_token++;
 	tc->type = TC_RGB;
 	if (almost_equals(c_token, "var$iable")) {
@@ -1162,7 +1160,6 @@ long
 parse_color_name()
 {
     char *string;
-    int index;
     long color = -1;
 
     if (almost_equals(c_token,"rgb$color"))
