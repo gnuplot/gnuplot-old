@@ -1,5 +1,5 @@
 /*
- * $Id: ansichek.h,v 1.7 2011/04/16 11:15:53 markisch Exp $
+ * $Id: ansichek.h,v 1.8 2011/09/04 11:08:33 markisch Exp $
  */
 
 /* GNUPLOT - ansichek.h */
@@ -59,7 +59,7 @@
  * just set ANSI_C ?
  */
 
-#  if defined(ANSI_C) || defined(__TURBOC__) || defined (__PUREC__) || defined (_MSC_VER)
+#  if defined(ANSI_C) || defined (_MSC_VER)
 #   ifndef PROTOTYPES
 #    define PROTOTYPES
 #   endif
