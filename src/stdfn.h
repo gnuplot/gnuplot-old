@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.39 2011/08/29 17:27:00 sfeam Exp $
+ * $Id: stdfn.h,v 1.40 2011/09/21 11:43:50 markisch Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -377,6 +377,8 @@ size_t strnlen __PROTO((const char *str, size_t n));
 #else
 # define GP_ATEXIT(x) /* you lose */
 #endif
+
+char * gp_basename __PROTO((char *path));
 
 #if !defined(HAVE_DIRENT_H) && defined(WIN32) && (!defined(__WATCOMC__))
 /*
