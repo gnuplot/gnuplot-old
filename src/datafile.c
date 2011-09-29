@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.208 2011/09/04 11:06:19 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.209 2011/09/29 18:39:01 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -2280,11 +2280,14 @@ void
 f_timecolumn(union argument *arg)
 {
     struct value a;
-    int column, spec;
+    int column;
     AXIS_INDEX whichaxis;
     struct tm tm;
     double usec = 0.0;
+#if 0
+    int spec;
     int limit = (df_no_use_specs ? df_no_use_specs : MAXDATACOLS);
+#endif
 
     (void) arg;                 /* avoid -Wunused warning */
     (void) pop(&a);
