@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.108 2011/10/03 00:17:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.109 2011/10/08 00:07:41 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -446,6 +446,7 @@ const struct gen_table set_palette_tbl[] =
     { "ps_allcF",	S_PALETTE_PS_ALLCF },
     { "maxc$olors",	S_PALETTE_MAXCOLORS },
     { "gam$ma",         S_PALETTE_GAMMA },
+    { "cubehelix",      S_PALETTE_CUBEHELIX },
     { NULL, S_PALETTE_INVALID }
 };
 
