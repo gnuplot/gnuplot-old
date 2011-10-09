@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.34 2011/07/24 03:35:02 sfeam Exp $
+ * $Id: wxt_gui.h,v 1.35 2011/10/09 22:18:11 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -102,6 +102,11 @@
 /* c++ vectors and lists, used to store gnuplot commands */
 #include <vector>
 #include <list>
+
+/* suprisingly Cocoa version of wxWidgets does not define _Bool ! */
+#ifdef __WXOSX_COCOA__
+#define _Bool bool
+#endif
 
 extern "C" {
 /* for interactive */
