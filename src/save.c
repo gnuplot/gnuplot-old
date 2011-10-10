@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.195 2011/10/08 00:07:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.196 2011/10/10 21:17:04 juhaszp Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -934,12 +934,17 @@ set origin %g,%g\n",
     if (color_box.where == SMCOLOR_BOX_NO) fputs("\nunset colorbox\n", fp);
 	else fputs("\n", fp);
 
-    fprintf(fp, "set style boxplot %s %s %5.2f %soutliers pt %d\n",
+    fprintf(fp, "set style boxplot %s %s %5.2f %soutliers pt %d separation %g labels %s %ssorted\n",
 		boxplot_opts.plotstyle == FINANCEBARS ? "financebars" : "candles",
 		boxplot_opts.limit_type == 1 ? "fraction" : "range",
 		boxplot_opts.limit_value, 
 		boxplot_opts.outliers ? "" : "no",
-		boxplot_opts.pointtype+1);
+		boxplot_opts.pointtype+1,
+		boxplot_opts.separation,
+		(boxplot_opts.labels == BOXPLOT_FACTOR_LABELS_X)  ? "x"  :
+		(boxplot_opts.labels == BOXPLOT_FACTOR_LABELS_X2) ? "x2" :
+		(boxplot_opts.labels == BOXPLOT_FACTOR_LABELS_AUTO) ? "auto" :"off",
+		boxplot_opts.sort_factors ? "" : "un");
 
     fputs("set loadpath ", fp);
     {
