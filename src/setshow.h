@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.43 2010/11/18 23:59:59 sfeam Exp $
+ * $Id: setshow.h,v 1.44 2011/10/25 05:10:58 sfeam Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -48,7 +48,7 @@
 
 #define SAVE_NUM_OR_TIME(fp, x, axis)				\
 do{								\
-    if (axis_array[axis].is_timedata) {				\
+    if (axis_array[axis].datatype == DT_TIMEDATE) {		\
 	char s[80];						\
 								\
 	putc('"', fp);						\
