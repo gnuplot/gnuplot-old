@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.97 2011/06/19 22:10:37 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.98 2011/11/01 18:52:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -56,6 +56,9 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.97 2011/06/19 22:10:37 sfea
 
 /* decimal sign */
 char *decimalsign = NULL;
+
+/* degree sign.  Defaults to UTF-8 but will be changed to match encoding */
+char degree_sign[8] = "°";
 
 /* Holds the name of the current LC_NUMERIC as set by "set decimal locale" */
 char *numeric_locale = NULL;
