@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.132 2011/10/25 05:10:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.133 2011/11/04 22:13:40 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -639,6 +639,9 @@ apply_zoom(struct t_zoom *z)
 	alert();
 	return;
     }
+
+    /* Now we're committed. Notify the terminal the the next replot is a zoom */
+    (*term->layer)(TERM_LAYER_BEFORE_ZOOM);
 
     flip = (is_splot_map && zoom_now->was_splot_map);
     sprintf(s, "set xr[%.12g:%.12g]; set yr[%.12g:%.12g]",
