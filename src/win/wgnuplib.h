@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.52 2011/11/15 22:47:19 markisch Exp $
+ * $Id: wgnuplib.h,v 1.53 2011/11/18 07:48:28 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -323,6 +323,7 @@ typedef struct tagGW {
 	BOOL	oversample;	/* oversampling? */
 	BOOL	antialiasing;
 	BOOL	polyaa;		/* anti-aliasing for polygons ? */
+	BOOL	patternaa;	/* anti-aliasing for polygons ? */
 
 	BOOL	hideplot[MAXPLOTSHIDE];
 	BOOL	hidegrid;
