@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.253 2011/09/29 18:48:57 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.254 2011/11/26 00:04:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -523,16 +523,13 @@ place_labels3d(struct text_label *listhead, int layer)
 	if (this_label->layer != layer)
 	    continue;
 
-	/* HBB FIXME 20050428: conflicting types for &x,&y in these
-	 * two routines.  One takes pointers to unsigned, the other to
-	 * signed ints. */
 	if (layer == LAYER_PLOTLABELS) {
 	    double xx, yy;
 	    map3d_xy_double(this_label->place.x, this_label->place.y,
 		     this_label->place.z, &xx, &yy);
 	    x = xx;
 	    y = yy;
-	    /* Only clip in 2D.   EAM - why? */
+	    /* Only clip in 2D */
 	    if (splot_map && clip_point(x, y))
 		continue;
 	} else
