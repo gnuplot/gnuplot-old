@@ -1,5 +1,5 @@
 /*
- * $Id: wtext.h,v 1.10 2008/11/07 11:55:46 mikulik Exp $
+ * $Id: wtext.h,v 1.11 2011/12/06 20:31:50 markisch Exp $
  */
 
 /* GNUPLOT - win/wtext.h */
@@ -103,6 +103,11 @@ int MyVFPrintF(FILE *file, const char *fmt, va_list args);
 int MyPrintF(const char *fmt, ...);
 size_t MyFWrite(const void *ptr, size_t size, size_t n, FILE *stream);
 size_t MyFRead(void *ptr, size_t size, size_t n, FILE *stream);
+
+#ifdef USE_FAKEPIPES
+FILE *fake_popen(const char *command, const char *type);
+int fake_pclose(FILE *stream);
+#endif
 
 #else /* WGP_CONSOLE */
 
