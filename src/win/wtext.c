@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: wtext.c,v 1.19 2008/11/07 11:55:46 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: wtext.c,v 1.19.2.1 2011/12/07 17:33:37 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - win/wtext.c */
@@ -68,8 +68,8 @@ static char *RCSid() { return RCSid("$Id: wtext.c,v 1.19 2008/11/07 11:55:46 mik
 #include "wcommon.h"
 
 /* font stuff */
-#define TEXTFONTSIZE 9
-#define TEXTFONTNAME "Terminal"
+#define TEXTFONTSIZE 10
+#define TEXTFONTNAME "Lucida Console"
 
 
 #ifndef WGP_CONSOLE
