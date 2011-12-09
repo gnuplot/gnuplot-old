@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.128 2011/09/04 11:08:33 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.128.2.1 2011/12/09 07:05:35 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -690,11 +690,12 @@ load_rcfile()
     FILE *plotrc = NULL;
     char *rcfile = NULL;
 
-#ifdef NOCWDRC
-    /* inhibit check of init file in current directory for security reasons */
-#else
+#ifdef USE_CWDRC
+    /* Allow check for a .gnuplot init file in the current directory */
+    /* This is a security risk, as someone might leave a malicious   */
+    /* init file in a shared directory.                              */
     plotrc = fopen(PLOTRC, "r");
-#endif /* !NOCWDRC */
+#endif /* !USE_CWDRC */
 
     if (plotrc == NULL) {
 	if (user_homedir) {
