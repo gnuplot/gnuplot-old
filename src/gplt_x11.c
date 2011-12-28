@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.210 2011/10/08 00:07:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.210.2.1 2011/12/28 21:30:11 sfeam Exp $"); }
 #endif
 
 #define X11_POLYLINE 1
@@ -3467,7 +3467,9 @@ PaletteMake(t_sm_palette * tpal)
 {
     int max_colors;
     int min_colors;
+#ifdef TITLE_BAR_DRAWING_MSG
     char *save_title = (char *) 0;
+#endif
 
     /* The information retained in a linked list is the cmap_t structure.
      * That colormap structure doesn't contain the palette specifications
