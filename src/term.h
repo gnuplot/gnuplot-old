@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.54 2011/11/06 09:31:00 markisch Exp $
+ * $Id: term.h,v 1.55 2012/01/09 18:33:37 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -96,13 +96,6 @@
 /****************************************************************************/
 /* Platform dependent part                                                  */
 /****************************************************************************/
-
-
-/* Apple Macintosh */
-#ifdef _Macintosh
-# include "mac.trm"
-#endif
-
 
 /* BeOS */
 #ifdef __BEOS__
