@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.192 2011/11/26 00:04:31 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.193 2012/01/22 01:32:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -771,6 +771,10 @@ get_3ddata(struct surface_points *this_plot)
 
 	while ((retval = df_readline(v,MAXDATACOLS)) != DF_EOF) {
 	    j = retval;
+
+	    if (j == 0) /* not blank line, but df_readline couldn't parse it */
+		int_warn(NO_CARET, "Bad data on line %d of file %s",
+			  df_line_number, df_filename ? df_filename : ""); 
 
 	    if (j == DF_SECOND_BLANK)
 		break;		/* two blank lines */
