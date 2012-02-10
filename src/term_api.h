@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.97.2.1 2011/11/24 22:59:46 sfeam Exp $
+ * $Id: term_api.h,v 1.97.2.2 2012/02/10 06:52:22 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -365,6 +365,10 @@ extern const struct gen_table set_encoding_tbl[];
 
 /* mouse module needs this */
 extern TBOOLEAN term_initialised;
+
+/* The qt and wxt terminals cannot be used in the same session. */
+/* Whichever one is used first to plot, this locks out the other. */
+extern void *term_interlock;
 
 /* Support for enhanced text mode. */
 extern char  enhanced_text[];
