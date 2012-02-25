@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.46.2.3 2011/12/29 22:58:36 sfeam Exp $
+ * $Id: plot.h,v 1.46.2.4 2012/02/25 12:02:07 juhaszp Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -51,6 +51,7 @@
 /* Variables of plot.c needed by other modules: */
 
 extern TBOOLEAN interactive;
+extern TBOOLEAN noinputfiles;
 extern TBOOLEAN persist_cl;
 
 extern const char *user_shell;
