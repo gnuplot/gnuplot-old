@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2ipf.c,v 1.21 2008/02/25 02:20:35 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2ipf.c,v 1.21.4.1 2012/03/03 16:20:59 mikulik Exp $"); }
 #endif
 
 /* GNUPLOT - doc2ipf.c */
@@ -401,7 +401,10 @@ process_line(char *line, FILE *b)
 		    if (*pt != NUL) {	/* ignore null columns */
 			char *tagend, *tagstart;
 			/* this fails on format line */
-			assert(j < MAX_COL);
+			if (j >= MAX_COL) {
+			    fprintf(stderr,"j >= MAX_COL\n");
+			    exit(EXIT_FAILURE);
+			}
 			while (*pt==' ') pt++; /* strip spaces */		
 			strcpy(tableins->col[j], " ");
 			strcat(tableins->col[j], pt);
