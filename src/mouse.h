@@ -1,5 +1,5 @@
 /*
- * $Id: mouse.h,v 1.21 2008/10/02 21:30:16 sfeam Exp $
+ * $Id: mouse.h,v 1.22 2012/03/09 20:23:31 sfeam Exp $
  */
 
 /* GNUPLOT - mouse.h */
@@ -54,7 +54,6 @@
 struct t_zoom {
   double xmin, ymin, xmax, ymax;
   double x2min, y2min, x2max, y2max;
-  int was_splot_map;
   struct t_zoom *prev, *next;
 };
 
