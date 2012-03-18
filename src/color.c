@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: color.c,v 1.98 2011/10/28 21:01:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: color.c,v 1.99 2012/03/18 17:30:43 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - color.c */
@@ -515,7 +515,7 @@ cbtick_callback(
 	    if (axis_array[axis].manual_justify)
 		just = axis_array[axis].label.pos;
 	    write_multiline(x2+offsetx, y3+offsety, text,
-			    just, CENTRE, hrotate,
+			    just, JUST_CENTRE, hrotate,
 			    axis_array[axis].ticdef.font);
 	    if (hrotate)
 		(*term->text_angle)(0);
@@ -526,7 +526,7 @@ cbtick_callback(
 	    if (axis_array[axis].manual_justify)
 		just = axis_array[axis].label.pos;	    
 	    write_multiline(x3+offsetx, y2+offsety, text,
-			    just, CENTRE, 0.0,
+			    just, JUST_CENTRE, 0.0,
 			    axis_array[axis].ticdef.font);
 	}
 	term_apply_lp_properties(&border_lp);	/* border linetype */
