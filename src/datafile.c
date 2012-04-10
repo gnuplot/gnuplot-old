@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.216 2012/04/08 17:45:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.217 2012/04/10 16:49:44 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -4704,7 +4704,7 @@ df_readbinary(double v[], int max)
 		if (isnan(v[output])) {
 			/* EAM April 2012 - return, continue, or ignore??? */
 			FPRINTF((stderr,"NaN input value"));
-			if (!df_matrix_file)
+			if (!df_matrix)
 				return DF_UNDEFINED;
 		}
 
