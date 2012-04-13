@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.84 2012/01/04 05:16:49 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.85 2012/04/13 19:30:38 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -1641,7 +1641,7 @@ draw_vertex(p_vertex v)
 	    apply_pm3dcolor(tc, term);
 	}
 	else if (tc->type == TC_RGB && tc->lt == LT_COLORFROMCOLUMN)
-	    set_rgbcolor((int)v->real_z);
+	    set_rgbcolor((unsigned int)v->real_z);
 	else if (tc->type == TC_RGB)
 	    set_rgbcolor(tc->lt);
 	else if (tc->type == TC_CB)

@@ -1,5 +1,5 @@
 /*
- * $Id: color.h,v 1.35 2011/10/08 00:07:41 sfeam Exp $
+ * $Id: color.h,v 1.36 2012/04/13 19:30:38 sfeam Exp $
  */
 
 /* GNUPLOT - color.h */
@@ -232,7 +232,7 @@ void invalidate_palette __PROTO((void));
    according to sm_palette.positive == SMPAL_POSITIVE or SMPAL_NEGATIVE
 */
 void set_color __PROTO(( double gray ));
-void set_rgbcolor __PROTO(( int rgblt ));
+void set_rgbcolor __PROTO(( unsigned int rgbvalue ));
 
 void ifilled_quadrangle __PROTO((gpiPoint* icorners));
 
