@@ -1,5 +1,5 @@
 /*
- * $Id: gnuplot_dashedlines.js,v 1.2 2010/11/26 23:39:16 sfeam Exp $
+ * $Id: gnuplot_dashedlines.js,v 1.3 2012/05/03 20:35:22 sfeam Exp $
  */
 /*
  * Ethan Merritt November 2010
@@ -36,7 +36,7 @@ gnuplot.dashstep = function(x,y) {
     var delx = x - gnuplot.dash_x;
     var dely = y - gnuplot.dash_y;
     var stride = Math.sqrt(delx*delx + dely*dely) / gnuplot.dashlength;
-    var this_step;
+    var this_step; var new_x, new_y;
 
     if (gnuplot.pattern.length == 0) {gnuplot.L(x,y); return;}
 
