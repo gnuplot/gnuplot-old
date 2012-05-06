@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.230.2.3 2012/05/05 04:24:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.230.2.4 2012/05/06 22:21:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -2691,9 +2691,14 @@ rlgets(char *s, size_t n, const char *prompt)
 #  elif defined(HAVE_LIBEDITLINE)
 	    /* deleting history entries does not work, so suppress adjacent 
 	    duplicates only */
-	    while (previous_history());
-	    if (strcmp(current_history()->line, line) != 0)
-		add_history(line);
+      
+	    int found;
+	    using_history();
+
+	    found = history_search(line, -1);
+	    if (found <= 0) {
+               add_history(line);
+            }
 #  else /* builtin readline */
 	    add_history(line);
 #  endif
