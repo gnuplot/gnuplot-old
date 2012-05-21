@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.h,v 1.18 2012/04/14 03:59:31 sfeam Exp $
+ * $Id: gp_cairo.h,v 1.19 2012/05/21 23:15:18 sfeam Exp $
  */
 
 /* GNUPLOT - gp_cairo.h */
@@ -204,7 +204,7 @@ void gp_cairo_initialize_context(plot_struct *plot);
 void gp_cairo_move(plot_struct *plot, int x, int y);
 void gp_cairo_vector(plot_struct *plot, int x, int y);
 void gp_cairo_stroke(plot_struct *plot);
-void gp_cairo_draw_text(plot_struct *plot, int x1, int y1, const char* str);
+void gp_cairo_draw_text(plot_struct *plot, int x1, int y1, const char* str, int *width, int *height);
 void gp_cairo_draw_enhanced_text(plot_struct *plot, int x1, int y1, const char* str);
 void gp_cairo_enhanced_init(plot_struct *plot, int len);
 void gp_cairo_enhanced_finish(plot_struct *plot, int x, int y);

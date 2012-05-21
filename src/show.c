@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.269 2012/05/20 14:18:54 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.270 2012/05/21 23:15:18 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1697,6 +1697,8 @@ show_label(int tag)
 		save_linetype(stderr, &(this_label->lp_properties), TRUE);
 		show_position(&this_label->offset);
 	    }
+	    if (this_label->hypertext)
+		fprintf(stderr, " hypertext");
 
 	    /* Entry font added by DJL */
 	    fputc('\n', stderr);
