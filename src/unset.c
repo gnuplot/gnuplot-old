@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.153 2012/05/20 14:18:54 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.154 2012/06/13 20:12:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1685,6 +1685,7 @@ reset_command()
     draw_border = 31;
 
     draw_surface = TRUE;
+    implicit_surface = TRUE;
 
     data_style = POINTSTYLE;
     func_style = LINES;

@@ -1,5 +1,5 @@
 /*
- * $Id: graph3d.h,v 1.41 2011/07/25 06:51:29 sfeam Exp $
+ * $Id: graph3d.h,v 1.42 2012/06/13 20:12:59 sfeam Exp $
  */
 
 /* GNUPLOT - graph3d.h */
@@ -139,6 +139,7 @@ extern t_contour_placement draw_contour;
 extern TBOOLEAN	label_contours;
 
 extern TBOOLEAN	draw_surface;
+extern TBOOLEAN	implicit_surface;
 
 /* is hidden3d display wanted? */
 extern TBOOLEAN	hidden3d;

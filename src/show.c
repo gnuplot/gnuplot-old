@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.270 2012/05/21 23:15:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.271 2012/06/13 20:12:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2586,7 +2586,8 @@ static void
 show_surface()
 {
     SHOW_ALL_NL;
-    fprintf(stderr, "\tsurface is %sdrawn\n", draw_surface ? "" : "not ");
+    fprintf(stderr, "\tsurface is %sdrawn %s\n",
+	draw_surface ? "" : "not ", implicit_surface ? "" : "only if explicitly requested");
 }
 
 
