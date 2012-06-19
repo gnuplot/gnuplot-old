@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: scanner.c,v 1.34 2012/01/08 04:21:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: scanner.c,v 1.35 2012/06/19 18:11:06 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -99,7 +99,7 @@ legal_identifier(char *p)
  *          %,~,(,)
  *          [,],;,:,
  *          ?,comma
- *          $           for using patch (div)
+ *          $           
  *      4.  &,|,=,*     current char; also next if next is same
  *      5.  !,<,>       current char; also next if next is =
  *      6.  ", '        all chars up until matching quote
@@ -231,7 +231,7 @@ scanner(char **expressionp, size_t *expressionlenp)
 	    case ':':
 	    case '?':
 	    case ',':
-	    case '$':		/* div */
+	    case '$':
 		break;
 	    case '}':		/* complex constants will not end up here */
 		curly_brace_count--;
@@ -244,9 +244,14 @@ scanner(char **expressionp, size_t *expressionlenp)
 		    APPEND_TOKEN;
 		break;
 	    case '!':
-	    case '<':
 	    case '>':
 		if (expression[current + 1] == '=')
+		    APPEND_TOKEN;
+		break;
+	    case '<':
+		if (expression[current + 1] == '=')
+		    APPEND_TOKEN;
+		if (expression[current + 1] == '<')
 		    APPEND_TOKEN;
 		break;
 	    default:

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.68 2012/05/05 04:21:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.69 2012/06/19 18:11:06 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -38,6 +38,7 @@ static char *RCSid() { return RCSid("$Id: parse.c,v 1.68 2012/05/05 04:21:41 sfe
 
 #include "alloc.h"
 #include "command.h"
+#include "datablock.h"
 #include "eval.h"
 #include "help.h"
 #include "util.h"
@@ -174,12 +175,17 @@ string_or_express(struct at_type **atptr)
     free(str);
     str = NULL;
 
+    if (atptr)
+	*atptr = NULL;
+
     if (END_OF_COMMAND)
 	int_error(c_token, "expression expected");
 
+    /* parsing for datablocks */
+    if (equals(c_token,"$"))
+	return parse_datablock_name();
+
     if (isstring(c_token)) {
-	if (atptr)
-	    *atptr = NULL;
 	str = try_to_get_string();
 	return str;
     }
