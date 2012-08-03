@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.138.2.10 2012/05/10 21:48:01 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.138.2.11 2012/08/03 05:24:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -297,6 +297,8 @@ load_file(FILE *fp, char *name, TBOOLEAN can_do_args)
 			if (curly_brace_count < 0)
 			    int_error(NO_CARET, "Unexpected }");
 			if (curly_brace_count > 0) {
+			    if (len + 4 > gp_input_line_len)
+				extend_input_line();
 			    strcat(gp_input_line,";\n");
 			    start = strlen(gp_input_line);
 			    left = gp_input_line_len - start;
