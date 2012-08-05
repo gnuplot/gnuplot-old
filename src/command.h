@@ -1,5 +1,5 @@
 /*
- * $Id: command.h,v 1.57 2011/10/03 00:17:22 sfeam Exp $
+ * $Id: command.h,v 1.58 2012/08/05 19:24:53 sfeam Exp $
  */
 
 /* GNUPLOT - command.h */
@@ -163,6 +163,7 @@ void do_command __PROTO((void));
 void if_command __PROTO((void));
 void else_command __PROTO((void));
 void invalid_command __PROTO((void));
+void link_command __PROTO((void));
 void load_command __PROTO((void));
 void begin_clause __PROTO((void));
 void clause_reset_after_error __PROTO((void));

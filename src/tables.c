@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.113 2012/06/30 09:39:52 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.114 2012/08/05 19:24:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -186,6 +186,7 @@ const struct gen_table set_tbl[] =
     { "k$ey", S_KEY },
     { "keyt$itle", S_KEYTITLE },
     { "la$bel", S_LABEL },
+    { "link", S_LINK },
     { "lines$tyle", S_LINESTYLE },
     { "linetype$s", S_LINETYPE },
     { "ls", S_LINESTYLE },
