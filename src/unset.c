@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.156 2012/08/24 21:28:38 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.157 2012/09/02 21:48:58 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -978,7 +978,9 @@ unset_object()
 		return;		/* exit, our job is done */
 	    }
 	}
-	int_error(c_token, "object not found");
+	/*
+	int_warn(c_token, "object %d not found", tag);
+	 */
     }
 }
 
