@@ -1,5 +1,5 @@
 /*
- * $Id: axis.h,v 1.76 2012/08/30 16:12:30 sfeam Exp $
+ * $Id: axis.h,v 1.77 2012/09/13 20:14:16 sfeam Exp $
  *
  */
 
@@ -198,7 +198,6 @@ typedef struct axis {
     /* write auto-ed ranges back to variables for autoscale */
 #define RANGE_WRITEBACK 1
     /* allow auto and reversed ranges */
-#define RANGE_REVERSE   2
     TBOOLEAN range_is_reverted;	/* range [high:low] silently reverted? */
     double min;			/* 'transient' axis extremal values */
     double max;
