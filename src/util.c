@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.102 2012/07/08 04:42:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.103 2012/09/17 03:05:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -1020,6 +1020,7 @@ int_error(int t_num, const char str[], va_dcl)
     eval_reset_after_error();
     clause_reset_after_error();
     scanning_range_in_progress = FALSE;
+    inside_zoom = FALSE;
 
     /* Load error state variables */
     update_gpval_variables(2);
