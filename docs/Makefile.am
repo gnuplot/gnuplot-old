@@ -1,4 +1,4 @@
-# Makefile.in for GNUPLOT documentation
+# Makefile.am for GNUPLOT documentation directory
 # based on Makefile.in as of 20-may-2012
 #
 # Note that the master file for generating documentation is gnuplot.doc.
@@ -172,7 +172,7 @@ pdffigures.tex:	figures gnuplot.pdf
 	rm -f gnuplot.tex
 	echo "" > pdffigures.tex
 
-figures: doc2tex$(EXEEXT) $(srcdir)/gnuplot.doc
+figures: allterm.h doc2tex$(EXEEXT) $(srcdir)/gnuplot.doc
 	@if [ -a $(top_srcdir)/src/gnuplot ] ; then \
 	  GNUPLOT_LIB=$(top_srcdir)/demo ../src/gnuplot $(srcdir)/plotstyles.gnu ; \
 	  ./doc2tex$(EXEEXT) -figures $(srcdir)/gnuplot.doc gnuplot.tex ; \
