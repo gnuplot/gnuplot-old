@@ -1,5 +1,5 @@
 /*
- * $Id: wcommon.h,v 1.15 2012/05/20 20:58:52 markisch Exp $
+ * $Id: wcommon.h,v 1.16 2012/10/08 22:30:53 markisch Exp $
  */
 
 /* GNUPLOT - wcommon.h */
@@ -76,6 +76,7 @@ LPSTR GetInt(LPSTR str, LPINT pval);
 void WriteTextIni(LPTW lptw);
 void ReadTextIni(LPTW lptw);
 void DragFunc(LPTW lptw, HDROP hdrop);
+void TextShow(LPTW lptw);
 
 /* wmenu.c - Menu */
 void SendMacro(LPTW lptw, UINT m);
