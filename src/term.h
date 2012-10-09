@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.55 2012/01/09 18:33:37 sfeam Exp $
+ * $Id: term.h,v 1.56 2012/10/09 23:23:11 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -213,7 +213,7 @@
 # include "gpic.trm"
 
 /* REGIS graphics language */
-# include "regis.trm"
+/* # include "regis.trm" */
 
 /* Tektronix 4106, 4107, 4109 and 420x terminals */
 # include "t410x.trm"
