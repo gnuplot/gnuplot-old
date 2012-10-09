@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.274 2012/09/17 03:05:43 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.275 2012/10/09 03:51:19 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -628,6 +628,10 @@ get_data(struct curve_points *current_plot)
 	case DF_UNDEFINED:
 	    /* NaN or bad result from extended using expression */
 	    current_plot->points[i].type = UNDEFINED;
+	    FPRINTF((stderr,"undefined point %g %g %g\n", v[0], v[1], v[2]));
+	    /* FIXME: Are there other plot styles that require copying v[i]? */
+	    if (current_plot->plot_style == IMAGE)
+		goto images;
 	    i++;
 	    continue;
 
