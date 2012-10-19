@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.220 2012/10/15 04:41:34 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.221 2012/10/19 15:23:12 sfeam Exp $"); }
 #endif
 
 #define MOUSE_ALL_WINDOWS 1
@@ -585,7 +585,7 @@ static int gX = 100, gY = 100;
    This allows the plot to be maximally scaled while preserving the aspect
    ratio.
 */
-static unsigned int gW = 640, gH = 450;
+static unsigned int gW = 640, gH = 450; /* defaults must match those in x11.trm */
 static unsigned int gFlags = PSize;
 
 static unsigned int BorderWidth = 2;
