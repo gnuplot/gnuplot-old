@@ -1,5 +1,5 @@
 /*
- * $Id: mouse.h,v 1.21 2008/10/02 21:30:16 sfeam Exp $
+ * $Id: mouse.h,v 1.21.4.1 2012/10/27 02:24:37 sfeam Exp $
  */
 
 /* GNUPLOT - mouse.h */
@@ -149,6 +149,7 @@ static char* special_keys[] = {
     "F11",
     "F12",
     "Close",
+    "Button1",
     "GP_LAST_KEY",
     (char*) 0 /* must be the last line */
 };
