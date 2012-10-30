@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.104 2012/09/13 20:14:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.105 2012/10/30 04:43:42 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -204,6 +204,8 @@ const struct ft_entry GPFAR ft[] =
     {"exist", f_exists},	/* exists("foo") replaces defined(foo) */
     {"exists", f_exists},	/* exists("foo") replaces defined(foo) */
     {"value", f_value},		/* retrieve value of variable known by name */
+
+    {"hsv2rgb", f_hsv2rgb},	/* color conversion */
 
     {NULL, NULL}
 };
