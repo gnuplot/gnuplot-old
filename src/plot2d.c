@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.279 2012/11/14 01:08:06 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.280 2012/11/14 02:08:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1321,11 +1321,10 @@ store2d_point(
 static int
 check_or_add_boxplot_factor(struct curve_points *plot, char* string, double x)
 {
-    int levels = plot->boxplot_factors;
     int len;
     char * trimmed_string;
     /* We abuse the labels structure to store the factors in their string forms */
-    struct text_label *label = plot->labels;
+    struct text_label *label;
 
     /* This can happen if the user specifies a non-existent column:
      * fall back to single-boxplot mode */
@@ -1335,21 +1334,19 @@ check_or_add_boxplot_factor(struct curve_points *plot, char* string, double x)
     /* Remove the trailing garbage, quotes etc. from the string */ 
     trimmed_string = df_parse_string_field(string);
     len = strlen(trimmed_string);
-    while (label) {
+    for (label = plot->labels; label; label = label->next) {
 	/* check if string is the same as the i-th factor */
-	if (label->text && !strncmp(trimmed_string, label->text, len)) {
-		free(trimmed_string);
-		return label->tag; /* found it, we return its index */
-	}
-	label = label->next;
+	if (label->text && !strncmp(trimmed_string, label->text, len))
+		break;
     }
 
     /* not found, so we add it now */
-    plot->boxplot_factors = levels + 1;
-    store_label(plot->labels, &(plot->points[0]), levels, trimmed_string, 0.0);
-    free(trimmed_string);
+    if (!label)
+	label = store_label(plot->labels, &(plot->points[0]), 
+		plot->boxplot_factors++, trimmed_string, 0.0);
 
-    return levels;
+    free(trimmed_string);
+    return label->tag;
 }
 
 /* Add tic labels to the boxplots, 
