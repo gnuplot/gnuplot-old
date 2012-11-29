@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.274 2012/10/30 00:45:56 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.275 2012/11/29 00:12:56 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1098,6 +1098,9 @@ do_3dplot(
 		plot_image_or_update_axes(this_plot, FALSE);
 		break;
 
+	    case PLOT_STYLE_NONE:
+		/* cannot happen */
+		break;
 	    }			/* switch(plot-style) plot proper */
 
 	    /* Next draw the key sample */
@@ -1179,6 +1182,8 @@ do_3dplot(
 		    key_sample_line(xl, yl);
 		break;
 
+	    case PLOT_STYLE_NONE:
+		/* cannot happen */
 	    default:
 		break;
 

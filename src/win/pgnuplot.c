@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: pgnuplot.c,v 1.17 2011/08/15 17:30:40 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: pgnuplot.c,v 1.18 2012/11/29 00:12:57 broeker Exp $"); }
 #endif
 
 /*
@@ -282,7 +282,7 @@ main (int argc, char *argv[])
        separate the program name from the arguments. */
     psCmdLine = FindUnquotedSpace(psCmdLine);
 
-    strncat(psGnuplotCommandLine, psCmdLine, MAX_PATH - strlen(psGnuplotCommandLine));
+    strncat(psGnuplotCommandLine, psCmdLine, sizeof(psGnuplotCommandLine) - strlen(psGnuplotCommandLine)-1);
 
 #ifdef SHOWCMDLINE
     fprintf(stderr,"Arguments: %s\n", psCmdLine);
