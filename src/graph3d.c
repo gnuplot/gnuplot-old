@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.276 2012/12/17 04:00:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.277 2012/12/20 06:15:06 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -696,6 +696,10 @@ do_3dplot(
 	if (aspect_ratio_3D >= 3)
 	    zscale3d = xscale3d;
     }
+
+    /* Without this the rotation center would be located at */
+    /* the bottom of the plot. This places it in the middle.*/
+    zcenter3d =  -(ceiling_z - floor_z) / 2.0 * zscale3d + 1;
 
     /* Needed for mousing by outboard terminal drivers */
     if (splot_map) {
