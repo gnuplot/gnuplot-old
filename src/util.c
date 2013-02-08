@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.99.2.5 2012/11/05 18:31:53 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.99.2.6 2013/02/08 23:01:39 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -535,6 +535,8 @@ gprintf(
     char *dest = &tempdest[0];
     char *limit = &tempdest[MAX_LINE_LEN];
 #define remaining_space (size_t)(limit-dest)
+
+    *dest = '\0';
 
     set_numeric_locale();
 
