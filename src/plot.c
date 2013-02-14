@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.144 2013/02/03 23:50:48 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.145 2013/02/14 23:58:01 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -654,7 +654,10 @@ main(int argc, char **argv)
 
     /* take commands from stdin */
     if (noinputfiles) {
-	interactive = TRUE;
+	/* FIXME: setting interactive true breaks Gnuplot.pm
+	 * but was used in the Windows code prior to Feb 2013.
+	 */
+	/* interactive = TRUE; */
 	while (!com_line());
     }
 
