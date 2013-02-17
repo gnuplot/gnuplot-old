@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.128.2.13 2013/02/17 18:51:39 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.128.2.14 2013/02/17 21:40:14 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -634,6 +634,7 @@ main(int argc, char **argv)
 		    return 0;
 		}
 		interactive = FALSE;
+		noinputfiles = FALSE;
 		do_string(*argv);
 
 	    } else if (!strncmp(*argv, "-d", 2) || !strcmp(*argv, "--default-settings")) {
