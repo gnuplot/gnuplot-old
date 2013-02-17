@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.203 2013/01/04 22:03:54 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.204 2013/02/17 17:51:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -39,7 +39,6 @@ static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.203 2013/01/04 22:03:54 b
 
 #include "alloc.h"
 #include "axis.h"
-#include "binary.h"
 #include "command.h"
 #include "contour.h"
 #include "datafile.h"
