@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.249 2013/01/09 05:23:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.250 2013/02/23 01:57:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1829,11 +1829,6 @@ init_terminal()
 	    term_name = "unixpc";
 	}
 #endif /* unixpc */
-
-#ifdef CGI
-	if (getenv("CGIDISP") || getenv("CGIPRNT"))
-	    term_name = "cgi";
-#endif /*CGI */
 
 #ifdef DJGPP
 	term_name = "svga";
