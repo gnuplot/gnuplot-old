@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: version.c,v 1.106 2012/06/19 18:11:06 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: version.c,v 1.107 2013/02/26 23:38:42 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - version.c */
@@ -50,6 +50,3 @@ char *compile_options = (void *)0;	/* Will be loaded at runtime */
 
 const char bug_email[] = "gnuplot-beta@lists.sourceforge.net";
 const char help_email[] = "gnuplot-beta@lists.sourceforge.net";
-
-char os_name[32];
-char os_rel[32];
