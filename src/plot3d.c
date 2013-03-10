@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.191.2.3 2013/03/10 01:12:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.191.2.4 2013/03/10 01:19:41 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -382,6 +382,11 @@ refresh_3dbounds(struct surface_points *first_plot, int nplots)
 	}	/* End of this plot */
 
     }
+
+    /* Make sure the bounds are reasonable, and tweak them if they aren't */
+    axis_checked_extend_empty_range(FIRST_X_AXIS, NULL);
+    axis_checked_extend_empty_range(FIRST_Y_AXIS, NULL);
+    axis_checked_extend_empty_range(FIRST_Z_AXIS, NULL);
 }
 #endif
 
