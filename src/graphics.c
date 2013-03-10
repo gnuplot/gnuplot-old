@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.379.2.15 2013/02/19 22:20:09 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.379.2.16 2013/03/10 18:24:00 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -1726,7 +1726,7 @@ do_plot(struct curve_points *plots, int pcount)
 	ignore_enhanced(axis_array[FIRST_X_AXIS].label.noenhanced);
 	apply_pm3dcolor(&(axis_array[FIRST_X_AXIS].label.textcolor), t);
 	write_multiline(x, y, axis_array[FIRST_X_AXIS].label.text,
-			JUST_CENTRE, JUST_TOP, 0,
+			CENTRE, JUST_TOP, 0,
 			axis_array[FIRST_X_AXIS].label.font);
 	reset_textcolor(&(axis_array[FIRST_X_AXIS].label.textcolor), t);
 	ignore_enhanced(FALSE);
