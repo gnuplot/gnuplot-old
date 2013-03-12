@@ -1,5 +1,5 @@
 #
-# $Id: fit.dem,v 1.10 2013/03/12 19:57:50 sfeam Exp $
+# $Id: fit.dem,v 1.11 2013/03/12 19:59:09 sfeam Exp $
 #
 
 print "Some examples how data fitting using nonlinear least squares fit"
@@ -141,7 +141,7 @@ print "is read from the file. No x value is required in this case."
 print "(This is left as an excercise for the user)."
 print ""
 print "Another possibility is to prescale the variables (set fit prescale),"
-print "which may improved convergence.",
+print "which may improve convergence."
 pause -1 "(-> return)"
 undefine FIT_MAXITER   # no limit
 
