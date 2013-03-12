@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.208 2012/12/14 18:11:09 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.209 2013/03/12 18:06:58 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -972,6 +972,8 @@ set origin %g,%g\n",
 	fit_errorvariables ? "" : "no");
     fprintf(fp, " %serrorscaling",
 	fit_errorscaling ? "" : "no");
+    fprintf(fp, " %sprescale",
+	fit_prescale ? "" : "no");
     if (fitlogfile) {
 	fprintf(fp, " logfile \'%s\'", fitlogfile);
     }
