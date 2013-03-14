@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.191.2.5 2013/03/10 16:22:02 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.191.2.6 2013/03/14 19:40:33 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -793,6 +793,9 @@ get_3ddata(struct surface_points *this_plot)
 	/* If the user has set an explicit locale for numeric input, apply it */
 	/* here so that it affects data fields read from the input file.      */
 	set_numeric_locale();
+
+	/* Initial state */
+	df_warn_on_missing_columnheader = TRUE;
 
 	while ((retval = df_readline(v,MAXDATACOLS)) != DF_EOF) {
 	    j = retval;
