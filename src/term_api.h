@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.107 2013/02/19 05:30:37 sfeam Exp $
+ * $Id: term_api.h,v 1.108 2013/03/29 19:49:39 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -147,6 +147,7 @@ typedef enum termlayer {
 
 /* Options used by the terminal entry point term->hypertext(). */
 #define TERM_HYPERTEXT_TOOLTIP 0
+#define TERM_HYPERTEXT_TITLE   1
 
 typedef struct fill_style_type {
     int fillstyle;
