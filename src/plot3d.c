@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.208 2013/04/01 21:14:34 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.209 2013/04/04 20:34:20 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -367,9 +367,14 @@ refresh_3dbounds(struct surface_points *first_plot, int nplots)
 		continue;
 	    }
 	}	/* End of this curve */
-	}	/* End of this plot */
+	}
 
-    }
+    }	/* End of this plot */
+
+    /* handle 'reverse' ranges */
+    axis_revert_range(FIRST_X_AXIS);
+    axis_revert_range(FIRST_Y_AXIS);
+    axis_revert_range(FIRST_Z_AXIS);
 
     /* Make sure the bounds are reasonable, and tweak them if they aren't */
     axis_checked_extend_empty_range(FIRST_X_AXIS, NULL);
