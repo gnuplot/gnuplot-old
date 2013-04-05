@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.147 2013/03/17 18:19:07 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.148 2013/04/05 18:36:54 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -502,9 +502,6 @@ GetAnnotateString(char *s, double x, double y, int mode, char *fmt)
 static char *
 xDateTimeFormat(double x, char *b, int mode)
 {
-# ifndef SEC_OFFS_SYS
-#  define SEC_OFFS_SYS 946684800
-# endif
     time_t xtime_position = SEC_OFFS_SYS + x;
     struct tm *pxtime_position = gmtime(&xtime_position);
     switch (mode) {
