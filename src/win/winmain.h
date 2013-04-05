@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.h,v 1.10 2011/11/14 20:53:24 markisch Exp $
+ * $Id: winmain.h,v 1.10.2.1 2013/04/05 16:39:49 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.h */
@@ -64,5 +64,8 @@ int Pause __PROTO((LPSTR str));
 void screen_dump __PROTO((void));
 void kill_pending_Pause_dialog __PROTO((void));
 void win_sleep __PROTO((DWORD dwMilliSeconds));
+TBOOLEAN WinWindowOpened(void);
+void WinPersistTextClose(void);
+void WinMessageLoop(void);
 
 #endif /* GNUPLOT_WINMAIN_H */
