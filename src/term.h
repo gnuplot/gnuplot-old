@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.59 2013/04/08 22:21:05 sfeam Exp $
+ * $Id: term.h,v 1.60 2013/04/08 23:14:08 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -274,7 +274,7 @@
 /* #include "hp26.trm" */
 
 /* HP2647 and 2648 */
-#include "hp2648.trm"
+/* #include "hp2648.trm" */
 
 /* HP7475, HP7220 plotters, and (hopefully) lots of others */
 #include "hpgl.trm"
