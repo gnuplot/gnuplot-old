@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.c,v 1.60 2012/11/29 00:33:47 broeker Exp $
+ * $Id: winmain.c,v 1.61 2013/04/22 22:23:11 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.c */
@@ -1123,5 +1123,21 @@ WinMessageLoop(void)
 			return;
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
+	}
+}
+
+
+void
+WinRaiseConsole(void)
+{
+	HWND console = NULL;
+# ifndef WGP_CONSOLE
+	console = textwin.hWndParent;
+# else
+	console = GetConsoleWindow();
+# endif
+	if (console != NULL) {
+		ShowWindow(console, SW_SHOWNORMAL);
+		BringWindowToTop(console);
 	}
 }
