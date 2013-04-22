@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.c,v 1.61 2013/04/22 22:23:11 markisch Exp $
+ * $Id: winmain.c,v 1.62 2013/04/22 22:55:42 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.c */
@@ -55,6 +55,7 @@
 #define STRICT
 /* required for MinGW64 */
 #define _WIN32_IE 0x0501
+#define _WIN32_WINNT 0x0501
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>
