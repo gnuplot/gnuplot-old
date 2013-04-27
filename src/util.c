@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.110 2013/04/21 06:26:11 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.111 2013/04/27 07:51:17 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -1249,6 +1249,18 @@ existdir (const char *name)
     return FALSE;
 #endif
 }
+
+
+TBOOLEAN
+existfile(const char *name)
+{
+#ifdef __MSC__
+    return (_access(name, 0) == 0);
+#else
+    return (access(name, F_OK) == 0);
+#endif
+}
+
 
 char *
 getusername()
