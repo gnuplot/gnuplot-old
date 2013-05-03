@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.253 2013/05/03 18:15:54 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.254 2013/05/03 21:45:55 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -641,8 +641,21 @@ term_start_multiplot()
     FPRINTF((stderr, "term_start_multiplot()\n"));
 
     c_token++;
-    if (multiplot)
-	term_end_multiplot();
+
+    /* Only a few options are possible if we are already in multiplot mode */
+    /* So far we have "next".  Maybe also "previous", "clear"? */
+    if (multiplot) {
+	if (equals(c_token, "next")) {
+	    c_token++;
+	    if (!mp_layout.auto_layout)
+		int_error(c_token, "only valid inside an auto-layout multiplot");
+	    term_start_plot();
+	    term_end_plot();
+	    return;
+	} else {
+	    term_end_multiplot();
+	}
+    }
 
     /* FIXME: more options should be reset/initialized each time */
     mp_layout.auto_layout = FALSE;
