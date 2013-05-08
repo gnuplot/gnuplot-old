@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.213 2013/04/27 19:32:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.214 2013/05/08 04:07:20 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -1015,6 +1015,8 @@ set origin %g,%g\n",
 	if (d > 0.)
 	    fprintf(fp, " lambda_factor %g", d);
     }
+    if (fit_script != NULL)
+	fprintf(fp, " script \'%s\'", fit_script);
     fputc('\n', fp);
 
 }
