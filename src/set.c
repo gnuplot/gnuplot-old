@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.398 2013/05/11 23:45:30 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.399 2013/05/14 20:04:14 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1575,9 +1575,10 @@ set_fit()
 	    double value;
 
 	    c_token++;
-	    if (equals(c_token, "default"))
+	    if (equals(c_token, "default")) {
+		c_token++;
 		value = 0.;
-	    else
+	    } else
 		value = real_expression();
 	    if ((value > 0.) && (value < 1.)) {
 		v = add_udv_by_name((char *)FITLIMIT);
@@ -1597,9 +1598,10 @@ set_fit()
 	    int maxiter;
 
 	    c_token++;
-	    if (equals(c_token, "default"))
+	    if (equals(c_token, "default")) {
+		c_token++;
 		maxiter = 0;
-	    else
+	    } else
 		maxiter = int_expression();
 	    if (maxiter > 0) {
 		v = add_udv_by_name((char *)FITMAXITER);
@@ -1614,9 +1616,10 @@ set_fit()
 	    double value;
 
 	    c_token++;
-	    if (equals(c_token, "default"))
+	    if (equals(c_token, "default")) {
+		c_token++;
 		value = 0.;
-	    else
+	    } else
 		value = real_expression();
 	    if (value > 0.) {
 		v = add_udv_by_name((char *)FITSTARTLAMBDA);
@@ -1631,9 +1634,10 @@ set_fit()
 	    double value;
 
 	    c_token++;
-	    if (equals(c_token, "default"))
+	    if (equals(c_token, "default")) {
+		c_token++;
 		value = 0.;
-	    else
+	    } else
 		value = real_expression();
 	    if (value > 0.) {
 		v = add_udv_by_name((char *)FITLAMBDAFACTOR);
