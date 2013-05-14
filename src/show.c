@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.288 2013/05/11 23:45:30 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.289 2013/05/14 20:10:56 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2507,6 +2507,8 @@ show_fit()
 	    break;
 	case BRIEF:
 	    fprintf(stderr, "\tfit will output brief results to console and log-file.\n");
+	    if (fit_wrap)
+		fprintf(stderr, "\toutput of long lines will be wrapped at column %i.\n", fit_wrap);
 	    break;
 	case VERBOSE:
 	    fprintf(stderr, "\tfit will output verbose results to console and log-file.\n");
