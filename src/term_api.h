@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.108 2013/03/29 19:49:39 sfeam Exp $
+ * $Id: term_api.h,v 1.109 2013/05/19 23:46:34 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -283,6 +283,10 @@ typedef struct TERMENTRY {
 
 /* Pass hypertext for inclusion in the output plot */
     void (*hypertext) __PROTO((int type, const char *text));
+
+#ifdef EAM_BOXED_TEXT
+    void (*boxed_text) __PROTO((unsigned int, unsigned int, int));
+#endif
 
 } TERMENTRY;
 
