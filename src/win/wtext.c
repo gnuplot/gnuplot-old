@@ -1,6 +1,6 @@
-#ifndef lint
-static char *RCSid() { return RCSid("$Id: wtext.c,v 1.37.2.1 2013/04/05 16:39:49 markisch Exp $"); }
-#endif
+/*
+ *$Id: wtext.c,v 1.37.2.2 2013/06/08 11:54:25 markisch Exp $
+ */
 
 /* GNUPLOT - win/wtext.c */
 /*[
@@ -70,6 +70,7 @@ static char *RCSid() { return RCSid("$Id: wtext.c,v 1.37.2.1 2013/04/05 16:39:49
 #include "wresourc.h"
 #include "wcommon.h"
 #include "stdfn.h"
+#include "fit.h"
 
 /* font stuff */
 #define TEXTFONTSIZE 9
@@ -1416,6 +1417,10 @@ WndTextProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 			lptw->KeyBufIn = lptw->KeyBuf;	/* wrap around */
 		}
 	    }
+	    case VK_CANCEL:
+		/* FIXME: Currently, this only supports interrupting fit. */
+		ctrlc_flag = TRUE;
+		break;
 	    } /* switch(wparam) */
 	} /* else(shift) */
 	break;
