@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.99.2.6 2013/02/08 23:01:39 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.99.2.7 2013/06/23 22:13:35 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -50,6 +50,9 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.99.2.6 2013/02/08 23:01:39 
 # include <dirent.h>
 #elif defined(_Windows)
 # include <windows.h>
+#endif
+#ifdef __MSC__
+# include <io.h>
 #endif
 
 /* Exported (set-table) variables */
@@ -1244,6 +1247,18 @@ existdir (const char *name)
     return FALSE;
 #endif
 }
+
+
+TBOOLEAN
+existfile(const char *name)
+{
+#ifdef __MSC__
+    return (_access(name, 0) == 0);
+#else
+    return (access(name, F_OK) == 0);
+#endif
+}
+
 
 char *
 getusername ()
