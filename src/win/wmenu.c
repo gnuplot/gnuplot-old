@@ -1,5 +1,5 @@
 /*
- * $Id: wmenu.c,v 1.23 2012/06/30 06:41:33 markisch Exp $Id: wmenu.c,v 1.23 2012/06/30 06:41:33 markisch Exp $
+ * $Id: wmenu.c,v 1.24 2013/06/23 19:53:03 markisch Exp $Id: wmenu.c,v 1.24 2013/06/23 19:53:03 markisch Exp $
  */
 
 /* GNUPLOT - win/wmenu.c */
@@ -41,14 +41,9 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
+#include "syscfg.h"
 #define STRICT
 #define COBJMACROS
-/* required for COMCTRL32 5.81 or later */
-#define _WIN32_IE 0x0501
 #include <windows.h>
 #include <windowsx.h>
 #include <commdlg.h>
