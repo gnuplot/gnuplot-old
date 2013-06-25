@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.283 2013/06/25 02:32:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.284 2013/06/25 16:25:52 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -1229,14 +1229,11 @@ do_3dplot(
 			    if (prefer_line_styles) {
 				lp_use_properties(&ls, this_plot->hidden3d_top_linetype + ic);
 			    } else {
-				/* thiscontour_lp_properties.l_type = 
-					this_plot->hidden3d_top_linetype + ic; */
+				/* The linetype itself is passed to hidden3d processing */
+				thiscontour_lp_properties.l_type = 
+					this_plot->hidden3d_top_linetype + ic;
+				/* otherwise the following would be sufficient */
 				load_linetype(&ls, this_plot->hidden3d_top_linetype + ic);
-				/* FIXME: The command below is needed to handle the case
-				 * that the original linetype had no color information.
-				 * e.g. no user-defined linetypes are present.
-				 */
-				thiscontour_lp_properties.use_palette = TRUE;
 			    }
 			    thiscontour_lp_properties.pm3d_color = ls.pm3d_color;
 			    term_apply_lp_properties(&thiscontour_lp_properties);
