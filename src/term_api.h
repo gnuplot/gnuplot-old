@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.110 2013/05/21 20:36:46 sfeam Exp $
+ * $Id: term_api.h,v 1.111 2013/07/05 18:48:27 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -162,7 +162,8 @@ typedef enum t_textbox_options {
 	TEXTBOX_INIT = 0,
 	TEXTBOX_OUTLINE,
 	TEXTBOX_BACKGROUNDFILL,
-	TEXTBOX_MARGINS
+	TEXTBOX_MARGINS,
+	TEXTBOX_FINISH
 } t_textbox_options;
 #endif
 
