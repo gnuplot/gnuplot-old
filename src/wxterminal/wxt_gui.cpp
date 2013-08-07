@@ -1124,7 +1124,7 @@ void wxtPanel::OnKeyDownChar( wxKeyEvent &event )
  		case 'c' :
  			int i;
  			for (i=1; i<=wxt_cur_plotno && i<wxt_max_key_boxes; i++) {
- 				wxt_key_boxes[i].hidden = !wxt_key_boxes[i].hidden;
+ 				wxt_key_boxes[i].hidden = TRUE;
  			}
  			wxt_current_panel->wxt_cairo_refresh();
  			return;
