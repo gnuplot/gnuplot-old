@@ -1121,6 +1121,13 @@ void wxtPanel::OnKeyDownChar( wxKeyEvent &event )
 			}
 #endif /* DISABLE_SPACE_RAISES_CONSOLE */
 
+ 		case 'c' :
+ 			int i;
+ 			for (i=1; i<=wxt_cur_plotno && i<wxt_max_key_boxes; i++) {
+ 				wxt_key_boxes[i].hidden = !wxt_key_boxes[i].hidden;
+ 			}
+ 			wxt_current_panel->wxt_cairo_refresh();
+ 			return;
 		case 'q' :
 		/* ctrl+q does not send 113 but 17 */
 		/* WARNING : may be the same for other combinations */
