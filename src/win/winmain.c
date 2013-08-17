@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.c,v 1.65 2013/06/23 19:53:02 markisch Exp $
+ * $Id: winmain.c,v 1.66 2013/08/17 00:02:08 sfeam Exp $
  */
 
 /* GNUPLOT - win/winmain.c */
@@ -526,7 +526,11 @@ int main(int argc, char **argv)
         if (TextInit(&textwin))
                 exit(1);
         textwin.hIcon = LoadIcon(hInstance, "TEXTICON");
+#ifdef _WIN64
+        SetClassLongPtr(textwin.hWndParent, GCLP_HICON, (LONG_PTR)textwin.hIcon);
+#else
         SetClassLong(textwin.hWndParent, GCL_HICON, (DWORD)textwin.hIcon);
+#endif
 	if (_argc > 1) {
 		if (persist_cl)
 			ShowWindow(textwin.hWndParent, textwin.nCmdShow);
