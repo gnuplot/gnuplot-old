@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.259 2013/08/19 23:32:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.260 2013/08/19 23:47:02 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -821,10 +821,6 @@ term_start_multiplot()
     }
 
     /* If we reach here, then the command has been successfully parsed */
-    /* Initialize total count of plots in the multiplot to 0. */
-    /* qt and wxt would ignore this after multiplot is set. */
-    (*term->layer)(TERM_LAYER_RESET);
-
     multiplot = TRUE;
     fill_gpval_integer("GPVAL_MULTIPLOT", 1);
 
