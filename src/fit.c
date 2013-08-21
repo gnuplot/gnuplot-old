@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.120 2013/06/27 20:03:41 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.121 2013/08/21 04:05:57 sfeam Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -872,9 +872,9 @@ regress(double a[])
 
     if ((fit_errorscaling) || (columns < 3)) {
 	/* scale parameter errors based on chisq */
-	chisq = sqrt(chisq / (num_data - num_params));
+	double temp = sqrt(chisq / (num_data - num_params));
 	for (i = 0; i < num_params; i++)
-	    dpar[i] *= chisq;
+	    dpar[i] *= temp;
     }
 
     /* Save user error variables. */
