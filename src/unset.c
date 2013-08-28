@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.179 2013/08/20 22:09:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.180 2013/08/28 19:46:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -856,8 +856,9 @@ unset_hidden3d()
 static void
 unset_histogram()
 {
-    histogram_opts.type = HT_CLUSTERED;
-    histogram_opts.gap = 2;
+    histogram_style foo = DEFAULT_HISTOGRAM_STYLE;
+    free(histogram_opts.title.font);
+    histogram_opts = foo;
 }
 
 #ifdef EAM_BOXED_TEXT
