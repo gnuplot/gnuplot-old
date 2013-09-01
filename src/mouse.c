@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: mouse.c,v 1.152 2013/08/24 03:33:35 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: mouse.c,v 1.153 2013/09/01 17:36:56 juhaszp Exp $"); }
 #endif
 
 /* GNUPLOT - mouse.c */
@@ -78,17 +78,8 @@ static char *RCSid() { return RCSid("$Id: mouse.c,v 1.152 2013/08/24 03:33:35 sf
 /********************** variables ***********************************************************/
 char mouse_fmt_default[] = "% #g";
 
-mouse_setting_t mouse_setting = {
-#ifdef OS2
-    0 /* don't start with mouse on default -- clashes with arrow keys on command line */,
-#else
-    1 /* start with mouse on by default */,
-#endif
-    300 /* ms */,
-    1, 0, 0, 0, 0,
-    mouse_fmt_default,
-    NULL
-};
+mouse_setting_t default_mouse_setting = DEFAULT_MOUSE_SETTING;
+mouse_setting_t         mouse_setting = DEFAULT_MOUSE_SETTING;
 
 /* "usual well-known" keycodes, i.e. those not listed in special_keys in mouse.h
 */
