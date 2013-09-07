@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.304 2013/08/28 19:46:52 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.305 2013/09/07 17:02:04 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2305,7 +2305,7 @@ show_palette()
 	    sm_palette.positive == SMPAL_POSITIVE ? "POSITIVE" : "NEGATIVE");
 	fprintf( stderr,
            "\tall color formulae ARE%s written into output postscript file\n",
-		 sm_palette.ps_allcF == 0 ? " NOT" : "");
+		 !sm_palette.ps_allcF ? " NOT" : "");
 	fputs("\tallocating ", stderr);
 	if (sm_palette.use_maxcolors)
 	    fprintf(stderr,"MAX %i",sm_palette.use_maxcolors);

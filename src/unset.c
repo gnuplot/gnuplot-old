@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.181 2013/09/01 17:36:56 juhaszp Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.182 2013/09/07 17:02:04 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1623,6 +1623,12 @@ reset_command()
     static TBOOLEAN set_for_axis[AXIS_ARRAY_SIZE] = AXIS_ARRAY_INITIALIZER(TRUE);
 
     c_token++;
+
+    /* Reset session state as well as internal graphics state */
+    if (equals(c_token, "session")) {
+	init_session();
+	return;
+    }
 
     /* Reset error state (only?) */
     update_gpval_variables(4);
