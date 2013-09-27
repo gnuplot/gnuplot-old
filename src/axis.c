@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.121 2013/09/26 22:45:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.122 2013/09/27 03:31:22 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -471,7 +471,7 @@ copy_or_invent_formatstring(AXIS_INDEX axis)
     if ( axis_array[axis].datatype != DT_TIMEDATE
 	|| !axis_array[axis].format_is_numeric) {
 	/* The simple case: formatstring is usable, so use it! */
-	strcpy(ticfmt[axis], axis_array[axis].formatstring);
+	strncpy(ticfmt[axis], axis_array[axis].formatstring, MAX_ID_LEN);
 	/* Ensure enough precision to distinguish tics */
 	if (!strcmp(ticfmt[axis], DEF_FORMAT)) {
 	    double axmin = AXIS_DE_LOG_VALUE(axis,axis_array[axis].min);
