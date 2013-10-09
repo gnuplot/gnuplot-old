@@ -1,6 +1,6 @@
 /* Hey Emacs this is -*- C -*-
  *
- * $Id: pstricks.trm,v 1.33 2006/11/18 17:24:26 sfeam Exp $
+ * $Id: pstricks.trm,v 1.34 2013/10/09 02:41:22 sfeam Exp $
  */
 
 /* GNUPLOT - pstricks.trm */
@@ -428,6 +428,7 @@ PSTRICKS_hack_text(const char *s)
      */
 
     value = strtod(s, &ends);
+    (void)value;
 
     if (s == ends) {
 	/*
