@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.239 2013/08/24 22:45:23 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.240 2013/10/17 23:52:55 sfeam Exp $"); }
 #endif
 
 #define MOUSE_ALL_WINDOWS 1
@@ -4089,16 +4089,11 @@ DrawBox(plot_struct * plot)
 static void
 AnnotatePoint(plot_struct * plot, int x, int y, const char xstr[], const char ystr[])
 {
-    int ylen, xlen;
-    int xwidth, ywidth;
+    int xlen = strlen(xstr);
+    int ylen = strlen(ystr);
 
-    xlen = strlen(xstr);
-    xwidth = gpXTextWidth(font, xstr, xlen);
-
-    ylen = strlen(ystr);
-    ywidth = gpXTextWidth(font, ystr, ylen);
-
-    /* horizontal centering disabled (joze) */
+    /* int xwidth = gpXTextWidth(font, xstr, xlen); */
+    /* int ywidth = gpXTextWidth(font, ystr, ylen); */
 
     if (!gc_xor) {
 	GetGCXor(plot, &gc_xor);
