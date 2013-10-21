@@ -1,5 +1,5 @@
 /*
- * $Id: color.h,v 1.39 2013/09/25 22:21:26 sfeam Exp $
+ * $Id: color.h,v 1.40 2013/10/21 22:31:59 sfeam Exp $
  */
 
 /* GNUPLOT - color.h */
@@ -180,6 +180,9 @@ typedef struct {
    * Interpolated tables are used if colorMode==SMPAL_COLOR_MODE_GRADIENT */
   int gradient_num;
   gradient_struct *gradient;
+  /* Smallest nonzero gradient[i+1] - gradient[i].  If this is < (1/colors)
+   * Then a truncated gray value may miss the gradient it belongs in. */
+  double smallest_gradient_interval;
 
   /* the used color model: RGB, HSV, XYZ, etc. */
   int cmodel;
