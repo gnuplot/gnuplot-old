@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: getcolor.c,v 1.34 2013/10/21 22:31:59 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: getcolor.c,v 1.35 2013/10/24 05:45:17 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - getcolor.c */
@@ -714,8 +714,9 @@ GetColorValueFromFormula(int formula, double x)
 	   sm_palette, first item---search for "t_sm_palette sm_palette = "
 	 */
     default:
-	fprintf(stderr, "Fatal: undefined color formula (can be 0--%i)\n", sm_palette.colorFormulae - 1);
-	exit(1);
+	/* Cannot happen! */
+	FPRINTF((stderr, "gnuplot:  invalid palette rgbformula"));
+	x = 0;
     }
     if (x <= 0)
 	return 0;
