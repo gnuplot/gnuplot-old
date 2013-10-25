@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.50 2013/06/27 20:03:41 sfeam Exp $
+ * $Id: syscfg.h,v 1.51 2013/10/25 03:17:34 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -248,12 +248,6 @@
 #ifdef sequent
 # undef HAVE_LIMITS_H
 # undef HAVE_STRCHR
-#endif
-
-#ifdef unixpc
-# ifndef UNIXPC
-#  define UNIXPC
-# endif
 #endif
 
 /* HBB 20000416: stuff moved from plot.h to here. It's system-dependent,
