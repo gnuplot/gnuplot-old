@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.191.2.6 2013/03/14 19:40:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.191.2.7 2013/10/27 22:13:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1659,6 +1659,8 @@ eval_3dplots()
 			    set_lpstyle = TRUE;
 			    if (new_lt)
 				this_plot->hidden3d_top_linetype = new_lt - 1;
+			    else
+				this_plot->hidden3d_top_linetype = line_num;
 			    continue;
 			}
 		    }
