@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.305 2013/10/14 03:46:32 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.306 2013/11/12 06:34:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -349,9 +349,10 @@ get_data(struct curve_points *current_plot)
     int i /* num. points ! */ , j;
     int ngood;
     int max_cols, min_cols;    /* allowed range of column numbers */
-    double v[MAXDATACOLS];
     int storetoken = current_plot->token;
     struct coordinate GPHUGE *cp;
+    double v[MAXDATACOLS];
+    memset(v, 0, sizeof(v));
 
     if (current_plot->varcolor == NULL) {
 	TBOOLEAN variable_color = FALSE;
