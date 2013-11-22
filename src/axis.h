@@ -1,5 +1,5 @@
 /*
- * $Id: axis.h,v 1.94 2013/11/06 19:32:57 sfeam Exp $
+ * $Id: axis.h,v 1.95 2013/11/22 01:30:04 sfeam Exp $
  *
  */
 
@@ -56,7 +56,8 @@
  * FIRST_X_AXIS & SECOND_AXES == 0
  */
 typedef enum AXIS_INDEX {
-    FIRST_Z_AXIS,
+    ALL_AXES = -1,
+    FIRST_Z_AXIS = 0,
 #define FIRST_AXES FIRST_Z_AXIS
     FIRST_Y_AXIS,
     FIRST_X_AXIS,
