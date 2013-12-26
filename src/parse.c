@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: parse.c,v 1.81 2013/12/22 23:00:08 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: parse.c,v 1.82 2013/12/26 17:58:29 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - parse.c */
@@ -607,7 +607,7 @@ parse_primary_expression()
      * Currently only used to generate substrings, but could also be used to
      * extract vector slices.
      */
-    if (equals(c_token, "[")) {
+    if (equals(c_token, "[") && !isanumber(c_token-1)) {
 	/* handle '*' or empty start of range */
 	if (equals(++c_token,"*") || equals(c_token,":")) {
 	    union argument *empty = add_action(PUSHC);

@@ -1,5 +1,5 @@
 /*
- * $Id: graphics.h,v 1.60 2013/10/19 04:31:04 sfeam Exp $
+ * $Id: graphics.h,v 1.61 2013/12/26 17:58:29 sfeam Exp $
  */
 
 /* GNUPLOT - graphics.h */
@@ -77,6 +77,8 @@ typedef struct curve_points {
     int x_axis;			/* FIRST_X_AXIS or SECOND_X_AXIS */
     int y_axis;			/* FIRST_Y_AXIS or SECOND_Y_AXIS */
     int z_axis;			/* same as either x_axis or y_axis, for 5-column plot types */
+    int n_par_axes;		/* Only used for parallel axis plots */
+    double **z_n;		/* Only used for parallel axis plots */
     double *varcolor;		/* Only used if plot has variable color */
     struct coordinate GPHUGE *points;
 } curve_points;
