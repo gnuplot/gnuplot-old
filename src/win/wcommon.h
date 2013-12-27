@@ -1,5 +1,5 @@
 /*
- * $Id: wcommon.h,v 1.16 2012/10/08 22:30:53 markisch Exp $
+ * $Id: wcommon.h,v 1.17 2013/12/27 19:51:22 markisch Exp $
  */
 
 /* GNUPLOT - wcommon.h */
@@ -88,7 +88,7 @@ BOOL PrintSize(HDC printer, HWND hwnd, LPRECT lprect);
 void PrintRegister(GP_LPPRINT lpr);
 void PrintUnregister(GP_LPPRINT lpr);
 BOOL CALLBACK PrintAbortProc(HDC hdcPrn, int code);
-BOOL CALLBACK PrintDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+INT_PTR CALLBACK PrintDlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 /* wgraph.c */
 
