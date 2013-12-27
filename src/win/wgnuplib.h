@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.59 2013/06/11 20:54:47 markisch Exp $
+ * $Id: wgnuplib.h,v 1.60 2013/12/27 19:28:15 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -414,6 +414,7 @@ void WDPROC GraphOp(LPGW lpgw, UINT op, UINT x, UINT y, LPCSTR str);
 void WDPROC GraphOpSize(LPGW lpgw, UINT op, UINT x, UINT y, LPCSTR str, DWORD size);
 void WDPROC GraphPrint(LPGW lpgw);
 void WDPROC GraphRedraw(LPGW lpgw);
+void WDPROC GraphModifyPlots(LPGW lpgw, unsigned int operations);
 void WDPROC win_close_terminal_window(LPGW lpgw);
 TBOOLEAN GraphHasWindow(LPGW lpgw);
 
