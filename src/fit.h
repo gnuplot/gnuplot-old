@@ -1,5 +1,5 @@
 /*
- * $Id: fit.h,v 1.24 2013/05/14 20:10:56 markisch Exp $
+ * $Id: fit.h,v 1.25 2014/01/04 02:55:05 markisch Exp $
  */
 
 /* GNUPLOT - fit.h */
@@ -73,7 +73,6 @@ extern TBOOLEAN fit_prescale;
 extern char *fit_script;
 extern double epsilon_abs;  /* absolute convergence criterion */
 extern int fit_wrap;
-extern TBOOLEAN ctrlc_flag;
 
 extern char fitbuf[256]; /* for Eex and error_ex  */
 

@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.c,v 1.69 2014/01/04 02:29:27 markisch Exp $
+ * $Id: winmain.c,v 1.70 2014/01/04 02:55:06 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.c */
@@ -948,6 +948,7 @@ int ConsoleGetch()
                 DWORD recRead;
 
                 ReadConsoleInput(h, &rec, 1, &recRead);
+				/* FIXME: We should handle rec.Event.KeyEvent.wRepeatCount > 1, too. */
                 if (recRead == 1 && rec.EventType == KEY_EVENT && rec.Event.KeyEvent.bKeyDown &&
                         (rec.Event.KeyEvent.wVirtualKeyCode < VK_SHIFT ||
                          rec.Event.KeyEvent.wVirtualKeyCode > VK_MENU))
@@ -987,6 +988,9 @@ int ConsoleGetch()
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
             }
+
+			if (ctrlc_flag)
+				return '\r';
         }
         else
             break;

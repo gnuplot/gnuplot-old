@@ -1,5 +1,5 @@
 /*
- * $Id: wtext.c,v 1.47 2014/01/01 11:07:37 markisch Exp $
+ * $Id: wtext.c,v 1.48 2014/01/04 02:55:06 markisch Exp $
  */
 
 /* GNUPLOT - win/wtext.c */
@@ -63,7 +63,7 @@
 #include "wresourc.h"
 #include "wcommon.h"
 #include "stdfn.h"
-#include "fit.h"
+#include "plot.h"
 
 /* font stuff */
 #define TEXTFONTSIZE 9
