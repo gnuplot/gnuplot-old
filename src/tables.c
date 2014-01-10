@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tables.c,v 1.125 2013/12/26 17:58:29 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: tables.c,v 1.126 2014/01/10 03:31:08 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tables.c */
@@ -693,6 +693,7 @@ const struct gen_table plotstyle_tbl[] =
 #endif
     { "sur$face", SURFACEGRID },
     { "parallel$axes", PARALLELPLOT },
+    { "table", TABLESTYLE },
     { NULL, PLOT_STYLE_NONE }
 };
 
