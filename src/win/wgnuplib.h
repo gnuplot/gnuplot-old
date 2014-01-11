@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.61 2014/01/04 15:46:38 markisch Exp $
+ * $Id: wgnuplib.h,v 1.62 2014/01/11 09:22:47 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -423,6 +423,7 @@ void WDPROC GraphRedraw(LPGW lpgw);
 void WDPROC GraphModifyPlots(LPGW lpgw, unsigned int operations);
 void WDPROC win_close_terminal_window(LPGW lpgw);
 TBOOLEAN GraphHasWindow(LPGW lpgw);
+char * GraphDefaultFont(void);
 
 #ifdef USE_MOUSE
 void WDPROC Graph_set_cursor(LPGW lpgw, int c, int x, int y);
