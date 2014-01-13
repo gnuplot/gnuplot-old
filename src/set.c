@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.427 2013/12/29 17:34:06 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.428 2014/01/13 18:39:39 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -5025,8 +5025,11 @@ set_zeroaxis(AXIS_INDEX axis)
 static void
 set_allzeroaxis()
 {
-    set_zeroaxis(FIRST_X_AXIS);	/* This eats up the rest of the parsible options */
+    int save_token = c_token;
+    set_zeroaxis(FIRST_X_AXIS);
+    c_token = save_token;
     set_zeroaxis(FIRST_Y_AXIS);
+    c_token = save_token;
     set_zeroaxis(FIRST_Z_AXIS);
 }
 
