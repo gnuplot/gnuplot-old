@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.212.2.28 2014/01/10 23:26:15 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.212.2.29 2014/01/27 23:59:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -1814,7 +1814,7 @@ df_readascii(double v[], int max)
 		/* Axis labels, plot titles, etc.                     */
 		if (use_spec[output].expected_type >= CT_XTICLABEL) {
 		    int axis, axcol;
-		    float xpos;
+		    double xpos;
 		   
 		    /* EAM FIXME - skip columnstacked histograms also */
 		    if (df_current_plot) {
