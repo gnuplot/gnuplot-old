@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: time.c,v 1.24.2.2 2013/07/03 14:10:54 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: time.c,v 1.24.2.3 2014/01/27 21:54:07 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - time.c */
@@ -562,7 +562,7 @@ xstrftime(
 
 		/* EAM FIXME - need to implement an actual format specifier */
 		if (p > 0) {
-		    double base = pow(10.,p);
+		    double base = pow(10., (double)p);
 		    int msec = floor(0.5 + base * usec);
 		    char *f = &s[strlen(s)];
 		    CHECK_SPACE(p+1);
