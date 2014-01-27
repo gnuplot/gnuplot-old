@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.354.2.9 2014/01/13 22:07:12 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.354.2.10 2014/01/27 02:00:50 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -4190,15 +4190,14 @@ set_style()
 	else if (almost_equals(c_token,"u$serstyles"))
 	    prefer_line_styles = TRUE;
 	else
-	    int_error(c_token,"unrecognized option");
+	    int_error(c_token,"unrecognized style option");
 	c_token++;
 	break;
     case SHOW_STYLE_BOXPLOT:
 	set_boxplot();
 	break;
     default:
-	int_error(c_token,
-		  "expecting 'data', 'function', 'line', 'fill', 'rectangle', 'circle', 'ellipse' or 'arrow'" );
+	int_error(c_token, "unrecognized style");
     }
 }
 
