@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot on Unix.
 dnl
-dnl $Id: configure.in,v 1.347 2014/02/04 22:11:34 sfeam Exp $
+dnl $Id: configure.in,v 1.349 2014/02/13 21:01:42 sfeam Exp $
 dnl
 dnl this is actually major.minor ...
 dnl note that for a non-beta release, we need to disable DEVELOPMENT_RELEASE
@@ -1235,11 +1235,6 @@ if test "${enable_qt_ok}" = yes ; then
   CPPFLAGS="$CPPFLAGS $QT_CFLAGS"
   CXXFLAGS="$CXXFLAGS $QT_CXXFLAGS"
 
-  dnl Compile Objective C Cocoa headers on Mac to hide the gnuplot icon from the dock
-  if test "$is_apple" = yes; then
-    LIBS="$LIBS -framework Cocoa"
-  fi
-
   if test x"$MOC" = x; then
     MOC=moc
   fi
@@ -1268,8 +1263,6 @@ if test "${enable_qt_ok}" = yes ; then
   AC_DEFINE(QTTERM,1, [ Define if you want the Qt terminal. ])
 fi
 AM_CONDITIONAL(BUILD_QT, test "${enable_qt_ok}" = yes)
-
-AM_CONDITIONAL(BUILD_ON_APPLE, test "${is_apple}" = yes)
 
 dnl translation tools
 AM_CONDITIONAL(HAVE_LRELEASE, test "${LRELEASE}" != no)
