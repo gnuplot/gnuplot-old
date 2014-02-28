@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: matrix.c,v 1.12 2013/06/02 06:49:52 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: matrix.c,v 1.13 2014/02/28 10:20:53 markisch Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -82,8 +82,10 @@ matr(int rows, int cols)
 void
 free_matr(double **m)
 {
-    free(m[0]);
-    free(m);
+    if (m != NULL) {
+	free(m[0]);
+	free(m);
+    }
 }
 
 
