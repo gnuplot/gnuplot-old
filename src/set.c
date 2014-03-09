@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.431 2014/03/08 19:16:24 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.432 2014/03/09 19:15:52 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1550,6 +1550,12 @@ set_fit()
 	    c_token++;
 	} else if (almost_equals(c_token, "noerr$orvariables")) {
 	    fit_errorvariables = FALSE;
+	    c_token++;
+	} else if (almost_equals(c_token, "cov$ariancevariables")) {
+	    fit_covarvariables = TRUE;
+	    c_token++;
+	} else if (almost_equals(c_token, "nocov$ariancevariables")) {
+	    fit_covarvariables = FALSE;
 	    c_token++;
 	} else if (almost_equals(c_token, "errors$caling")) {
 	    fit_errorscaling = TRUE;

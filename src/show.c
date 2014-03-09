@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.313 2014/02/28 00:24:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.314 2014/03/09 19:15:53 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2560,6 +2560,8 @@ show_fit()
 
     fprintf(stderr, "\tfit will%s place parameter errors in variables\n",
 	    fit_errorvariables ? "" : " not");
+    fprintf(stderr, "\tfit will%s place covariances in variables\n",
+	    fit_covarvariables ? "" : " not");
 
     fprintf(stderr,
             "\tfit will%s scale parameter errors with the reduced chi square\n",
