@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.119 2014/01/04 14:44:39 markisch Exp $
+ * $Id: term_api.h,v 1.120 2014/03/11 00:47:22 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -434,7 +434,7 @@ void init_terminal __PROTO((void));
 void test_term __PROTO((void));
 
 /* Support for enhanced text mode. */
-char *enhanced_recursion __PROTO((char *p, TBOOLEAN brace,
+const char *enhanced_recursion __PROTO((const char *p, TBOOLEAN brace,
                                          char *fontname, double fontsize,
                                          double base, TBOOLEAN widthflag,
                                          TBOOLEAN showflag, int overprint));
