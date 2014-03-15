@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.135 2014/03/15 03:36:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.136 2014/03/15 03:52:00 sfeam Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -636,7 +636,7 @@ call_gnuplot(const double *par, double *data)
 	    if (!udv)
 		int_error(NO_CARET, "Internal error: lost a dummy parameter!");
 	    Gcomplex(&func.dummy_values[j],
-	             udv->udv_undef ? 0 : getdvar(c_dummy_var[j]),
+	             udv->udv_undef ? 0 : real(&(udv->udv_value)),
 	             0.0);
 	}
 	/* set actual dummy variables from file data */
