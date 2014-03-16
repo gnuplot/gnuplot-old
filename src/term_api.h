@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.121 2014/03/15 22:01:03 juhaszp Exp $
+ * $Id: term_api.h,v 1.122 2014/03/16 00:39:27 juhaszp Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -338,6 +338,8 @@ typedef struct TERMENTRY {
 #endif
 
     void (*modify_plots) __PROTO((unsigned int operations));
+
+    void (*dashtype) __PROTO((int type, t_dashtype *custom_dash_pattern));
 
 } TERMENTRY;
 
