@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gadgets.c,v 1.108 2014/03/16 22:03:04 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gadgets.c,v 1.109 2014/03/17 16:26:57 juhaszp Exp $"); }
 #endif
 
 /* GNUPLOT - gadgets.c */
@@ -93,6 +93,9 @@ t_position tmargin = DEFAULT_MARGIN_POSITION;
 /* File descriptor for output during 'set table' mode */
 FILE *table_outfile = NULL;
 TBOOLEAN table_mode = FALSE;
+
+/* Pointer to first 'set dashtype' definition in linked list */
+struct custom_dashtype_def *first_custom_dashtype = NULL;
 
 /* Pointer to the start of the linked list of 'set label' definitions */
 struct text_label *first_label = NULL;
