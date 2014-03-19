@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.65 2014/03/19 20:42:44 sfeam Exp $
+ * $Id: term.h,v 1.66 2014/03/19 23:36:07 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -302,7 +302,9 @@
 /* #include "kyo.trm" */
 
 /* Frame Maker MIF 3.00 format driver */
+#ifdef HAVE_MIF
 #include "mif.trm"
+#endif
 
 /* Adobe Portable Document Format (PDF) */
 /* NOTE THAT PDF REQUIRES A SEPARATE LIBRARY : see term/pdf.trm */
