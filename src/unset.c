@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.201 2014/03/17 20:47:13 juhaszp Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.202 2014/03/23 13:27:27 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1268,7 +1268,7 @@ unset_output()
 static void
 unset_print()
 {
-    print_set_output(NULL, FALSE);
+    print_set_output(NULL, FALSE, FALSE);
 }
 
 /* process 'unset psdir' command */
