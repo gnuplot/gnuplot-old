@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.122 2014/03/23 12:17:59 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.123 2014/03/23 14:10:02 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -670,12 +670,14 @@ gprintf(
 			bracket_flag = TRUE;
 
 			/* Skip + and leading 0 in exponent */
-			i++; // skip E
+			i++; /* skip E */
 			if (tmp[i] == '+')
 		  	    i++;
+			else if (tmp[i] == '-') /* copy sign */
+			    tmp2[j++] = tmp[i++];
 			while (tmp[i] == '0')
 		  	    i++;
-			i--; // undo following loop increment
+			i--; /* undo following loop increment */
 		    } else {
 			tmp2[j++] = tmp[i];
 		    }
