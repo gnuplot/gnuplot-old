@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.440 2014/03/22 23:09:06 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.441 2014/03/23 00:34:44 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -5527,7 +5527,7 @@ set_linestyle(struct linestyle_def **head)
         struct lp_style_type loc_lp = DEFAULT_LP_STYLE_TYPE;
 	loc_lp.l_type = tag - 1;
 	loc_lp.p_type = tag - 1;
-	loc_lp.d_type = tag - 1;
+	loc_lp.d_type = DASHTYPE_SOLID;
 	loc_lp.pm3d_color.type = TC_LT;
 	loc_lp.pm3d_color.lt = tag - 1;
 
