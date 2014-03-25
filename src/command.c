@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.282 2014/03/23 13:27:27 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.283 2014/03/25 01:50:01 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1683,11 +1683,12 @@ print_command()
 	    gpfree_string(&a);
 	    need_space = 0;
 	} else {
-	    if (need_space)
+	    if (need_space) {
 		if (dataline)
 		    strappend(&dataline, &size, " ");
 		else
 		    putc(' ', print_out);
+	    }
 	    if (dataline) {
 		char * val = value_to_str(&a, FALSE);
 		strappend(&dataline, &size, val);
