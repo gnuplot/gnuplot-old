@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.130 2014/03/29 04:42:03 sfeam Exp $
+ * $Id: term_api.h,v 1.131 2014/03/29 05:12:51 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -449,7 +449,6 @@ void term_start_plot __PROTO((void));
 void term_end_plot __PROTO((void));
 void term_start_multiplot __PROTO((void));
 void term_end_multiplot __PROTO((void));
-int multiplot_current_panel __PROTO((void));
 /* void term_suspend __PROTO((void)); */
 void term_reset __PROTO((void));
 void term_apply_lp_properties __PROTO((struct lp_style_type *lp));
