@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.161 2014/03/22 23:09:06 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.162 2014/03/30 18:33:21 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -90,9 +90,6 @@ extern smg$create_key_table();
 
 #ifdef _Windows
 # include <windows.h>
-# ifndef SIGINT
-#  define SIGINT 2		/* for MSC */
-# endif
 # include "win/winmain.h"
 # include "win/wcommon.h"
 #endif /* _Windows */

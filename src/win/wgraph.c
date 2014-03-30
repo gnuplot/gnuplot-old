@@ -1,5 +1,5 @@
 /*
- * $Id: wgraph.c,v 1.181 2014/03/23 14:09:02 markisch Exp $
+ * $Id: wgraph.c,v 1.182 2014/03/30 18:33:21 markisch Exp $
  */
 
 /* GNUPLOT - win/wgraph.c */
@@ -47,9 +47,6 @@
 #include <windowsx.h>
 #include <commdlg.h>
 #include <commctrl.h>
-#ifndef __MSC__
-# include <mem.h>
-#endif
 #include <stdio.h>
 #include <string.h>
 #include "winmain.h"
