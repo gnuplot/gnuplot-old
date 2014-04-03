@@ -1,5 +1,5 @@
 /*
- * $Id: util.h,v 1.42 2014/03/23 12:17:59 markisch Exp $
+ * $Id: util.h,v 1.43 2014/04/03 00:32:57 markisch Exp $
  */
 
 /* GNUPLOT - util.h */
@@ -97,6 +97,10 @@ void gprintf __PROTO((char *, size_t, char *, double, double));
     void os_error __PROTO((int, const char *, ...)) __attribute__((noreturn));
     void int_error __PROTO((int, const char *, ...)) __attribute__((noreturn));
     void graph_error __PROTO((const char *, ...)) __attribute__((noreturn));
+#  elif defined(_MSC_VER)
+    __declspec(noreturn) void os_error(int, const char *, ...);
+    __declspec(noreturn) void int_error(int, const char *, ...);
+    __declspec(noreturn) void graph_error(const char *, ...);
 #  else
     void os_error __PROTO((int, const char *, ...));
     void int_error __PROTO((int, const char *, ...));
