@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.285 2014/04/02 21:36:05 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.286 2014/04/04 04:00:45 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -2775,8 +2775,8 @@ recycle:
     lp->l_type = tag - 1;
     lp->pm3d_color.type = TC_LT;
     lp->pm3d_color.lt = lp->l_type;
-    lp->p_type = tag - 1;
-	lp->d_type = tag - 1;
+    lp->d_type = DASHTYPE_SOLID;
+    lp->p_type = (tag <= 0) ? -1 : tag - 1;
 }
 
 /*
