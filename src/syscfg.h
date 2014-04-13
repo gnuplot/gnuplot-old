@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.53 2014/03/30 18:33:21 markisch Exp $
+ * $Id: syscfg.h,v 1.54 2014/04/13 17:55:24 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -254,6 +254,11 @@
 /* BM 20110904: remnant of huge memory model support */
 #define GPHUGE /* nothing */
 #define GPFAR /* nothing */
+
+/* LFS support */
+#ifndef HAVE_OFF_T
+#define off_t long
+#endif
 
 typedef double coordval;
 
