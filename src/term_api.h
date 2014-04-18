@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.131 2014/03/29 05:12:51 sfeam Exp $
+ * $Id: term_api.h,v 1.132 2014/04/18 04:07:19 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -50,7 +50,8 @@
 
 /* Default line type is LT_BLACK; reset to this after changing colors */
 #define LT_AXIS       (-1)
-#define LT_BLACK      (-2)
+#define LT_BLACK      (-2)		/* Base line type */
+#define LT_SOLID      (-2)		/* Synonym for base line type */
 #define LT_NODRAW     (-3)
 #define LT_BACKGROUND (-4)
 #define LT_UNDEFINED  (-5)
