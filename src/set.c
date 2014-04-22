@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.447 2014/04/05 18:23:24 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.448 2014/04/22 20:49:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -5042,9 +5042,14 @@ set_view()
 
     c_token++;
     if (equals(c_token,"map")) {
-	    splot_map = TRUE;
+	splot_map = TRUE;
+	mapview_scale = 1.0;
+	c_token++;
+	if (equals(c_token,"scale")) {
 	    c_token++;
-	    return;
+	    mapview_scale = real_expression();
+	} 
+	return;
     };
 
     if (splot_map == TRUE)
