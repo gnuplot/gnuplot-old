@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.225.2.17 2013/12/31 16:01:19 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.225.2.18 2014/04/23 19:37:45 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -2538,7 +2538,7 @@ enhanced_recursion(
 			f = fontsize;
 		    }
 
-		    while (*p == ' ')
+		    if (*p == ' ')	/* Eat up a single space following a font spec */
 			++p;
 		    if (! *localfontname)
 			localfontname = fontname;
