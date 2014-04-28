@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.47 2014/03/30 18:33:21 markisch Exp $
+ * $Id: stdfn.h,v 1.48 2014/04/28 04:35:29 sfeam Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -591,6 +591,11 @@ void          rewinddir __PROTO((DIR *));
  */
 #define GPMAX(a,b) ( (a) > (b) ? (a) : (b) )
 #define GPMIN(a,b) ( (a) < (b) ? (a) : (b) )
+
+/*
+ * Do any supported platforms already have a sgn function?
+ */
+#define sgn(x) ((x) > 0) ? 1 : (((x) < 0) ? -1 : 0)
 
 /* Prototypes from "stdfn.c" */
 
