@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.97 2013/12/22 20:47:25 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.98 2014/05/09 22:14:11 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -807,7 +807,7 @@ cover_point_poly(p_vertex v1, p_vertex v2, double u, p_polygon poly)
 static long int
 store_polygon(long vnum1, polygon_direction direction, long crvlen)
 {
-    long int v[POLY_NVERT];
+    long int v[POLY_NVERT] = {0};
     p_vertex v1, v2, v3;
     p_polygon p;
 
