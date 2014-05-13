@@ -1,5 +1,5 @@
 /*
- * $Id: tables.h,v 1.90 2014/04/02 21:36:05 sfeam Exp $
+ * $Id: tables.h,v 1.91 2014/05/13 18:20:55 sfeam Exp $
  */
 
 /* GNUPLOT - tables.h */
@@ -179,8 +179,7 @@ enum set_pm3d_id {
 enum test_id {
     TEST_INVALID,
     TEST_TERMINAL,
-    TEST_PALETTE,
-    TEST_TIME
+    TEST_PALETTE
 };
 
 enum show_style_id {
