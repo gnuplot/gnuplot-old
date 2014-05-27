@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.212.2.38 2014/05/11 20:24:09 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.212.2.39 2014/05/27 22:22:00 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -1967,8 +1967,11 @@ df_readascii(double v[], int max)
 			gpfree_string(&a);
 		    }
 
-		    else
+		    else {
 			v[output] = real(&a);
+			if (isnan(v[output]))
+			    return DF_UNDEFINED;	/* 27 May 2014 */
+		    }
 
 		} else if (column == -2) {
 		    v[output] = df_current_index;
