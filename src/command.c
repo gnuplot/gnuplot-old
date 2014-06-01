@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.230.2.14 2014/01/29 19:08:57 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.230.2.15 2014/06/01 09:01:15 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -130,7 +130,7 @@ static int winsystem __PROTO((const char *));
 #  include <direct.h>          /* getcwd() */
 # else
 #  include <alloc.h>
-#  ifndef __WATCOMC__
+#  if !defined(__WATCOMC__) && !defined(__MINGW32__)
 #   include <dir.h>		/* setdisk() */
 #  endif
 # endif				/* !MSC */
