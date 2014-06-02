@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.63 2014/01/18 16:14:50 markisch Exp $
+ * $Id: wgnuplib.h,v 1.64 2014/06/02 05:21:39 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -413,6 +413,7 @@ extern int WIN_inifontsize;
 
 void WDPROC GraphInitStruct(LPGW lpgw);
 void WDPROC GraphInit(LPGW lpgw);
+void WDPROC GraphUpdateWindowPosSize(LPGW lpgw);
 void WDPROC GraphClose(LPGW lpgw);
 void WDPROC GraphStart(LPGW lpgw, double pointsize);
 void WDPROC GraphEnd(LPGW lpgw);
