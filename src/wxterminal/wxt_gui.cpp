@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.91.2.16 2013/12/13 05:44:09 sfeam Exp $
+ * $Id: wxt_gui.cpp,v 1.91.2.17 2014/07/03 21:47:18 markisch Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -446,6 +446,21 @@ wxtFrame::wxtFrame( const wxString& title, wxWindowID id )
 	SetSizeHints(100, 100);
 
 	FPRINTF((stderr,"wxtFrame constructor 3\n"));
+}
+
+
+wxtFrame::~wxtFrame()
+{
+	/* Automatically remove frame from window list. */
+	std::vector<wxt_window_t>::iterator wxt_iter;
+
+	for(wxt_iter = wxt_window_list.begin();
+		wxt_iter != wxt_window_list.end(); wxt_iter++) {
+		if (this == wxt_iter->frame) {
+			wxt_window_list.erase(wxt_iter);
+			break;
+		}
+	}
 }
 
 
@@ -3635,7 +3650,7 @@ void wxt_cleanup()
 	wxt_sigint_init();
 
 	/* Close all open terminal windows */
-	for(wxt_iter = wxt_window_list.begin();
+	for (wxt_iter = wxt_window_list.begin();
 			wxt_iter != wxt_window_list.end(); wxt_iter++)
 		wxt_iter->frame->Destroy();
 
