@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.354.2.13 2014/07/07 03:50:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.354.2.14 2014/07/11 06:00:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1389,7 +1389,7 @@ set_dummy()
     if (END_OF_COMMAND)
 	int_error(c_token, "expecting dummy variable name");
     else {
-	if (!equals(c_token,","))
+	if (isalpha(gp_input_line[token[c_token].start_index]))
 	    copy_str(set_dummy_var[0],c_token++, MAX_ID_LEN);
 	if (!END_OF_COMMAND && equals(c_token,",")) {
 	    c_token++;
