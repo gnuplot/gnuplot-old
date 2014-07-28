@@ -1,5 +1,5 @@
 /*
- * $Id: syscfg.h,v 1.55 2014/06/14 23:22:56 markisch Exp $
+ * $Id: syscfg.h,v 1.56 2014/07/28 22:16:27 sfeam Exp $
  */
 
 /* GNUPLOT - syscfg.h */
@@ -109,7 +109,11 @@
 # ifndef _WIN32
 #  define _WIN32
 # endif
-# define OS "MS-Windows 32 bit"
+# ifdef _WIN64
+#  define OS "MS-Windows 64 bit"
+# else
+#  define OS "MS-Windows 32 bit"
+# endif
 /* introduced by Pedro Mendes, prm@aber.ac.uk */
 #  define far
 /* Fix for broken compiler headers
