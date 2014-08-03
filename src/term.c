@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.295 2014/05/16 06:14:04 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.296 2014/08/03 21:52:50 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -2713,8 +2713,7 @@ load_dashtype(struct t_dashtype *dt, int tag)
     while (this != NULL) {
 	if (this->tag == tag) {
 	    *dt = this->dashtype;
-	    if (this->dashtype.str)
-		dt->str = gp_strdup(this->dashtype.str);
+	    memcpy(dt->dstring, this->dashtype.dstring, sizeof(dt->dstring));
 	    return this->d_type;
 	} else {
 	    this = this->next;
