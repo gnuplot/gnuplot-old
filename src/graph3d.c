@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.308 2014/06/03 15:24:19 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.309 2014/08/14 22:48:32 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -3037,7 +3037,7 @@ map3d_position_r(
 	if (pos->scaley == graph)
 	    ypos = (splot_map) ? Y_AXIS.max : Y_AXIS.min;
 	else
-	    ypos = (splot_map) ? Y_AXIS.max : 0;
+	    ypos = 0;
 	if (pos->scalez == graph)
 	    zpos = Z_AXIS.min;
 	else
