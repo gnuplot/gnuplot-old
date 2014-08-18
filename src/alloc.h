@@ -1,5 +1,5 @@
 /*
- * $Id: alloc.h,v 1.13 2014/04/04 19:11:17 sfeam Exp $
+ * $Id: alloc.h,v 1.14 2014/08/18 04:43:29 sfeam Exp $
  */
 
 /* GNUPLOT - alloc.h */
@@ -43,9 +43,7 @@
 
 #include "stdfn.h"
 
-/* prototypes from "alloc.c". This file figures out if the free hack is needed
- * and redefines free if necessary.
- */
+/* prototypes from "alloc.c" */
 
 generic *gp_alloc __PROTO((size_t size, const char *message));
 generic *gp_realloc __PROTO((generic *p, size_t size, const char *message));
