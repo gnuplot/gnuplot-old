@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: fit.c,v 1.145 2014/06/17 05:39:30 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: fit.c,v 1.146 2014/08/21 19:38:23 sfeam Exp $"); }
 #endif
 
 /*  NOTICE: Change of Copyright Status
@@ -2184,6 +2184,8 @@ fit_command()
 	case DF_FIRST_BLANK:
 	case DF_SECOND_BLANK:
 	    continue;
+	case DF_COLUMN_HEADERS:
+	    continue;
 	case 0:
 	    Eex2("bad data on line %d of datafile", df_line_number);
 	    break;
@@ -2192,6 +2194,8 @@ fit_command()
 	    v[0] = (double) df_datum;
 	    break;
 	default:	/* June 2013 - allow more than 7 data columns */
+	    if (i<0)
+		int_error(NO_CARET, "unexpected value returned by df_readline");
 	    break;
 	}
 	num_points++;
