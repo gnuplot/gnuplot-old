@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.99 2014/06/04 03:21:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: hidden3d.c,v 1.100 2014/09/03 21:16:43 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - hidden3d.c */
@@ -1116,6 +1116,9 @@ build_networks(struct surface_points *plots, int pcount)
 	    nv += 2 * nverts;
 	    ne += nverts;
 	    break;
+	case DOTS:
+	    this_plot->lp_properties.pointflag = TRUE;
+	    this_plot->lp_properties.p_type = -1;
 	case POINTSTYLE:
 	default:
 	    /* treat all remaining ones like 'points' */
