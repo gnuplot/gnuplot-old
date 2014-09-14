@@ -1,5 +1,5 @@
 /*
- * $Id: command.h,v 1.66 2014/03/30 18:33:21 markisch Exp $
+ * $Id: command.h,v 1.67 2014/09/14 18:21:13 sfeam Exp $
  */
 
 /* GNUPLOT - command.h */
@@ -179,6 +179,7 @@ void splot_command __PROTO((void));
 void stats_command __PROTO((void));
 void system_command __PROTO((void));
 void test_command __PROTO((void));
+void toggle_command __PROTO((void));
 void update_command __PROTO((void));
 void do_shell __PROTO((void));
 void undefine_command __PROTO((void));
