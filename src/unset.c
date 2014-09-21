@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.206 2014/06/27 03:23:26 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.206.2.1 2014/09/21 04:54:33 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -873,6 +873,7 @@ unset_fit()
     free(fit_script);
     fit_script = NULL;
     fit_wrap = 0;
+    /* do not reset fit_v4compatible */
 }
 
 /* process 'unset grid' command */
