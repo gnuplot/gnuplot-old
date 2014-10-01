@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: misc.c,v 1.192 2014/09/22 23:55:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: misc.c,v 1.193 2014/10/01 01:04:40 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - misc.c */
@@ -1605,10 +1605,12 @@ arrow_parse(
 	    
 	    /* Assume adjustable size but check for 'fixed' instead */
 	    arrow->head_fixedsize = FALSE;
-	    if (almost_equals(c_token, "fix$ed")) {
-		arrow->head_fixedsize = TRUE;
-		c_token++;
-	    }
+	    continue;
+	}
+
+	if (almost_equals(c_token, "fix$ed")) {
+	    arrow->head_fixedsize = TRUE;
+	    c_token++;
 	    continue;
 	}
 
