@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.51 2014/10/04 22:22:27 sfeam Exp $
+ * $Id: setshow.h,v 1.52 2014/10/04 22:30:50 sfeam Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -43,24 +43,6 @@
 #include "axis.h"
 #include "gadgets.h"
 #include "term_api.h"
-
-#define PROGRAM "G N U P L O T"  /* FIXME: move to show.c! */
-
-/* Used to write out axis ranges for DT_TIMEDATE input mode */
-#define SAVE_NUM_OR_TIME(fp, x, axis)				\
-do{								\
-    if (axis_array[axis].datatype == DT_TIMEDATE) {		\
-	char s[80];						\
-								\
-	putc('"', fp);						\
-	gstrftime(s,80,timefmt,(double)(x));	\
-	fputs(conv_text(s), fp);				\
-	putc('"', fp);						\
-    } else {							\
-	fprintf(fp,"%#g",x);					\
-    }								\
-} while(0)
-
 
 /* The set and show commands, in setshow.c */
 void set_command __PROTO((void));
