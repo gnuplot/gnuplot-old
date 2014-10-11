@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.137 2014/10/04 23:28:38 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.138 2014/10/11 13:56:45 broeker Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -511,7 +511,8 @@ copy_or_invent_formatstring(AXIS_INDEX axis)
 	if (!strcmp(ticfmt[axis], DEF_FORMAT)) {
 	    double axmin = AXIS_DE_LOG_VALUE(axis,axis_array[axis].min);
 	    double axmax = AXIS_DE_LOG_VALUE(axis,axis_array[axis].max);
-	    int precision = (ceil(-log10(fabs(axmax-axmin))));
+	    int precision = ceil(-log10(GPMIN(fabs(axmax-axmin),fabs(axmin))));
+
 	    if ((axmin*axmax > 0) && precision > 4)
 		sprintf(ticfmt[axis],"%%.%df", (precision>14) ? 14 : precision);
 	}
