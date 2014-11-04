@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.290.2.1 2014/09/18 00:26:50 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.290.2.2 2014/11/04 04:47:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -2354,7 +2354,9 @@ f_dollars(union argument *x)
 	push(Gcomplex(&a, (double) df_datum, 0.0));     /* $0 */
     } else if (column > df_no_cols || df_column[column-1].good != DF_GOOD) {
 	undefined = TRUE;
-	push(&(x->v_arg));      /* this okay ? */
+	/* Nov 2014: This is needed in case the value is referenced */
+	/* in an expression inside a 'using' clause.		    */
+	push(Gcomplex(&a, not_a_number(), 0.0));
     } else
 	push(Gcomplex(&a, df_column[column-1].datum, 0.0));
 }
@@ -2420,7 +2422,9 @@ f_column(union argument *arg)
 	     || df_column[column - 1].good != DF_GOOD
 	     ) {
 	undefined = TRUE;
-	push(&a);               /* any objection to this ? */
+	/* Nov 2014: This is needed in case the value is referenced */
+	/* in an expression inside a 'using' clause.		    */
+	push(Gcomplex(&a, not_a_number(), 0.0));
     } else
 	push(Gcomplex(&a, df_column[column - 1].datum, 0.0));
 }
