@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.246.2.1 2014/08/29 21:36:48 mikulik Exp $"); }
+static char *RCSid() { return RCSid("$Id: gplt_x11.c,v 1.246.2.2 2014/11/12 05:20:16 sfeam Exp $"); }
 #endif
 
 #define MOUSE_ALL_WINDOWS 1
@@ -1842,12 +1842,16 @@ record()
 #endif
 	    {
 		unsigned int ops, i;
-		sscanf(buf+1, "%u", &ops);
+		int plotno = -1;
+		sscanf(buf+1, "%u %d", &ops, &plotno);
+		plotno++;
 
 		if (!plot)
 			return 1;
 
 		for (i = 1; i <= x11_cur_plotno && i < plot->x11_max_key_boxes; i++) {
+		    if (plotno > 0 && i != plotno)
+			continue;
 		    if ((ops & MODPLOTS_INVERT_VISIBILITIES) == MODPLOTS_INVERT_VISIBILITIES) {
 			plot->x11_key_boxes[i].hidden = !plot->x11_key_boxes[i].hidden;
 		    } else if (ops & MODPLOTS_SET_VISIBLE) {
