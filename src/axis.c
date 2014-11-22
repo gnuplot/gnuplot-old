@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.138 2014/10/11 13:56:45 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.139 2014/11/22 00:25:17 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -249,7 +249,7 @@ axis_name(AXIS_INDEX axis)
 {
     static char name[] = "p  ";
     if (axis >= PARALLEL_AXES) {
-	sprintf(name, "p%d", axis-PARALLEL_AXES+1);
+	sprintf(name, "paxis %d ", axis-PARALLEL_AXES+1);
 	return name;
     }
     return (char *)axis_defaults[axis].name;
