@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.48.2.2 2014/11/08 03:08:42 sfeam Exp $
+ * $Id: wxt_gui.h,v 1.48.2.3 2014/12/05 18:04:00 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -506,6 +506,8 @@ public:
 
 	wxtPanel * panel;
 	bool config_displayed;
+	wxToolBar * toolbar;
+
 private:
 	wxtConfigDialog * config_dialog;
 
