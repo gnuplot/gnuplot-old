@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.h,v 1.51 2014/11/19 01:33:43 sfeam Exp $
+ * $Id: wxt_gui.h,v 1.52 2014/12/26 23:21:48 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_gui.h */
@@ -545,11 +545,6 @@ static wxCursor wxt_cursor_cross;
 static wxCursor wxt_cursor_right;
 static wxCursor wxt_cursor_rotate;
 static wxCursor wxt_cursor_size;
-
-#ifdef DEBUG
- /* performance watch */
- static wxStopWatch sw;
-#endif
 
 /* wxt_abort_init is set to true if there is an error when
  * wxWidgets is initialized, for example if the X server is unreachable.
