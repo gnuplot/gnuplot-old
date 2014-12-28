@@ -1,5 +1,5 @@
 #ifdef INCRCSDATA
-static char RCSid[]="$Id: gclient.c,v 1.51 2010/08/31 12:59:07 mikulik Exp $";
+static char RCSid[]="$Id: gclient.c,v 1.52 2014/12/28 13:09:36 markisch Exp $";
 #endif
 
 /****************************************************************************
@@ -3090,7 +3090,6 @@ ReadGnu(void* arg)
 		PBITMAPINFO2 pbmi;
 		POINTL points[4];
 		LONG hits;
-		PERRINFO perriBlk;
 		image_list_entry *ile;
 
 		BufRead(hRead, &M, sizeof(M), &cbR);
@@ -3125,7 +3124,7 @@ ReadGnu(void* arg)
 
 #if 0
 		if (hits == GPI_ERROR) {
-		    perriBlk = WinGetErrorInfo(hab);
+		    PERRINFO perriBlk = WinGetErrorInfo(hab);
 		    if (perriBlk) {
 			PSZ pszOffset, pszErrMsg;
 			pszOffset = ((PSZ)perriBlk) + perriBlk->offaoffszMsg;
@@ -3410,15 +3409,14 @@ GetNewFont(HWND hwnd, HPS hps)
 int
 GetNewFont(HWND hwnd, HPS hps)
 {
- HOBJECT hObject;
- ULONG ulView = 0; /* OPEN_DEFAULT */
- BOOL fSuccess = FALSE;
+    HOBJECT hObject;
+    ULONG ulView = 0; /* OPEN_DEFAULT */
+    BOOL fSuccess = FALSE;
 
- hObject = WinQueryObject("<WP_FNTPAL>");
- if (hObject != NULL)
-  { fSuccess = WinOpenObject(hObject, ulView, TRUE); }
-  if (fSuccess) return 1;
-  else return 0;
+    hObject = WinQueryObject("<WP_FNTPAL>");
+    if (hObject != NULLHANDLE)
+        fSuccess = WinOpenObject(hObject, ulView, TRUE);
+    return fSuccess ? 1 : 0;
 }
 
 #endif /* STANDARD_FONT_DIALOG */
