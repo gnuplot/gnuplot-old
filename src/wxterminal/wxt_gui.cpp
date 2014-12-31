@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.128.2.14 2014/12/30 19:45:13 sfeam Exp $
+ * $Id: wxt_gui.cpp,v 1.128.2.15 2014/12/31 07:36:56 markisch Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -3811,6 +3811,14 @@ int wxt_waitforinput(int options)
 /* --------------------------------------------------------
  * 'persist' option handling
  * --------------------------------------------------------*/
+
+TBOOLEAN wxt_active_window_opened(void)
+{
+	return ((wxt_current_window != NULL) &&
+	        (wxt_current_window->id == wxt_window_number) &&
+	         wxt_current_window->frame->IsShown());
+}
+
 
 /* returns true if at least one plot window is opened.
  * Used to handle 'persist' */
