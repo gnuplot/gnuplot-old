@@ -1,5 +1,5 @@
 ﻿;
-; $Id: gnuplot.iss,v 1.10.2.1 2014/12/16 09:12:12 markisch Exp $
+; $Id: gnuplot.iss,v 1.10.2.2 2015/01/01 13:13:12 markisch Exp $
 ;
 ; GNUPLOT - gnuplot.iss
 ;
@@ -67,7 +67,7 @@ AllowNoIcons=true
 LicenseFile=Copyright
 ;InfoBeforeFile: README-testing.txt
 InfoBeforeFile=README-Windows.txt
-InfoAfterFile=NEWS
+InfoAfterFile=RELEASE_NOTES
 OutputBaseFilename={#MyInstallerName}
 SetupIconFile=bin\grpicon.ico
 Compression=lzma2/Max
@@ -174,6 +174,8 @@ Name: "ja";  Description: "{cm:japanese}";
 ; view README
 Filename: {win}\notepad.exe; Description: {cm:view,README-Windows.txt}; Flags: nowait postinstall skipifsilent Unchecked RunAsOriginalUser ShellExec SkipIfDoesntExist; Parameters: {app}\README-Windows.txt; Languages: en de;
 Filename: {win}\notepad.exe; Description: "{cm:view,README-Windows-ja.txt}"; Flags: nowait postinstall skipifsilent Unchecked RunAsOriginalUser ShellExec SkipIfDoesntExist; Parameters: {app}\README-Windows-ja.txt; Languages: ja;
+; view RELEASE-NOTES
+Filename: {win}\notepad.exe; Description: {cm:view,RELEASE_NOTES}; Flags: nowait postinstall skipifsilent Unchecked RunAsOriginalUser ShellExec SkipIfDoesntExist; Parameters: {app}\RELEASE_NOTES; Languages: en de ja;
 ; launch gnuplot
 Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, "&", "&&")}}"; Flags: nowait postinstall skipifsilent Unchecked RunAsOriginalUser; WorkingDir: {#MyDocuments};
 
