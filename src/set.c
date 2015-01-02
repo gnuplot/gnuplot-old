@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.470 2014/11/23 07:18:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.471 2015/01/02 06:12:02 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -328,8 +328,7 @@ set_command()
 	    if (!equals(c_token,","))
 		break;
 	    set_margin(&bmargin);
-	    if (!equals(c_token,","))
-		break;
+	    break;
 	case S_BMARGIN:
 	    set_margin(&bmargin);
 	    break;
