@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.346 2015/01/17 05:36:29 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.347 2015/01/17 18:17:48 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -3146,7 +3146,7 @@ eval_plots()
 				    this_plot->points[i].yhigh,
 				    this_plot->filledcurves_options.at,
 				    this_plot->points[i].type, y_axis,
-				    this_plot->noautoscale, NOOP, NOOP);
+				    TRUE, NOOP, NOOP);
 			    }
 			    
 			    /* Fill in additional fields needed to draw a circle */
