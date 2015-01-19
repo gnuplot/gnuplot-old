@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.473 2015/01/06 05:31:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.474 2015/01/19 22:10:59 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2360,6 +2360,7 @@ set_key()
 	    break;
 	case S_KEY_TITLE:
 	     S_KEYTITLE:
+	    key->title.pos = CENTRE;
 	    set_xyzlabel( &key->title );
 	    c_token--;
 	    break;
