@@ -1,5 +1,5 @@
 /*
- * $Id: gp_types.h,v 1.64 2014/12/03 21:32:49 sfeam Exp $
+ * $Id: gp_types.h,v 1.65 2015/01/20 02:10:42 sfeam Exp $
  */
 
 /* GNUPLOT - gp_types.h */
@@ -50,6 +50,7 @@ enum DATA_TYPES {
 	CMPLX,
 	STRING,
 	DATABLOCK,
+	NOTDEFINED,	/* exists, but value is currently undefined */
 	INVALID_VALUE,	/* used only for error return by external functions */
 	INVALID_NAME	/* used only to trap errors in linked axis function definition */
 };
