@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.476 2015/02/15 16:39:22 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.477 2015/02/16 04:31:40 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -5153,8 +5153,8 @@ set_range(AXIS_INDEX axis)
 
     if (almost_equals(c_token,"re$store")) {
 	c_token++;
-	axis_array[axis].set_min = get_writeback_min(axis);
-	axis_array[axis].set_max = get_writeback_max(axis);
+	axis_array[axis].set_min = axis_array[axis].writeback_min;
+	axis_array[axis].set_max = axis_array[axis].writeback_max;
 	axis_array[axis].set_autoscale = AUTOSCALE_NONE;
     } else {
 	if (!equals(c_token,"["))
