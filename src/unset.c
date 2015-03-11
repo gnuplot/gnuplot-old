@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.213 2015/03/11 19:35:54 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.214 2015/03/11 19:44:39 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1738,6 +1738,7 @@ reset_command()
 
 	/* Free contents before overwriting with default values */
 	free(axis_array[axis].formatstring);
+	free(axis_array[axis].ticfmt);
 	if (axis_array[axis].link_udf)
 	    free(axis_array[axis].link_udf->at);
 	free_marklist(axis_array[axis].ticdef.def.user);
