@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: stats.c,v 1.14.2.4 2015/01/14 04:24:27 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: stats.c,v 1.14.2.5 2015/03/24 17:27:01 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - stats.c */
@@ -219,7 +219,7 @@ analyze_sgl_column( double *data, long n, long nc )
     /* Standard deviation, mean absolute deviation, skewness, and kurtosis */
     for( i=0; i<n; i++ ) {
 	double t = data[i] - res.mean;
-	ad += abs(t);
+	ad += fabs(t);
 	d  += t;
 	d2 += t*t;
 	d3 += t*t*t;
