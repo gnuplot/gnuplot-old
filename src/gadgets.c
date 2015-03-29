@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: gadgets.c,v 1.119 2015/02/13 04:24:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: gadgets.c,v 1.120 2015/03/29 17:26:00 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - gadgets.c */
@@ -100,6 +100,7 @@ struct text_label *first_label = NULL;
 /* Pointer to first 'set linestyle' definition in linked list */
 struct linestyle_def *first_linestyle = NULL;
 struct linestyle_def *first_perm_linestyle = NULL;
+struct linestyle_def *first_mono_linestyle = NULL;
 
 /* Pointer to first 'set style arrow' definition in linked list */
 struct arrowstyle_def *first_arrowstyle = NULL;
