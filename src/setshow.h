@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.50.2.1 2014/11/08 04:52:26 sfeam Exp $
+ * $Id: setshow.h,v 1.50.2.2 2015/03/29 18:08:05 sfeam Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -62,6 +62,7 @@ void free_marklist __PROTO((struct ticmark * list));
 extern int enable_reset_palette;
 void reset_palette __PROTO((void));
 void rrange_to_xy __PROTO((void));
+void unset_monochrome __PROTO((void));
 
 /* Called from set_label(), plot2d.c and plot3d.c */
 extern void parse_label_options __PROTO((struct text_label *this_label, TBOOLEAN));
