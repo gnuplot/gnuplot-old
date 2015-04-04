@@ -1,5 +1,5 @@
 /*
- * $Id: axis.h,v 1.122 2015/03/15 04:29:12 sfeam Exp $
+ * $Id: axis.h,v 1.123 2015/04/04 01:08:43 sfeam Exp $
  *
  */
 
@@ -566,6 +566,7 @@ do {									  \
     }									  \
     if (axis->log) {							  \
 	if (curval < 0.0) {						  \
+	    STORE = not_a_number();					  \
 	    TYPE = UNDEFINED;						  \
 	    UNDEF_ACTION;						  \
 	    break;							  \
