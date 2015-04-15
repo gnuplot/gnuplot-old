@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.276 2015/03/27 17:38:14 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.277 2015/04/15 18:59:48 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -833,7 +833,7 @@ set origin %g,%g\n",
     save_range(fp, COLOR_AXIS);
 
     for (axis=0; axis<MAX_PARALLEL_AXES; axis++)
-	save_range(fp, PARALLEL_AXES+axis);
+	save_prange(fp, &axis_array[PARALLEL_AXES+axis]);
 
 #undef SAVE_AXISLABEL
 #undef SAVE_AXISLABEL_OR_TITLE
