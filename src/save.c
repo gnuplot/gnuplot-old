@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.279 2015/04/16 06:15:18 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.280 2015/04/17 22:02:45 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -781,7 +781,7 @@ set origin %g,%g\n",
     save_tics(fp, SECOND_Y_AXIS);
     save_tics(fp, COLOR_AXIS);
     save_tics(fp, POLAR_AXIS);
-    for (axis=0; axis<MAX_PARALLEL_AXES; axis++)
+    for (axis=0; axis<num_parallel_axes; axis++)
 	save_ptics(fp, &parallel_axis[axis]);
 
 #define SAVE_AXISLABEL_OR_TITLE(name,suffix,lab)			 \
@@ -832,7 +832,7 @@ set origin %g,%g\n",
     SAVE_AXISLABEL(COLOR_AXIS);
     save_prange(fp, axis_array + COLOR_AXIS);
 
-    for (axis=0; axis<MAX_PARALLEL_AXES; axis++)
+    for (axis=0; axis<num_parallel_axes; axis++)
 	save_prange(fp, &parallel_axis[axis]);
 
 #undef SAVE_AXISLABEL
