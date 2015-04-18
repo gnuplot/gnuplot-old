@@ -1,5 +1,5 @@
 /*
- * $Id: axis.h,v 1.125 2015/04/17 22:02:45 sfeam Exp $
+ * $Id: axis.h,v 1.126 2015/04/18 18:01:23 sfeam Exp $
  *
  */
 
@@ -333,7 +333,7 @@ typedef struct axis_defaults {
 /* global variables in axis.c */
 
 extern AXIS axis_array[AXIS_ARRAY_SIZE];
-extern const AXIS_DEFAULTS axis_defaults[AXIS_ARRAY_SIZE+1];
+extern const AXIS_DEFAULTS axis_defaults[AXIS_ARRAY_SIZE];
 
 /* EAM DEBUG - Intermediate step towards dynamic allocation of parallel axes. */
 /* For now we keep the parallel axis structures at the back of axis_array but */
