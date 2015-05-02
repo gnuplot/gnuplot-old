@@ -70,9 +70,10 @@ gnuplot_x11_LDADD = getcolor_x11.o $(XLIBS)
 endif
 
 getcolor_x11.o: getcolor.c
-	$(COMPILE) -c -DGPLT_X11_MODE -o getcolor_x11.o $(srcdir)/getcolor.c
+	$(AM_V_CC)$(COMPILE) -c -DGPLT_X11_MODE -o getcolor_x11.o $(srcdir)/getcolor.c
 
-bf_test_SOURCES = bf_test.c binary.c binary.h alloc.c
+bf_test_SOURCES = bf_test.c
+bf_test_LIBS = -lm
 
 if BUILD_SRC_BEOS_SUBDIR
 d_beos = beos
@@ -196,4 +197,10 @@ T=$(top_srcdir)/term/
 include makefile.all
 # end makefile.all
 term$U.o: $(CORETERM)
+
+# Provide an explicit build recipe for bf_test so that a zillion extraneous
+# libraries are not dragged in.
+bf_test$(EXEEXT): $(bf_test_OBJECTS)
+	@rm -f bf_test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(bf_test_OBJECTS) $(bf_test_LIBS)
 
