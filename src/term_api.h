@@ -1,5 +1,5 @@
 /*
- * $Id: term_api.h,v 1.141 2015/05/13 02:49:37 sfeam Exp $
+ * $Id: term_api.h,v 1.142 2015/06/02 23:32:28 sfeam Exp $
  */
 
 /* GNUPLOT - term_api.h */
@@ -197,7 +197,8 @@ typedef enum termlayer {
 	TERM_LAYER_BEGIN_PM3D_MAP,
 	TERM_LAYER_END_PM3D_MAP,
 	TERM_LAYER_BEGIN_IMAGE,
-	TERM_LAYER_END_IMAGE
+	TERM_LAYER_END_IMAGE,
+	TERM_LAYER_3DPLOT
 } t_termlayer;
 
 /* Options used by the terminal entry point term->waitforinput(). */
