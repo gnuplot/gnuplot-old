@@ -1,5 +1,5 @@
 /*
- * $Id: plot2d.h,v 1.15 2012/03/21 00:22:25 sfeam Exp $
+ * $Id: plot2d.h,v 1.16 2015/07/03 17:20:31 sfeam Exp $
  */
 
 /* GNUPLOT - plot2d.h */
@@ -38,6 +38,9 @@
 # define GNUPLOT_PLOT2D_H
 
 #include "syscfg.h"
+
+/* EXPERIMENTAL configuration option */
+#define SMOOTH_BINS_OPTION 1
 
 /* Variables of plot2d.c needed by other modules: */
 
