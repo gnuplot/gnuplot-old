@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.496 2015/08/01 04:18:28 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.497 2015/08/01 04:39:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2390,8 +2390,11 @@ set_key()
 	    if (!isstringvalue(c_token))
 		int_error(c_token,"expected font");
 	    else {
-		free(key->font);
-		key->font = try_to_get_string();
+		char *tmp = try_to_get_string();
+		if (tmp) {
+		    free(key->font);
+		    key->font = tmp;
+		}
 		c_token--;
 	    }
 	    break;
