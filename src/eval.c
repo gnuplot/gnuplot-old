@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: eval.c,v 1.119.2.1 2014/12/05 18:09:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: eval.c,v 1.119.2.2 2015/08/01 05:07:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - eval.c */
@@ -758,6 +758,8 @@ del_udv_by_name(char *key, TBOOLEAN wildcard)
     while (udv_ptr) {
 	/* Forbidden to delete GPVAL_* */
 	if (!strncmp(udv_ptr->udv_name,"GPVAL",5))
+	    ;
+	else if (!strncmp(udv_ptr->udv_name,"GNUTERM",7))
 	    ;
 
  	/* exact match */
