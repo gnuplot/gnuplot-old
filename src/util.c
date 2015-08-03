@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.132 2015/07/09 21:05:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.133 2015/08/03 18:32:51 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -1534,8 +1534,8 @@ streq(const char *a, const char *b)
     while (isspace((unsigned char)*b))
 	b++;
 
-    enda = strlen(a) - 1;
-    endb = strlen(b) - 1;
+    enda = (*a) ? strlen(a) - 1 : 0;
+    endb = (*b) ? strlen(b) - 1 : 0;
 
     while (isspace((unsigned char)a[enda]))
 	enda--;
