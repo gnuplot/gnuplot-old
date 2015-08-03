@@ -1,5 +1,5 @@
 /*
- * $Id: setshow.h,v 1.53 2015/03/29 17:26:00 sfeam Exp $
+ * $Id: setshow.h,v 1.54 2015/08/03 04:16:38 sfeam Exp $
  */
 
 /* GNUPLOT - setshow.h */
@@ -61,6 +61,7 @@ void reset_key __PROTO((void));
 void free_marklist __PROTO((struct ticmark * list));
 extern int enable_reset_palette;
 void reset_palette __PROTO((void));
+void reset_bars __PROTO((void));
 void rrange_to_xy __PROTO((void));
 void unset_monochrome __PROTO((void));
 
