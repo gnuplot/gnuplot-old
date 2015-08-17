@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.49 2014/05/01 19:50:15 broeker Exp $
+ * $Id: stdfn.h,v 1.49.2.1 2015/08/17 05:47:29 sfeam Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -133,6 +133,10 @@ double strtod();
 #  endif
 # endif /* VMS */
 #endif /* HAVE_STDLIB_H */
+
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#endif
 
 /* Deal with varargs functions */
 #if defined(HAVE_VFPRINTF) || defined(HAVE_DOPRNT)
