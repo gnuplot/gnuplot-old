@@ -1,6 +1,6 @@
 /*
- *  $Id: lua.trm,v 1.23.2.2 2014/10/29 03:28:24 sfeam Exp $
- *  $Date: 2014/10/29 03:28:24 $
+ *  $Id: lua.trm,v 1.23.2.3 2015/09/11 19:49:26 sfeam Exp $
+ *  $Date: 2015/09/11 19:49:26 $
  *  $Rev: 99 $
  */
 
@@ -328,6 +328,10 @@ LUA_GP_term_out(lua_State *L) {
       do
         c = tos_getch();
       while (c != '\x04' && c != '\r' && c != '\n');
+#elif defined(_WIN32)
+      do
+        c = getchar();
+      while (c != EOF && c != '\n' && c != '\r');
 #else
       do
         c = getchar();
