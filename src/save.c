@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.285 2015/08/21 20:45:03 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.286 2015/09/14 03:28:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -44,6 +44,7 @@ static char *RCSid() { return RCSid("$Id: save.c,v 1.285 2015/08/21 20:45:03 sfe
 #include "gp_time.h"
 #include "graphics.h"
 #include "hidden3d.h"
+#include "jitter.h"
 #include "misc.h"
 #include "plot2d.h"
 #include "plot3d.h"
@@ -61,7 +62,7 @@ static void save_ptics __PROTO((FILE *, struct axis *));
 static void save_zeroaxis __PROTO((FILE *,AXIS_INDEX));
 static void save_set_all __PROTO((FILE *));
 
-static const char *coord_msg[] = {"first ", "second ", "graph ", "screen ", "character "};
+const char *coord_msg[] = {"first ", "second ", "graph ", "screen ", "character "};
 /*
  *  functions corresponding to the arguments of the GNUPLOT `save` command
  */
@@ -838,6 +839,8 @@ set origin %g,%g\n",
 
 #undef SAVE_AXISLABEL
 #undef SAVE_AXISLABEL_OR_TITLE
+
+    save_jitter(fp);
 
     fprintf(fp, "set zero %g\n", zero);
 
