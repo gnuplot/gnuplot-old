@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.500 2015/09/19 04:47:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.501 2015/09/19 17:28:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -2881,19 +2881,18 @@ plot_boxplot(struct curve_points *plot)
 		&&  subset_points[i].y <= candle.yhigh)
 		    continue;
 
-		if (subset_points[i].type != INRANGE)
+		if (subset_points[i].type == UNDEFINED)
 		    continue;
 
 		x = map_x(candle.x);
 		y = map_y(subset_points[i].y);
-		/* do clipping if necessary */
-		if (clip_points &&
-		    (x < plot_bounds.xleft + p_width
-		    || y < plot_bounds.ybot + p_height
-		    || x > plot_bounds.xright - p_width
-		    || y > plot_bounds.ytop - p_height)) {
+
+		/* previous INRANGE/OUTRANGE no longer valid */
+		if (x < plot_bounds.xleft + p_width
+		||  y < plot_bounds.ybot + p_height
+		||  x > plot_bounds.xright - p_width
+		||  y > plot_bounds.ytop - p_height)
 			continue;
-		}
 
 		/* Separate any duplicate outliers */
 		for (j=1; (i >= j) && (subset_points[i].y == subset_points[i-j].y); j++)
