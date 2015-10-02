@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.501 2015/10/01 04:04:59 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.502 2015/10/02 22:28:42 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -957,8 +957,7 @@ set_bars()
 	save_token = c_token;
 	lp_parse(&bar_lp, LP_ADHOC, FALSE);
 	if (c_token != save_token) {
-	    if (bar_lp.l_type == LT_DEFAULT)
-		bar_lp.l_type = LT_SOLID;
+	    bar_lp.flags = LP_ERRORBAR_SET;
 	    continue;
 	}
 
