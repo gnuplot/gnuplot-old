@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.365 2015/09/04 05:59:53 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.366 2015/10/08 15:32:09 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -3295,7 +3295,8 @@ eval_plots()
     }   /* some_functions */
 
     /* if first_plot is NULL, we have no functions or data at all. This can
-     * happen, if you type "plot x=5", since x=5 is a variable assignment */
+     * happen if you type "plot x=5", since x=5 is a variable assignment.
+     */
 
     if (plot_num == 0 || first_plot == NULL) {
 	int_error(c_token, "no functions or data to plot");
