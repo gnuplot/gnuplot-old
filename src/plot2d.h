@@ -1,5 +1,5 @@
 /*
- * $Id: plot2d.h,v 1.16 2015/07/03 17:20:31 sfeam Exp $
+ * $Id: plot2d.h,v 1.17 2015/10/08 20:01:17 sfeam Exp $
  */
 
 /* GNUPLOT - plot2d.h */
@@ -41,6 +41,11 @@
 
 /* EXPERIMENTAL configuration option */
 #define SMOOTH_BINS_OPTION 1
+
+/* This allows a natural interpretation of providing only a single column in 'using' */
+#define default_smooth_weight(option) \
+ (option == SMOOTH_BINS || option == SMOOTH_KDENSITY || \
+  option == SMOOTH_FREQUENCY)
 
 /* Variables of plot2d.c needed by other modules: */
 
