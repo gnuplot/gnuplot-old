@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.503 2015/10/07 00:31:12 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.504 2015/10/09 20:04:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -6099,11 +6099,11 @@ parse_label_options( struct text_label *this_label, TBOOLEAN in_plot )
 	}
 
 #ifdef EAM_BOXED_TEXT
-	if (almost_equals(c_token, "box$ed")) {
+	if (equals(c_token, "boxed")) {
 	    this_label->boxed = 1;
 	    c_token++;
 	    continue;
-	} else if (almost_equals(c_token, "nobox$ed")) {
+	} else if (equals(c_token, "noboxed")) {
 	    this_label->boxed = 0;
 	    c_token++;
 	    continue;
