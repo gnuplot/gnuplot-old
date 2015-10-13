@@ -1,5 +1,5 @@
 /*
- * $Id: jitter.c,v 1.1 2015/09/14 03:28:47 sfeam Exp $
+ * $Id: jitter.c,v 1.2 2015/10/13 21:47:34 broeker Exp $
  */
 /*
  * This file contains routines used to support the "set jitter" option.
@@ -66,7 +66,7 @@
 
 #include "jitter.h"
 
-t_jitter jitter = {};
+t_jitter jitter = {{first_axes, first_axes, first_axes, 0.0, 0.0, 0.0}, 0.0, 0.0, JITTER_DEFAULT};
 
 static int compare_xypoints __PROTO((SORTFUNC_ARGS arg1, SORTFUNC_ARGS arg2));
 
