@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.505 2015/11/10 02:50:39 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.506 2015/11/12 21:37:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -3778,7 +3778,7 @@ set_pm3d()
     int c_token0 = ++c_token;
 
     if (END_OF_COMMAND) { /* assume default settings */
-	pm3d_reset(); /* sets pm3d.implicit to PM3D_IMPLICIT and pm3d.where to "s" */
+	pm3d_reset(); /* sets pm3d.implicit to PM3D_EXPLICIT and pm3d.where to "s" */
 	pm3d.implicit = PM3D_IMPLICIT; /* for historical reasons */
     }
     else { /* go through all options of 'set pm3d' */
