@@ -1,5 +1,5 @@
 /*
- * $Id: stdfn.h,v 1.51 2015/08/17 05:47:40 sfeam Exp $
+ * $Id: stdfn.h,v 1.52 2015/11/13 04:03:57 sfeam Exp $
  */
 
 /* GNUPLOT - stdfn.h */
@@ -592,6 +592,11 @@ void          rewinddir __PROTO((DIR *));
 	       (z) = (max);			\
        }					\
     } while (0)
+#endif
+
+#ifndef clip_to_01
+#define clip_to_01(val)	\
+    ((val) < 0 ? 0 : (val) > 1 ? 1 : (val))
 #endif
 
 /* both min/max and MIN/MAX are defined by some compilers.
