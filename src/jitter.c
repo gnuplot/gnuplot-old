@@ -1,5 +1,5 @@
 /*
- * $Id: jitter.c,v 1.3 2015/10/29 19:24:55 sfeam Exp $
+ * $Id: jitter.c,v 1.4 2015/12/19 21:45:35 sfeam Exp $
  */
 /*
  * This file contains routines used to support the "set jitter" option.
@@ -179,7 +179,7 @@ set_jitter()
     while (!END_OF_COMMAND) {
 	if (almost_equals(c_token, "over$lap")) {
 	    c_token++;
-	    get_position_default(&jitter.overlap, character);
+	    get_position_default(&jitter.overlap, character, 2);
 	} else if (equals(c_token, "spread")) {
 	    c_token++;
 	    jitter.spread = real_expression();

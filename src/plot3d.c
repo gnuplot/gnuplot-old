@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.245 2015/10/31 04:36:56 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.246 2015/12/19 21:45:35 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -1692,7 +1692,7 @@ eval_3dplots()
 			this_plot->labels->pos = CENTRE;
 			this_plot->labels->layer = LAYER_PLOTLABELS;
 		    }
-		    parse_label_options(this_plot->labels, TRUE);
+		    parse_label_options(this_plot->labels, 3);
 		    if (draw_contour)
 			load_contour_label_options(this_plot->labels);
 		    checked_once = TRUE;
