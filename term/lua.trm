@@ -1,6 +1,6 @@
 /*
- *  $Id: lua.trm,v 1.30 2015/12/30 04:19:40 sfeam Exp $
- *  $Date: 2015/12/30 04:19:40 $
+ *  $Id: lua.trm,v 1.31 2015/12/30 04:33:24 sfeam Exp $
+ *  $Date: 2015/12/30 04:33:24 $
  *  $Rev: 99 $
  */
 
@@ -528,7 +528,7 @@ LUA_get_term_vars(void) {
   lua_pop(L, 1);
   
   lua_getfield(L, luaterm, "flags");
-  term->flags = (lua_isnumber(L, -1)) ? (int)lua_tointeger(L, -1) : TERM_BINARY;
+  term->flags |= (lua_isnumber(L, -1)) ? (int)lua_tointeger(L, -1) : TERM_BINARY;
   lua_pop(L, 1);
 
   lua_getfield(L, luaterm, "tscale");
