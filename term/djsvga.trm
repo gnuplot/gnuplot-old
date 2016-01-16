@@ -1,5 +1,5 @@
 /* Hello, Emacs, this is -*-C-*-
- * $Id: djsvga.trm,v 1.22 2013/01/26 00:19:22 sfeam Exp $
+ * $Id: djsvga.trm,v 1.23 2016/01/16 12:34:50 broeker Exp $
  */
 
 /* GNUPLOT - djsvga.trm */
@@ -379,7 +379,7 @@ DJSVGA_set_font(const char *fontname)
 	DJSVGA_TextOption.txo_font = font;
 	return TRUE;
     } else {
-	graph_error("Font not found");
+	int_error(NO_CARET, "Font not found");
 	return FALSE;
     }
 }
