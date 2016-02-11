@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.153 2016-01-31 17:51:28 sfeam Exp $
+ * $Id: wxt_gui.cpp,v 1.154 2016-02-11 14:06:27 markisch Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -3180,6 +3180,11 @@ void wxt_raise_window(wxt_window_t* window, bool force)
 		window->frame->panel->Refresh(false);
 		gdk_window_raise(gtk_widget_get_window(window->frame->GetHandle()));
 #else
+#ifdef __WXMSW__
+		// Only restore the window if it is iconized.  In particular
+		// leave it alone if it is maximized.
+		if (window->frame->IsIconized())
+#endif
 		window->frame->Restore();
 		window->frame->Raise();
 #endif /*USE_GTK */
