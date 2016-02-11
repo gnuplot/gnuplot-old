@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.321 2016/01/10 00:41:12 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.323 2016-02-11 05:15:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1229,15 +1229,15 @@ null_justify_text(enum JUSTIFY just)
 }
 
 
-/* Change scale of plot.
- * Parameters are x,y scaling factors for this plot.
- * Some terminals (eg latex) need to do scaling themselves.
+/* 
+ * Deprecated terminal function (pre-version 3)
  */
 static int
 null_scale(double x, double y)
 {
     (void) x;                   /* avoid -Wunused warning */
     (void) y;
+    int_error(NO_CARET, "Attempt to call deprecated terminal function");
     return FALSE;               /* can't be done */
 }
 
@@ -1489,9 +1489,6 @@ change_term(const char *origname, int length)
     term = t;
     term_initialised = FALSE;
 
-    if (term->scale != null_scale)
-	fputs("Warning: scale interface is not null_scale - may not work with multiplot\n", stderr);
-
     /* check that optional fields are initialised to something */
     if (term->text_angle == 0)
 	term->text_angle = null_text_angle;
@@ -1566,13 +1563,6 @@ init_terminal()
 	    && env_term != (char *) NULL && strcmp(env_term, "beterm") == 0)
 	    term_name = "be";
 #endif /* BeOS */
-
-#ifdef SUN
-	env_term = getenv("TERM");      /* try $TERM */
-	if (term_name == (char *) NULL
-	    && env_term != (char *) NULL && strcmp(env_term, "sun") == 0)
-	    term_name = "sun";
-#endif /* SUN */
 
 #ifdef QTTERM
 	if (term_name == (char *) NULL)
