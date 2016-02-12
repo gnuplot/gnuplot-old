@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.358 2016/01/01 00:51:23 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.359 2016-02-12 19:53:15 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1800,7 +1800,7 @@ show_arrow(int tag)
 		show_position(&this_arrow->end, 3);
 	    } else { /* arrow_end_oriented */
 		fputs(" length ", stderr);
-		show_position(&this_arrow->end, 3);
+		show_position(&this_arrow->end, 1);
 		fprintf(stderr," angle %g deg",this_arrow->angle);
 	    }
 	    if (this_arrow->arrow_properties.head_length > 0) {
