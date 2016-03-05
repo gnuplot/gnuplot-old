@@ -1,5 +1,5 @@
 /*
- * $Id: gp_cairo.c,v 1.87.2.8 2016-03-05 04:47:50 sfeam Exp $
+ * $Id: gp_cairo.c,v 1.87.2.7 2016-03-05 04:46:12 sfeam Exp $
  */
 
 /* GNUPLOT - gp_cairo.c */
@@ -346,7 +346,7 @@ void gp_cairo_set_linewidth(plot_struct *plot, double linewidth)
 	gp_cairo_end_polygon(plot);
 
 	if (!strcmp(term->name,"pdfcairo"))
-	    linewidth *= 2;
+		plot->linewidth *= 2;
 	if (linewidth < 0.20)	/* Admittedly arbitrary */
 	    linewidth = 0.20;
 
