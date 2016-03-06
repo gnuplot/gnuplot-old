@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: scanner.c,v 1.42 2014/05/09 22:14:12 broeker Exp $"); }
+static char *RCSid() { return RCSid("$Id: scanner.c,v 1.43 2016-03-06 19:27:24 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - scanner.c */
@@ -320,6 +320,10 @@ get_num(char str[])
 	lval = strtoll(str, &endptr, 0);
 	if (!errno) {
 	    count = endptr - str;
+	    /* Linux and Windows implementations of POSIX function strtoll() differ.*/
+	    /* I don't know which is "correct" but returning 0 causes an infinite   */
+	    /* loop on input "0x" as the scanner fails to progress.                 */
+	    if (count == 0) count++;
 	    if ((token[t_num].l_val.v.int_val = lval) == lval)
 		return(count);
 	    if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X')) {
