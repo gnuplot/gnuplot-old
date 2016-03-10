@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.318 2016-03-08 00:27:43 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.319 2016-03-10 23:25:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1397,7 +1397,7 @@ link_command()
     /* "unset link {x|y}" command */
     if (equals(command_token,"unset")) {
 	secondary_axis->linked_to_primary = NULL;
-	secondary_axis->linked_to_secondary = NULL;
+	primary_axis->linked_to_secondary = NULL;
 	linked = FALSE;
     } else {
 	secondary_axis->linked_to_primary = primary_axis;
