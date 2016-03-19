@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.322 2016-03-19 17:17:55 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.323 2016-03-19 17:19:19 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -42,7 +42,7 @@ static char *RCSid() { return RCSid("$Id: datafile.c,v 1.322 2016-03-19 17:17:55
  */
 
 /*{{{  notes */
- *
+/*
  * every a:b:c:d:e:f  - plot every a'th point from c to e,
  * in every b lines from d to f
  * ie for (line=d; line<=f; line+=b)
