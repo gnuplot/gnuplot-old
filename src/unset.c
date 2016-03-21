@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.233 2016-03-08 00:27:43 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.234 2016-03-21 23:13:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1919,6 +1919,7 @@ reset_command()
     df_separators = NULL;
     free(df_commentschars);
     df_commentschars = gp_strdup(DEFAULT_COMMENTS_CHARS);
+    df_init();
 
     { /* Preserve some settings for `reset`, but not for `unset fit` */
 	verbosity_level save_verbosity = fit_verbosity;
