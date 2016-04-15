@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.324 2016-03-20 20:34:54 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.325 2016-04-15 17:55:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -371,10 +371,14 @@ term_set_output(char *dest)
 #if defined(PIPES)
 	if (*dest == '|') {
 	    restrict_popen();
+#ifdef _Windows
 	    if (term && (term->flags & TERM_BINARY))
 		f = popen(dest + 1, "wb");
 	    else
 		f = popen(dest + 1, "w");
+#else
+	    f = popen(dest + 1, "w");
+#endif
 	    if (f == (FILE *) NULL)
 		os_error(c_token, "cannot create pipe; output not changed");
 	    else
