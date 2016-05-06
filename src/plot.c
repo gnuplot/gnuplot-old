@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.166 2015/01/20 02:10:43 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.167 2016-05-06 12:12:52 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -512,6 +512,12 @@ main(int argc, char **argv)
 
 	memset(&sm_palette, 0, sizeof(sm_palette));
 	init_fit();		/* Initialization of fitting module */
+#ifdef READLINE
+	/* When using the built-in readline, we set the initial
+	   encoding according to the locale as this is required
+	   to properly handle keyboard input. */
+	init_encoding();
+#endif
 	init_session();
 
 	if (interactive && term != 0) {		/* not unknown */
