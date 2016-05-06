@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.68 2016/01/10 00:41:13 sfeam Exp $
+ * $Id: term.h,v 1.70 2016-05-06 17:40:08 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -39,8 +39,7 @@
  *   Edit this file depending on the set of terminals you wish to support.
  * Comment out the terminal types that you don't want or don't have, and
  * uncomment those that you want included. Be aware that some terminal
- * types (eg, SUN) will require changes in the makefile
- * LIBS definition.
+ * types will require changes in the makefile LIBS definition.
  */
 
 /*
@@ -54,6 +53,9 @@
  * pslatex and epslatex support is now provided by the combination of
  * post.trm and pslatex.trm.  You cannot build pslatex without post.
  * Both drivers are selected by default, but you can disable them below.
+ * 
+ * Enhanced text support is pretty much required for all terminals now.
+ * If you build without GP_ENH_EST text layout will be degraded.
  */
 #define GP_ENH_EST 1		/* estimate string length of enhanced text */
 #define POSTSCRIPT_DRIVER 1	/* include post.trm */
@@ -63,6 +65,10 @@
 #define POSTSCRIPT_DRIVER
 #endif
 
+# ifdef GP_ENH_EST
+#  include "estimate.trm"	/* used for enhanced text processing */
+# endif
+
 
 /* Define SHORT_TERMLIST to select a few terminals. It is easier
  * to define the macro and list desired terminals in this section.
@@ -70,10 +76,6 @@
  */
 #ifdef SHORT_TERMLIST
 # include "dumb.trm"		/* dumb terminal */
-
-# ifdef GP_ENH_EST
-#  include "estimate.trm"	/* used for enhanced text processing */
-# endif
 
 # ifdef POSTSCRIPT_DRIVER
 #  ifdef  PSLATEX_DRIVER
@@ -163,11 +165,6 @@
 #  include "vgagl.trm"
 # endif
 #endif /* LINUXVGA */
-
-/* SunView */
-#ifdef SUN
-# include "sun.trm"
-#endif
 
 
 /* VAX Windowing System requires UIS libraries */
@@ -378,10 +375,6 @@
 
 #ifdef USE_GGI_DRIVER
 # include "ggi.trm"
-#endif
-
-#ifdef GP_ENH_EST
-#include "estimate.trm"
 #endif
 
 /* WXWIDGETS */
