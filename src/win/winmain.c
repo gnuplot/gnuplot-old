@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.c,v 1.83 2016-05-07 11:48:57 markisch Exp $
+ * $Id: winmain.c,v 1.84 2016-05-07 12:13:03 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.c */
@@ -140,19 +140,23 @@ CheckMemory(LPSTR str)
 int
 Pause(LPSTR str)
 {
-	pausewin.Message = str;
-	return (PauseBox(&pausewin) == IDOK);
+    int rc;
+
+    pausewin.Message = UnicodeText(str, encoding);
+    rc = PauseBox(&pausewin) == IDOK;
+    free(pausewin.Message);
+    return rc;
 }
 
 
 void
 kill_pending_Pause_dialog()
 {
-	if (!pausewin.bPause) /* no Pause dialog displayed */
-	    return;
-	/* Pause dialog displayed, thus kill it */
-	DestroyWindow(pausewin.hWndPause);
-	pausewin.bPause = FALSE;
+    if (!pausewin.bPause) /* no Pause dialog displayed */
+	return;
+    /* Pause dialog displayed, thus kill it */
+    DestroyWindow(pausewin.hWndPause);
+    pausewin.bPause = FALSE;
 }
 
 
@@ -509,9 +513,9 @@ main(int argc, char **argv)
         menuwin.szMenuName = szMenuName;
 #endif
 
-        pausewin.hInstance = hInstance;
-        pausewin.hPrevInstance = hPrevInstance;
-        pausewin.Title = "gnuplot pause";
+    pausewin.hInstance = hInstance;
+    pausewin.hPrevInstance = hPrevInstance;
+    pausewin.Title = L"gnuplot pause";
 
         graphwin->hInstance = hInstance;
         graphwin->hPrevInstance = hPrevInstance;
