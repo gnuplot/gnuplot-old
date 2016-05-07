@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.c,v 1.82 2016-05-07 09:21:35 markisch Exp $
+ * $Id: winmain.c,v 1.83 2016-05-07 11:48:57 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.c */
@@ -485,8 +485,8 @@ main(int argc, char **argv)
 
 #ifndef WGP_CONSOLE
         textwin.IniSection = "WGNUPLOT";
-        textwin.DragPre = "load '";
-        textwin.DragPost = "'\n";
+    textwin.DragPre = L"load '";
+    textwin.DragPost = L"'\n";
         textwin.lpmw = &menuwin;
         textwin.ScreenSize.x = 80;
         textwin.ScreenSize.y = 80;
