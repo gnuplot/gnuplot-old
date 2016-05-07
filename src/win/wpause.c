@@ -1,5 +1,5 @@
 /*
- * $Id: wpause.c,v 1.31 2014/12/14 19:39:38 markisch Exp $
+ * $Id: wpause.c,v 1.32 2016-05-07 09:26:36 markisch Exp $
  */
 
 /* GNUPLOT - win/wpause.c */
@@ -187,7 +187,7 @@ MousableWindowOpened(void)
 
 
 /* PauseBox */
-int WDPROC
+int
 PauseBox(LPPW lppw)
 {
 	HDC hdc;

@@ -1,5 +1,5 @@
 /*
- * $Id: wprinter.c,v 1.12 2014/03/30 18:33:21 markisch Exp $
+ * $Id: wprinter.c,v 1.13 2016-05-07 09:26:36 markisch Exp $
  */
 
 /* GNUPLOT - win/wprinter.c */
@@ -254,7 +254,7 @@ PrintAbortProc(HDC hdcPrn, int code)
 
 
 /* GetWindowLong(hwnd, 4) must be available for use */
-void WDPROC
+void
 DumpPrinter(HWND hwnd, LPSTR szAppName, LPSTR szFileName)
 {
 	HDC printer;
