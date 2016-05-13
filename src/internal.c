@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: internal.c,v 1.91 2016-04-26 16:46:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: internal.c,v 1.92 2016-05-13 07:05:02 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - internal.c */
@@ -47,7 +47,7 @@ static char *RCSid() { return RCSid("$Id: internal.c,v 1.91 2016-04-26 16:46:22 
 
 #include <math.h>
 
-#ifndef _WIN64
+#if !defined(__MINGW64_VERSION_MAJOR)
 /*
  * FIXME: This is almost certainly out of date on linux, since the matherr
  * mechanism has been replaced by math_error() and supposedly is only 
