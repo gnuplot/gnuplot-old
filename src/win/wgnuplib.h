@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.75 2016-05-07 12:13:03 markisch Exp $
+ * $Id: wgnuplib.h,v 1.76 2016-05-21 05:29:31 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -179,6 +179,8 @@ typedef struct tagTW
 	POINT	MarkBegin;
 	POINT	MarkEnd;
 	BOOL	Marking;
+	int	bSuspend;
+	int	MaxCursorPos;
 } TW;
 typedef TW *  LPTW;
 
