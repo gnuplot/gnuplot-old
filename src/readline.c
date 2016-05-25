@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.67 2016-05-25 14:20:47 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.68 2016-05-25 15:21:23 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -63,16 +63,8 @@ static char *RCSid() { return RCSid("$Id: readline.c,v 1.67 2016-05-25 14:20:47 
 #endif
 
 #if defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDITLINE)
-#if defined(HAVE_LIBEDITLINE)
 int
-#else
-static int
-#endif
-#if defined(HAVE_LIBEDITLINE)
-getc_wrapper(FILE* fp /* is NULL, supplied by libedit */)
-#else
-getc_wrapper(FILE* fp /* should be stdin, supplied by readline */)
-#endif
+getc_wrapper(FILE* fp)
 {
     int c;
 
