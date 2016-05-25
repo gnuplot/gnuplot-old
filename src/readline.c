@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.66 2016-05-23 14:54:41 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.67 2016-05-25 14:20:47 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -94,19 +94,8 @@ getc_wrapper(FILE* fp /* should be stdin, supplied by readline */)
 }
 #endif /* HAVE_LIBREADLINE || HAVE_LIBEDITLINE */
 
-#if defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDITLINE) || defined(READLINE)
-char*
-readline_ipc(const char* prompt)
-{
-#if defined(PIPE_IPC) && defined(HAVE_LIBREADLINE)
-    rl_getc_function = getc_wrapper;
-#endif
-    return readline((const char*) prompt);
-}
-#endif  /* HAVE_LIBREADLINE || HAVE_LIBEDITLINE || READLINE */
 
-
-#if defined(READLINE) && !(defined(HAVE_LIBREADLINE) || defined(HAVE_LIBEDITLINE))
+#ifdef READLINE
 
 /* This is a small portable version of GNU's readline that does not require
  * any terminal capabilities except backspace and space overwrites a character.
@@ -1459,4 +1448,4 @@ reset_termio()
 #endif /* not MSDOS && not _WIN32 */
 }
 
-#endif /* READLINE && !(HAVE_LIBREADLINE || HAVE_LIBEDITLINE) */
+#endif /* READLINE */
