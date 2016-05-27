@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.237 2016-05-26 20:53:49 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.238 2016-05-27 04:20:23 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1181,6 +1181,7 @@ unset_logscale()
 		continue;
 	    sprintf(command, "unset nonlinear %s", axis_name(axis));
 	    do_string(command); 
+	    axis_array[axis].log = FALSE;
 	}
     }
 
