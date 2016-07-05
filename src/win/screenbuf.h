@@ -1,5 +1,5 @@
 /*
- * $Id: screenbuf.h,v 1.3 2016-05-06 13:17:24 markisch Exp $
+ * $Id: screenbuf.h,v 1.4 2016-07-05 16:00:56 markisch Exp $
  */
 
 /* GNUPLOT - screenbuf.h */
@@ -39,6 +39,7 @@ typedef struct typLB
     uint   len;		/* length of the string */
     LPWSTR str;
     BYTE  *attr;
+    BYTE   def_attr;
 } LB;
 typedef LB * LPLB;
 
@@ -84,6 +85,7 @@ uint lb_length(LPLB lb);
 void lb_insert_char(LPLB lb, uint pos, WCHAR ch);
 void lb_insert_str(LPLB lb, uint pos, LPCWSTR s, uint count);
 LPWSTR lb_substr(LPLB lb, uint offset, uint count);
-
+PBYTE  lb_subattr(LPLB lb, uint offset, uint count);
+void lb_set_attr(LPLB lb, BYTE attr);
 
 #endif
