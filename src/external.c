@@ -1,5 +1,5 @@
 /*
- * $Id: external.c,v 1.2 2016-05-08 13:19:44 markisch Exp $
+ * $Id: external.c,v 1.3 2016-07-21 10:13:27 markisch Exp $
  */
 /* GNUPLOT - external.c */
 
@@ -98,7 +98,7 @@ f_calle(union argument *x)
 }
 
 
-#if defined(_WIN32) && !defined(WGP_CONSOLE)
+#ifdef _WIN32
 static void *
 dll_open_w(const char *f)
 {
