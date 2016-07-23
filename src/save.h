@@ -1,5 +1,5 @@
 /*
- * $Id: save.h,v 1.28 2016-04-23 22:59:31 sfeam Exp $
+ * $Id: save.h,v 1.29 2016-07-23 03:34:41 sfeam Exp $
  */
 
 /* GNUPLOT - save.h */
@@ -66,6 +66,9 @@ void save_offsets __PROTO((FILE *, char *));
 void save_histogram_opts __PROTO((FILE *fp));
 #ifdef EAM_OBJECTS
 void save_object __PROTO((FILE *, int));
+#endif
+#ifdef EAM_BOXED_TEXT
+void save_style_textbox __PROTO((FILE *));
 #endif
 void save_style_parallel __PROTO((FILE *));
 void save_data_func_style __PROTO((FILE *, const char *, enum PLOT_STYLE));
