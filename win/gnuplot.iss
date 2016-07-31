@@ -1,5 +1,5 @@
 ﻿;
-; $Id: gnuplot.iss,v 1.10.2.3 2016-03-22 16:49:48 markisch Exp $
+; $Id: gnuplot.iss,v 1.10.2.4 2016-07-31 12:18:12 markisch Exp $
 ;
 ; GNUPLOT - gnuplot.iss
 ;
@@ -90,6 +90,8 @@ AlwaysShowDirOnReadyPage=true
 ChangesAssociations=true
 ArchitecturesAllowed=
 ArchitecturesInstallIn64BitMode=
+DisableDirPage=no
+DisableProgramGroupPage=no
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
