@@ -1,5 +1,5 @@
 /*
- * $Id: tables.h,v 1.95 2016-04-23 22:59:31 sfeam Exp $
+ * $Id: tables.h,v 1.96 2016-08-07 18:18:15 sfeam Exp $
  */
 
 /* GNUPLOT - tables.h */
@@ -83,6 +83,7 @@ enum set_id {
     S_LABEL, S_LINK, S_NONLINEAR,
     S_LINESTYLE, S_LINETYPE, S_LOADPATH, S_LOCALE, S_LOGSCALE, S_MACROS,
     S_MAPPING, S_MARGIN, S_LMARGIN, S_RMARGIN, S_TMARGIN, S_BMARGIN, S_MISSING,
+    S_MINUS_SIGN,
 #ifdef USE_MOUSE
     S_MOUSE,
 #endif
