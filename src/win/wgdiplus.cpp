@@ -1,5 +1,5 @@
 /*
- * $Id: wgdiplus.cpp,v 1.30 2016-08-06 13:08:31 markisch Exp $
+ * $Id: wgdiplus.cpp,v 1.31 2016-08-09 05:20:24 markisch Exp $
  */
 
 /*
@@ -918,7 +918,7 @@ drawgraph_gdiplus(LPGW lpgw, HDC hdc, LPRECT rect)
 				/* Make a copy for future reference */
 				char * str = (char *) LocalLock(curptr->htext);
 				free(hypertext);
-				hypertext = UnicodeText(str, encoding);
+				hypertext = UnicodeText(str, lpgw->encoding);
 				hypertype = curptr->x;
 				LocalUnlock(curptr->htext);
 			}
