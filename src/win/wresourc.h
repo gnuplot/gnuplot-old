@@ -1,5 +1,5 @@
 /*
- * $Id: wresourc.h,v 1.21 2016-08-10 17:39:30 markisch Exp $
+ * $Id: wresourc.h,v 1.22 2016-08-10 17:52:27 markisch Exp $
  */
 
 /* GNUPLOT - win/wresourc.h */
@@ -101,6 +101,7 @@
 #define PSIZE_OFFX 108
 #define PSIZE_OFFY 109
 #define CANCEL_PCDONE 120
+#define CANCEL_PROGRESS 121
 
 /* wgraph.c */
 /* line style dialog box */
