@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.342 2016-08-06 13:22:50 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.343 2016-08-12 06:08:38 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1519,6 +1519,9 @@ link_command()
 	secondary_axis->link_udf->at = NULL;
 	free_at(primary_axis->link_udf->at);
 	primary_axis->link_udf->at = NULL;
+	/* Clean up after failed attempt to set nonlinear */
+	primary_axis->linked_to_secondary = NULL;
+	secondary_axis->linked_to_primary = NULL;
     }
 
     if (secondary_axis->index == POLAR_AXIS)
