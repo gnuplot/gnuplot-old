@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.62.2.3 2016-08-22 17:45:40 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.62.2.4 2016-08-23 00:23:34 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -77,13 +77,13 @@ getc_wrapper(FILE* fp /* should be stdin, supplied by readline */)
     int c;
 
     while (1) {
+	errno = 0;
 #ifdef USE_MOUSE
 	if (term && term->waitforinput && interactive) {
 	    c = term->waitforinput(0);
 	}
 	else
 #endif
-	errno = 0;
 	if (fp)
 	    c = getc(fp);
 	else
