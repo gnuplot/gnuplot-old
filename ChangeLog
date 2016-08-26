@@ -1,9 +1,25 @@
+2016-08-25  Ethan A Merritt  <merritt@u.washington.edu >
+
+	* src/wxterminal/wxt_gui.cpp (wxtFrame::OnExport):  Revisit the file
+	export widget. I misread the code previously, thinking there was only a
+	single global command list. Actually there is a global pointer but each
+	window has its own command list.  So we really can export inactive plots
+	as well as the active plot.  The global command list pointer is now
+	unused so get rid of it.
+	Bug #1843
+
 2016-08-24  Ethan A Merritt  <merritt@u.washington.edu >
 
 	* src/plot2d.c (refresh_bounds box_range_fiddling): Improved autoscaling
 	of plots "with boxes". Extend y range to 0. Distinguish between absolute
 	and relative boxwidth.
 	Bug #1827
+
+	* src/datafile.h src/datafile.c src/stats.c docs/gnuplot.doc:
+	Rearrange the order in which we parse the "stats" command.
+	This allows passing "columnheader" or "columnheader(N)" to the 
+	"name" option rather than a fixed character string.
+	Bug #1841
 
 2016-08-21  Ethan A Merritt  <merritt@u.washington.edu>
 
