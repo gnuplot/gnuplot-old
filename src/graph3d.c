@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.311.2.13 2016-06-13 05:22:53 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.311.2.14 2016-09-07 17:07:25 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -2029,7 +2029,18 @@ setup_3d_box_corners()
 	front_x  = X_AXIS.max;
     }
 
-    if (surface_rot_x > 90) {
+    quadrant = surface_rot_x / 90;
+    if (quadrant & 2) {
+	double temp;
+	temp = front_y;
+	front_y = back_y;
+	back_y = temp;
+	temp = front_x;
+	front_x = back_x;
+	back_x = temp;
+    }
+
+    if ((quadrant + 1) & 2) {
 	/* labels on the back axes */
 	yaxis_x = back_x;
 	xaxis_y = back_y;
