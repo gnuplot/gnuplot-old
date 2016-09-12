@@ -1,5 +1,5 @@
 /*
- * $Id: wgdiplus.cpp,v 1.16.2.8 2016-09-12 15:05:21 markisch Exp $
+ * $Id: wgdiplus.cpp,v 1.16.2.9 2016-09-12 15:14:15 markisch Exp $
  */
 
 /*
@@ -1556,5 +1556,7 @@ drawgraph_gdiplus(LPGW lpgw, HDC hdc, LPRECT rect)
 		delete pattern_brush;
 	if (cb)
 		delete cb;
+	if (font)
+		delete font;
 	LocalFreePtr(ppt);
 }
