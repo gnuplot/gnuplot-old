@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: unset.c,v 1.242 2016-09-10 05:46:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: unset.c,v 1.243 2016-09-14 18:37:38 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - unset.c */
@@ -1709,6 +1709,7 @@ unset_axislabel_or_title(text_label *label)
 	label->font = NULL;
 	label->offset = default_offset;
 	label->textcolor.type = TC_DEFAULT;
+	label->boxed = 0;
     }
 }
 
