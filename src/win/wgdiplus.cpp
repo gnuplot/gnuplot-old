@@ -1,5 +1,5 @@
 /*
- * $Id: wgdiplus.cpp,v 1.34 2016-08-09 13:09:51 markisch Exp $
+ * $Id: wgdiplus.cpp,v 1.35 2016-09-23 14:05:58 markisch Exp $
  */
 
 /*
@@ -352,6 +352,7 @@ SetFont_gdiplus(Graphics &graphics, LPRECT rect, LPGW lpgw, LPTSTR fontname, int
 		fontname = lpgw->deffontname;
 	if (size == 0)
 		size = lpgw->deffontsize;
+	size *= lpgw->fontscale;
 
 	/* make a local copy */
 	fontname = _tcsdup(fontname);
