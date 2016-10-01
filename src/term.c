@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.327 2016-08-27 01:04:26 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.328 2016-10-01 21:55:16 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -2293,8 +2293,10 @@ enhanced_recursion(
 
 		ENH_DEBUG(("Dealing with {\n"));
 
+		/* 30 Sep 2016:  Remove incorrect whitespace-eating loop going */
+		/* waaay back to 31-May-2000 */        /* while (*++p == ' '); */
+		++p;
 		/* get vertical offset (if present) for overprinted text */
-		while (*++p == ' ');
 		if (overprint == 2) {
 		    char *end;
 		    ovp = (float)strtod(p,&end);
