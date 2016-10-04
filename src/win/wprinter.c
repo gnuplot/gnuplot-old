@@ -1,5 +1,5 @@
 /*
- * $Id: wprinter.c,v 1.23 2016-10-03 17:34:25 markisch Exp $
+ * $Id: wprinter.c,v 1.24 2016-10-04 21:46:21 broeker Exp $
  */
 
 /* GNUPLOT - win/wprinter.c */
@@ -42,9 +42,7 @@
 
 /* Dump a file to the printer */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
+#include "syscfg.h"
 
 #define STRICT
 #include <initguid.h>
