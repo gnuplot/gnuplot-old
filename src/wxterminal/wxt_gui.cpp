@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.162 2016-09-24 08:57:08 markisch Exp $
+ * $Id: wxt_gui.cpp,v 1.163 2016-10-08 16:15:45 markisch Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -677,7 +677,7 @@ void wxtFrame::OnPrint( wxCommandEvent& WXUNUSED( event ) )
 	cairo_save(save_cr);
 	cairo_surface_t *surface = NULL;
 #ifdef _WIN32
-	HDC hdc = (HDC) wxdc->GetHandle();
+	HDC hdc = (HDC) wxdc->GetHDC();
 	surface = cairo_win32_printing_surface_create(hdc);
 #endif
 	if (cairo_surface_status(surface) != CAIRO_STATUS_SUCCESS) {
