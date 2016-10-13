@@ -1,5 +1,5 @@
 /*
- * $Id: wxt_gui.cpp,v 1.164 2016-10-08 16:23:05 markisch Exp $
+ * $Id: wxt_gui.cpp,v 1.165 2016-10-13 23:16:46 sfeam Exp $
  */
 
 /* GNUPLOT - wxt_gui.cpp */
@@ -3001,7 +3001,9 @@ void wxtPanel::wxt_cairo_refresh()
 		wxt_cairo_draw_hypertext();
 
 #ifdef IMAGE_SURFACE
+	command_list_mutex.Lock();
 	wxt_cairo_create_bitmap();
+	command_list_mutex.Unlock();
 #endif /* !have_gtkcairo */
 
 	/* draw the pixmap to the screen */
