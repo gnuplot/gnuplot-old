@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.345 2016-08-19 16:13:59 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.346 2016-10-15 09:08:52 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1622,7 +1622,7 @@ clause_reset_after_error()
 void
 timed_pause(double sleep_time)
 {
-#if defined(HAVE_USLEEP) && defined(USE_MOUSE)
+#if defined(HAVE_USLEEP) && defined(USE_MOUSE) && !defined(_WIN32)
     if (term->waitforinput)		/* If the terminal supports it */
 	while (sleep_time > 0.05) {	/* we poll 20 times a second */
 	    usleep(50000);		/* Sleep for 50 msec */
