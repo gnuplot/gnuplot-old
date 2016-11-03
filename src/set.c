@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.535 2016-10-23 23:08:01 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.536 2016-11-03 22:27:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -2300,12 +2300,20 @@ set_key()
 	    if (reg_set)
 		int_warn(c_token, reg_warn);
 	    key->region = GPKEY_AUTO_INTERIOR_LRTBC;
+	    key->fixed = FALSE;
 	    reg_set = TRUE;
 	    break;
 	case S_KEY_OUTSIDE:
 	    if (reg_set)
 		int_warn(c_token, reg_warn);
 	    key->region = GPKEY_AUTO_EXTERIOR_LRTBC;
+	    reg_set = TRUE;
+	    break;
+	case S_KEY_FIXED:
+	    if (reg_set)
+		int_warn(c_token, reg_warn);
+	    key->region = GPKEY_AUTO_INTERIOR_LRTBC;
+	    key->fixed = TRUE;
 	    reg_set = TRUE;
 	    break;
 	case S_KEY_TMARGIN:

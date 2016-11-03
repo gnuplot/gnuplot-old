@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.373 2016-10-28 22:53:17 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.374 2016-11-03 22:27:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -1894,7 +1894,7 @@ show_key()
 	    fputs(" horizontal", stderr);
 	}
 	if (key->region == GPKEY_AUTO_INTERIOR_LRTBC)
-	    fputs(" inside", stderr);
+	    fputs(key->fixed ? " fixed" : " inside", stderr);
 	else if (key->region == GPKEY_AUTO_EXTERIOR_LRTBC)
 	    fputs(" outside", stderr);
 	else {
