@@ -1,5 +1,5 @@
 /*
- * $Id: wgraph.c,v 1.232 2016-11-05 11:44:04 markisch Exp $
+ * $Id: wgraph.c,v 1.233 2016-11-06 23:19:23 broeker Exp $
  */
 
 /* GNUPLOT - win/wgraph.c */
@@ -3270,8 +3270,9 @@ CopyPrint(LPGW lpgw)
 		if (lpgw->gdiplus) {
 			/* Print using GDI+ */
 			print_gdiplus(lpgw, printer, printerHandle, &rect);
-		} else {
+		} else 
 #endif
+		{
 			/* Print using GDI */
 			TBOOLEAN aa = lpgw->antialiasing;
 			lpgw->sampling = 1;
