@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.374 2016-11-03 22:27:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.375 2016-11-08 05:41:24 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -2921,10 +2921,6 @@ show_timestamp()
     show_xyzlabel("", "time", &timelabel);
     fprintf(stderr, "\twritten in %s corner\n",
 	    (timelabel_bottom ? "bottom" : "top"));
-    if (timelabel.rotate)
-	fputs("\trotated if the terminal allows it\n\t", stderr);
-    else
-	fputs("\tnot rotated\n\t", stderr);
 }
 
 
