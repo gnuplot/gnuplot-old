@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: save.c,v 1.316 2016-11-03 22:27:21 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: save.c,v 1.317 2016-11-14 19:59:24 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - save.c */
@@ -1110,7 +1110,7 @@ save_ptics(FILE *fp, struct axis *this_axis)
 	fprintf(fp,"by %d ",this_axis->tic_rotate);
     save_position(fp, &this_axis->ticdef.offset, 3, TRUE);
     if (this_axis->manual_justify)
-	save_justification(this_axis->label.pos, fp);
+	save_justification(this_axis->tic_pos, fp);
     else
 	fputs(" autojustify", fp);
     fprintf(fp, "\nset %stics ", axis_name(this_axis->index));
