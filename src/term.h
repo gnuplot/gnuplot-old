@@ -1,5 +1,5 @@
 /*
- * $Id: term.h,v 1.70 2016-05-06 17:40:08 sfeam Exp $
+ * $Id: term.h,v 1.71 2016-11-17 22:57:20 sfeam Exp $
  */
 
 /* GNUPLOT - term.h */
@@ -283,11 +283,10 @@
 #include "mif.trm"
 #endif
 
-/* Adobe Portable Document Format (PDF) */
-/* NOTE THAT PDF REQUIRES A SEPARATE LIBRARY : see term/pdf.trm */
-#ifdef HAVE_LIBPDF
-# include "pdf.trm"
-#endif
+/* DEPRECATED since 5.0.6
+ * PDF terminal based on non-free library PDFlib or PDFlib-lite from GmbH.
+ */
+/* # include "pdf.trm" */
 
 #if defined(HAVE_GD_PNG) || defined(HAVE_GD_JPEG) || defined(HAVE_GD_GIF)
 # include "gd.trm"
