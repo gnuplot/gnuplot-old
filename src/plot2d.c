@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.336.2.34 2016-10-27 18:43:01 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.336.2.35 2016-12-15 20:29:33 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1640,6 +1640,9 @@ boxplot_range_fiddling(struct curve_points *plot)
 {
     double extra_width;
     int N;
+
+    if (plot->p_count <= 0)
+	return;
 
     /* Create a tic label for each boxplot category */
     if (plot->boxplot_factors > 0) {
