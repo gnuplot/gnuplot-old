@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: specfun.c,v 1.53 2013/10/09 02:41:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: specfun.c,v 1.54 2017-01-02 05:11:24 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - specfun.c */
@@ -1190,10 +1190,13 @@ f_normal(union argument *arg)
     (void) arg;				/* avoid -Wunused warning */
     x = real(pop(&a));
 
-    x = 0.5 * SQRT_TWO * x;
-    x = 0.5 * erfc(-x);		/* by using erfc instead of erf, we
-				   can get accurate values for -38 <
-				   arg < -8 */
+    /* using erfc instead of erf produces accurate values for -38 < arg < -8 */
+    if (x > -38) {
+	x = 0.5 * SQRT_TWO * x;
+	x = 0.5 * erfc(-x);
+    } else {
+	x = 0.0;
+    }
     push(Gcomplex(&a, x, 0.0));
 }
 
