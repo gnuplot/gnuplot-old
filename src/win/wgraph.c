@@ -1,5 +1,5 @@
 /*
- * $Id: wgraph.c,v 1.241 2017-01-06 16:07:20 markisch Exp $
+ * $Id: wgraph.c,v 1.242 2017-01-07 07:52:27 markisch Exp $
  */
 
 /* GNUPLOT - win/wgraph.c */
@@ -5002,10 +5002,12 @@ Draw_XOR_Text(LPGW lpgw, const char *text, size_t length, int x, int y)
 static void
 UpdateStatusLine(LPGW lpgw, const char text[])
 {
+	LPWSTR wtext;
+
 	if (lpgw == NULL)
 		return;
 
-	LPWSTR wtext = UnicodeText(text, encoding);
+	wtext = UnicodeText(text, encoding);
 	if (!lpgw->bDocked) {
 		if (lpgw->hStatusbar)
 			SendMessageW(lpgw->hStatusbar, SB_SETTEXT, (WPARAM)0, (LPARAM)wtext);
