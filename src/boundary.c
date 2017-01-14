@@ -1,5 +1,5 @@
 /*
- * $Id: boundary.c,v 1.46 2017-01-10 21:22:54 sfeam Exp $
+ * $Id: boundary.c,v 1.47 2017-01-14 06:23:22 sfeam Exp $
  */
 
 /* GNUPLOT - boundary.c */
@@ -39,7 +39,6 @@
 #include "alloc.h"
 #include "axis.h"
 #include "misc.h"
-#include "plot2d.h"	/* for polar_to_xy */
 #include "pm3d.h"	/* for is_plot_with_palette */
 
 #define ERRORBARTIC GPMAX((t->h_tic/2),1)

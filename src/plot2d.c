@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.413 2017-01-14 06:23:22 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.414 2017-01-14 06:24:46 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -3144,11 +3144,8 @@ eval_plots()
 			    if ((this_plot->plot_style == FILLEDCURVES) 
 			    &&  (this_plot->filledcurves_options.closeto == FILLEDCURVES_ATR)) {
 			    	double xhigh, yhigh;
-				double temp = this_plot->filledcurves_options.at;
-				temp = AXIS_LOG_VALUE(POLAR_AXIS,temp)
-				     - AXIS_LOG_VALUE(POLAR_AXIS,R_AXIS.min);
-				yhigh = temp * sin(theta * ang2rad);
-				xhigh = temp * cos(theta * ang2rad);
+				(void) polar_to_xy(theta, this_plot->filledcurves_options.at,
+						    &xhigh, &yhigh, TRUE);
 				STORE_WITH_LOG_AND_UPDATE_RANGE(
 				    this_plot->points[i].xhigh, xhigh, this_plot->points[i].type, x_axis,
 				    this_plot->noautoscale, NOOP, goto come_here_if_undefined);
