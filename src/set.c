@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.550 2017-01-21 23:40:32 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.551 2017-01-23 02:13:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -6383,6 +6383,8 @@ parse_label_options( struct text_label *this_label, int ndim)
     /* Make sure the z coord and the z-coloring agree */
     if (this_label->textcolor.type == TC_Z)
 	this_label->textcolor.value = this_label->place.z;
+    if (this_label->lp_properties.pm3d_color.type == TC_Z)
+	this_label->lp_properties.pm3d_color.value = this_label->place.z;
 }
 
 
