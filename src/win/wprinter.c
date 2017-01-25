@@ -1,5 +1,5 @@
 /*
- * $Id: wprinter.c,v 1.25 2017-01-21 14:40:45 markisch Exp $
+ * $Id: wprinter.c,v 1.26 2017-01-25 15:20:43 markisch Exp $
  */
 
 /* GNUPLOT - win/wprinter.c */
@@ -186,9 +186,9 @@ static IPrintDialogCallbackVtbl IPrintDialogCallback_Vtbl = {
 };
 
 static IObjectWithSiteVtbl IObjectWithSite_Vtbl = {
-    (HRESULT(*)(IObjectWithSite *, const IID *const, void **)) QueryInterface, 
-    (ULONG (*)(IObjectWithSite *)) AddRef,
-    (ULONG (*)(IObjectWithSite *)) Release, 
+    (HRESULT(STDMETHODCALLTYPE *)(IObjectWithSite *, const IID *const, void **)) QueryInterface, 
+    (ULONG (STDMETHODCALLTYPE *)(IObjectWithSite *)) AddRef,
+    (ULONG (STDMETHODCALLTYPE *)(IObjectWithSite *)) Release, 
     SetSite,
     GetSite
 };
