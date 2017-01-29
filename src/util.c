@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.145 2016-12-10 10:25:04 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.146 2017-01-29 12:18:21 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -46,15 +46,9 @@ static char *RCSid() { return RCSid("$Id: util.c,v 1.145 2016-12-10 10:25:04 mar
 #include "setshow.h"		/* for conv_text() */
 #include "tabulate.h"		/* for table_mode */
 
-#if defined(HAVE_DIRENT_H)
+#if defined(HAVE_DIRENT_H) && !defined(_WIN32)
 # include <sys/types.h>
 # include <dirent.h>
-#elif defined(_WIN32)
-# include <windows.h>
-#endif
-#if defined(__MSC__) || defined (__WATCOMC__)
-# include <io.h>
-# include <direct.h>
 #endif
 
 /* Exported (set-table) variables */
