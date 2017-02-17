@@ -1,5 +1,5 @@
 /*
- * $Id: gnuplot_mouse.js,v 1.27 2017-02-17 20:42:17 sfeam Exp $
+ * $Id: gnuplot_mouse.js,v 1.28 2017-02-17 21:27:53 sfeam Exp $
  */
     gnuplot.mouse_version = " 17 February 2017";
 
@@ -338,7 +338,7 @@ gnuplot.convert_to_polar = function (x,y)
     phi = phi * (180./Math.PI);
     if (gnuplot.polar_sense < 0)
 	phi = -phi;
-    if (gnuplot.polar_theta0 != 0)
+    if (gnuplot.polar_theta0 != undefined)
 	phi = phi + gnuplot.polar_theta0;
     if (phi > 180.)
 	phi = phi - 360.;
