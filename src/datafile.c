@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.339 2017-02-07 00:45:24 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.340 2017-02-19 19:47:58 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -5112,8 +5112,10 @@ df_readbinary(double v[], int max)
 		    evaluate_inside_using = TRUE;
 		    evaluate_at(use_spec[output].at, &a);
 		    evaluate_inside_using = FALSE;
-		    if (undefined)
+		    if (undefined) {
+			v[output] = not_a_number();
 			return DF_UNDEFINED;
+		    }
 
 		    if (a.type == STRING) {
 			if (use_spec[output].expected_type == CT_STRING) {
