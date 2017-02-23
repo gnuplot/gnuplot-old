@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.329 2017-01-04 06:24:29 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.330 2017-02-23 08:40:50 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -485,7 +485,7 @@ term_initialise()
 #ifdef PIPES
 	    if (!output_pipe_open)
 #endif
-		if (outstr == NULL)
+		if (outstr == NULL && !(term->flags & TERM_NO_OUTPUTFILE))
 		    int_error(c_token, "cannot output binary data to wgnuplot text window");
 #endif
 	    /* binary to stdout in non-interactive session... */
@@ -493,7 +493,6 @@ term_initialise()
 	    setmode(fileno(stdout), O_BINARY);
 	}
 #endif
-
 
     if (!term_initialised || term_force_init) {
 	FPRINTF((stderr, "- calling term->init()\n"));
