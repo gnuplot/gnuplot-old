@@ -1,5 +1,5 @@
 /*
- * $Id: mousecmn.h,v 1.17.2.1 2014/12/31 04:32:09 sfeam Exp $
+ * $Id: mousecmn.h,v 1.17.2.2 2017-02-25 16:13:31 markisch Exp $
  */
 
 /* GNUPLOT - mousecnm.h */
@@ -69,10 +69,11 @@ enum {
     GE_replot,          /* used only by ggi.trm */
     GE_reset,           /* reset to a well-defined state
 			   (e.g.  after an X11 error occured) */
-    GE_fontprops	/* par1 = hchar par2 = vchar */
+    GE_fontprops,       /* par1 = hchar par2 = vchar */
 #if defined(PIPE_IPC)
-    , GE_pending        /* signal gp_exec_event() to send pending events */
+    GE_pending,         /* signal gp_exec_event() to send pending events */
 #endif
+    GE_raise            /* raise console window */
 };
 
 
