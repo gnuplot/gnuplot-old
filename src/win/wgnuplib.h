@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.65.2.2 2014/12/31 04:38:44 sfeam Exp $
+ * $Id: wgnuplib.h,v 1.65.2.3 2017-03-04 08:20:40 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -451,7 +451,7 @@ void WIN_update_options __PROTO((void));
 /* ================================== */
 
 #ifdef __cplusplus
-};
+}
 #endif
 
 #endif
