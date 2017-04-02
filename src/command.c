@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: command.c,v 1.348 2017-03-01 18:42:49 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: command.c,v 1.349 2017-04-02 18:30:44 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - command.c */
@@ -1997,12 +1997,12 @@ pwd_command()
 {
     char *save_file = NULL;
 
-    save_file = (char *) gp_alloc(PATH_MAX, "print current dir");
-    if (save_file) {
-	GP_GETCWD(save_file, PATH_MAX);
+    save_file = gp_alloc(PATH_MAX, "print current dir");
+    if (GP_GETCWD(save_file, PATH_MAX) == NULL)
+	fprintf(stderr, "<invalid>\n");
+    else
 	fprintf(stderr, "%s\n", save_file);
-	free(save_file);
-    }
+    free(save_file);
     c_token++;
 }
 
