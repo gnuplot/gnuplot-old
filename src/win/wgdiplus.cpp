@@ -1,5 +1,5 @@
 /*
- * $Id: wgdiplus.cpp,v 1.50 2017-01-29 20:47:00 markisch Exp $
+ * $Id: wgdiplus.cpp,v 1.51 2017-04-19 18:50:25 markisch Exp $
  */
 
 /*
@@ -933,7 +933,7 @@ do_draw_gdiplus(LPGW lpgw, Graphics &graphics, LPRECT rect, enum draw_target tar
 #else
 					if (keysample || boxedtext.boxing) {
 #endif
-						graphics.MeasureString(textw, -1, font, PointF(0,0), &size);
+						graphics.MeasureString(textw, -1, font, PointF(0,0), StringFormat::GenericTypographic(), &size);
 						if (lpgw->justify == LEFT) {
 							dxl = 0;
 							dxr = size.Width + 0.5;
