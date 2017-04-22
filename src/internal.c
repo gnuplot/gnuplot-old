@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: internal.c,v 1.95 2017-01-01 22:50:47 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: internal.c,v 1.96 2017-04-22 04:44:52 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - internal.c */
@@ -1814,9 +1814,9 @@ f_system(union argument *arg)
 
     ierr = do_system_func(val.v.string_val, &output);
     fill_gpval_integer("GPVAL_ERRNO", ierr); 
-    output_len = strlen(output);
 
     /* chomp result */
+    output_len = strlen(output);
     if ( output_len > 0 && output[output_len-1] == '\n' )
 	output[output_len-1] = NUL;
 
