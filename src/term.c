@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: term.c,v 1.331 2017-04-11 04:26:30 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: term.c,v 1.332 2017-05-14 04:19:13 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - term.c */
@@ -1158,10 +1158,6 @@ do_arc(
 
     /* Calculate the vertices */
     aspect = (double)term->v_tic / (double)term->h_tic;
-#ifdef WIN32
-    if (strcmp(term->name, "windows") == 0)
-	aspect = 1.;
-#endif
     for (i=0; i<segments; i++) {
 	vertex[i].x = cx + cos(DEG2RAD * (arc_start + i*INC)) * radius;
 	vertex[i].y = cy + sin(DEG2RAD * (arc_start + i*INC)) * radius * aspect;
