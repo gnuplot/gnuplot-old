@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot.c,v 1.164.2.3 2017-05-22 11:54:07 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot.c,v 1.164.2.4 2017-05-22 12:31:01 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - plot.c */
@@ -161,6 +161,8 @@ static int exit_status = EXIT_SUCCESS;
 
 /* Flag for asynchronous handling of Ctrl-C. Used by fit.c and Windows */
 TBOOLEAN ctrlc_flag = FALSE;
+/* Flag for (asynchronous) term signal on Windows. */
+TBOOLEAN terminate_flag = FALSE;
 
 #ifdef OS2
 # include <process.h>

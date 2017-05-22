@@ -1,5 +1,5 @@
 /*
- * $Id: plot.h,v 1.55 2014/01/04 02:55:06 markisch Exp $
+ * $Id: plot.h,v 1.55.2.1 2017-05-22 12:31:01 markisch Exp $
  */
 
 /* GNUPLOT - plot.h */
@@ -57,6 +57,7 @@ extern TBOOLEAN persist_cl;
 extern const char *user_shell;
 
 extern TBOOLEAN ctrlc_flag;
+extern TBOOLEAN terminate_flag;
 
 #ifdef OS2
 extern TBOOLEAN CallFromRexx;
