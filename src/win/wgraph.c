@@ -1,5 +1,5 @@
 /*
- * $Id: wgraph.c,v 1.189.2.25 2017-05-15 18:35:35 markisch Exp $
+ * $Id: wgraph.c,v 1.189.2.26 2017-05-22 12:29:11 markisch Exp $
  */
 
 /* GNUPLOT - win/wgraph.c */
@@ -4712,9 +4712,15 @@ WndGraphProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 					UpdateWindow(hwnd);
 				}
 			}
+			// update internal variables
 			if (lpgw->Size.x == CW_USEDEFAULT) {
 				lpgw->Size.x = LOWORD(lParam);
 				lpgw->Size.y = HIWORD(lParam);
+			}
+			if (lpgw->Canvas.x != 0) {
+				GetPlotRect(lpgw, &rect);
+				lpgw->Canvas.x = rect.right - rect.left;
+				lpgw->Canvas.y = rect.bottom - rect.top;
 			}
 			break;
 #ifndef WGP_CONSOLE
