@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: readline.c,v 1.77 2017-05-20 16:43:19 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: readline.c,v 1.78 2017-05-22 12:33:58 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - readline.c */
@@ -1036,7 +1036,7 @@ readline(const char *prompt)
 		break;
 	    case 004:		/* ^D */
 		/* Also catch asynchronous termination signal on Windows */
-		if (max_pos == 0 && terminate_flag) {
+		if (max_pos == 0 || terminate_flag) {
 		    reset_termio();
 		    return NULL;
 		}
