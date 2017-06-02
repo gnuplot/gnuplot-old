@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: set.c,v 1.558 2017-05-07 19:20:52 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: set.c,v 1.559 2017-06-02 00:26:00 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - set.c */
@@ -1154,7 +1154,7 @@ set_boxwidth()
     c_token++;
 }
 
-/* process 'set clabel' command */
+/* DEPRECATED - process 'set clabel' command */
 static void
 set_clabel()
 {
