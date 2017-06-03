@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.147 2017-02-04 23:59:27 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.147.2.1 2017-06-03 01:39:11 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -533,8 +533,9 @@ gprintf(
 
     set_numeric_locale();
 
-    /* Oct 2013 - default format is now expected to be "%h" */
-    if (((term->flags & TERM_IS_LATEX)) && !strcmp(format, DEF_FORMAT))
+    /* By default we wrap numbers output to latex terminals in $...$ */
+    if (!strcmp(format, DEF_FORMAT)  && !table_mode
+    &&  ((term->flags & TERM_IS_LATEX)))
 	format = DEF_FORMAT_LATEX;
 
     for (;;) {
