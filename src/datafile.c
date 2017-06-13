@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: datafile.c,v 1.290.2.31 2017-03-21 19:24:33 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: datafile.c,v 1.290.2.32 2017-06-13 00:25:12 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - datafile.c */
@@ -1140,6 +1140,8 @@ df_open(const char *cmd_filename, int max_using, struct curve_points *plot)
 	if (almost_equals(c_token, "bin$ary")) {
 	    if (df_filename[0] == '$')
 		int_error(c_token, "data blocks cannot be binary");
+	    if (!strcmp(df_filename,"+") || !strcmp(df_filename,"++"))
+		int_error(c_token, "pseudofiles '+' and '++' cannot be binary");
 	    c_token++;
 	    if (df_binary_file || set_skip) {
 		duplication=TRUE;
