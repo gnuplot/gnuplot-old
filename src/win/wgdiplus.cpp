@@ -1,5 +1,5 @@
 /*
- * $Id: wgdiplus.cpp,v 1.59.2.1 2017-06-13 03:43:52 markisch Exp $
+ * $Id: wgdiplus.cpp,v 1.59.2.2 2017-06-13 03:59:02 markisch Exp $
  */
 
 /*
@@ -338,7 +338,7 @@ InitFont_gdiplus(LPGW lpgw, HDC hdc, LPRECT rect)
 	gdiplusInit();
 	Graphics graphics(hdc);
 	// call for the side effects:  set vchar/hchar and text metrics
-	Font * font = SetFont_gdiplus(graphics, rect, lpgw, lpgw->fontname, lpgw->fontscale * lpgw->fontsize);
+	Font * font = SetFont_gdiplus(graphics, rect, lpgw, lpgw->fontname, lpgw->fontsize);
 	// TODO:  save font object for later use
 	delete font;
 }
