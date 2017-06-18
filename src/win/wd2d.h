@@ -1,5 +1,5 @@
 /*
- * $Id: wd2d.h,v 1.3 2017-06-18 19:54:43 markisch Exp $
+ * $Id: wd2d.h,v 1.4 2017-06-18 20:53:10 markisch Exp $
  */
 
 /*
@@ -30,7 +30,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef WD2D_H
 #define WD2D_H
 
-//#define DCRENDERER
+#define DCRENDERER
 
 #include <windows.h>
 #include "wgnuplib.h"
