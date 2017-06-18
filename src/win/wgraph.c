@@ -1,5 +1,5 @@
 /*
- * $Id: wgraph.c,v 1.261 2017-06-18 06:25:00 markisch Exp $
+ * $Id: wgraph.c,v 1.262 2017-06-18 19:54:43 markisch Exp $
  */
 
 /* GNUPLOT - win/wgraph.c */
@@ -731,6 +731,9 @@ GraphClose(LPGW lpgw)
 	lpgw->hWndGraph = NULL;
 	lpgw->hStatusbar = NULL;
 	lpgw->hToolbar = NULL;
+#ifdef HAVE_D2D
+	d2dReleaseRenderTarget(lpgw);
+#endif
 
 	lpgw->locked = TRUE;
 	DestroyBlocks(lpgw);
