@@ -1,5 +1,5 @@
 /*
- * $Id: wgnuplib.h,v 1.94 2017-06-24 09:15:38 markisch Exp $
+ * $Id: wgnuplib.h,v 1.95 2017-06-24 11:22:12 markisch Exp $
  */
 
 /* GNUPLOT - win/wgnuplib.h */
@@ -407,6 +407,7 @@ typedef struct tagGW {
 
 #ifdef HAVE_D2D
 	struct ID2D1RenderTarget * pRenderTarget;
+	struct IDXGISwapChain1 * pDXGISwapChain;
 #endif
 
 	struct tagGW * next;	/* pointer to next window */
