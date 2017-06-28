@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot on Unix.
 dnl
-dnl $Id: configure.ac,v 1.33 2017-06-28 21:28:43 sfeam Exp $
+dnl $Id: configure.ac,v 1.34 2017-06-28 21:35:26 sfeam Exp $
 dnl
 dnl this is actually major.minor ...
 dnl note that for a non-beta release, we need to disable DEVELOPMENT_RELEASE
@@ -564,7 +564,7 @@ dnl check presence of gd library
 dnl we don't check for libfreetype and libjpeg locations - if gd requires
 dnl them, the gdlib-config scipt contains all the required information
 AC_ARG_WITH(gd,dnl
-[  --with-gd[=DIR]         where to find Tom Boutell's gd library],,
+[  --with-gd[=DIR]           location of gd library (png jpeg gif terminals)],,
   with_gd=yes)
 
 if test "$with_gd" != no; then
