@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.153 2017-07-07 00:15:07 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.154 2017-07-07 05:00:32 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -589,7 +589,8 @@ gprintf_value(
 	    t[1] = 'l';
 	    t[2] = *format;
 	    t[3] = '\0';
-	    snprintf(dest, remaining_space, temp, v->v.int_val);
+	    snprintf(dest, remaining_space, temp, 
+		     v->type == INTGR ? v->v.int_val : (int)real(v));
 	    break;
 	    /*}}} */
 	    /*{{{  e, f and g */
