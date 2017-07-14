@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: doc2tex.c,v 1.30 2017-05-18 23:32:10 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: doc2tex.c,v 1.31 2017-07-14 19:16:28 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - doc2tex.c */
@@ -274,8 +274,8 @@ process_line( char *line, FILE *b)
 	                        inhref = TRUE;
 				in_internal_href = FALSE;
                                 if (strstr(line,"</a>") == NULL){
-				   // To always place urls on a separate line
-                                   // fputs("\\par\\hskip2.7em\\href{",b);
+				   /* To always place urls on a separate line */
+                                   /* fputs("\\par\\hskip2.7em\\href{",b); */
                                    fputs("\\href{",b);
                                 } else {
                                    fputs("\\href{",b);
