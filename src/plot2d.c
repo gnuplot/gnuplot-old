@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.336.2.40 2017-07-18 20:25:58 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.336.2.41 2017-07-18 21:28:46 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -2374,10 +2374,6 @@ eval_plots()
 			}
 
 		    set_with = TRUE;
-		    continue;
-		}
-
-		if (this_plot->plot_style == TABLESTYLE) {
 		    continue;
 		}
 
