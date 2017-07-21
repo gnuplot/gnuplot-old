@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: tabulate.c,v 1.28 2017-07-21 04:31:16 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: tabulate.c,v 1.29 2017-07-21 17:49:31 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - tabulate.c */
@@ -561,7 +561,7 @@ tabulate_one_line(double v[MAXDATACOLS], struct value str[MAXDATACOLS], int ncol
 	evaluate_inside_using = TRUE;
 	evaluate_at(table_filter_at, &keep);
 	evaluate_inside_using = FALSE;
-	if (isnan(real(&keep)) || real(&keep) == 0)
+	if (undefined || isnan(real(&keep)) || real(&keep) == 0)
 	    return FALSE;
     }
 
