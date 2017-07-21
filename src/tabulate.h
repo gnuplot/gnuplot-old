@@ -1,5 +1,5 @@
 /*
- * $Id: tabulate.h,v 1.3 2017-07-20 18:04:18 sfeam Exp $
+ * $Id: tabulate.h,v 1.4 2017-07-21 04:31:16 sfeam Exp $
  */
 
 /* GNUPLOT - tabulate.h */
@@ -19,5 +19,6 @@ extern FILE *table_outfile;
 extern udvt_entry *table_var;
 extern TBOOLEAN table_mode;
 extern char *table_sep;
+extern struct at_type *table_filter_at;
 
 #endif /* GNUPLOT_TABULATE_H */
