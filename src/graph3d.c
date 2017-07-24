@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.366 2017-06-06 06:39:49 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graph3d.c,v 1.367 2017-07-24 07:54:51 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - graph3d.c */
@@ -525,7 +525,7 @@ get_arrow3d(
 	double radius;
 	int junkw, junkh;
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (strcmp(term->name, "windows") == 0)
 	    aspect = 1.;
 #endif

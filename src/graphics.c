@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: graphics.c,v 1.559 2017-07-02 23:08:36 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: graphics.c,v 1.560 2017-07-24 07:54:51 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - graphics.c */
@@ -181,7 +181,7 @@ get_arrow(
 	double aspect = (double)term->v_tic / (double)term->h_tic;
 	double radius;
 
-#ifdef WIN32
+#ifdef _WIN32
 	if (strcmp(term->name, "windows") == 0)
 	    aspect = 1.;
 #endif
@@ -4294,7 +4294,7 @@ do_ellipse( int dimensions, t_ellipse *e, int style, TBOOLEAN do_own_mapping )
     int segments = 72;
     double ang_inc  =  M_PI / 36.;
 
-#ifdef WIN32
+#ifdef _WIN32
     if (strcmp(term->name, "windows") == 0)
 	aspect = 1.;
 #endif
