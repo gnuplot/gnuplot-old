@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: internal.c,v 1.103 2017-07-17 05:40:46 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: internal.c,v 1.104 2017-07-29 08:50:03 markisch Exp $"); }
 #endif
 
 /* GNUPLOT - internal.c */
@@ -47,6 +47,11 @@ static char *RCSid() { return RCSid("$Id: internal.c,v 1.103 2017-07-17 05:40:46
 #include "parse.h"	/* for string_result_only */
 
 #include <math.h>
+
+#ifdef _WIN32
+# define WIN32_LEAN_AND_MEAN
+# include <windows.h>
+#endif
 
 #if !defined(__MINGW64_VERSION_MAJOR)
 /*
