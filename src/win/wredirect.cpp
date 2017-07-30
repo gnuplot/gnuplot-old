@@ -1,6 +1,10 @@
 /*
- * $I$
- */
+ * $Id: wredirect.cpp,v 1.1.4.1 2017-07-30 07:53:19 markisch Exp $
+ *
+ * Redirect C++ output streams to wgnuplot text window
+ * (Caveat: does not compile with OpenWatcom)
+ *
+*/
 
 #include <iostream>
 #include "wtext.h"
