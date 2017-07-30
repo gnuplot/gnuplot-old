@@ -1,9 +1,11 @@
 # Hello, emacs: this is a -*- Makefile -*-
-# $Id: Makefile,v 1.79 2017-07-29 08:28:59 markisch Exp $
+# $Id: Makefile,v 1.80 2017-07-30 20:38:20 markisch Exp $
 #
 # GNUPLOT Makefile for MinGW/MSYS or MinGW-w64/MSYS2 on Windows 
-# This assumes a typical installation of the MinGW toolkit, the free
-# GNU gcc. 
+#
+# Note: Currently MinGW cannot be used to compile gnuplot unless
+#       libraries / headers are updated.
+#
 # See http://www.mingw.org or http://msys2.github.io/ for more details.
 
 # To compile gnuplot for Windows:
