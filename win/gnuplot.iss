@@ -1,6 +1,6 @@
 ﻿;
 
-; $Id: gnuplot.iss,v 1.17 2017-06-20 19:29:42 sfeam Exp $
+; $Id: gnuplot.iss,v 1.18 2017-07-31 15:52:58 sfeam Exp $
 
 ;
 
@@ -260,7 +260,7 @@ Source: "etc\*"; DestDir: {app}\etc\; Flags: skipifsourcedoesntexist recursesubd
 
 ; demo files / contrib
 
-Source: "contrib\*"; DestDir: {app}\contrib\; Flags: recursesubdirs; Components: demo
+;Source: "contrib\*"; DestDir: {app}\contrib\; Flags: recursesubdirs; Components: demo
 
 Source: "demo\*"; DestDir: {app}\demo\; Flags: recursesubdirs; Components: demo
 
