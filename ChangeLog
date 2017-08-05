@@ -1,3 +1,21 @@
+2017-08-04 Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/axis.c (parse_range) src/datafile.c (df_generate_pseudodata)
+	src/axis.h src/plot2d.c:  Somewhat delayed application of patch from 
+	2014-12-08, originally deferred so that the feature could be tested
+	in the development version.  Allow an optional sampling interval as
+	part of the sampling range spec for pseudofile '+' in a plot command:
+	    plot sample [a=0:360:10] '+' using (3+sin(a)):(cos(a)) with points
+
+2017-08-02  Ethan A Merritt  <merritt@u.washington.edu>
+
+	* src/graphics.c(plot_image_or_update_axes): Image code is shared by
+	2D and 3D paths.  If we are in 2D we cannot rely on pixel.z being a
+	reasonable z coordinate, so treat all z coordinats as 0.
+	5.0.6 would segfault on command
+	    set log xy; plot 'blutux.rgb' binary array=(128,128) flipy \
+		format='%uchar' with rgbimage
+
 2017-07-31  Bastian Maerkisch  <bmaerkisch@web.de>
 
 	* config/mingw/Makefile config/msvc/Makefile config/config.nt:
