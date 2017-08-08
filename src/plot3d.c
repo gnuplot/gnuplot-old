@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.271 2017-08-05 01:23:31 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot3d.c,v 1.272 2017-08-08 04:30:49 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot3d.c */
@@ -2357,12 +2357,13 @@ eval_3dplots()
 	 * --> save them now for writeback if requested
 	 */
 	save_writeback_all_axes();
-	/* update GPVAL_ variables available to user */
-	update_gpval_variables(1);
 
 	/* Mark these plots as safe for quick refresh */
 	SET_REFRESH_OK(E_REFRESH_OK_3D, plot_num);
     }
+
+    /* update GPVAL_ variables available to user */
+    update_gpval_variables(1);
 }
 
 
