@@ -1,5 +1,5 @@
 /*
- * $Id: wgdiplus.cpp,v 1.59.2.6 2017-07-11 07:11:13 markisch Exp $
+ * $Id: wgdiplus.cpp,v 1.59.2.7 2017-08-15 14:03:10 markisch Exp $
  */
 
 /*
@@ -544,8 +544,8 @@ do_draw_gdiplus(LPGW lpgw, Graphics &graphics, LPRECT rect, enum draw_target tar
 	if (target == DRAW_PRINTER) {
 		HDC hdc = graphics.GetHDC();
 		HDC hdc_screen = GetDC(NULL);
-		lw_scale = (double) GetDeviceCaps(hdc, VERTRES) /
-		           (double) GetDeviceCaps(hdc_screen, VERTRES);
+		lw_scale = (double) GetDeviceCaps(hdc, LOGPIXELSX) /
+		           (double) GetDeviceCaps(hdc_screen, LOGPIXELSY);
 		line_width *= lw_scale;
 		ReleaseDC(NULL, hdc_screen);
 		graphics.ReleaseHDC(hdc);
