@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: axis.c,v 1.223.2.2 2017-06-15 05:35:42 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: axis.c,v 1.223.2.3 2017-08-19 00:32:22 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - axis.c */
@@ -2347,8 +2347,7 @@ parse_range(AXIS_INDEX axis)
 	}
 #endif
 
-	/* EXPERIMENTAL: optional sample interval */
-	if (axis == SAMPLE_AXIS) {
+	if (axis == SAMPLE_AXIS || axis == T_AXIS || axis == U_AXIS || axis == V_AXIS) {
 	    this_axis->SAMPLE_INTERVAL = 0;
 	    if (equals(c_token, ":")) {
 		c_token++;
