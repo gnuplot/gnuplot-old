@@ -1,5 +1,5 @@
 /*
- * $Id: util.h,v 1.53 2017-07-07 00:02:33 sfeam Exp $
+ * $Id: util.h,v 1.54 2017-09-04 18:02:21 sfeam Exp $
  */
 
 /* GNUPLOT - util.h */
@@ -69,6 +69,8 @@ extern TBOOLEAN use_micro;
 extern TBOOLEAN use_minus_sign;
 
 extern const char *current_prompt; /* needed by is_error() and friends */
+
+extern int debug;
 
 /* Functions exported by util.c: */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: util.c,v 1.155 2017-07-23 18:57:02 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: util.c,v 1.156 2017-09-04 18:02:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - util.c */
@@ -79,6 +79,8 @@ const char *current_prompt = NULL; /* to be set by read_line() */
  * will be echoed to the screen before the ^ error message.
  */
 TBOOLEAN screen_ok;
+
+int debug = 0;
 
 /* internal prototypes */
 

@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: show.c,v 1.390 2017-07-24 07:54:52 markisch Exp $"); }
+static char *RCSid() { return RCSid("$Id: show.c,v 1.391 2017-09-04 18:02:21 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - show.c */
@@ -239,6 +239,9 @@ show_command()
     case S_CNTRPARAM:
     case S_CNTRLABEL:
 	show_contour();
+	break;
+    case S_DEBUG:
+	fprintf(stderr,"debug level is %d\n",debug);
 	break;
     case S_DGRID3D:
 	show_dgrid3d();
