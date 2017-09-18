@@ -1,5 +1,5 @@
 /*
- * $Id: parse.h,v 1.39 2017-04-19 06:20:45 sfeam Exp $
+ * $Id: parse.h,v 1.40 2017-09-18 22:24:03 sfeam Exp $
  */
 
 /* GNUPLOT - parse.h */
@@ -84,6 +84,7 @@ char* string_or_express __PROTO((struct at_type **atptr));
 struct at_type * temp_at __PROTO((void));
 struct at_type * perm_at __PROTO((void));
 struct at_type * create_call_column_at __PROTO((char *));
+struct at_type * create_call_columnhead __PROTO((void));
 struct udvt_entry * add_udv __PROTO((int t_num));
 struct udft_entry * add_udf __PROTO((int t_num));
 void cleanup_udvlist __PROTO((void));

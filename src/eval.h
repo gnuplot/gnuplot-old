@@ -1,5 +1,5 @@
 /*
- * $Id: eval.h,v 1.51 2016-09-19 04:40:30 sfeam Exp $
+ * $Id: eval.h,v 1.52 2017-09-18 22:24:03 sfeam Exp $
  */
 
 /* GNUPLOT - eval.h */
@@ -67,7 +67,7 @@ enum operators {
 #endif
 
     /* functions specific to using spec */
-    COLUMN, STRINGCOLUMN
+    COLUMN, STRINGCOLUMN, STRCOL, COLUMNHEAD
 };
 #define is_jump(operator) \
     ((operator) >=(int)JUMP && (operator) <(int)SF_START)
