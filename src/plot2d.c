@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.336.2.43 2017-08-09 18:22:10 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.336.2.44 2017-09-25 16:49:47 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -2872,6 +2872,7 @@ eval_plots()
 		case SMOOTH_BEZIER:
 		case SMOOTH_SBEZIER:
 		    gen_interp(this_plot);
+		    refresh_bounds(this_plot, 1);
 		    break;
 		case SMOOTH_KDENSITY:
 		    gen_interp(this_plot);
