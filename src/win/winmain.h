@@ -1,5 +1,5 @@
 /*
- * $Id: winmain.h,v 1.20 2016-08-06 13:22:50 markisch Exp $
+ * $Id: winmain.h,v 1.21 2017-10-01 09:01:57 markisch Exp $
  */
 
 /* GNUPLOT - win/winmain.h */
@@ -71,6 +71,7 @@ void win_sleep(DWORD dwMilliSeconds);
 TBOOLEAN WinAnyWindowOpen(void);
 void WinPersistTextClose(void);
 void WinMessageLoop(void);
+void WinOpenConsole(void);
 void WinRaiseConsole(void);
 UINT WinGetCodepage(enum set_encoding_id encoding);
 enum set_encoding_id WinGetEncoding(UINT cp);
