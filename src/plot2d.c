@@ -1,5 +1,5 @@
 #ifndef lint
-static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.460 2017-10-09 00:49:03 sfeam Exp $"); }
+static char *RCSid() { return RCSid("$Id: plot2d.c,v 1.461 2017-11-01 18:06:53 sfeam Exp $"); }
 #endif
 
 /* GNUPLOT - plot2d.c */
@@ -1689,7 +1689,8 @@ histogram_range_fiddling(struct curve_points *plot)
 		/* FIXME: Rather than trying to reproduce the layout along X */
 		/* we should just track the actual xmin/xmax as we go.       */
 		if (axis_array[FIRST_X_AXIS].set_autoscale) {
-		    xlow = -1.0;
+		    if ((axis_array[FIRST_X_AXIS].set_autoscale & AUTOSCALE_MIN))
+			xlow = -1.0;
 		    xhigh = plot->histogram_sequence;
 		    xhigh += plot->histogram->start + 1.0;
 		    if (axis_array[FIRST_X_AXIS].min > xlow)
