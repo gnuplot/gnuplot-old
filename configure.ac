@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl configure.in for gnuplot on Unix.
 dnl
-dnl $Id: configure.ac,v 1.30.2.16 2017-11-02 04:14:15 sfeam Exp $
+dnl $Id: configure.ac,v 1.30.2.17 2017-11-04 21:01:45 sfeam Exp $
 dnl
 dnl this is actually major.minor ...
 dnl note that for a non-beta release, we need to disable DEVELOPMENT_RELEASE
@@ -227,6 +227,8 @@ fi
 if test "$ac_cv_header_sys_stat_h" = yes; then
   AC_HEADER_STAT
 fi
+
+AC_HEADER_SYS_WAIT
 
 dnl Check for external functions plugin infrastructure
 AC_ARG_ENABLE(plugins,dnl
